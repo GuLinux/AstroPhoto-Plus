@@ -1,0 +1,4 @@
+#!/bin/bash
+
+FLASK_APP="./indi-lite.py" flask run "$@"
+
