@@ -10,7 +10,7 @@ servers = []
 @app.route('/api/servers', methods=['GET'])
 @json_api
 def get_servers():
-    return {'servers': servers}
+    return {'servers': [x.to_map() for x in servers]}
 
 @app.route('/api/servers', methods=['POST'])
 @json_input
