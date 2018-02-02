@@ -1,3 +1,5 @@
+from pyindi_sequence import INDIClient
+
 class Server:
     def __init__(self, host, port):
         self.host = host
