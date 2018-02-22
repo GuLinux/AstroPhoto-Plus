@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import './App.css';
-import SequencesList from './SequencesList';
+import VisibleSequences from '../containers/VisibleSequences';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <SequencesList />
+        <p>Hello, React!</p>
+        <VisibleSequences />
       </div>
     );
   }
