@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PYTHONPATH="$( cd ../; pwd):$PYTHONPATH"
+export PYTHONPATH="$( cd ../../; pwd):$PYTHONPATH"
 export FLASK_APP="./indi-lite.py"
 flask run "$@"
 
