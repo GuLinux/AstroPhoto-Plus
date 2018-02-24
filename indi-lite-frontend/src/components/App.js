@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
+import VisibleSessions from '../containers/VisibleSessions';
+import AddSession from '../containers/AddSession';
 import './App.css';
-import VisibleSequences from '../containers/VisibleSequences';
-import AddSequence from '../containers/AddSequence';
+
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <VisibleSequences />
-        <AddSequence />
+
+        <VisibleSessions />
+        <AddSession />
+
       </div>
     );
   }

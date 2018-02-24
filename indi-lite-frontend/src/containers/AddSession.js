@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { addSequence } from '../actions'
+import { addSession } from '../actions'
 
-let AddSequence = ({ dispatch }) => {
+let AddSession = ({ dispatch }) => {
   let input
   return (
     <div>
@@ -12,7 +12,7 @@ let AddSequence = ({ dispatch }) => {
           if (!input.value.trim()) {
             return
           }
-          dispatch(addSequence(input.value))
+          dispatch(addSession(input.value))
           input.value = ''
         }}
       >
@@ -22,12 +22,12 @@ let AddSequence = ({ dispatch }) => {
           }}
         />
         <button type="submit">
-          Add Sequence
+          Add Session
         </button>
       </form>
     </div>
   )
 }
-AddSequence = connect()(AddSequence)
+AddSession = connect()(AddSession)
 
-export default AddSequence
+export default AddSession

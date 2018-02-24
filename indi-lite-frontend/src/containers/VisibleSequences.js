@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import SequencesList from '../components/SequencesList'
 
-const getVisibleSequences = (sequences) => {
-  return sequences;
+const getVisibleSequences = (sequences, sessionId) => {
+  return sequences.filter(sequence => sequence.session === sessionId);
 /*  switch (filter) {
     case 'SHOW_ALL':
       return todos
@@ -14,9 +14,9 @@ const getVisibleSequences = (sequences) => {
 */
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    sequences: getVisibleSequences(state.sequences)
+    sequences: getVisibleSequences(state.sequences, ownProps.sessionId)
   }
 }
 

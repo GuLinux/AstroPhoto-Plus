@@ -4,7 +4,7 @@ import React from 'react';
 const SequencesList = ({sequences}) => (
     <ul>
         {sequences.map(sequence => (
-        <p>{sequence.name}</p>
+        <p key={sequence.id}>{sequence.name}</p>
         ))}
     </ul>
 )

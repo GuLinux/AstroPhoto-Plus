@@ -4,7 +4,8 @@ let addSequence = (state, action) => {
         ...state,
         {
             id: action.id,
-            name: action.name
+            name: action.name,
+            session: action.session
         }
     ]
 }
