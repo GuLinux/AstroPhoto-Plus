@@ -29,3 +29,17 @@ export const createSessionAPI = (session, onSuccess, onError) => {
         onSuccess(data);
     })
 }
+
+export const createSequenceAPI = (sequence, onSuccess, onError) => {
+    return fetch('/api/sessions/' + sequence.session + '/sequences', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({name: sequence.name})
+    }).then(response => response.json(), onError)
+    .then(json => {
+        let data = normalize(json, sequenceSchema);
+        onSuccess(data);
+    })
+}
