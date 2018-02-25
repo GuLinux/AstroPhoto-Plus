@@ -1,7 +1,6 @@
 
 let addSequence = (state, action) => {
     let sequence = action.sequence;
-    console.log(sequence);
     return {
         ...state,
         [sequence.id]: sequence
