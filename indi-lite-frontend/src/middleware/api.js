@@ -15,3 +15,18 @@ export const fetchSessionsAPI = (onSuccess, onError) => {
             onSuccess(data);
         })
 }
+
+export const createSessionAPI = (session, onSuccess, onError) => {
+console.log(session);
+    return fetch('/api/sessions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(session)
+    }).then(response => response.json(), onError)
+    .then(json => {
+        let data = normalize(json, sessionSchema);
+        onSuccess(data);
+    })
+}

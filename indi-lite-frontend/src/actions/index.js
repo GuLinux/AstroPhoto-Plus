@@ -1,8 +1,7 @@
-import { fetchSessionsAPI } from '../middleware/api'
+import { createSessionAPI, fetchSessionsAPI } from '../middleware/api'
 
 
 let nextSequenceId = 0;
-let nextSessionId = 0;
 
 export const addSequence = (name, session) => {
     return {
@@ -10,20 +9,6 @@ export const addSequence = (name, session) => {
         id: nextSequenceId++,
         session,
         name
-    }
-}
-
-export const addSession = name => {
-    return {
-        type: 'ADD_SESSION',
-        id: nextSessionId++,
-        name
-    }
-}
-
-export const requestSessions = function() {
-    return {
-        type: 'REQUEST_SESSIONS'
     }
 }
 
@@ -36,11 +21,28 @@ export const receiveSessions = (sessions, ids, sequences) => {
     }
 }
 
+export const receivedNewSession = (sessions, id) => {
+    return {
+        type: 'RECEIVE_NEW_SESSION',
+        session: sessions[id]
+    }
+}
+
+export const addSession = function(name) {
+    return dispatch => {
+        dispatch({type: 'REQUEST_ADD_SESSION'});
+        return createSessionAPI( {name: name}, data => {
+            dispatch(receivedNewSession(data.entities.sessions, data.result));
+        }, error => console.log(error));
+    }
+}
+
 export const fetchSessions = function() {
     return dispatch => {
-        dispatch(requestSessions());
+        dispatch({type: 'REQUEST_SESSIONS'});
         return fetchSessionsAPI( data => {
             dispatch(receiveSessions(data.entities.sessions, data.result, data.entities.sequences));
         }, error => console.log(error));
     }
 }
+

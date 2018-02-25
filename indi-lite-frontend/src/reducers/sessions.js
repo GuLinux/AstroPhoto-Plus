@@ -1,15 +1,6 @@
 
-let addSession = (state, action) => {
-    let session = {
-        id: action.id,
-        name: action.name,
-        sequences: []
-    };
-
-    return {
-        entities: {...state.entities, [session.id]: session},
-        ids: state.ids.concat(session.id)
-    }
+let appendSession = (state, action) => {
+    return { ...state, entities: {...state.entities, [action.session.id]: action.session}, ids: state.ids.concat(action.session.id)};
 }
 
 let addSequence = (state, action) => {
@@ -30,8 +21,8 @@ let addSequence = (state, action) => {
 
 const sessions = (state = { entities: {}, ids: [] }, action) => {
     switch(action.type) {
-        case 'ADD_SESSION':
-            return addSession(state, action);
+        case 'RECEIVE_NEW_SESSION':
+            return appendSession(state, action);
         case 'ADD_SEQUENCE':
             return addSequence(state, action);
         case 'RECEIVE_SESSIONS':
