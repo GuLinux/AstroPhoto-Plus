@@ -17,7 +17,6 @@ export const fetchSessionsAPI = (onSuccess, onError) => {
 }
 
 export const createSessionAPI = (session, onSuccess, onError) => {
-console.log(session);
     return fetch('/api/sessions', {
         method: 'POST',
         headers: {
