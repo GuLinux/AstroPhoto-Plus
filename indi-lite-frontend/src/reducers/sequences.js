@@ -15,7 +15,7 @@ const sequences = (state = {}, action) => {
         case 'ADD_SEQUENCE':
             return addSequence(state, action);
         case 'RECEIVE_SESSIONS':
-            return action.sequences;
+            return {...state, ...action.sequences};
         default:
             return state;
     }
