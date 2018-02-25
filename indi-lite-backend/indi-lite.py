@@ -59,6 +59,7 @@ def new_session(json):
 def add_sequence(id, json):
     session = find_session(id)
     new_sequence = Sequence(json['name'])
+    app.logger.debug('adding sequence {} to id {}'.format(new_sequence, id))
     session.sequences.append(new_sequence)
     return new_sequence.to_map()
     

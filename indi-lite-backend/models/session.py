@@ -1,10 +1,10 @@
 import uuid
 
 class Session:
-    def __init__(self, name, id=None, sequences=[]):
+    def __init__(self, name, id=None, sequences=None):
         self.name = name
         self.id = id if id else uuid.uuid4().hex
-        self.sequences = sequences
+        self.sequences = sequences if sequences else []
 
 
     def to_map(self):
