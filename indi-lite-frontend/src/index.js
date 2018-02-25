@@ -9,6 +9,8 @@ import thunkMiddleware from 'redux-thunk'
 import indiLiteApp from './reducers'
 import App from './components/App'
 import './index.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap-theme.css';
 
 import registerServiceWorker from './registerServiceWorker';
 

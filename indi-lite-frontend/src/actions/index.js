@@ -51,3 +51,9 @@ export const fetchSessions = function() {
     }
 }
 
+export const navigateToSecton = section => {
+    return {
+        type: 'NAVIGATE_TO_SECTION',
+        section
+    }
+}
