@@ -1,13 +1,18 @@
 import React from 'react'
 import AddSequence from '../components/AddSequence';
 import VisibleSequences from '../containers/VisibleSequences';
+import { Button } from 'react-bootstrap';
 
-const Session = ({ id, name, onCreateSequence }) => (
-  <li>
-    {name}
-        <VisibleSequences sessionId={id} />
-        <AddSequence sessionId={id} onCreateSequence={onCreateSequence} />
-  </li>
-)
+const Session = ({ session, onCreateSequence, navigateBack }) => {
+    if(session === null)
+        return null;
+    return (
+  <div>
+    {session.name}
+        <VisibleSequences sessionId={session.id} />
+        <AddSequence sessionId={session.id} onCreateSequence={onCreateSequence} />
+        <Button onClick={navigateBack}>Back</Button>
+  </div>
+)}
 
 export default Session

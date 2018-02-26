@@ -51,9 +51,17 @@ export const fetchSessions = function() {
     }
 }
 
-export const navigateToSecton = section => {
+export const navigateToSection = section => {
     return {
         type: 'NAVIGATE_TO_SECTION',
         section
+    }
+}
+
+export const navigateToSession = (page, session) => {
+    return {
+        type: 'NAVIGATE_TO_SESSION',
+        sessionPage: page,
+        sessionId: session
     }
 }
