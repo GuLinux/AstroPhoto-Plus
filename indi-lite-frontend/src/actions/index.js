@@ -18,7 +18,7 @@ export const receivedNewSession = (sessions, id) => {
 
 export const receivedNewSequence = (sequence, sessionId) => {
     return {
-        type: 'RECEIVED_NEW_SEQUENCE',
+        type: 'RECEIVE_NEW_SEQUENCE',
         session: sessionId,
         sequence
     }
