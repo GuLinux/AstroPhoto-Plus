@@ -7,12 +7,14 @@ const Session = ({ session, onCreateSequence, navigateBack }) => {
     if(session === null)
         return null;
     return (
-  <div>
-    <h2>{session.name}</h2>
+    <div>
+        <h2>
+            {session.name}
+            <Button onClick={navigateBack} className="pull-right">Back</Button>
+        </h2>
         <SequencesController sessionId={session.id} />
         <AddSequence sessionId={session.id} onCreateSequence={onCreateSequence} />
-        <Button onClick={navigateBack}>Back</Button>
-  </div>
+    </div>
 )}
 
 export default Session

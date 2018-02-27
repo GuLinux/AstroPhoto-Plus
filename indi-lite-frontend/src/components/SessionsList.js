@@ -22,7 +22,7 @@ const SessionsList = ({sessions, onCreateSequence, onSessionEdit}) =>
                 <td>{session.sequences.length}</td>
                 <td></td>
                 <td>
-                    <Glyphicon glyph="edit" onClick={e => onSessionEdit(session.id)} />
+                    <a href='#' onClick={e => onSessionEdit(session.id)} ><Glyphicon glyph="edit" /></a>
                     <Glyphicon glyph="minus" />
                     <Glyphicon glyph="play" />
                     <Glyphicon glyph="pause" />
