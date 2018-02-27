@@ -14,10 +14,10 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const VisibleSequences = connect(
+const SequencesController = connect(
   mapStateToProps,
   mapDispatchToProps
 )(SequencesList)
 
-export default VisibleSequences
+export default SequencesController
 

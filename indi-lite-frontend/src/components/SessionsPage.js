@@ -1,7 +1,7 @@
 import AddSession from '../components/AddSession';
 import React from 'react';
 import PagesListController from '../containers/PagesListController';
-import SessionContainer from '../containers/SessionContainer';
+import SessionController from '../containers/SessionController';
 import SessionsList from './SessionsList'
 
 const SessionsPage = ({sessions, onSessionEdit, onAddSession}) => 
@@ -12,7 +12,7 @@ const SessionsPage = ({sessions, onSessionEdit, onAddSession}) =>
                 <SessionsList sessions={sessions} onSessionEdit={onSessionEdit} />
                 <AddSession onAddSession={onAddSession} />
             </div>
-            <SessionContainer key="session" />
+            <SessionController key="session" />
         </PagesListController>
     </div>
 )

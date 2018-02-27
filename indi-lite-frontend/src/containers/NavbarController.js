@@ -15,11 +15,11 @@ const mapDispatchToProps = dispatch => {
 }
 
 
-const NavbarContainer = connect(
+const NavbarController = connect(
   mapStateToProps,
   mapDispatchToProps
 )(INDINavbar)
 
-export default NavbarContainer 
+export default NavbarController 
 
 

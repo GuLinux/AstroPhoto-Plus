@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import NavbarContainer from '../containers/NavbarContainer';
+import NavbarController from '../containers/NavbarController';
 import PagesListController from '../containers/PagesListController';
 import LoadingPage from '../containers/LoadingPage';
 import SessionsPageController from '../containers/SessionsPageController';
@@ -10,7 +10,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <NavbarContainer />
+        <NavbarController />
         <PagesListController navigationKey="section">
             <SessionsPageController key="sessions" />
         </PagesListController>
