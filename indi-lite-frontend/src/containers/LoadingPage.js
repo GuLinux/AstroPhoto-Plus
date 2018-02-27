@@ -6,7 +6,7 @@ let LoadingPage= ({ isLoading }) => {
         return null;
   return (
     <div className="loadingOverlay">
-        <img src='/loading.gif' />
+        <img src='/loading.gif' alt='Loading' />
     </div>
   )
 }

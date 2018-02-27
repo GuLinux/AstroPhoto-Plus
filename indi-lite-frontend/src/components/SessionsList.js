@@ -4,7 +4,8 @@ import { Table, Glyphicon } from 'react-bootstrap';
 
 
         // <Session key={session.id} {...session} onCreateSequence={onCreateSequence} />
-const SessionsList = ({sessions, onCreateSequence, onSessionEdit}) => (
+const SessionsList = ({sessions, onCreateSequence, onSessionEdit}) =>
+(
     <Table striped bordered hover>
         <thead>
             <tr>
