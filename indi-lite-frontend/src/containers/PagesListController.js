@@ -10,7 +10,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 
-const PagesListContainer = connect(mapStateToProps)(PagesList)
+const PagesListController = connect(mapStateToProps)(PagesList)
 
-export default PagesListContainer
+export default PagesListController
 
