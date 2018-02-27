@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import SessionsList from '../components/SessionsList'
-import { navigateToSession } from '../actions'
+import Actions from '../actions'
 
 const getVisibleSessions = (entities, ids) => {
   return ids.map(id => entities[id])
@@ -14,7 +14,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSessionEdit: (sessionId) => dispatch(navigateToSession('session', sessionId))
+    onSessionEdit: (sessionId) => dispatch(Actions.Navigation.toSession('session', sessionId))
   }
 }
 

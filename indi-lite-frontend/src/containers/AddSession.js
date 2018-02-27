@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { addSession } from '../actions'
+import { Actions } from '../actions'
 
 let AddSession = ({ dispatch }) => {
   let input
@@ -12,7 +12,7 @@ let AddSession = ({ dispatch }) => {
           if (!input.value.trim()) {
             return
           }
-          dispatch(addSession(input.value))
+          dispatch(Actions.Sessions.add(input.value))
           input.value = ''
         }}
       >

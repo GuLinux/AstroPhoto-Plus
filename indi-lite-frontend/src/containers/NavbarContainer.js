@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import INDINavbar from '../components/INDINavbar'
-import { navigateToSection } from '../actions'
+import Actions from '../actions'
 
 const mapStateToProps = state => {
   return {
@@ -10,7 +10,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSelected: section => dispatch(navigateToSection(section))
+    onSelected: section => dispatch(Actions.Navigation.toSection(section))
   }
 }
 

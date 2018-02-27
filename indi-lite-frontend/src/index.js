@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import { createLogger } from 'redux-logger'
-import { fetchSessions } from './actions'
+import { Actions } from './actions'
 import thunkMiddleware from 'redux-thunk'
 
 import indiLiteApp from './reducers'
@@ -17,7 +17,7 @@ import registerServiceWorker from './registerServiceWorker';
 const loggerMiddleware = createLogger()
 
 let store = createStore(indiLiteApp, applyMiddleware(thunkMiddleware, loggerMiddleware))
-store.dispatch(fetchSessions())
+store.dispatch(Actions.Sessions.fetch())
 
 render(
   <Provider store={store}>
