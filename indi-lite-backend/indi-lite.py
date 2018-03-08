@@ -88,4 +88,18 @@ def delete_sequence(session_id, sequence_id):
     session.sequences = [x for x in session.sequences if x.id != sequence_id]
     return sequence
 
+@app.route('/api/cameras', methods=['GET'])
+@json_api
+def get_cameras():
+    return [x.to_map() for x in app_status['server'].cameras()]
 
+@app.route('/api/cameras/<name>/properties', methods=['GET'])
+@json_api
+def get_camera_properties(name):
+    print('searching for camera {} in {}'.format(name, app_status['server'].cameras()))
+
+    camera = [c for c in app_status['server'].cameras() if c.name == name]
+    if not camera:
+        raise NotFoundError()
+    camera = camera[0]
+    return camera.properties()

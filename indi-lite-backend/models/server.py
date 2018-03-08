@@ -1,4 +1,5 @@
 from pyindi_sequence import INDIClient
+from .camera import Camera
 
 class Server:
     DEFAULT_PORT = INDIClient.DEFAULT_PORT
@@ -21,4 +22,7 @@ class Server:
 
     def is_connected(self):
         return self.client.isServerConnected() if self.client else False
+
+    def cameras(self):
+        return [Camera(c) for c in self.client.cameras()]
 
