@@ -37,11 +37,26 @@ def find_session(id):
         return session[0]
     raise NotFoundError()
 
+def find_sequence(session_id, sequence_id):
+    session = find_session(session_id)
+    sequence = [x for x in session.sequences if x.id == sequence_id]
+    if sequence:
+        return session, sequence[0]
+    raise NotFoundError()
 
 @app.route('/api/sessions/<id>', methods=['GET'])
 @json_api
 def get_session(id):
     return find_session(id).to_map()
+
+
+@app.route('/api/sessions/<id>', methods=['DELETE'])
+@json_api
+def delete_session(id):
+    session = find_session(id).to_map()
+    session.update({'status': 'deleted'})
+    app_status['sessions'] = [x for x in app_status['sessions'] if x.id != id]
+    return session
 
 
 @app.route('/api/sessions', methods=['POST'])
@@ -62,6 +77,15 @@ def add_sequence(id, json):
     app.logger.debug('adding sequence {} to id {}'.format(new_sequence, id))
     session.sequences.append(new_sequence)
     return new_sequence.to_map()
+
     
+@app.route('/api/sessions/<session_id>/sequences/<sequence_id>', methods=['DELETE'])
+@json_api
+def delete_sequence(session_id, sequence_id):
+    session, sequence = find_sequence(session_id, sequence_id)
+    sequence = sequence.to_map()
+    sequence.update({'status': 'deleted'})
+    session.sequences = [x for x in session.sequences if x.id != sequence_id]
+    return sequence
 
 

@@ -4,7 +4,7 @@ import { Table, Glyphicon } from 'react-bootstrap';
 
 
         // <Session key={session.id} {...session} onCreateSequence={onCreateSequence} />
-const SessionsList = ({sessions, onCreateSequence, onSessionEdit}) =>
+const SessionsList = ({sessions, onCreateSequence, onSessionEdit, onSessionDelete}) =>
 (
     <Table striped bordered hover>
         <thead>
@@ -23,7 +23,7 @@ const SessionsList = ({sessions, onCreateSequence, onSessionEdit}) =>
                 <td></td>
                 <td>
                     <a href='#' onClick={e => onSessionEdit(session.id)} ><Glyphicon glyph="edit" /></a>
-                    <Glyphicon glyph="minus" />
+                    <a href='#' onClick={e => onSessionDelete(session.id)} ><Glyphicon glyph="minus" /></a>
                     <Glyphicon glyph="play" />
                     <Glyphicon glyph="pause" />
                     <Glyphicon glyph="stop" />

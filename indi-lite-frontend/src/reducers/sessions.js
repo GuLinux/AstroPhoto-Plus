@@ -21,9 +21,9 @@ let addSequence = (state, action) => {
 
 const sessions = (state = { entities: {}, ids: [] }, action) => {
     switch(action.type) {
-        case 'RECEIVE_NEW_SESSION':
+        case 'SESSION_CREATED':
             return appendSession(state, action);
-        case 'RECEIVE_NEW_SEQUENCE':
+        case 'SEQUENCE_CREATED':
             return addSequence(state, action);
         case 'RECEIVE_SESSIONS':
             return {...state, ids: action.ids, entities: action.sessions};

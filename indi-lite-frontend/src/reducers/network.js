@@ -5,8 +5,8 @@ const requests = (state = { fetching: false }, action) => {
         case 'REQUEST_ADD_SEQUENCE':
             return {...state, fetching: true };
         case 'RECEIVE_SESSIONS':
-        case 'RECEIVE_NEW_SESSION':
-        case 'RECEIVE_NEW_SEQUENCE':
+        case 'SESSION_CREATED':
+        case 'SEQUENCE_CREATED':
             return {...state, fetching: false};
         default:
             return state;

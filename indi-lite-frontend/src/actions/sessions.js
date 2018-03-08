@@ -1,4 +1,4 @@
-import { createSessionAPI, fetchSessionsAPI } from '../middleware/api'
+import { createSessionAPI, fetchSessionsAPI, deleteSessionAPI } from '../middleware/api'
 
 export const Sessions = {
 
@@ -13,10 +13,19 @@ export const Sessions = {
 
     created: (sessions, id) => {
         return {
-            type: 'RECEIVE_NEW_SESSION',
+            type: 'SESSION_CREATED',
             session: sessions[id]
         }
     },
+
+    deleted: (sessions, id) => {
+        return {
+            type: 'SESSION_DELETED',
+            session: sessions[id]
+        }
+    },
+
+
 
     fetch: () => {
         return dispatch => {
@@ -32,6 +41,14 @@ export const Sessions = {
             dispatch({type: 'REQUEST_ADD_SESSION'});
             return createSessionAPI( {name: name}, data => {
                 dispatch(Sessions.created(data.entities.sessions, data.result));
+            }, error => console.log(error));
+        }
+    },
+    remove: id => {
+        return dispatch => {
+            dispatch({type: 'REQUEST_DELETE_SESSION'});
+            return deleteSessionAPI( id, data => {
+                dispatch(Sessions.deleted(data.entities.sessions, data.result));
             }, error => console.log(error));
         }
     },

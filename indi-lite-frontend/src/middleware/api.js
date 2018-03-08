@@ -30,6 +30,18 @@ export const createSessionAPI = (session, onSuccess, onError) => {
     })
 }
 
+export const deleteSessionAPI = (sessionId, onSuccess, onError) => {
+    return fetch('/api/sessions/' + sessionId, {
+        method: 'DELETE'
+    }).then(response => response.json(), onError)
+    .then(json => {
+console.log(json);
+        let data = normalize(json, sessionSchema);
+        onSuccess(data);
+    })
+}
+
+
 export const createSequenceAPI = (sequence, onSuccess, onError) => {
     return fetch('/api/sessions/' + sequence.session + '/sequences', {
         method: 'POST',

@@ -10,7 +10,7 @@ let addSequence = (state, action) => {
 
 const sequences = (state = {}, action) => {
     switch(action.type) {
-        case 'RECEIVE_NEW_SEQUENCE':
+        case 'SEQUENCE_CREATED':
             return addSequence(state, action);
         case 'RECEIVE_SESSIONS':
             return {...state, ...action.sequences};

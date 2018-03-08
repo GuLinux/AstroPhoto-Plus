@@ -3,7 +3,7 @@ import {  createSequenceAPI } from '../middleware/api'
 export const Sequences = {
     created: (sequence, sessionId) => {
         return {
-            type: 'RECEIVE_NEW_SEQUENCE',
+            type: 'SEQUENCE_CREATED',
             session: sessionId,
             sequence
         }
