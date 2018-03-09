@@ -9,9 +9,11 @@ const INDIServerPage = ({serverState, setServerConnection}) => (
             <Tab eventKey="server_status" title="Server status">
                 <INDIServerDetailsPage serverState={serverState} setServerConnection={setServerConnection} />
             </Tab>
-            { serverState.devices.map(device => (
-                <Tab key={device.name} eventKey={device.name} title={device.name}>
-                    <INDIDevicePage device={device} />
+            { serverState.devices.map( (device, index) => (
+                <Tab key={index} eventKey={index} title={device.name}>
+                    <INDIDevicePage device={device} 
+                                    groups={serverState.groups.filter(group => group.device === device.name )}
+                                    properties={serverState.properties.filter(property => property.device === device.name)} />
                 </Tab>
             ))}
         </Tabs>

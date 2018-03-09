@@ -3,25 +3,24 @@ const defaultState = {
     host: '',
     port: '',
     devices: [],
-    groups: {},
-    properties: {}
+    groups: [],
+    properties: []
 };
 
 const receivedServerState = (state, action) => {
     let nextState = {...state, connected: action.state.connected, host: action.state.host, port: action.state.port.toString()};
     if(! nextState.connected) {
-        // TODO: remove properties and groups for this device, and replace them with the new ones.
         nextState.devices = [];
         nextState.groups = {};
-        nextState.properties = {};
+        nextState.properties = [];
     }
     return nextState;
 }
 
 const remapProperties = (state, device, groups, properties) => {
-    let nextStateGroups = {};
-    let nextStateProperties = {};
-    return state;
+    let nextStateProperties = state.properties.filter(property => property.device !== device);
+    let nextStateGroups = state.groups.filter( group => group.device !== device);
+    return {...state, groups: [...groups, ...nextStateGroups], properties: [...properties, ...nextStateProperties]};
 }
 
 const indiserver = (state = defaultState, action) => {

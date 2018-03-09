@@ -20,15 +20,14 @@ export const INDIServer = {
     },
 
     receivedDeviceProperties(device, data) {
-        let groups = {}
+        let groups = []
         let properties = {}
 
         data.forEach(property => {
-            let currentGroups = device in groups ? groups[device] : []
-            groups[device] = new Set([...currentGroups, property.group])
-            let key = `${device}-${property.group}-${property.name}`
-            properties = { ...properties, [key]: property }
+            groups.push(property.group)
+            properties = [...properties, property]
         });
+        groups = groups.filter( (value, index, self) => self.indexOf(value) === index).map(group => { return {device, name: group} });
         return {
             type: 'RECEIVED_DEVICE_PROPERTIES',
             device,
