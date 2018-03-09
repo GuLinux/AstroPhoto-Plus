@@ -18,7 +18,7 @@ const SessionsList = ({sessions, onCreateSequence, onSessionEdit, onSessionDelet
         <tbody>
         {sessions.map(session => (
             <tr key={session.id}>
-                <td>{session.name}</td>
+                <td><a href='#' onClick={e => onSessionEdit(session.id)} >{session.name}</a></td>
                 <td>{session.sequences.length}</td>
                 <td></td>
                 <td>

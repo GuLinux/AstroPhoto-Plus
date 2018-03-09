@@ -1,4 +1,5 @@
 import { createSessionAPI, fetchSessionsAPI, deleteSessionAPI } from '../middleware/api'
+import { Navigation } from './navigation'
 
 export const Sessions = {
 
@@ -49,6 +50,8 @@ export const Sessions = {
             dispatch({type: 'REQUEST_DELETE_SESSION'});
             return deleteSessionAPI( id, data => {
                 dispatch(Sessions.deleted(data.entities.sessions, data.result));
+                dispatch(Navigation.toSession('sessions'));
+                dispatch(Sessions.fetch());
             }, error => console.log(error));
         }
     },
