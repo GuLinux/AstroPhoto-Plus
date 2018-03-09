@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import INDIServerDetailsPage from './INDIServerDetailsPage'
+import INDIDevicePage from './INDIDevicePage'
 
 const INDIServerPage = ({serverState, setServerConnection}) => (
     <div className="container">
@@ -10,7 +11,7 @@ const INDIServerPage = ({serverState, setServerConnection}) => (
             </Tab>
             { serverState.devices.map(device => (
                 <Tab key={device.name} eventKey={device.name} title={device.name}>
-                    {device.name}
+                    <INDIDevicePage device={device} />
                 </Tab>
             ))}
         </Tabs>
