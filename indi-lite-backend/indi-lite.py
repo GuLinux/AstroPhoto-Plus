@@ -34,7 +34,30 @@ def disconnect_server():
     timeout(5)(lambda: not server.is_connected())()
     return server.to_map()
 
-   
+
+@app.route('/api/server/devices', methods=['GET'])
+@json_api
+def get_devices():
+    return [x.to_map() for x in app_status['server'].devices()]
+
+
+@app.route('/api/server/devices/<name>/properties', methods=['GET'])
+@json_api
+def get_camera_properties(name):
+    device = [d for d in app_status['server'].devices() if d.name == name]
+    if not device:
+        raise NotFoundError()
+    device = device[0]
+    return device.properties()
+
+
+# TODO: this might prove to be useless 
+@app.route('/api/cameras', methods=['GET'])
+@json_api
+def get_cameras():
+    return [x.to_map() for x in app_status['server'].cameras()]
+
+  
 
 @app.route('/api/sessions', methods=['GET'])
 @json_api
@@ -99,18 +122,3 @@ def delete_sequence(session_id, sequence_id):
     session.sequences = [x for x in session.sequences if x.id != sequence_id]
     return sequence
 
-@app.route('/api/cameras', methods=['GET'])
-@json_api
-def get_cameras():
-    return [x.to_map() for x in app_status['server'].cameras()]
-
-@app.route('/api/cameras/<name>/properties', methods=['GET'])
-@json_api
-def get_camera_properties(name):
-    print('searching for camera {} in {}'.format(name, app_status['server'].cameras()))
-
-    camera = [c for c in app_status['server'].cameras() if c.name == name]
-    if not camera:
-        raise NotFoundError()
-    camera = camera[0]
-    return camera.properties()

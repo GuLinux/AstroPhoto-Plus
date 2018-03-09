@@ -1,4 +1,4 @@
-import { getINDIServerStatusAPI, setINDIServerConnectionAPI } from '../middleware/api'
+import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI } from '../middleware/api'
 
 export const INDIServer = {
 
@@ -9,11 +9,29 @@ export const INDIServer = {
         } 
     },
 
+    receivedDevices: (data) => {
+        return {
+            type: 'RECEIVED_INDI_DEVICES',
+            devices: data
+        }
+    },
+
+    fetchDevices: () => {
+        return dispatch => {
+            dispatch({type: 'FETCH_INDI_DEVICES'});
+            return getINDIDevicesAPI(data => {
+                dispatch(INDIServer.receivedDevices(data));
+            }, error => console.log(error));
+        }
+    },
+
     fetchServerState: () => {
         return dispatch => {
             dispatch({type: 'FETCH_INDI_SERVER_STATE'});
             return getINDIServerStatusAPI(data => {
                 dispatch(INDIServer.receivedServerState(data));
+                if(data.connected)
+                    dispatch(INDIServer.fetchDevices());
             }, error => console.log(error));
         }
     },
@@ -23,9 +41,12 @@ export const INDIServer = {
             dispatch({type: connect ? 'CONNECT_INDI_SERVER' : 'DISCONNECT_INDI_SERVER'});
             return setINDIServerConnectionAPI(connect, data => {
                 dispatch(INDIServer.receivedServerState(data));
+                if(data.connected)
+                    dispatch(INDIServer.fetchDevices());
+
             }, error => console.log(error));
         }
-    }
+    },
 
 }
 

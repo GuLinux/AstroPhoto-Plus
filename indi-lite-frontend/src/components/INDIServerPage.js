@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
+import INDIServerDevicesList from './INDIServerDevicesList'
 
 const getConnectionView = (isConnected, connectAction, disconnectAction) => {
     return {
@@ -11,7 +12,7 @@ const getConnectionView = (isConnected, connectAction, disconnectAction) => {
     }
 }
 
-const INDIServerPage = ({serverState, setServerConnection}) => { 
+const INDIServerPage = ({serverState, setServerConnection, devicesList}) => { 
     let connectionView = getConnectionView(serverState.connected);
     let connectionAction = () => setServerConnection(! serverState.connected);
     return (
@@ -22,6 +23,9 @@ const INDIServerPage = ({serverState, setServerConnection}) => {
                 INDI Server  on {serverState.host}:{serverState.port}
             </div>
             <div className="col-xs-2"><Button bsStyle={connectionView.connectionButtonClass} onClick={connectionAction}>{connectionView.connectionButtonLabel}</Button></div>
+        </div>
+        <div className="row">
+            <INDIServerDevicesList devices={serverState.devices} />
         </div>
     </div>
 )}
