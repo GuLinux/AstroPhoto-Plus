@@ -18,6 +18,7 @@ const loggerMiddleware = createLogger()
 
 let store = createStore(indiLiteApp, applyMiddleware(thunkMiddleware, loggerMiddleware))
 store.dispatch(Actions.Sessions.fetch())
+store.dispatch(Actions.INDIServer.fetchServerState())
 
 render(
   <Provider store={store}>

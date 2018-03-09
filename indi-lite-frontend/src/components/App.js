@@ -3,6 +3,7 @@ import NavbarController from '../containers/NavbarController';
 import PagesListController from '../containers/PagesListController';
 import LoadingPage from '../containers/LoadingPage';
 import SessionsPageController from '../containers/SessionsPageController';
+import INDIServerController from '../containers/INDIServerController';
 import './App.css';
 
 
@@ -13,6 +14,7 @@ class App extends Component {
         <NavbarController />
         <PagesListController navigationKey="section">
             <SessionsPageController key="sessions" />
+            <INDIServerController key="indi_server" />
         </PagesListController>
         <LoadingPage />
       </div>

@@ -55,3 +55,18 @@ export const createSequenceAPI = (sequence, onSuccess, onError) => {
         onSuccess(data);
     })
 }
+
+export const getINDIServerStatusAPI = (onSuccess, onError) => {
+    return fetch('/api/server/status').then(response => response.json(), onError)
+    .then(json => {
+        onSuccess(json);
+    })
+}
+
+export const setINDIServerConnectionAPI = (connect, onSuccess, onError) => {
+    let endpoint = connect ? '/api/server/connect' : '/api/server/disconnect';
+    return fetch(endpoint, { method: 'PUT'}).then(response => response.json(), onError)
+    .then(json => {
+        onSuccess(json);
+    })
+}

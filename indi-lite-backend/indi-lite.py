@@ -24,7 +24,18 @@ def connect_server():
     timeout(5)(server.is_connected)()
     return server.to_map()
 
-    
+
+ 
+@app.route('/api/server/disconnect', methods=['PUT'])
+@json_api
+def disconnect_server():
+    server = app_status['server']
+    server.disconnect()
+    timeout(5)(lambda: not server.is_connected())()
+    return server.to_map()
+
+   
+
 @app.route('/api/sessions', methods=['GET'])
 @json_api
 def get_sessions():
