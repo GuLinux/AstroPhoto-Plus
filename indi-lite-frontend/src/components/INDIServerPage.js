@@ -1,34 +1,21 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import INDIServerDevicesList from './INDIServerDevicesList'
+import { Tabs, Tab } from 'react-bootstrap';
+import INDIServerDetailsPage from './INDIServerDetailsPage'
 
-const getConnectionView = (isConnected, connectAction, disconnectAction) => {
-    return {
-        stateLabelClass: isConnected ? 'success' : 'danger',
-        stateLabel: isConnected ? 'Connected' : 'Disconnected',
-        connectionButtonClass: isConnected ? 'danger' : 'success',
-        connectionButtonLabel: isConnected ? 'Disconnect' : 'Connect',
-        connectionButtonAction: isConnected? disconnectAction : connectAction,
-    }
-}
-
-const INDIServerPage = ({serverState, setServerConnection, devicesList}) => { 
-    let connectionView = getConnectionView(serverState.connected);
-    let connectionAction = () => setServerConnection(! serverState.connected);
-    return (
+const INDIServerPage = ({serverState, setServerConnection}) => (
     <div className="container">
-        <div className="row">
-            <div className="col-xs-8">
-                <span className={'label label-' + connectionView.stateLabelClass}>{connectionView.stateLabel}</span>
-                INDI Server  on {serverState.host}:{serverState.port}
-            </div>
-            <div className="col-xs-2"><Button bsStyle={connectionView.connectionButtonClass} onClick={connectionAction}>{connectionView.connectionButtonLabel}</Button></div>
-        </div>
-        <div className="row">
-            <INDIServerDevicesList devices={serverState.devices} />
-        </div>
+        <Tabs id="INDIServerTabs">
+            <Tab eventKey="server_status" title="Server status">
+                <INDIServerDetailsPage serverState={serverState} setServerConnection={setServerConnection} />
+            </Tab>
+            { serverState.devices.map(device => (
+                <Tab key={device.name} eventKey={device.name} title={device.name}>
+                    {device.name}
+                </Tab>
+            ))}
+        </Tabs>
     </div>
-)}
+)
 export default INDIServerPage;
 
 
