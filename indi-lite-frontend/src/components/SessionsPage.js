@@ -6,7 +6,7 @@ import SessionsList from './SessionsList'
 
 const SessionsPage = ({sessions, onSessionEdit, onAddSession, onSessionDelete}) => 
 (
-    <div className="sessions container">
+    <div className="sessions container-fluid">
         <PagesListController navigationKey="sessionPage">
             <div key="sessions">
                 <SessionsList sessions={sessions} onSessionEdit={onSessionEdit} onSessionDelete={onSessionDelete} />
