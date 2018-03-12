@@ -12,7 +12,7 @@ const INDILightProperty = ({property}) => (
     <div className="row">
         <div className="col-xs-2">{property.label}</div> 
         <div className="col-xs-10">
-            {property.values.map(value => ( <Label bsStyle={bsStyles[value.value]}>{value.label}</Label> ) )}
+            {property.values.map(value => ( <Label key={value.name} bsStyle={bsStyles[value.value]}>{value.label}</Label> ) )}
         </div>
     </div>
 )
