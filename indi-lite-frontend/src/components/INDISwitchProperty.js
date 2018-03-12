@@ -4,11 +4,11 @@ import { Button } from 'react-bootstrap'
 const renderSwitch = (property, value) => {
     switch(property.rule) {
         case "ONE_OF_MANY":
-            return ( <span className="col-xs-2"><input type="radio" checked={value.value} name={property.name} /> <label for={value.name}>{value.label}</label></span> )
+            return ( <span key={value.name} className="col-xs-2"><input type="radio" checked={value.value} name={property.name} /> <label htmlFor={value.name}>{value.label}</label></span> )
         case "AT_MOST_ONE":
-            return ( <Button active={value.value} bsSize="xsmall">{value.label}</Button> )
+            return ( <Button key={value.name} active={value.value} bsSize="xsmall">{value.label}</Button> )
         case "ANY":
-            return ( <span className="col-xs-2"><input type="checkbox" checked={value.value} name={property.name} /> <label for={value.name}>{value.label}</label></span> )
+            return ( <span key={value.name} className="col-xs-2"><input type="checkbox" checked={value.value} name={property.name} /> <label htmlFor={value.name}>{value.label}</label></span> )
 
     }
 }
