@@ -11,7 +11,7 @@ const receivedServerState = (state, action) => {
     let nextState = {...state, connected: action.state.connected, host: action.state.host, port: action.state.port.toString()};
     if(! nextState.connected) {
         nextState.devices = [];
-        nextState.groups = {};
+        nextState.groups = [];
         nextState.properties = [];
     }
     return nextState;
