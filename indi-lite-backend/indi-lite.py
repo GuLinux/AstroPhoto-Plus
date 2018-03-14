@@ -2,8 +2,13 @@ from flask import Flask, jsonify
 from api_decorators import *
 from api_utils import *
 from models import Server, Session, Sequence
+import os
+from flask_sse import sse
 
 app = Flask(__name__)
+app.config["REDIS_URL"] = os.environ.get("REDIS_URL")
+app.register_blueprint(sse, url_prefix='/api/events')
+
 
 app_status = {
     'server': Server('localhost'),
@@ -22,6 +27,7 @@ def connect_server():
     server = app_status['server']
     server.connect()
     timeout(5)(server.is_connected)()
+    sse.publish({'event': 'indi_server_connect', 'connected': server.is_connected()}, type='indi_server')
     return server.to_map()
 
 
@@ -32,6 +38,7 @@ def disconnect_server():
     server = app_status['server']
     server.disconnect()
     timeout(5)(lambda: not server.is_connected())()
+    sse.publish({'event': 'indi_server_disconnect', 'connected': server.is_connected()}, type='indi_server')
     return server.to_map()
 
 
