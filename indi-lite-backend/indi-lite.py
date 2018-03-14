@@ -26,20 +26,16 @@ def get_server_status():
 def connect_server():
     server = app_status['server']
     server.connect()
-    timeout(5)(server.is_connected)()
-    sse.publish({'event': 'indi_server_connect', 'connected': server.is_connected()}, type='indi_server')
-    return server.to_map()
-
-
+    is_error = not timeout(5)(server.is_connected)()
+    return notify('indi_server', 'indi_server_connect', server.to_map(), is_error)
  
 @app.route('/api/server/disconnect', methods=['PUT'])
 @json_api
 def disconnect_server():
     server = app_status['server']
     server.disconnect()
-    timeout(5)(lambda: not server.is_connected())()
-    sse.publish({'event': 'indi_server_disconnect', 'connected': server.is_connected()}, type='indi_server')
-    return server.to_map()
+    is_error = not timeout(5)(lambda: not server.is_connected())()
+    return notify('indi_server', 'indi_server_disconnect', server.to_map(), is_error)
 
 
 @app.route('/api/server/devices', methods=['GET'])
