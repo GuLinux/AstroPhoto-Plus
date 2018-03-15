@@ -13,12 +13,14 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 
 import registerServiceWorker from './registerServiceWorker';
+import listenToEvents from './middleware/events';
 
 const loggerMiddleware = createLogger()
 
 let store = createStore(indiLiteApp, applyMiddleware(thunkMiddleware, loggerMiddleware))
 store.dispatch(Actions.Sessions.fetch())
 store.dispatch(Actions.INDIServer.fetchServerState())
+listenToEvents(store.dispatch)
 
 render(
   <Provider store={store}>
