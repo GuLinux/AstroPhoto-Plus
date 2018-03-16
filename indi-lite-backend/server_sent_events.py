@@ -45,7 +45,7 @@ class SSE:
         if id is None:
             id = uuid.uuid4().hex
         for client in self.clients:
-            client.publish(SSEMessage(data, type))
+            client.publish(SSEMessage(data, type, id))
 
     def subscribe(self):
         new_client = SSEClient(self)

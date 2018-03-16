@@ -38,6 +38,8 @@ class Server:
 
     def __on_disconnected(self, error_code):
         self.logger.debug('indi server disconnected; disconnect_requested: {}'.format(self.__disconnect_requested))
+        self.client = None
         if  time.time() - self.__disconnect_requested > 2 and self.on_disconnect:
             self.on_disconnect(error_code)
+
 
