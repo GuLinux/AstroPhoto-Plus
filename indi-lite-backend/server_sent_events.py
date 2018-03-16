@@ -1,5 +1,6 @@
 from queue import Queue
 import json
+import uuid
 
 
 class SSEMessage:
@@ -21,7 +22,7 @@ class SSEClient:
         self.queue = Queue()
         self.sse = sse
 
-    def new_message(self, message):
+    def publish(self, message):
         self.queue.put(message)
 
     def feed(self):
@@ -31,25 +32,30 @@ class SSEClient:
                     yield self.queue.get().to_str()
                 except GeneratorExit:
                     self.sse.unsubscribe(self)
+                    return
         return gen()
  
 
 class SSE:
-    def __init__(self):
+    def __init__(self, logger):
         self.clients = []
+        self.logger = logger
 
-    def publish(self, data, type):
+    def publish(self, data, type, id=None):
+        if id is None:
+            id = uuid.uuid4().hex
         for client in self.clients:
-            client.new_message(SSEMessage(data, type))
+            client.publish(SSEMessage(data, type))
 
     def subscribe(self):
         new_client = SSEClient(self)
         self.clients.append(new_client)
+        self.logger.debug('new client subscribed: {}'.format(new_client))
         return new_client
 
     def unsubscribe(self, client):
-        print('unsubscribing client: {} (clients: {})'.format(client, len(self.clients)))
+        self.logger.debug('unsubscribing client: {} (clients: {})'.format(client, len(self.clients)))
         self.clients = [x for x in self.clients if x != client]
-        print('clients now: {}'.format(len(self.clients)))
+        self.logger.debug('clients now: {}'.format(len(self.clients)))
                
         

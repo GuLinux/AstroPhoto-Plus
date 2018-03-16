@@ -1,5 +1,4 @@
 pyindi-client
 astropy
 flask
-flask-sse
 

@@ -14,11 +14,16 @@ export const INDIServer = {
     serverDisconnectNotify: (state, dispatch) => {
         dispatch(INDIServer.receivedServerState(state.payload, dispatch));
         if(state.is_error) {
-            return Notifications.add('INDI Server connection', 'Error while disconnecting to INDI server', 'error');
+            return Notifications.add('INDI Server connection', 'Error while disconnecting to INDI server.', 'error');
         }
-        return Notifications.add('INDI Server connection', 'INDI server disconnected successfully', 'success');
+        return Notifications.add('INDI Server connection', 'INDI server disconnected successfully.', 'success');
     },
 
+
+    serverDisconnectErrorNotify: (state, dispatch) => {
+        dispatch(INDIServer.receivedServerState(state.payload, dispatch));
+        return Notifications.add('Error', 'INDI server disconnected. Please check your server logs.', 'error');
+    },
 
 
     receivedServerState: (state, dispatch) => {

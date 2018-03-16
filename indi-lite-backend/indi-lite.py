@@ -1,12 +1,10 @@
-from flask import Flask, jsonify, Response
+from flask import jsonify, Response
 from api_decorators import *
 from api_utils import *
 from models import Server, Session, Sequence
 import os
 from controller import controller
-
-app = Flask(__name__)
-
+from app import app
 
 app.logger.info('Using INDI server at %s:%d', controller.indi_server.host, controller.indi_server.port)
 

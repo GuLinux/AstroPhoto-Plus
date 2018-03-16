@@ -18,6 +18,9 @@ const indiserverEvents = (event, dispatch) => {
         case 'indi_server_disconnect':
             dispatch(INDIServer.serverDisconnectNotify(eventObject, dispatch));
             break;
+        case 'indi_server_disconnect_error':
+            dispatch(INDIServer.serverDisconnectErrorNotify(eventObject, dispatch));
+            break;
         default:
             logEvent(event);
     }
