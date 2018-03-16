@@ -11,9 +11,11 @@ app.register_blueprint(sse, url_prefix='/api/events')
 
 
 app_status = {
-    'server': Server('localhost'),
+    'server': Server(os.environ.get('INDI_SERVER_HOST', 'localhost')),
     'sessions': []
 }
+
+app.logger.info('Using INDI server at %s:%d', app_status['server'].host, app_status['server'].port)
 
 @app.route('/api/server/status', methods=['GET'])
 @json_api

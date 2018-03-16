@@ -14,7 +14,7 @@ class Server:
         return {'host': self.host, 'port': self.port, 'connected': self.is_connected() }
 
     def connect(self):
-        self.client = INDIClient()
+        self.client = INDIClient(address=self.host, port=self.port)
 
     def disconnect(self):
         if self.client:
