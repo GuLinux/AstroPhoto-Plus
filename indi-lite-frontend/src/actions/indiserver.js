@@ -1,6 +1,25 @@
 import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI } from '../middleware/api'
+import Notifications from './notifications'
 
 export const INDIServer = {
+
+    serverConnectionNotify: (state, dispatch) => {
+        dispatch(INDIServer.receivedServerState(state.payload, dispatch));
+        if(state.is_error) {
+            return Notifications.add('INDI Server connection', 'Error while connecting to INDI server', 'error');
+        }
+        return Notifications.add('INDI Server connection', 'INDI server connected successfully', 'success');
+    },
+
+    serverDisconnectNotify: (state, dispatch) => {
+        dispatch(INDIServer.receivedServerState(state.payload, dispatch));
+        if(state.is_error) {
+            return Notifications.add('INDI Server connection', 'Error while disconnecting to INDI server', 'error');
+        }
+        return Notifications.add('INDI Server connection', 'INDI server disconnected successfully', 'success');
+    },
+
+
 
     receivedServerState: (state, dispatch) => {
         if(state.connected)

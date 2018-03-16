@@ -4,6 +4,7 @@ import PagesListController from '../containers/PagesListController';
 import LoadingPage from '../containers/LoadingPage';
 import SessionsPageController from '../containers/SessionsPageController';
 import INDIServerController from '../containers/INDIServerController';
+import NotificationsController from '../containers/NotificationsController';
 import './App.css';
 
 
@@ -12,6 +13,7 @@ class App extends Component {
     return (
       <div className="App">
         <NavbarController />
+        <NotificationsController />
         <PagesListController navigationKey="section">
             <SessionsPageController key="sessions" />
             <INDIServerController key="indi_server" />
