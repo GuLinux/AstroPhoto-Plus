@@ -4,52 +4,46 @@ from api_utils import *
 from models import Server, Session, Sequence
 import os
 from flask_sse import sse
+from controller import controller
 
 app = Flask(__name__)
 app.config["REDIS_URL"] = os.environ.get("REDIS_URL")
 app.register_blueprint(sse, url_prefix='/api/events')
 
 
-app_status = {
-    'server': Server(os.environ.get('INDI_SERVER_HOST', 'localhost')),
-    'sessions': []
-}
-
-app.logger.info('Using INDI server at %s:%d', app_status['server'].host, app_status['server'].port)
+app.logger.info('Using INDI server at %s:%d', controller.indi_server.host, controller.indi_server.port)
 
 @app.route('/api/server/status', methods=['GET'])
 @json_api
 def get_server_status():
-    return app_status['server'].to_map()
+    return controller.indi_server.to_map()
 
 
 @app.route('/api/server/connect', methods=['PUT'])
 @json_api
 def connect_server():
-    server = app_status['server']
-    server.connect()
-    is_error = not timeout(5)(server.is_connected)()
-    return notify('indi_server', 'indi_server_connect', server.to_map(), is_error)
+    controller.indi_server.connect()
+    is_error = not timeout(5)(controller.indi_server.is_connected)()
+    return notify('indi_server', 'indi_server_connect', controller.indi_server.to_map(), is_error)
  
 @app.route('/api/server/disconnect', methods=['PUT'])
 @json_api
 def disconnect_server():
-    server = app_status['server']
-    server.disconnect()
-    is_error = not timeout(5)(lambda: not server.is_connected())()
-    return notify('indi_server', 'indi_server_disconnect', server.to_map(), is_error)
+    controller.indi_server.disconnect()
+    is_error = not timeout(5)(lambda: not controller.indi_server.is_connected())()
+    return notify('indi_server', 'indi_server_disconnect', controller.indi_server.to_map(), is_error)
 
 
 @app.route('/api/server/devices', methods=['GET'])
 @json_api
 def get_devices():
-    return [x.to_map() for x in app_status['server'].devices()]
+    return [x.to_map() for x in controller.indi_server.devices()]
 
 
 @app.route('/api/server/devices/<name>/properties', methods=['GET'])
 @json_api
 def get_camera_properties(name):
-    device = [d for d in app_status['server'].devices() if d.name == name]
+    device = [d for d in controller.indi_server.devices() if d.name == name]
     if not device:
         raise NotFoundError()
     device = device[0]
@@ -60,18 +54,16 @@ def get_camera_properties(name):
 @app.route('/api/cameras', methods=['GET'])
 @json_api
 def get_cameras():
-    return [x.to_map() for x in app_status['server'].cameras()]
-
+    return [x.to_map() for x in controller.indi_server.cameras()]
   
 
 @app.route('/api/sessions', methods=['GET'])
 @json_api
 def get_sessions():
-    return [x.to_map() for x in app_status['sessions']]
-
+    return [x.to_map() for x in controller.sessions]
 
 def find_session(id):
-    session = [x for x in app_status['sessions'] if x.id == id]
+    session = [x for x in controller.sessions if x.id == id]
     if session:
         return session[0]
     raise NotFoundError()
@@ -94,7 +86,7 @@ def get_session(id):
 def delete_session(id):
     session = find_session(id).to_map()
     session.update({'status': 'deleted'})
-    app_status['sessions'] = [x for x in app_status['sessions'] if x.id != id]
+    controller.sessions = [x for x in controller.sessions if x.id != id]
     return session
 
 
@@ -103,7 +95,7 @@ def delete_session(id):
 @json_api
 def new_session(json):
     new_session = Session(json['name'])
-    app_status['sessions'].append(new_session)
+    controller.sessions.append(new_session)
     return new_session.to_map()
 
 

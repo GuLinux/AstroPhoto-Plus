@@ -1,6 +1,5 @@
 from flask import jsonify
-from flask_sse import sse
-
+from controller import controller
 
 def api_error(code, title, message=None):
     return jsonify({
@@ -9,7 +8,7 @@ def api_error(code, title, message=None):
     }), code
 
 def notify(event_type, event_name, payload, is_error=False):
-    sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)
+    controller.notification(event_type, event_name, payload, is_error)
     return payload
 
 def api_bad_json_error(message=None):
