@@ -1,17 +1,18 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Response
 from api_decorators import *
 from api_utils import *
 from models import Server, Session, Sequence
 import os
-from flask_sse import sse
 from controller import controller
 
 app = Flask(__name__)
-app.config["REDIS_URL"] = os.environ.get("REDIS_URL")
-app.register_blueprint(sse, url_prefix='/api/events')
 
 
 app.logger.info('Using INDI server at %s:%d', controller.indi_server.host, controller.indi_server.port)
+
+@app.route('/api/events')
+def events():
+    return Response(controller.sse.subscribe().feed(), mimetype='text/event-stream')
 
 @app.route('/api/server/status', methods=['GET'])
 @json_api
