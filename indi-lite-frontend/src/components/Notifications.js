@@ -11,7 +11,7 @@ const notificationStyles = {
 const Notificatons = ({notifications, onClosed}) => (
     <div>
         {notifications.map( (notification, index) => (
-            <Alert bsStyle={notificationStyles[notification.type]} onDismiss={() => onClosed(notification)}>
+            <Alert key={index} bsStyle={notificationStyles[notification.type]} onDismiss={() => onClosed(notification)}>
                 <h4>{notification.title}</h4>
                 {notification.text}
             </Alert>
