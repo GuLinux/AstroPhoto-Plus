@@ -8,7 +8,7 @@ export const INDIServer = {
         if(state.is_error) {
             return Notifications.add('INDI Server connection', 'Error while connecting to INDI server', 'error');
         }
-        return Notifications.add('INDI Server connection', 'INDI server connected successfully', 'success');
+        return Notifications.add('INDI Server connection', 'INDI server connected successfully', 'success', 10000);
     },
 
     serverDisconnectNotify: (state, dispatch) => {
@@ -16,7 +16,7 @@ export const INDIServer = {
         if(state.is_error) {
             return Notifications.add('INDI Server connection', 'Error while disconnecting to INDI server.', 'error');
         }
-        return Notifications.add('INDI Server connection', 'INDI server disconnected successfully.', 'success');
+        return Notifications.add('INDI Server connection', 'INDI server disconnected successfully.', 'success', 10000);
     },
 
 
