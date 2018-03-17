@@ -4,26 +4,26 @@ import INDINumberProperty from './INDINumberProperty';
 import INDISwitchProperty from './INDISwitchProperty';
 import INDILightProperty from './INDILightProperty';
 
-const getPropertyComponent = (property, pendingProperties, addPendingProperty) => {
+const getPropertyComponent = (property, pendingProperties, addPendingProperties) => {
     switch(property.type) {
         case "text":
-            return ( <INDITextProperty property={property} pendingProperties={pendingProperties} addPendingProperty={addPendingProperty} /> );
+            return ( <INDITextProperty property={property} pendingProperties={pendingProperties} addPendingProperties={addPendingProperties} /> );
         case "number":
-            return ( <INDINumberProperty property={property} pendingProperties={pendingProperties} addPendingProperty={addPendingProperty} /> );
+            return ( <INDINumberProperty property={property} pendingProperties={pendingProperties} addPendingProperties={addPendingProperties} /> );
         case "switch":
-            return ( <INDISwitchProperty property={property} pendingProperties={pendingProperties} addPendingProperty={addPendingProperty} /> );
+            return ( <INDISwitchProperty property={property} pendingProperties={pendingProperties} addPendingProperties={addPendingProperties} /> );
         case "light":
-            return ( <INDILightProperty property={property} pendingProperties={pendingProperties} addPendingProperty={addPendingProperty} /> );
+            return ( <INDILightProperty property={property} pendingProperties={pendingProperties} addPendingProperties={addPendingProperties} /> );
         default:
             // TODO: render blob in some way?
             return null;
     }
 }
 
-const INDIDeviceGroup = ({device, group, properties, pendingProperties, addPendingProperty}) => (
+const INDIDeviceGroup = ({device, group, properties, pendingProperties, addPendingProperties}) => (
     <div className="container-fluid indi-device-group">
         { properties.map((property, index) => (
-            <div className="indi-property" key={index}>{getPropertyComponent(property, pendingProperties.filter(p => p.name === property.name), addPendingProperty)}</div>
+            <div className="indi-property" key={index}>{getPropertyComponent(property, pendingProperties.filter(p => p.name === property.name), addPendingProperties)}</div>
         ))}
     </div>
 )

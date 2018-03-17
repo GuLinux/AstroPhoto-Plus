@@ -1,25 +1,26 @@
 import React from 'react';
 import { Button } from 'react-bootstrap'
-import { onChange, displayValue } from './INDIPropertyHandlers'
+import { pendingProperty, displayValue } from './INDIPropertyHandlers'
 
-const onButtonClick = (property, value, addPendingProperty, pendingProperties) => {
+const onButtonClick = (property, value, addPendingProperties, pendingProperties) => {
     let checked = displayValue(value, pendingProperties);
     if(checked)
         return;
-    onChange(property, value, true, addPendingProperty);
+    let newPendingProperties = [pendingProperty(property, value, true)]
     if(property.rule === 'ONE_OF_MANY') {
-        property.values.filter(v => v.name !== value.name).forEach(v => onChange(property, v, false, addPendingProperty));
+        property.values.filter(v => v.name !== value.name).forEach(v => newPendingProperties.push(pendingProperty(property, v, false)));
     }
+    addPendingProperties(newPendingProperties)
 }
 
-const renderSwitch = (property, value, pendingProperties, addPendingProperty) => {
+const renderSwitch = (property, value, pendingProperties, addPendingProperties) => {
     switch(property.rule) {
         case "ONE_OF_MANY":
         case "AT_MOST_ONE":
             return ( <Button
                         key={value.name}
                         active={displayValue(value, pendingProperties)}
-                        onClick={e => onButtonClick(property, value, addPendingProperty, pendingProperties)}
+                        onClick={e => onButtonClick(property, value, addPendingProperties, pendingProperties)}
                         bsSize="xsmall">{value.label}</Button> )
         case "ANY":
             return (
@@ -28,7 +29,6 @@ const renderSwitch = (property, value, pendingProperties, addPendingProperty) =>
                         type="checkbox"
                         checked={value.value}
                         name={property.name}
-                        onChange={onChange(property, value)}
                     />
                     <label htmlFor={value.name}>{value.label}</label>
                 </span> )
@@ -37,11 +37,11 @@ const renderSwitch = (property, value, pendingProperties, addPendingProperty) =>
     }
 }
 
-const INDISwitchProperty = ({property, addPendingProperty, pendingProperties }) => (
+const INDISwitchProperty = ({property, addPendingProperties, pendingProperties }) => (
     <div className="row">
         <div className="col-xs-2">{property.label}</div> 
         <div className="col-xs-10">
-            {property.values.map(value => renderSwitch(property, value, pendingProperties, addPendingProperty))}
+            {property.values.map(value => renderSwitch(property, value, pendingProperties, addPendingProperties))}
         </div>
     </div>
 )

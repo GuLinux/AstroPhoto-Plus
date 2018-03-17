@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Tab, Col, Nav, NavItem } from 'react-bootstrap';
 import INDIDeviceGroup from './INDIDeviceGroup';
 
-const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendingProperty}) => (
+const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendingProperties}) => (
     <Tab.Container id="device_properties">
         <Row>
             <Col xs={2}>
@@ -19,7 +19,7 @@ const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendi
                             group={group}
                             properties={properties.filter(property => property.group === group.name)}
                             pendingProperties={pendingProperties.filter(p => p.group === group.name)}
-                            addPendingProperty={addPendingProperty}
+                            addPendingProperties={addPendingProperties}
                         />
                     </Tab.Pane>
                 ))}

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from 'react-bootstrap'
-import { onChange, displayValue } from './INDIPropertyHandlers'
+import { pendingProperty, displayValue } from './INDIPropertyHandlers'
 
 
-const INDINumberProperty = ({property, pendingProperties, addPendingProperty}) => (
+const INDINumberProperty = ({property, pendingProperties, addPendingProperties}) => (
     <div className="row">
         <div className="col-xs-2">{property.label}</div> 
         <div className="col-xs-9">
@@ -18,7 +18,7 @@ const INDINumberProperty = ({property, pendingProperties, addPendingProperty}) =
                         step={value.step}
                         name={value.name}
                         value={displayValue(value, pendingProperties)}
-                        onChange={e => onChange(property, value, parseFloat(e.target.value), addPendingProperty)}
+                        onChange={e => addPendingProperties([pendingProperty(property, value, parseFloat(e.target.value))])}
                         />
                 </div> 
             ))}

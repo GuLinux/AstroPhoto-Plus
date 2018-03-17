@@ -25,12 +25,23 @@ const remapProperties = (state, device, groups, properties) => {
     return {...state, groups: [...groups, ...nextStateGroups], properties: [...properties, ...nextStateProperties]};
 }
 
-const addPendingProperty = (state, property) => {
-    let pendingProperties = state.pendingProperties.filter(p => p.device !== property.device && p.group !== property.group && p.name !== property.name && p.valueName !== property.valueName);
-    if(property.currentValue !== property.newValue) {
-        pendingProperties = [...pendingProperties, property]
+const addPendingProperty = (state, pendingProperty) => {
+    let isSamePendingProperty = (first, second) => {
+        return first.device === second.device && first.group === second.group && first.name === second.name && first.valueName === second.valueName;
+    }
+    let pendingProperties = state.pendingProperties.filter(p => ! isSamePendingProperty(p, pendingProperty));
+    if(pendingProperty.currentValue !== pendingProperty.newValue) {
+        pendingProperties = [...pendingProperties, pendingProperty]
     }
     return {...state, pendingProperties};
+}
+
+const addPendingProperties = (state, pendingProperties) => {
+    let newState = state;
+    for(let p of pendingProperties) {
+        newState = addPendingProperty(newState, p);
+    }
+    return newState;
 }
 
 const indiserver = (state = defaultState, action) => {
@@ -41,8 +52,8 @@ const indiserver = (state = defaultState, action) => {
             return {...state, devices: action.devices};
         case 'RECEIVED_DEVICE_PROPERTIES':
             return remapProperties(state, action.device, action.groups, action.properties)
-        case 'ADD_PENDING_PROPERTY':
-            return addPendingProperty(state, action.property);
+        case 'ADD_PENDING_PROPERTIES':
+            return addPendingProperties(state, action.pendingProperties);
         default:
             return state;
     }

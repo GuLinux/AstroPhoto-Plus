@@ -90,7 +90,7 @@ export const INDIServer = {
         }
     },
 
-    addPendingProperty: (device, group, name, valueName, currentValue, newValue) => ({ type: 'ADD_PENDING_PROPERTY', property: { device, group, name, valueName, currentValue, newValue} }),
+    addPendingProperties: pendingProperties => ({ type: 'ADD_PENDING_PROPERTIES', pendingProperties }),
 }
 
 export default INDIServer
