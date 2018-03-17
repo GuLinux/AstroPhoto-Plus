@@ -89,6 +89,8 @@ export const INDIServer = {
             return setINDIServerConnectionAPI(connect, data => dispatch(INDIServer.receivedServerState(data, dispatch)), error => console.log(error));
         }
     },
+
+    addPendingProperty: (device, group, name, valueName, currentValue, newValue) => ({ type: 'ADD_PENDING_PROPERTY', property: { device, group, name, valueName, currentValue, newValue} }),
 }
 
 export default INDIServer

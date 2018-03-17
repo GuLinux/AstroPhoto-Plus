@@ -4,7 +4,8 @@ const defaultState = {
     port: '',
     devices: [],
     groups: [],
-    properties: []
+    properties: [],
+    pendingProperties: [],
 };
 
 const receivedServerState = (state, action) => {
@@ -13,6 +14,7 @@ const receivedServerState = (state, action) => {
         nextState.devices = [];
         nextState.groups = [];
         nextState.properties = [];
+        nextState.pendingProperties = [];
     }
     return nextState;
 }
@@ -23,6 +25,14 @@ const remapProperties = (state, device, groups, properties) => {
     return {...state, groups: [...groups, ...nextStateGroups], properties: [...properties, ...nextStateProperties]};
 }
 
+const addPendingProperty = (state, property) => {
+    let pendingProperties = state.pendingProperties.filter(p => p.device !== property.device && p.group !== property.group && p.name !== property.name && p.valueName !== property.valueName);
+    if(property.currentValue !== property.newValue) {
+        pendingProperties = [...pendingProperties, property]
+    }
+    return {...state, pendingProperties};
+}
+
 const indiserver = (state = defaultState, action) => {
     switch(action.type) {
         case 'RECEIVED_SERVER_STATE':
@@ -31,6 +41,8 @@ const indiserver = (state = defaultState, action) => {
             return {...state, devices: action.devices};
         case 'RECEIVED_DEVICE_PROPERTIES':
             return remapProperties(state, action.device, action.groups, action.properties)
+        case 'ADD_PENDING_PROPERTY':
+            return addPendingProperty(state, action.property);
         default:
             return state;
     }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Tab, Col, Nav, NavItem } from 'react-bootstrap';
 import INDIDeviceGroup from './INDIDeviceGroup';
 
-const INDIDevicePage = ({device, groups, properties}) => (
+const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendingProperty}) => (
     <Tab.Container id="device_properties">
         <Row>
             <Col xs={2}>
@@ -14,7 +14,13 @@ const INDIDevicePage = ({device, groups, properties}) => (
                 <Tab.Content animation>
                 { groups.map( (group, index) => (
                     <Tab.Pane key={index} eventKey={index} title={group.name}>
-                        <INDIDeviceGroup device={device} group={group} properties={properties.filter(property => property.group === group.name)} />
+                        <INDIDeviceGroup
+                            device={device}
+                            group={group}
+                            properties={properties.filter(property => property.group === group.name)}
+                            pendingProperties={pendingProperties.filter(p => p.group === group.name)}
+                            addPendingProperty={addPendingProperty}
+                        />
                     </Tab.Pane>
                 ))}
                 </Tab.Content>
