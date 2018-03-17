@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'react-bootstrap'
-import { pendingProperty, displayValue } from './INDIPropertyHandlers'
+import { hasPendingProperties, pendingProperty, displayValue } from './INDIPropertyHandlers'
 
 const INDITextProperty = ({property, pendingProperties, addPendingProperties}) => (
     <div className="row">
@@ -19,7 +19,7 @@ const INDITextProperty = ({property, pendingProperties, addPendingProperties}) =
                 </div> 
             ))}
         </div>
-        <div className="col-xs-1"><Button bsStyle="primary" bsSize="xsmall" disabled>set</Button></div>
+        <div className="col-xs-1"><Button bsStyle="primary" bsSize="xsmall" disabled={!hasPendingProperties(property, pendingProperties)}>set</Button></div>
     </div>
 )
  

@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
     let setServerConnection = (connect) => dispatch(Actions.INDIServer.setServerConnection(connect));
-    let addPendingProperties = pendingProperties => dispatch(Actions.INDIServer.addPendingProperties(pendingProperties));
+    let addPendingProperties = (pendingProperties, autoApply) => dispatch(Actions.INDIServer.addPendingProperties(pendingProperties, autoApply));
     return { setServerConnection, addPendingProperties };
 }
 

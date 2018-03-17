@@ -3,3 +3,5 @@ export const displayValue = (value, pendingProperties) => {
 }
 
 export const pendingProperty = (property, value, newValue) => ({ device: property.device, group: property.group, name: property.name, valueName: value.name, currentValue: value.value, newValue});
+
+export const hasPendingProperties = (property, pendingProperties) => pendingProperties.filter(p => p.device === property.device && p.group === property.group && p.name === property.name).length > 0;

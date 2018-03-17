@@ -10,7 +10,7 @@ const onButtonClick = (property, value, addPendingProperties, pendingProperties)
     if(property.rule === 'ONE_OF_MANY') {
         property.values.filter(v => v.name !== value.name).forEach(v => newPendingProperties.push(pendingProperty(property, v, false)));
     }
-    addPendingProperties(newPendingProperties)
+    addPendingProperties(newPendingProperties, true)
 }
 
 const renderSwitch = (property, value, pendingProperties, addPendingProperties) => {

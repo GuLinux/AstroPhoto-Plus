@@ -90,7 +90,9 @@ export const INDIServer = {
         }
     },
 
-    addPendingProperties: pendingProperties => ({ type: 'ADD_PENDING_PROPERTIES', pendingProperties }),
+    addPendingProperties: (pendingProperties, autoApply) => {
+        return { type: 'ADD_PENDING_PROPERTIES', pendingProperties, autoApply }
+    },
 }
 
 export default INDIServer
