@@ -94,10 +94,13 @@ export const INDIServer = {
         return dispatch => {
             dispatch({ type: 'ADD_PENDING_PROPERTIES', pendingProperties, autoApply })
             if(autoApply) {
-                dispatch({ type: 'COMMIT_PENDING_PROPERTIES', pendingProperties});
-                setINDIPropertiesAPI(pendingProperties)
+                dispatch(INDIServer.commitPendingProperties(pendingProperties));
             }
         }
+    },
+    commitPendingProperties: (pendingProperties) => {
+        setINDIPropertiesAPI(pendingProperties);
+        return { type: 'COMMIT_PENDING_PROPERTIES', pendingProperties };
     },
 }
 
