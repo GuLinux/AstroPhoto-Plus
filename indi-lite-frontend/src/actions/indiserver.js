@@ -1,4 +1,4 @@
-import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI } from '../middleware/api'
+import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIPropertiesAPI } from '../middleware/api'
 import Notifications from './notifications'
 
 export const INDIServer = {
@@ -93,8 +93,10 @@ export const INDIServer = {
     addPendingProperties: (pendingProperties, autoApply) => {
         return dispatch => {
             dispatch({ type: 'ADD_PENDING_PROPERTIES', pendingProperties, autoApply })
-            if(autoApply)
+            if(autoApply) {
                 dispatch({ type: 'COMMIT_PENDING_PROPERTIES', pendingProperties});
+                setINDIPropertiesAPI(pendingProperties)
+            }
         }
     },
 }

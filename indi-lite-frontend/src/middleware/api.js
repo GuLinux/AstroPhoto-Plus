@@ -78,3 +78,24 @@ export const getINDIDevicesAPI = (onSuccess, onError) => {
 export const getINDIDevicePropertiesAPI = (device, onSuccess, onError) => {
     return fetch('/api/server/devices/' + device + '/properties').then(response => response.json(), onError).then(json => onSuccess(json))
 }
+
+export const setINDIPropertiesAPI = (pendingProperties, onSuccess, onError) => {
+    let propertiesMap = {};
+    pendingProperties.forEach(p => {
+        let url = '/api/server/devices/' + p.device + '/groups/' + p.group + '/properties/' + p.name;
+        if(! propertiesMap.hasOwnProperty(url))
+            propertiesMap[url] = {};
+        propertiesMap[url] = {...propertiesMap[url], [p.valueName]: p.newValue };
+    });
+    // TODO: response/error handling
+    Object.keys(propertiesMap).forEach(url => {
+        let properties = propertiesMap[url];
+        fetch(url, {
+            method: 'PUT',
+            body: JSON.stringify(properties),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+    });
+}
