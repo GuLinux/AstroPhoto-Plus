@@ -9,9 +9,9 @@ export const pendingProperty = (property, value, newValue) => ({ device: propert
 
 export const hasPendingProperties = (property, pendingProperties) => pendingProperties.filter(p => p.device === property.device && p.group === property.group && p.name === property.name).length > 0;
 
-export const CommitPendingPropertiesButton = ({property, pendingProperties, commitPendingProperties, style, size}) => (
+export const CommitPendingPropertiesButton = ({property, pendingProperties, commitPendingProperties, bsStyle, size}) => (
     <Button
-        bsStyle={style}
+        bsStyle={bsStyle}
         bsSize={size}
         disabled={!hasPendingProperties(property, pendingProperties) || !property.perm_write}
         onClick={e => commitPendingProperties(pendingProperties)}

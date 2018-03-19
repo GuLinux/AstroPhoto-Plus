@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'react-bootstrap'
 import { CommitPendingPropertiesButton, pendingProperty, displayValue } from './INDIPropertyHandlers'
 import INDILight from './INDILight'
 
@@ -26,7 +25,7 @@ const INDINumberProperty = ({property, pendingProperties, addPendingProperties, 
                 </div> 
             ))}
         </div>
-        <div className="col-xs-1"><CommitPendingPropertiesButton style="primary" size="xsmall" pendingProperties={pendingProperties} commitPendingProperties={commitPendingProperties} property={property} /></div>
+        <div className="col-xs-1"><CommitPendingPropertiesButton bsStyle="primary" size="xsmall" pendingProperties={pendingProperties} commitPendingProperties={commitPendingProperties} property={property} /></div>
     </div>
 )
  

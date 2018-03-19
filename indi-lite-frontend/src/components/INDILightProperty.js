@@ -1,13 +1,5 @@
 import React from 'react';
-import { Label } from 'react-bootstrap'
 import INDILight from './INDILight'
-
-const bsStyles = {
-    IDLE: 'default',
-    OK: 'success',
-    BUSY: 'warning',
-    ALERT: 'danger'
-}
 
 const INDILightProperty = ({property}) => (
     <div className="row">
