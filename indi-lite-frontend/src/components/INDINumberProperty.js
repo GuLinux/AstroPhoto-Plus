@@ -21,6 +21,7 @@ const INDINumberProperty = ({property, pendingProperties, addPendingProperties, 
                         name={value.name}
                         value={displayValue(value, pendingProperties)}
                         onChange={e => addPendingProperties([pendingProperty(property, value, parseFloat(e.target.value))])}
+                        readOnly={!property.perm_write}
                         />
                 </div> 
             ))}

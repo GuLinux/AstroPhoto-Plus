@@ -17,6 +17,7 @@ const INDITextProperty = ({property, pendingProperties, addPendingProperties, co
                         name={value.name} 
                         value={displayValue(value, pendingProperties)}
                         onChange={e => addPendingProperties([pendingProperty(property, value, e.target.value)])}
+                        readOnly={!property.perm_write}
                     />
                 </div> 
             ))}

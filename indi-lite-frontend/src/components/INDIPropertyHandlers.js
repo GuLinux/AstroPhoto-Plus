@@ -13,7 +13,7 @@ export const CommitPendingPropertiesButton = ({property, pendingProperties, comm
     <Button
         bsStyle={style}
         bsSize={size}
-        disabled={!hasPendingProperties(property, pendingProperties)}
+        disabled={!hasPendingProperties(property, pendingProperties) || !property.perm_write}
         onClick={e => commitPendingProperties(pendingProperties)}
         >set</Button>
 )

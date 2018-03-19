@@ -22,6 +22,7 @@ const renderSwitch = (property, value, pendingProperties, addPendingProperties) 
                         key={value.name}
                         active={displayValue(value, pendingProperties)}
                         onClick={e => onButtonClick(property, value, addPendingProperties, pendingProperties)}
+                        disabled={!property.perm_write}
                         bsSize="xsmall">{value.label}</Button> )
         case "ANY":
             return (
