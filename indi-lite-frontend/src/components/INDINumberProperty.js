@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommitPendingPropertiesButton, pendingProperty, displayValue } from './INDIPropertyHandlers'
+import { CommitPendingPropertiesButton, pendingProperty, displayValue, canUpdate } from './INDIPropertyHandlers'
 import INDILight from './INDILight'
 
 
@@ -20,7 +20,7 @@ const INDINumberProperty = ({property, pendingProperties, addPendingProperties, 
                         name={value.name}
                         value={displayValue(value, pendingProperties)}
                         onChange={e => addPendingProperties([pendingProperty(property, value, parseFloat(e.target.value))])}
-                        readOnly={!property.perm_write}
+                        readOnly={!canUpdate(property)}
                         />
                 </div> 
             ))}

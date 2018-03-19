@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'react-bootstrap'
-import { pendingProperty, displayValue } from './INDIPropertyHandlers'
+import { pendingProperty, displayValue, canUpdate } from './INDIPropertyHandlers'
 import INDILight from './INDILight'
 
 const onButtonClick = (property, value, addPendingProperties, pendingProperties) => {
@@ -22,7 +22,7 @@ const renderSwitch = (property, value, pendingProperties, addPendingProperties) 
                         key={value.name}
                         active={displayValue(value, pendingProperties)}
                         onClick={e => onButtonClick(property, value, addPendingProperties, pendingProperties)}
-                        disabled={!property.perm_write}
+                        disabled={!canUpdate(property)}
                         bsSize="xsmall">{value.label}</Button> )
         case "ANY":
             return (
@@ -31,6 +31,7 @@ const renderSwitch = (property, value, pendingProperties, addPendingProperties) 
                         type="checkbox"
                         checked={value.value}
                         name={property.name}
+                        readOnly={!canUpdate(property)}
                     />
                     <label htmlFor={value.name}>{value.label}</label>
                 </span> )
