@@ -27,7 +27,7 @@ class Server:
         self.client.callbacks['on_new_text'] = lambda p: self.logger.debug('INDI: new text: {}'.format(p))
         self.client.callbacks['on_new_device'] = lambda p: self.logger.debug('INDI: new device: {}'.format(p))
         self.client.callbacks['on_new_blob'] = lambda p: self.logger.debug('INDI: new blob: {}'.format(p))
-        self.client.callbacks['on_new_light'] = lambda p: self.logger.debug('INDI: new light: {}'.format(l))
+        self.client.callbacks['on_new_light'] = lambda l: self.logger.debug('INDI: new light: {}'.format(l))
         self.client.callbacks['on_new_message'] = lambda d, m: self.logger.debug('INDI: new message: {}{}'.format(d, m))
 
     def disconnect(self):

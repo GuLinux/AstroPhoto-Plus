@@ -14,6 +14,12 @@ const onButtonClick = (property, value, addPendingProperties, pendingProperties)
     addPendingProperties(newPendingProperties, true)
 }
 
+const onCheckbox = (property, value, addPendingProperties, pendingProperties) => {
+    let checked = displayValue(value, pendingProperties);
+    let newState = ! checked;
+    addPendingProperties([pendingProperty(property, value, newState)], true)
+}
+
 const renderSwitch = (property, value, pendingProperties, addPendingProperties) => {
     switch(property.rule) {
         case "ONE_OF_MANY":
@@ -29,9 +35,10 @@ const renderSwitch = (property, value, pendingProperties, addPendingProperties) 
                 <span key={value.name} className="col-xs-2">
                     <input
                         type="checkbox"
-                        checked={value.value}
+                        checked={displayValue(value, pendingProperties)}
                         name={property.name}
                         readOnly={!canUpdate(property)}
+                        onChange={e => onCheckbox(property, value, addPendingProperties, pendingProperties)}
                     />
                     <label htmlFor={value.name}>{value.label}</label>
                 </span> )
