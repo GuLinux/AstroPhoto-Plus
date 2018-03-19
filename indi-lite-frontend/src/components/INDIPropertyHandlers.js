@@ -9,11 +9,15 @@ export const pendingProperty = (property, value, newValue) => ({ device: propert
 
 export const hasPendingProperties = (property, pendingProperties) => pendingProperties.filter(p => p.device === property.device && p.group === property.group && p.name === property.name).length > 0;
 
-export const CommitPendingPropertiesButton = ({property, pendingProperties, commitPendingProperties, bsStyle, size}) => (
-    <Button
-        bsStyle={bsStyle}
-        bsSize={size}
-        disabled={!hasPendingProperties(property, pendingProperties) || !property.perm_write}
-        onClick={e => commitPendingProperties(pendingProperties)}
-        >set</Button>
-)
+export const CommitPendingPropertiesButton = ({property, pendingProperties, commitPendingProperties, bsStyle, size}) => {
+    if(!property.perm_write)
+        return null;
+    return (
+        <Button
+            bsStyle={bsStyle}
+            bsSize={size}
+            disabled={!hasPendingProperties(property, pendingProperties)}
+            onClick={e => commitPendingProperties(pendingProperties)}
+            >set</Button>
+    )
+}

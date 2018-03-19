@@ -24,6 +24,9 @@ services:
         - "5000"
     depends_on:
         - indiserver
+    environment:
+        - INDI_SERVER_HOST
+        - INDI_SERVER_PORT
   indiserver:
     expose:
         - "7624"

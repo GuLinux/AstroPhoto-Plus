@@ -1,7 +1,7 @@
 FROM ubuntu:artful
 VOLUME /app
 
-ENV INDI_SERVER_HOST="indiserver" FLASK_DEBUG=1 FLASK_APP="./indi-lite.py" PYTHONPATH="/pythonpath" LANG=C.UTF-8 LC_ALL=C.UTF-8 PYINDI_CLIENT_VERSION=0.2.2
+ENV FLASK_DEBUG=1 FLASK_APP="./indi-lite.py" PYTHONPATH="/pythonpath" LANG=C.UTF-8 LC_ALL=C.UTF-8 PYINDI_CLIENT_VERSION=0.2.2
 
 RUN apt-get update && apt-get install -y swig build-essential libnova-dev  python3 python3-pip dirmngr swig build-essential libnova-dev libcfitsio-dev zlib1g-dev curl
 COPY indi-ppa.list /etc/apt/sources.list.d/
