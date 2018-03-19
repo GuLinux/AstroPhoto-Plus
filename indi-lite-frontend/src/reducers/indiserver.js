@@ -44,6 +44,8 @@ const addPendingProperties = (state, pendingProperties) => {
     return newState;
 }
 
+const clearPendingProperties = state => ({...state, pendingProperties: []});
+
 const indiserver = (state = defaultState, action) => {
     switch(action.type) {
         case 'RECEIVED_SERVER_STATE':
@@ -54,6 +56,8 @@ const indiserver = (state = defaultState, action) => {
             return remapProperties(state, action.device, action.groups, action.properties)
         case 'ADD_PENDING_PROPERTIES':
             return addPendingProperties(state, action.pendingProperties);
+        case 'COMMITTED_PENDING_PROPERTIES':
+            return clearPendingProperties(state);
         default:
             return state;
     }

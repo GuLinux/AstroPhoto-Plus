@@ -101,14 +101,16 @@ export const INDIServer = {
 
     commitPendingProperties: (pendingProperties) => {
         return dispatch => {
-            setINDIPropertiesAPI(pendingProperties, json => {
+            dispatch({ type: 'COMMIT_PENDING_PROPERTIES', pendingProperties });
+            return setINDIPropertiesAPI(pendingProperties, json => {
+                dispatch({type: 'COMMITTED_PENDING_PROPERTIES'})
                 if(!json.result) {
                     dispatch(Notifications.add('Warning', `Error changing indi property ${json.property} in ${json.device}`, 'warning'))
                 }
                 // TODO: replace this with events listening
                 dispatch(INDIServer.fetchDeviceProperties(json.device));
             }, error => console.log(error));
-            return { type: 'COMMIT_PENDING_PROPERTIES', pendingProperties };
+
         }
     },
 }

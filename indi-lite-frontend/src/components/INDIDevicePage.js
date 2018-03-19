@@ -2,8 +2,16 @@ import React from 'react';
 import { Row, Tab, Col, Nav, NavItem } from 'react-bootstrap';
 import INDIDeviceGroup from './INDIDeviceGroup';
 
-const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendingProperties, commitPendingProperties}) => (
-    <Tab.Container id="device_properties">
+const getGroupActiveKey = (activeTab, groups, defaultTab) => {
+    if(groups.filter(g => g.name === activeTab).length === 1)
+        return activeTab;
+    if(groups.filter(g => g.name === defaultTab).length === 1)
+        return defaultTab;
+    return null;
+}
+
+const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendingProperties, commitPendingProperties, navigateToDeviceGroup, indiGroupTab}) => (
+    <Tab.Container id="device_properties" activeKey={getGroupActiveKey(indiGroupTab, groups, 'Main Control')} onSelect={g => navigateToDeviceGroup(device.name, groups[g].name)} >
         <Row>
             <Col xs={2}>
                 <Nav bsStyle="pills" stacked>
@@ -13,7 +21,7 @@ const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendi
             <Col xs={10}>
                 <Tab.Content animation>
                 { groups.map( (group, index) => (
-                    <Tab.Pane key={index} eventKey={index} title={group.name}>
+                    <Tab.Pane key={index} eventKey={group.name} title={group.name}>
                         <INDIDeviceGroup
                             device={device}
                             group={group}
