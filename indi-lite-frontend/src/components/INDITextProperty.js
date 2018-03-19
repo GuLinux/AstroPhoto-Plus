@@ -1,11 +1,13 @@
 import React from 'react';
 import { Button } from 'react-bootstrap'
 import { CommitPendingPropertiesButton, pendingProperty, displayValue } from './INDIPropertyHandlers'
+import INDILight from './INDILight'
 
 const INDITextProperty = ({property, pendingProperties, addPendingProperties, commitPendingProperties}) => (
     <div className="row">
+        <div className="col-xs-1"><INDILight state={property.state} /></div> 
         <div className="col-xs-2">{property.label}</div> 
-        <div className="col-xs-9">
+        <div className="col-xs-8">
             {property.values.map(value => (
                 <div className="row" key={value.name} >
                     <div className="col-xs-2"><p>{value.label}</p></div>

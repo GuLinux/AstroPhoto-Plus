@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap'
 import { pendingProperty, displayValue } from './INDIPropertyHandlers'
+import INDILight from './INDILight'
 
 const onButtonClick = (property, value, addPendingProperties, pendingProperties) => {
     let checked = displayValue(value, pendingProperties);
@@ -39,8 +40,9 @@ const renderSwitch = (property, value, pendingProperties, addPendingProperties) 
 
 const INDISwitchProperty = ({property, addPendingProperties, pendingProperties }) => (
     <div className="row">
+        <div className="col-xs-1"><INDILight state={property.state} /></div> 
         <div className="col-xs-2">{property.label}</div> 
-        <div className="col-xs-10">
+        <div className="col-xs-9">
             {property.values.map(value => renderSwitch(property, value, pendingProperties, addPendingProperties))}
         </div>
     </div>
