@@ -118,3 +118,11 @@ def delete_sequence(session_id, sequence_id):
     session.sequences = [x for x in session.sequences if x.id != sequence_id]
     return sequence
 
+@app.route('/api/server/devices/<device>/groups/<group>/properties/<property>', methods=['PUT'])
+@json_input
+@json_api
+def update_ind_property(device, group, property, json):
+    app.logger.debug('update property: {}/{}/{} ({})'.format(device, group, property, json))
+    return {}
+
+
