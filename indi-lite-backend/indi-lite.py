@@ -49,6 +49,22 @@ def get_camera_properties(name):
     return device.properties()
 
 
+@app.route('/api/server/devices/<device>/groups/<group>/properties/<property>', methods=['PUT'])
+@json_input
+@json_api
+def update_ind_property(device, group, property, json):
+    app.logger.debug('update property: {}/{}/{} ({})'.format(device, group, property, json))
+    device = [d for d in controller.indi_server.devices() if d.name == device]
+    if not device:
+        raise NotFoundError()
+    device = device[0]
+    indi_property = [x for x in device.properties() if x['group'] == group and x['name'] == property]
+    if not indi_property:
+        raise NotFoundError()
+    indi_property = indi_property[0]
+    return { 'action': 'set_property', 'device': device.name, 'group': group, 'property': property, 'values': json, 'result': device.set_property(indi_property, json) }
+
+
 # TODO: this might prove to be useless 
 @app.route('/api/cameras', methods=['GET'])
 @json_api
@@ -117,12 +133,4 @@ def delete_sequence(session_id, sequence_id):
     sequence.update({'status': 'deleted'})
     session.sequences = [x for x in session.sequences if x.id != sequence_id]
     return sequence
-
-@app.route('/api/server/devices/<device>/groups/<group>/properties/<property>', methods=['PUT'])
-@json_input
-@json_api
-def update_ind_property(device, group, property, json):
-    app.logger.debug('update property: {}/{}/{} ({})'.format(device, group, property, json))
-    return {}
-
 

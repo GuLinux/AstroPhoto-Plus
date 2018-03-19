@@ -96,6 +96,6 @@ export const setINDIPropertiesAPI = (pendingProperties, onSuccess, onError) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-        })
+        }).then(response => response.json(), onError).then(json => onSuccess(json))
     });
 }

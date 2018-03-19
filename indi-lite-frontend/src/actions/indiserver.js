@@ -98,9 +98,18 @@ export const INDIServer = {
             }
         }
     },
+
     commitPendingProperties: (pendingProperties) => {
-        setINDIPropertiesAPI(pendingProperties);
-        return { type: 'COMMIT_PENDING_PROPERTIES', pendingProperties };
+        return dispatch => {
+            setINDIPropertiesAPI(pendingProperties, json => {
+                if(!json.result) {
+                    dispatch(Notifications.add('Warning', `Error changing indi property ${json.property} in ${json.device}`, 'warning'))
+                }
+                // TODO: replace this with events listening
+                dispatch(INDIServer.fetchDeviceProperties(json.device));
+            }, error => console.log(error));
+            return { type: 'COMMIT_PENDING_PROPERTIES', pendingProperties };
+        }
     },
 }
 

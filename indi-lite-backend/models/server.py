@@ -20,6 +20,15 @@ class Server:
     def connect(self):
         self.client = INDIClient(address=self.host, port=self.port)
         self.client.callbacks['on_server_disconnected'] = self.__on_disconnected
+        self.client.callbacks['on_new_property'] = lambda p: self.logger.debug('INDI: new property: {}'.format(p))
+        self.client.callbacks['on_remove_property'] = lambda p: self.logger.debug('INDI: property removed: {}'.format(p))
+        self.client.callbacks['on_new_switch'] = lambda p: self.logger.debug('INDI: new switch: {}'.format(p))
+        self.client.callbacks['on_new_number'] = lambda p: self.logger.debug('INDI: new number: {}'.format(p))
+        self.client.callbacks['on_new_text'] = lambda p: self.logger.debug('INDI: new text: {}'.format(p))
+        self.client.callbacks['on_new_device'] = lambda p: self.logger.debug('INDI: new device: {}'.format(p))
+        self.client.callbacks['on_new_blob'] = lambda p: self.logger.debug('INDI: new blob: {}'.format(p))
+        self.client.callbacks['on_new_light'] = lambda p: self.logger.debug('INDI: new light: {}'.format(l))
+        self.client.callbacks['on_new_message'] = lambda d, m: self.logger.debug('INDI: new message: {}{}'.format(d, m))
 
     def disconnect(self):
         self.__disconnect_requested = time.time()
@@ -31,7 +40,7 @@ class Server:
         return self.client.isServerConnected() if self.client else False
 
     def devices(self):
-        return [Device(d) for d in self.client.devices()]
+        return [Device(d, self.logger) for d in self.client.devices()]
 
     def cameras(self):
         return [Camera(c) for c in self.client.cameras()]
