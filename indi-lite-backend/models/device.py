@@ -26,6 +26,9 @@ class Device:
                         on_switches.append(key)
                     else:
                         off_switches.append(key)
+                self.logger.debug('setting switch value for {}'.format(self.name))
+                self.logger.debug('on_switches: {}'.format(on_switches))
+                self.logger.debug('off_switches: {}'.format(off_switches))
 
                 self.indi_device.set_switch(indi_property['name'], on_switches, off_switches)
             elif proptype == 'number':

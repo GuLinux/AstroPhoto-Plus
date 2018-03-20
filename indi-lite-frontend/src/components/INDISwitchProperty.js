@@ -20,6 +20,8 @@ const onCheckbox = (property, value, addPendingProperties, pendingProperties) =>
     addPendingProperties([pendingProperty(property, value, newState)], true)
 }
 
+const switchHTMLId = (property, value) => `indi_switch_${property.device}_${property.group}_${property.name}_${value.name}`
+
 const renderSwitch = (property, value, pendingProperties, addPendingProperties) => {
     switch(property.rule) {
         case "ONE_OF_MANY":
@@ -36,11 +38,12 @@ const renderSwitch = (property, value, pendingProperties, addPendingProperties) 
                     <input
                         type="checkbox"
                         checked={displayValue(value, pendingProperties)}
-                        name={property.name}
+                        name={value.name}
+                        id={switchHTMLId(property, value)}
                         readOnly={!canUpdate(property)}
                         onChange={e => onCheckbox(property, value, addPendingProperties, pendingProperties)}
                     />
-                    <label htmlFor={value.name}>{value.label}</label>
+                    <label htmlFor={switchHTMLId(property, value)}>{value.label}</label>
                 </span> )
         default:
             return (<span>Property {value.label} not supported</span>)
