@@ -20,8 +20,8 @@ class Server:
     def connect(self):
         self.client = INDIClient(address=self.host, port=self.port)
         self.client.callbacks['on_server_disconnected'] = self.__on_disconnected
-        self.client.callbacks['on_new_property'] = lambda p: self.logger.debug('INDI: new property: {}'.format(p))
-        self.client.callbacks['on_remove_property'] = lambda p: self.logger.debug('INDI: property removed: {}'.format(p))
+        self.client.callbacks['on_new_property'] = self.__on_property_added
+        self.client.callbacks['on_remove_property'] = self.__on_property_removed
         self.client.callbacks['on_new_switch'] = self.__on_property_updated
         self.client.callbacks['on_new_number'] = self.__on_property_updated
         self.client.callbacks['on_new_text'] = self.__on_property_updated
@@ -62,4 +62,11 @@ class Server:
         property = device.get_property(property.group, property.name)
         self.event_listener.on_indi_property_updated(property)
 
+    def __on_property_added(self, property):
+        device = [d for d in self.devices() if d.name == property.getDeviceName()][0]
+        property = device.get_property(property.getGroupName(), property.getName())
+        self.event_listener.on_indi_property_added(property)
+        
+    def __on_property_removed(self, property):
+        self.event_listener.on_indi_property_removed({'device': property.getDeviceName(), 'group': property.getGroupName(), 'name': property.getName()})
 

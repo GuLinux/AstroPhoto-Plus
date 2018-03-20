@@ -17,6 +17,12 @@ class EventListener:
     def on_indi_property_updated(self, property):
         self.controller.sse.publish({'event': 'indi_property_updated', 'payload': property, 'is_error': False}, type='indi_server')
 
+    def on_indi_property_added(self, property):
+        self.controller.sse.publish({'event': 'indi_property_added', 'payload': property, 'is_error': False}, type='indi_server')
+
+    def on_indi_property_removed(self, property):
+        self.controller.sse.publish({'event': 'indi_property_removed', 'payload': property, 'is_error': False}, type='indi_server')
+
 class Controller:
     def __init__(self):
         self.sse = SSE(app.logger)

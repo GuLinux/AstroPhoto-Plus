@@ -27,6 +27,13 @@ const indiserverEvents = (event, dispatch) => {
         case 'indi_property_updated':
             dispatch(INDIServer.propertyUpdated(eventObject.payload));
             break;
+        case 'indi_property_added':
+            dispatch(INDIServer.propertyAdded(eventObject.payload));
+            break
+        case 'indi_property_removed':
+            dispatch(INDIServer.propertyRemoved(eventObject.payload));
+            break
+
         default:
             logEvent(event);
     }

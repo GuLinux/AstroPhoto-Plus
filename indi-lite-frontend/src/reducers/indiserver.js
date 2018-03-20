@@ -31,6 +31,25 @@ const indiPropertyUpdated = (state, property) => {
     return {...state, properties: [...properties, property]};    
 };
 
+const indiPropertyAdded = (state, property) => {
+    let groups = state.groups;
+    if(state.properties.filter(p => p.device === property.device && p.group === property.group).length === 0) {
+        groups = [...groups, {name: property.group, device: property.device}];
+    }
+    return {...state, properties: [...state.properties, property], groups};
+};
+
+const indiPropertyRemoved = (state, property) => {
+    let properties = state.properties.filter(p => !(p.name ===property.name && p.device === property.device && p.group === property.group));
+    let groups = state.groups
+    if(properties.filter(p => p.device === property.device && p.group === property.group).length === 0) {
+        groups = groups.filter(g => !(g.name === property.group && g.device === property.device));
+    }
+    return {...state, properties, groups};    
+};
+
+
+
 const addPendingProperty = (state, pendingProperty) => {
     let isSamePendingProperty = (first, second) => {
         return first.device === second.device && first.group === second.group && first.name === second.name && first.valueName === second.valueName;
@@ -68,6 +87,10 @@ const indiserver = (state = defaultState, action) => {
             return {...state, messages: [...state.messages, { device: action.device, message: action.message}]}
         case 'INDI_PROPERTY_UPDATED':
             return indiPropertyUpdated(state, action.property);
+        case 'INDI_PROPERTY_ADDED':
+            return indiPropertyAdded(state, action.property);
+        case 'INDI_PROPERTY_REMOVED':
+            return indiPropertyRemoved(state, action.property);
         default:
             return state;
     }

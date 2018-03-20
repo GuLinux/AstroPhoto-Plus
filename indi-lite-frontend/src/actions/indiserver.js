@@ -106,6 +106,9 @@ export const INDIServer = {
 
     deviceMessage: (device, message) => ({ type: 'INDI_DEVICE_MESSAGE', device, message }),
     propertyUpdated: property => ({ type: 'INDI_PROPERTY_UPDATED', property }),
+    propertyAdded: property => ({ type: 'INDI_PROPERTY_ADDED', property }),
+    propertyRemoved: property => ({ type: 'INDI_PROPERTY_REMOVED', property }),
+    
 }
 
 export default INDIServer
