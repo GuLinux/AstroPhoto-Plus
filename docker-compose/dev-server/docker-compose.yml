@@ -31,3 +31,6 @@ services:
     expose:
         - "7624"
     build: indi-server
+    environment:
+        - INDI_SERVER_HOST
+

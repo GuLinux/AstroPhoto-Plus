@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ "$INDI_SERVER_HOST" != "indiserver" ]; then
+    echo "Using external indi server, exiting"
+    exit
+fi
+echo "INDI drivers: $@"
+indiserver -v "$@"
