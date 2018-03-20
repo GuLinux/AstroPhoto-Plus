@@ -26,6 +26,11 @@ const remapProperties = (state, device, groups, properties) => {
     return {...state, groups: [...groups, ...nextStateGroups], properties: [...properties, ...nextStateProperties]};
 }
 
+const indiPropertyUpdated = (state, property) => {
+    let properties = state.properties.filter(p => !(p.name ===property.name && p.device === property.device && p.group === property.group));
+    return {...state, properties: [...properties, property]};    
+};
+
 const addPendingProperty = (state, pendingProperty) => {
     let isSamePendingProperty = (first, second) => {
         return first.device === second.device && first.group === second.group && first.name === second.name && first.valueName === second.valueName;
@@ -57,10 +62,12 @@ const indiserver = (state = defaultState, action) => {
             return remapProperties(state, action.device, action.groups, action.properties)
         case 'ADD_PENDING_PROPERTIES':
             return addPendingProperties(state, action.pendingProperties);
-        case 'COMMITTED_PENDING_PROPERTIES':
+        case 'COMMIT_PENDING_PROPERTIES':
             return clearPendingProperties(state);
         case 'INDI_DEVICE_MESSAGE':
             return {...state, messages: [...state.messages, { device: action.device, message: action.message}]}
+        case 'INDI_PROPERTY_UPDATED':
+            return indiPropertyUpdated(state, action.property);
         default:
             return state;
     }

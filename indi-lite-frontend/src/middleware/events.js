@@ -24,6 +24,9 @@ const indiserverEvents = (event, dispatch) => {
         case 'indi_message':
             dispatch(INDIServer.deviceMessage(eventObject.payload.device, eventObject.payload.message));
             break;
+        case 'indi_property_updated':
+            dispatch(INDIServer.propertyUpdated(eventObject.payload));
+            break;
         default:
             logEvent(event);
     }

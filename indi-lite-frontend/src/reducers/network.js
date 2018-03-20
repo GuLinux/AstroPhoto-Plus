@@ -8,7 +8,7 @@ const requests = (state = { fetching: false }, action) => {
         case 'FETCH_INDI_SERVER_STATE':
         case 'CONNECT_INDI_SERVER':
         case 'DISCONNECT_INDI_SERVER':
-        case 'COMMIT_PENDING_PROPERTIES':
+//        case 'COMMIT_PENDING_PROPERTIES':
             return {...state, fetching: true };
         case 'RECEIVE_SESSIONS':
         case 'SESSION_CREATED':
@@ -16,7 +16,7 @@ const requests = (state = { fetching: false }, action) => {
         case 'RECEIVED_SERVER_STATE':
         case 'RECEIVED_INDI_DEVICES':
         case 'RECEIVED_DEVICE_PROPERTIES':
-        case 'COMMITTED_PENDING_PROPERTIES':
+//        case 'COMMITTED_PENDING_PROPERTIES':
             return {...state, fetching: false};
         default:
             return state;

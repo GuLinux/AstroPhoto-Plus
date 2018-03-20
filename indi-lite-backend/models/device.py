@@ -15,6 +15,12 @@ class Device:
     def properties(self):
         return self.indi_device.get_properties()
 
+    def get_property(self, group, name):
+        property = [p for p in self.properties() if p['name'] == name and p['group'] == group]
+        if not property:
+            raise RuntimeError('Property {}/{} not found in {}'.format(group, name, self.name))
+        return property[0]
+
     def set_property(self, indi_property, property_values):
         proptype = indi_property['type']
         try:

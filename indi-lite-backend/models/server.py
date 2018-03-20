@@ -22,12 +22,12 @@ class Server:
         self.client.callbacks['on_server_disconnected'] = self.__on_disconnected
         self.client.callbacks['on_new_property'] = lambda p: self.logger.debug('INDI: new property: {}'.format(p))
         self.client.callbacks['on_remove_property'] = lambda p: self.logger.debug('INDI: property removed: {}'.format(p))
-        self.client.callbacks['on_new_switch'] = lambda p: self.logger.debug('INDI: new switch: {}'.format(p))
-        self.client.callbacks['on_new_number'] = lambda p: self.logger.debug('INDI: new number: {}'.format(p))
-        self.client.callbacks['on_new_text'] = lambda p: self.logger.debug('INDI: new text: {}'.format(p))
+        self.client.callbacks['on_new_switch'] = self.__on_property_updated
+        self.client.callbacks['on_new_number'] = self.__on_property_updated
+        self.client.callbacks['on_new_text'] = self.__on_property_updated
         self.client.callbacks['on_new_device'] = lambda p: self.logger.debug('INDI: new device: {}'.format(p))
-        self.client.callbacks['on_new_blob'] = lambda p: self.logger.debug('INDI: new blob: {}'.format(p))
-        self.client.callbacks['on_new_light'] = lambda l: self.logger.debug('INDI: new light: {}'.format(l))
+        self.client.callbacks['on_new_blob'] = self.__on_property_updated
+        self.client.callbacks['on_new_light'] = self.__on_property_updated
         self.client.callbacks['on_new_message'] = self.__on_message
 
     def disconnect(self):
@@ -56,5 +56,10 @@ class Server:
         self.client = None
         if  time.time() - self.__disconnect_requested > 2 and self.on_disconnect:
             self.event_listener.on_indiserver_disconnected(error_code)
+
+    def __on_property_updated(self, property):
+        device = [d for d in self.devices() if d.name == property.device][0]
+        property = device.get_property(property.group, property.name)
+        self.event_listener.on_indi_property_updated(property)
 
 

@@ -9,10 +9,10 @@ export const pendingProperty = (property, value, newValue) => ({ device: propert
 
 export const hasPendingProperties = (property, pendingProperties) => pendingProperties.filter(p => p.device === property.device && p.group === property.group && p.name === property.name).length > 0;
 
-export const canUpdate = property => property.perm_write && property.state != 'busy';
+export const canUpdate = property => property.perm_write && property.state != 'BUSY';
 
 export const CommitPendingPropertiesButton = ({property, pendingProperties, commitPendingProperties, bsStyle, size}) => {
-    if(!property.perm_write)
+    if(!canUpdate(property))
         return null;
     return (
         <Button
