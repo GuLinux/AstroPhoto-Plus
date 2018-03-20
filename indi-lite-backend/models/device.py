@@ -39,6 +39,8 @@ class Device:
             self.logger.exception('Error setting property {} with values {}'.format(indi_property, property_values))
             return False
 
+    def get_queued_message(self, message):
+        return self.indi_device.get_queued_message(message)
 
     def __str__(self):
         return 'Camera: {}'.format(self.name)

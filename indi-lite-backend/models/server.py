@@ -28,7 +28,7 @@ class Server:
         self.client.callbacks['on_new_device'] = lambda p: self.logger.debug('INDI: new device: {}'.format(p))
         self.client.callbacks['on_new_blob'] = lambda p: self.logger.debug('INDI: new blob: {}'.format(p))
         self.client.callbacks['on_new_light'] = lambda l: self.logger.debug('INDI: new light: {}'.format(l))
-        self.client.callbacks['on_new_message'] = lambda d, m: self.logger.debug('INDI: new message: {}{}'.format(d, m))
+        self.client.callbacks['on_new_message'] = self.__on_message
 
     def disconnect(self):
         self.__disconnect_requested = time.time()
@@ -44,6 +44,11 @@ class Server:
 
     def cameras(self):
         return [Camera(c) for c in self.client.cameras()]
+
+    def __on_message(self, device, message):
+        device = [x for x in self.devices() if x.name == device.getDeviceName()][0] # TODO: boundary check
+        message = device.get_queued_message(message)
+        self.logger.debug('INDI message: device={}, {}'.format(device.name, message))
 
     def __on_disconnected(self, error_code):
         self.logger.debug('indi server disconnected; disconnect_requested: {}'.format(self.__disconnect_requested))
