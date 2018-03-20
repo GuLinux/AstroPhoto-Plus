@@ -33,7 +33,10 @@ const indiserverEvents = (event, dispatch) => {
         case 'indi_property_removed':
             dispatch(INDIServer.propertyRemoved(eventObject.payload));
             break
-
+        case 'indi_device_added':
+            dispatch(INDIServer.deviceAdded(eventObject.payload));
+        case 'indi_device_removed':
+            dispatch(INDIServer.deviceRemoved(eventObject.payload));
         default:
             logEvent(event);
     }

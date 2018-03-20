@@ -26,8 +26,8 @@ export const INDIServer = {
     },
 
 
-    receivedServerState: (state, dispatch) => {
-        if(state.connected)
+    receivedServerState: (state, dispatch, fetchFullTree = false) => {
+        if(fetchFullTree && state.connected)
             dispatch(INDIServer.fetchDevices());
         return {
             type: 'RECEIVED_SERVER_STATE',
@@ -76,10 +76,10 @@ export const INDIServer = {
         }
     },
 
-    fetchServerState: () => {
+    fetchServerState: (fetchFullTree = false) => {
         return dispatch => {
             dispatch({type: 'FETCH_INDI_SERVER_STATE'});
-            return getINDIServerStatusAPI(data => dispatch(INDIServer.receivedServerState(data, dispatch)), error => console.log(error));
+            return getINDIServerStatusAPI(data => dispatch(INDIServer.receivedServerState(data, dispatch, fetchFullTree)), error => console.log(error));
         }
     },
 
@@ -108,7 +108,8 @@ export const INDIServer = {
     propertyUpdated: property => ({ type: 'INDI_PROPERTY_UPDATED', property }),
     propertyAdded: property => ({ type: 'INDI_PROPERTY_ADDED', property }),
     propertyRemoved: property => ({ type: 'INDI_PROPERTY_REMOVED', property }),
-    
+    deviceAdded: device => ({ type: 'INDI_DEVICE_ADDED', device }),
+    deviceRemoved: device => ({ type: 'INDI_DEVICE_REMOVED', device }),
 }
 
 export default INDIServer

@@ -91,6 +91,15 @@ const indiserver = (state = defaultState, action) => {
             return indiPropertyAdded(state, action.property);
         case 'INDI_PROPERTY_REMOVED':
             return indiPropertyRemoved(state, action.property);
+        case 'INDI_DEVICE_ADDED':
+            return {...state, devices: [...state.devices, {name: action.device}]}
+        case 'INDI_DEVICE_REMOVED':
+            return {
+                ...state,
+                devices: state.devices.filter(d => d.name === action.device),
+                groups: state.groups.filter(g => g.device === action.device),
+                properties: state.properties.filter(p => p.device === action.device)
+            }
         default:
             return state;
     }

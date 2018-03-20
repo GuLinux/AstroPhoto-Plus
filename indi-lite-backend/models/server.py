@@ -20,12 +20,13 @@ class Server:
     def connect(self):
         self.client = INDIClient(address=self.host, port=self.port)
         self.client.callbacks['on_server_disconnected'] = self.__on_disconnected
+        self.client.callbacks['on_new_device'] = self.__on_device_added
+        self.client.callbacks['on_device_removed'] = self.__on_device_removed
         self.client.callbacks['on_new_property'] = self.__on_property_added
         self.client.callbacks['on_remove_property'] = self.__on_property_removed
         self.client.callbacks['on_new_switch'] = self.__on_property_updated
         self.client.callbacks['on_new_number'] = self.__on_property_updated
         self.client.callbacks['on_new_text'] = self.__on_property_updated
-        self.client.callbacks['on_new_device'] = lambda p: self.logger.debug('INDI: new device: {}'.format(p))
         self.client.callbacks['on_new_blob'] = self.__on_property_updated
         self.client.callbacks['on_new_light'] = self.__on_property_updated
         self.client.callbacks['on_new_message'] = self.__on_message
@@ -70,3 +71,8 @@ class Server:
     def __on_property_removed(self, property):
         self.event_listener.on_indi_property_removed({'device': property.getDeviceName(), 'group': property.getGroupName(), 'name': property.getName()})
 
+    def __on_device_added(self, device):
+        self.event_listener.on_device_added(device)
+
+    def __on_device_removed(self, device):
+        self.event_listener.on_device_removed(device)
