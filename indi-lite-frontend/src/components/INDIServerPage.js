@@ -31,6 +31,7 @@ const INDIServerPage = ({serverState, setServerConnection, addPendingProperties,
                                     commitPendingProperties={commitPendingProperties}
                                     navigateToDeviceGroup={navigateToDeviceGroup}
                                     indiGroupTab={indiGroupTab}
+                                    messages={serverState.messages.filter(m => m.device === device.name)}
                      />
                 </Tab>
             ))}

@@ -6,6 +6,7 @@ const defaultState = {
     groups: [],
     properties: [],
     pendingProperties: [],
+    messages: [],
 };
 
 const receivedServerState = (state, action) => {
@@ -58,6 +59,8 @@ const indiserver = (state = defaultState, action) => {
             return addPendingProperties(state, action.pendingProperties);
         case 'COMMITTED_PENDING_PROPERTIES':
             return clearPendingProperties(state);
+        case 'INDI_DEVICE_MESSAGE':
+            return {...state, messages: [...state.messages, { device: action.device, message: action.message}]}
         default:
             return state;
     }

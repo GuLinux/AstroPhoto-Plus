@@ -6,13 +6,13 @@ import time
 class Server:
     DEFAULT_PORT = INDIClient.DEFAULT_PORT
 
-    def __init__(self, logger, host, port=INDIClient.DEFAULT_PORT, on_disconnect=None):
+    def __init__(self, logger, event_listener, host, port=INDIClient.DEFAULT_PORT):
         self.host = host
         self.port = port
         self.client = None
-        self.on_disconnect = on_disconnect
         self.__disconnect_requested = 0
         self.logger = logger
+        self.event_listener = event_listener
 
     def to_map(self):
         return {'host': self.host, 'port': self.port, 'connected': self.is_connected() }
@@ -49,11 +49,12 @@ class Server:
         device = [x for x in self.devices() if x.name == device.getDeviceName()][0] # TODO: boundary check
         message = device.get_queued_message(message)
         self.logger.debug('INDI message: device={}, {}'.format(device.name, message))
+        self.event_listener.on_indi_message(device.name, message)
 
     def __on_disconnected(self, error_code):
         self.logger.debug('indi server disconnected; disconnect_requested: {}'.format(self.__disconnect_requested))
         self.client = None
         if  time.time() - self.__disconnect_requested > 2 and self.on_disconnect:
-            self.on_disconnect(error_code)
+            self.event_listener.on_indiserver_disconnected(error_code)
 
 

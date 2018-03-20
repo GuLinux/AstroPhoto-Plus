@@ -113,6 +113,8 @@ export const INDIServer = {
 
         }
     },
+
+    deviceMessage: (device, message) => ({ type: 'INDI_DEVICE_MESSAGE', device, message })
 }
 
 export default INDIServer
