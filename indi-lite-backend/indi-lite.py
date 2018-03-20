@@ -1,7 +1,7 @@
 from flask import jsonify, Response
 from api_decorators import *
 from api_utils import *
-from models import Server, Session, Sequence
+from models import Server, Session, Sequence, NotFoundError
 import os
 from controller import controller
 from app import app

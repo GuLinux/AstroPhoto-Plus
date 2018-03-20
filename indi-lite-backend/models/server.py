@@ -2,6 +2,8 @@ from pyindi_sequence import INDIClient
 from .camera import Camera
 from .device import Device
 import time
+from .exceptions import NotFoundError
+
 
 class Server:
     DEFAULT_PORT = INDIClient.DEFAULT_PORT
@@ -46,9 +48,13 @@ class Server:
     def cameras(self):
         return [Camera(c) for c in self.client.cameras()]
 
+    def __find_device(self, name):
+        device = [d for d in self.devices() if d.name == name]
+        if not device:
+            raise NotFoundError('device {} not found'.format(name))
+        return device[0]
+
     def __on_message(self, device, message):
-        device = [x for x in self.devices() if x.name == device.getDeviceName()][0] # TODO: boundary check
-        message = device.get_queued_message(message)
         self.logger.debug('INDI message: device={}, {}'.format(device.name, message))
         self.event_listener.on_indi_message(device.name, message)
 
@@ -59,13 +65,13 @@ class Server:
             self.event_listener.on_indiserver_disconnected(error_code)
 
     def __on_property_updated(self, property):
-        device = [d for d in self.devices() if d.name == property.device][0]
+        device = self.__find_device(property.device)
         property = device.get_property(property.group, property.name)
         self.event_listener.on_indi_property_updated(property)
 
-    def __on_property_added(self, property):
-        device = [d for d in self.devices() if d.name == property.getDeviceName()][0]
-        property = device.get_property(property.getGroupName(), property.getName())
+    def __on_property_added(self, device, group, property_name):
+        device = self.__find_device(device)
+        property = device.get_property(group, property_name)
         self.event_listener.on_indi_property_added(property)
         
     def __on_property_removed(self, property):

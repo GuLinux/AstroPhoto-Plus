@@ -2,6 +2,7 @@ from flask import jsonify, request
 from api_utils import *
 from functools import wraps
 import time
+from models import BadRequestError, NotFoundError
 
 def json_api(f):
     @wraps(f)

@@ -36,11 +36,11 @@ class Device:
                 self.logger.debug('on_switches: {}'.format(on_switches))
                 self.logger.debug('off_switches: {}'.format(off_switches))
 
-                self.indi_device.set_switch(indi_property['name'], on_switches, off_switches)
+                self.indi_device.set_switch(indi_property['name'], on_switches, off_switches, sync=False)
             elif proptype == 'number':
-                self.indi_device.set_number(indi_property['name'], property_values)
+                self.indi_device.set_number(indi_property['name'], property_values, sync=False)
             elif proptype == 'text':
-                self.indi_device.set_text(indi_property['name'], property_values)
+                self.indi_device.set_text(indi_property['name'], property_values, sync=False)
             else:
                 raise RuntimeError('Property type unsupported: {}'.format(proptype))
             return True

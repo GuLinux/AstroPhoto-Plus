@@ -35,6 +35,7 @@ const indiserverEvents = (event, dispatch) => {
             break
         case 'indi_device_added':
             dispatch(INDIServer.deviceAdded(eventObject.payload));
+            break;
         case 'indi_device_removed':
             dispatch(INDIServer.deviceRemoved(eventObject.payload));
         default:

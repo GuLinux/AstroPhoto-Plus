@@ -1,6 +1,7 @@
 from flask import jsonify
 from controller import controller
 
+
 def api_error(code, title, message=None):
     return jsonify({
         'error': title,
@@ -16,15 +17,5 @@ def api_bad_json_error(message=None):
 
 def api_not_found_error(message=None):
     return api_error(404, 'Resource Not Found', message if message else 'The requested resource was not found on the server')
-
-class BadRequestError(Exception):
-    def __init__(self, message=None):
-        Exception.__init__(self,message)
-        self.message = message
-
-class NotFoundError(Exception):
-    def __init__(self, message=None):
-        Exception.__init__(self, message)
-        self.message = message
 
 

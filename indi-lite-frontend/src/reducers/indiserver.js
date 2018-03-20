@@ -69,7 +69,10 @@ const addPendingProperties = (state, pendingProperties) => {
     return newState;
 }
 
-const clearPendingProperties = state => ({...state, pendingProperties: []});
+const commitPendingProperties = (state, pendingProperties) => {
+    // TODO: set status as busy
+    return {...state, pendingProperties: []};
+}
 
 const indiserver = (state = defaultState, action) => {
     switch(action.type) {
@@ -82,7 +85,7 @@ const indiserver = (state = defaultState, action) => {
         case 'ADD_PENDING_PROPERTIES':
             return addPendingProperties(state, action.pendingProperties);
         case 'COMMIT_PENDING_PROPERTIES':
-            return clearPendingProperties(state);
+            return commitPendingProperties(state, action.pendingProperties);
         case 'INDI_DEVICE_MESSAGE':
             return {...state, messages: [...state.messages, { device: action.device, message: action.message}]}
         case 'INDI_PROPERTY_UPDATED':
