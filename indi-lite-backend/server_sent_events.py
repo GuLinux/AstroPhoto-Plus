@@ -44,12 +44,13 @@ class SSE:
         self.logger = logger
 
     def publish(self, data, type):
-        def publish_to_clients():
-            if data['event'] == 'indi_device_added':
-                self.logger.debug('PUBLISH: {}'.format(data))
-            for client in self.clients:
-                client.publish(SSEMessage(data, type, time.time()))
-        gevent.spawn(publish_to_clients)
+        gevent.spawn(self.__publish_to_clients, data, type)
+        gevent.sleep(0)
+
+    def __publish_to_clients(self, data, type):
+        for client in self.clients:
+            client.publish(SSEMessage(data, type, time.time()))
+
 
     def subscribe(self):
         new_client = SSEClient(self)
