@@ -1,6 +1,8 @@
-from queue import Queue
 import json
+import gevent
+from gevent.queue import Queue
 import uuid
+import time
 
 
 class SSEMessage:
@@ -41,11 +43,13 @@ class SSE:
         self.clients = []
         self.logger = logger
 
-    def publish(self, data, type, id=None):
-        if id is None:
-            id = uuid.uuid4().hex
-        for client in self.clients:
-            client.publish(SSEMessage(data, type, id))
+    def publish(self, data, type):
+        def publish_to_clients():
+            if data['event'] == 'indi_device_added':
+                self.logger.debug('PUBLISH: {}'.format(data))
+            for client in self.clients:
+                client.publish(SSEMessage(data, type, time.time()))
+        gevent.spawn(publish_to_clients)
 
     def subscribe(self):
         new_client = SSEClient(self)
