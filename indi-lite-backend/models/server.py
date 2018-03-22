@@ -43,7 +43,7 @@ class Server:
         return self.client.isServerConnected() if self.client else False
 
     def devices(self):
-        return [Device(d, self.logger) for d in self.client.devices()]
+        return [Device(self.logger, indi_device=d) for d in self.client.devices()]
 
     def cameras(self):
         return [Camera(c) for c in self.client.cameras()]
