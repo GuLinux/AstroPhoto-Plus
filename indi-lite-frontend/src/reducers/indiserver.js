@@ -87,7 +87,7 @@ const indiserver = (state = defaultState, action) => {
         case 'COMMIT_PENDING_PROPERTIES':
             return commitPendingProperties(state, action.pendingProperties);
         case 'INDI_DEVICE_MESSAGE':
-            return {...state, messages: [...state.messages, { device: action.device, message: action.message}]}
+            return {...state, messages: [...state.messages, { device: action.device.name, message: action.message}]}
         case 'INDI_PROPERTY_UPDATED':
             return indiPropertyUpdated(state, action.property);
         case 'INDI_PROPERTY_ADDED':
@@ -95,7 +95,7 @@ const indiserver = (state = defaultState, action) => {
         case 'INDI_PROPERTY_REMOVED':
             return indiPropertyRemoved(state, action.property);
         case 'INDI_DEVICE_ADDED':
-            return {...state, devices: [...state.devices, {name: action.device}]}
+            return {...state, devices: [...state.devices, action.device]}
         case 'INDI_DEVICE_REMOVED':
             return {
                 ...state,
