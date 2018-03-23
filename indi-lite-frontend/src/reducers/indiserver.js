@@ -9,6 +9,8 @@ const defaultState = {
     messages: [],
 };
 
+const groupId = (device, property) => device.id + '/' + property.id;
+
 const receivedServerState = (state, action) => {
     let nextState = {...state, connected: action.state.connected, host: action.state.host, port: action.state.port.toString()};
     if(! nextState.connected) {
