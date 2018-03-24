@@ -1,7 +1,7 @@
 from flask import jsonify, Response
 from api_decorators import *
 from api_utils import *
-from models import Server, Session, Sequence, NotFoundError
+from models import Server, Session, Sequence, NotFoundError, Property, Device
 import os
 from controller import controller
 from app import app
@@ -27,6 +27,7 @@ def connect_server():
  
 @app.route('/api/server/disconnect', methods=['PUT'])
 @json_api
+@indi_connected
 def disconnect_server():
     controller.indi_server.disconnect()
     is_error = not timeout(5)(lambda: not controller.indi_server.is_connected())()
@@ -35,39 +36,33 @@ def disconnect_server():
 
 @app.route('/api/server/devices', methods=['GET'])
 @json_api
+@indi_connected
 def get_devices():
     return [x.to_map() for x in controller.indi_server.devices()]
 
 
 @app.route('/api/server/devices/<name>/properties', methods=['GET'])
 @json_api
+@indi_connected
 def get_camera_properties(name):
-    device = [d for d in controller.indi_server.devices() if d.name == name]
-    if not device:
-        raise NotFoundError()
-    device = device[0]
-    return device.properties()
+    device = controller.indi_server.device(name=name)
+    return [p.to_map() for p in device.properties()]
 
 
-@app.route('/api/server/devices/<device>/groups/<group>/properties/<property>', methods=['PUT'])
+@app.route('/api/server/devices/<device>/groups/<group>/properties/<property_name>', methods=['PUT'])
 @json_input
 @json_api
-def update_ind_property(device, group, property, json):
-    app.logger.debug('update property: {}/{}/{} ({})'.format(device, group, property, json))
-    device = [d for d in controller.indi_server.devices() if d.name == device]
-    if not device:
-        raise NotFoundError()
-    device = device[0]
-    indi_property = [x for x in device.properties() if x['group'] == group and x['name'] == property]
-    if not indi_property:
-        raise NotFoundError()
-    indi_property = indi_property[0]
-    return { 'action': 'set_property', 'device': device.name, 'group': group, 'property': property, 'values': json, 'result': device.set_property(indi_property, json) }
+@indi_connected
+def update_indi_property(device, group, property_name, json):
+    app.logger.debug('update property: {}/{}/{} ({})'.format(device, group, property_name, json))
+    indi_property = controller.indi_server.property(device=device, group=group, name=property_name)
+    return { 'action': 'set_property', 'device': device, 'group': group, 'property': property_name, 'values': json, 'result': indi_property.set_values(json) }
 
 
 # TODO: this might prove to be useless 
 @app.route('/api/cameras', methods=['GET'])
 @json_api
+@indi_connected
 def get_cameras():
     return [x.to_map() for x in controller.indi_server.cameras()]
   

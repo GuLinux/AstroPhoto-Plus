@@ -1,6 +1,7 @@
 from pyindi_sequence import INDIClient
 from .camera import Camera
 from .device import Device
+from .indi_property import Property
 import time
 from .exceptions import NotFoundError
 
@@ -43,20 +44,20 @@ class Server:
         return self.client.isServerConnected() if self.client else False
 
     def devices(self):
-        return [Device(self.logger, indi_device=d) for d in self.client.devices()]
+        return [Device(self.client, self.logger, indi_device=d) for d in self.client.devices()]
+
+    def device(self, *args, **kwargs):
+        return Device(self.client, self.logger, *args, **kwargs)
+
+    def property(self, *args, **kwargs):
+        return Property(self.client, self.logger, *args, **kwargs)
 
     def cameras(self):
         return [Camera(c) for c in self.client.cameras()]
 
-    def __find_device(self, name):
-        device = [d for d in self.devices() if d.name == name]
-        if not device:
-            raise NotFoundError('device {} not found'.format(name))
-        return device[0]
-
     def __on_message(self, device, message):
         self.logger.debug('INDI message: device={}, {}'.format(device.name, message))
-        self.event_listener.on_indi_message(device.name, message)
+        self.event_listener.on_indi_message(self.device(indi_device=device), message)
 
     def __on_disconnected(self, error_code):
         self.logger.debug('indi server disconnected; disconnect_requested: {}'.format(self.__disconnect_requested))
@@ -64,21 +65,17 @@ class Server:
         if  time.time() - self.__disconnect_requested > 2 and self.on_disconnect:
             self.event_listener.on_indiserver_disconnected(error_code)
 
-    def __on_property_updated(self, property):
-        device = self.__find_device(property.device)
-        property = device.get_property(property.group, property.name)
-        self.event_listener.on_indi_property_updated(property)
+    def __on_property_updated(self, vector_property):
+        self.event_listener.on_indi_property_updated(self.property(indi_vector_property=vector_property))
 
     def __on_property_added(self, device, group, property_name):
-        device = self.__find_device(device)
-        property = device.get_property(group, property_name)
-        self.event_listener.on_indi_property_added(property)
+        self.event_listener.on_indi_property_added(self.property(device=device, group=group, name=property_name))
         
-    def __on_property_removed(self, property):
-        self.event_listener.on_indi_property_removed({'device': property.getDeviceName(), 'group': property.getGroupName(), 'name': property.getName()})
+    def __on_property_removed(self, indi_property):
+        self.event_listener.on_indi_property_removed(self.property(indi_device_property=indi_property))
 
     def __on_device_added(self, device):
-        self.event_listener.on_device_added(device)
+        self.event_listener.on_device_added(self.device(name=device.name))
 
     def __on_device_removed(self, device):
-        self.event_listener.on_device_removed(device)
+        self.event_listener.on_device_removed(self.device(name=device.name))

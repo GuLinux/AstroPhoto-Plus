@@ -1,8 +1,19 @@
-from .model import id_by_properties, with_attrs
+from .model import id_by_properties
+from .exceptions import NotFoundError
+import functools
+from . import indi_property
+
+def with_indi_device(f):
+    @functools.wraps(f)
+    def f_wrapper(self, *args, **kwargs):
+        self.find_indi_device()
+        return f(self, *args, **kwargs)
+    return f_wrapper
 
 
 class Device:
-    def __init__(self, logger, indi_device=None, name=None):
+    def __init__(self, client, logger, indi_device=None, name=None):
+        self.client = client
         self.logger = logger
         self.name = None
         self.indi_device = None
@@ -23,49 +34,27 @@ class Device:
 
     def to_map(self):
         return {
+            'id': self.id,
             'name': self.name
         }
 
-    @with_attrs(['indi_device'])
+    def find_indi_device(self):
+        if not self.indi_device:
+            devices = [d  for d in self.client.devices() if d.name == self.name]
+            if not devices:
+                raise NotFoundError('device {} not found.'.format(self.name))
+            self.indi_device = devices[0]
+        return self.indi_device
+
+    @with_indi_device
     def properties(self):
-        return self.indi_device.get_properties()
+        return [indi_property.Property(self.client, self.logger, indi_property=p) for p in self.indi_device.get_properties()]
 
-    @with_attrs(['indi_device'])
-    def get_property(self, group, name):
-        property = [p for p in self.properties() if p['name'] == name and p['group'] == group]
-        if not property:
-            raise RuntimeError('Property {}/{} not found in {}'.format(group, name, self.name))
-        return property[0]
+    def get_property(self, group, property_name):
+        return indi_property.Property(self.client, self.logger, device=self.name, group=group, name=property_name)
 
-    @with_attrs(['indi_device'])
-    def set_property(self, indi_property, property_values):
-        proptype = indi_property['type']
-        try:
-            if proptype == 'switch':
-                on_switches = []
-                off_switches = []
-                for key, value in property_values.items():
-                    if value:
-                        on_switches.append(key)
-                    else:
-                        off_switches.append(key)
-                self.logger.debug('setting switch value for {}'.format(self.name))
-                self.logger.debug('on_switches: {}'.format(on_switches))
-                self.logger.debug('off_switches: {}'.format(off_switches))
 
-                self.indi_device.set_switch(indi_property['name'], on_switches, off_switches, sync=False)
-            elif proptype == 'number':
-                self.indi_device.set_number(indi_property['name'], property_values, sync=False)
-            elif proptype == 'text':
-                self.indi_device.set_text(indi_property['name'], property_values, sync=False)
-            else:
-                raise RuntimeError('Property type unsupported: {}'.format(proptype))
-            return True
-        except:
-            self.logger.exception('Error setting property {} with values {}'.format(indi_property, property_values))
-            return False
-
-    @with_attrs(['indi_device'])
+    @with_indi_device
     def get_queued_message(self, message):
         return self.indi_device.get_queued_message(message)
 
