@@ -1,0 +1,35 @@
+version: '2'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+        - "3000:80"
+    volumes:
+        - ./nginx-conf.d:/etc/nginx/conf.d:ro
+        - react-app:/react-app
+    depends_on:
+        - frontend
+        - backend
+  frontend:
+    build: frontend
+    volumes:
+        - ../../indi-lite-frontend:/app
+        - react-app:/app/build
+    expose:
+        - "3000"
+  backend:
+    build: backend
+    volumes:
+        - ../../indi-lite-backend:/app
+        - ../../..:/pythonpath
+    expose:
+        - "5000"
+    environment:
+        - INDI_SERVER_HOST
+        - INDI_SERVER_PORT
+        - WEB_THREADS
+        - DEV_BACKEND_SERVER
+        - GUNICORN_WORKER_CLASS
+  
+volumes:
+  react-app:
