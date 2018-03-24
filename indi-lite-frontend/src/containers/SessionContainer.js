@@ -18,10 +18,10 @@ const mapDispatchToProps = dispatch => {
     return { onCreateSequence, navigateBack }
 }
 
-const SessionController = connect(
+const SessionContainer = connect(
     mapStateToProps,
     mapDispatchToProps
 )(Session)
 
-export default SessionController
+export default SessionContainer
 

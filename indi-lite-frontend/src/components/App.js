@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import NavbarController from '../containers/NavbarController';
-import PagesListController from '../containers/PagesListController';
+import NavbarContainer from '../containers/NavbarContainer';
+import PagesListContainer from '../containers/PagesListContainer';
 import LoadingPage from '../containers/LoadingPage';
-import SessionsPageController from '../containers/SessionsPageController';
-import INDIServerController from '../containers/INDIServerController';
-import NotificationsController from '../containers/NotificationsController';
+import SessionsPageContainer from '../containers/SessionsPageContainer';
+import INDIServerContainer from '../containers/INDIServerContainer';
+import NotificationsContainer from '../containers/NotificationsContainer';
 import './App.css';
 
 
@@ -12,12 +12,12 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <NavbarController />
-        <NotificationsController />
-        <PagesListController navigationKey="section">
-            <SessionsPageController key="sessions" />
-            <INDIServerController key="indi_server" />
-        </PagesListController>
+        <NavbarContainer />
+        <NotificationsContainer />
+        <PagesListContainer navigationKey="section">
+            <SessionsPageContainer key="sessions" />
+            <INDIServerContainer key="indi_server" />
+        </PagesListContainer>
         <LoadingPage />
       </div>
     );

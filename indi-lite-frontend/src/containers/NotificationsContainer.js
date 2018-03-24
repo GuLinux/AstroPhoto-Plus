@@ -15,7 +15,7 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-const NotificationsController = connect(mapStateToProps, mapDispatchToProps)(Notifications)
+const NotificationsContainer = connect(mapStateToProps, mapDispatchToProps)(Notifications)
 
-export default NotificationsController
+export default NotificationsContainer
 

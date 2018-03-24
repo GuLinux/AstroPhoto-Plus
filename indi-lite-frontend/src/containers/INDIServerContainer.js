@@ -20,10 +20,10 @@ const mapDispatchToProps = dispatch => {
     return { setServerConnection, addPendingProperties, commitPendingProperties, navigateToDevice, navigateToDeviceGroup };
 }
 
-const INDIServerController = connect(
+const INDIServerContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(INDIServerPage)
 
-export default INDIServerController 
+export default INDIServerContainer 
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import AddSequence from '../components/AddSequence';
-import SequencesController from '../containers/SequencesController';
+import SequencesContainer from '../containers/SequencesContainer';
 import { Button } from 'react-bootstrap';
 
 const Session = ({ session, onCreateSequence, navigateBack }) => {
@@ -12,7 +12,7 @@ const Session = ({ session, onCreateSequence, navigateBack }) => {
             {session.name}
             <Button onClick={navigateBack} className="pull-right">Back</Button>
         </h2>
-        <SequencesController sessionId={session.id} />
+        <SequencesContainer sessionId={session.id} />
         <AddSequence sessionId={session.id} onCreateSequence={onCreateSequence} />
     </div>
 )}

@@ -20,10 +20,10 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const SessionsPageController = connect(
+const SessionsPageContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(SessionsPage)
 
-export default SessionsPageController
+export default SessionsPageContainer
 
