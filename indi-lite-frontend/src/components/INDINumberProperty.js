@@ -7,39 +7,16 @@ import PRINTJ from 'printj'
 // copied from INDI github repo: https://github.com/indilib/indi/blob/bda9177ef25c6a219ac3879994c6efcae3b2d1c6/libindi/libs/indicom.c#L117
 // TODO: rewrite in a more modern/readable way
 const sex2string = (format, value) => {
-    // %010.6m
-    // 0.0008388807046051948 => 0:00:03
-    // 22.2061 => 22:12:22
-
     let formatSpecifiers = format.substring(1, format.indexOf('m')).split('.').map(x => parseInt(x));
     let width = formatSpecifiers[0] - formatSpecifiers[1];
-    let fracSpecifier = formatSpecifiers[1];
-    let fracBase;
-
-    switch(fracSpecifier) {
-        case 9:
-            fracBase = 360000;
-            break;
-        case 8:
-            fracBase = 36000;
-            break;
-        case 6:
-            fracBase = 3600;
-            break;
-        case 5:
-            fracBase = 600;
-            break;
-        default:
-            fracBase = 60;
-            break;
-    }
+    let fracSpecifier = formatSpecifiers[1].toString();
+    let fracBase = { 9: 360000, 8: 36000, 6: 3600, 5: 600, 4: 60 };
+    fracBase = fracSpecifier in fracBase ? fracBase[fracSpecifier] : fracBase[4];
 
     let isNegative = parseInt(value) < 0;
-    let a = isNegative ? Math.abs(value) : value;
-
     /* convert to an integral number of whole portions */
-    let number = Math.trunc(a * fracBase + 0.5);
-    let d = number / fracBase;
+    let number = Math.trunc(Math.abs(value) * fracBase + 0.5);
+    let d = Math.trunc(number / fracBase);
     let f = number % fracBase;
     let out = "";
     let m;
@@ -52,8 +29,7 @@ const sex2string = (format, value) => {
         out += PRINTJ.sprintf("%*d", width, isNegative ? -d : d);
 
     /* do the rest */
-    switch (fracBase)
-    {
+    switch (fracBase) {
         case 60: /* dd:mm */
             m = f / (fracBase / 60);
             out += PRINTJ.sprintf(":%02d", m);
@@ -81,21 +57,40 @@ const sex2string = (format, value) => {
     }
     return out.trim()
 }
-
 // end INDI code
 
+
 const isSexagesimalEnabled = false
-const isFormattingenabled = false;
+const isFormattingenabled = true;
 
-const isSexagesimal = format => isSexagesimalEnabled && format.endsWith('m')
 
-const formatValue = (value, displayValue) => {
+const isSexagesimal = format => format.endsWith('m')
+
+const parseStringValue = (stringValue, format) => {
+//    console.log(`parseStringValue called with ${stringValue}, ${format}`);
+    stringValue = stringValue.trim();
+    if(!isSexagesimal(format) || ! isSexagesimalEnabled)
+        return parseFloat(stringValue);
+    let tokens = stringValue.split(':');
+    let degs = parseFloat(tokens[0]);
+    let sign = stringValue.startsWith('-') ? -1 : 1;
+    if(tokens.length > 1)
+        degs += sign * parseFloat(tokens[1])/60;
+    if(tokens.length > 2)
+        degs += sign * parseFloat(tokens[2])/3600;
+    console.log(`format: ${format}, string: ${stringValue}, parsed to: ${degs}`);
+    return degs;
+}
+
+
+
+const formatValue = (displayValue, format) => {
     if(!isFormattingenabled)
         return displayValue;
-    if(isSexagesimal(value.format)) {
-        return sex2string(value.format, displayValue);
+    if(isSexagesimal(format)) {
+        return isSexagesimalEnabled ? sex2string(format, displayValue) : displayValue;
     }
-    let formatted = PRINTJ.sprintf(value.format, displayValue)
+    let formatted = PRINTJ.sprintf(format, displayValue)
     return formatted;
 }
 
@@ -116,7 +111,8 @@ const INDINumberProperty = ({device, property, isWriteable, pendingValues, displ
                         value={displayValues[value.name]}
                         onChange={(numValue, stringValue) => addPendingValues(device, property, { [value.name]: numValue })}
                         readOnly={!isWriteable}
-                        format={n => formatValue(value, displayValues[value.name])}
+                        format={v => formatValue(v, value.format)}
+                        parse={s => parseStringValue(s, value.format)}
                         />
                 </div> 
             ))}
