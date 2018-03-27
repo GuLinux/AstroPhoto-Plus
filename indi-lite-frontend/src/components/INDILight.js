@@ -5,6 +5,7 @@ const states = {
     IDLE: { style: 'default', text: 'idle' },
     OK: { style: 'success', text: 'ok' },
     BUSY: { style: 'warning', text: 'busy' },
+    CHANGED_BUSY: { style: 'primary', text: 'busy' },
     ALERT: { style: 'danger', text: 'alert' },
 }
 

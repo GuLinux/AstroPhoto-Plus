@@ -85,7 +85,7 @@ const commitPendingValues = (state, property, pendingValues) => {
            },
            properties: {
                 ...state.properties, [property.id]: {
-                    ...state.properties[property.id], state: 'BUSY'
+                    ...state.properties[property.id], state: 'CHANGED_BUSY'
                 }
             }
     };
