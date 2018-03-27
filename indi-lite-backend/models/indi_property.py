@@ -45,16 +45,17 @@ class Property:
             self.__init_by_indi_property(indi_property)
         elif indi_device_property:
             self.__init_by_indi_device_property(indi_device_property)
-        elif name and device and group:
+        elif name and device:
             self.__init_by_values(device, group, name, label, property_type)
         else:
             raise RuntimeError('Property initialization error')
-        self.id = id_by_properties([self.device, self.group, self.name])
+        self.id = id_by_properties([self.device, self.name])
 
     @with_indi_property
     def to_map(self):
         base_property = { 'id': self.id }
         base_property.update(self.indi_property)
+        base_property['device'] = device.Device(self.client, self.logger, name=self.device).id
         return base_property
 
     def find_indi_property(self):

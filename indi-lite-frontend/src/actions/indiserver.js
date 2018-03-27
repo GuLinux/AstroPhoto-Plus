@@ -1,4 +1,4 @@
-import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIPropertiesAPI } from '../middleware/api'
+import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI } from '../middleware/api'
 import Notifications from './notifications'
 
 export const INDIServer = {
@@ -36,29 +36,18 @@ export const INDIServer = {
     },
 
     receivedDevices: (devices, dispatch) => {
-        devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device.name)));
+        devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device)));
         return {
             type: 'RECEIVED_INDI_DEVICES',
             devices
         }
     },
 
-    receivedDeviceProperties(device, data) {
-        let groups = []
-        let properties = {}
-
-        data.forEach(property => {
-            groups.push(property.group)
-            properties = [...properties, property]
-        });
-        groups = groups.filter( (value, index, self) => self.indexOf(value) === index).map(group => { return {device, name: group} });
-        return {
+    receivedDeviceProperties: (device, data) => ({
             type: 'RECEIVED_DEVICE_PROPERTIES',
             device,
-            groups,
-            properties
-        }
-    },
+            properties: data
+    }),
 
     fetchDeviceProperties: device => {
         return dispatch => {
@@ -90,18 +79,18 @@ export const INDIServer = {
         }
     },
 
-    addPendingProperties: (pendingProperties, autoApply) => {
+    addPendingValues: (device, property, pendingValues, autoApply) => {
         return dispatch => {
-            dispatch({ type: 'ADD_PENDING_PROPERTIES', pendingProperties, autoApply })
+            dispatch({ type: 'ADD_PENDING_VALUES', device, property, pendingValues, autoApply })
             if(autoApply) {
-                dispatch(INDIServer.commitPendingProperties(pendingProperties));
+                dispatch(INDIServer.commitPendingValues(device, property, pendingValues));
             }
         }
     },
 
-    commitPendingProperties: (pendingProperties) => {
-        setINDIPropertiesAPI(pendingProperties, json => console.log(json), error => console.log(error));
-        return { type: 'COMMIT_PENDING_PROPERTIES', pendingProperties }
+    commitPendingValues: (device, property, pendingValues) => {
+        setINDIValuesAPI(device, property, pendingValues, json => console.log(json), error => console.log(error));
+        return { type: 'COMMIT_PENDING_VALUES', property, pendingValues }
     },
 
     deviceMessage: (device, message) => ({ type: 'INDI_DEVICE_MESSAGE', device, message }),

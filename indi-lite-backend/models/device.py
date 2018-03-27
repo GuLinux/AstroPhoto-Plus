@@ -50,8 +50,10 @@ class Device:
     def properties(self):
         return [indi_property.Property(self.client, self.logger, indi_property=p) for p in self.indi_device.get_properties()]
 
-    def get_property(self, group, property_name):
-        return indi_property.Property(self.client, self.logger, device=self.name, group=group, name=property_name)
+    def get_property(self, property_name):
+        self.logger.debug('Properties: {}'.format(', '.join([x.name for x in self.properties])))
+        properties = [x for x in self.properties if x.name == property_name]
+        return properties[0] if properties else None
 
 
     @with_indi_device
@@ -59,7 +61,7 @@ class Device:
         return self.indi_device.get_queued_message(message)
 
     def __str__(self):
-        return 'Camera: {}'.format(self.name)
+        return 'Device: {}'.format(self.name)
 
     def __repr__(self):
         return self.__str__()

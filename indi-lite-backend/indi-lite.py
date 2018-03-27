@@ -44,19 +44,19 @@ def get_devices():
 @app.route('/api/server/devices/<name>/properties', methods=['GET'])
 @json_api
 @indi_connected
-def get_camera_properties(name):
+def get_device_properties(name):
     device = controller.indi_server.device(name=name)
     return [p.to_map() for p in device.properties()]
 
 
-@app.route('/api/server/devices/<device>/groups/<group>/properties/<property_name>', methods=['PUT'])
+@app.route('/api/server/devices/<device>/properties/<property_name>', methods=['PUT'])
 @json_input
 @json_api
 @indi_connected
-def update_indi_property(device, group, property_name, json):
-    app.logger.debug('update property: {}/{}/{} ({})'.format(device, group, property_name, json))
-    indi_property = controller.indi_server.property(device=device, group=group, name=property_name)
-    return { 'action': 'set_property', 'device': device, 'group': group, 'property': property_name, 'values': json, 'result': indi_property.set_values(json) }
+def update_indi_property(device, property_name, json):
+    app.logger.debug('update property: {}/{} ({})'.format(device, property_name, json))
+    indi_property = controller.indi_server.property(device=device, name=property_name)
+    return { 'action': 'set_property', 'device': device, 'property': property_name, 'values': json, 'result': indi_property.set_values(json) }
 
 
 # TODO: this might prove to be useless 
