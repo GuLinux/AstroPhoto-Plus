@@ -1,23 +1,20 @@
 import React from 'react';
+import NumericInput from 'react-numeric-input';
 import CommitPendingValuesButton from './CommitPendingValuesButton'
 import INDILight from './INDILight'
 import PRINTJ from 'printj'
 
 // copied from INDI github repo: https://github.com/indilib/indi/blob/bda9177ef25c6a219ac3879994c6efcae3b2d1c6/libindi/libs/indicom.c#L117
 // TODO: rewrite in a more modern/readable way
-// TODO: also look into https://www.npmjs.com/package/react-numeric-input
 const sex2string = (format, value) => {
     // %010.6m
     // 0.0008388807046051948 => 0:00:03
     // 22.2061 => 22:12:22
 
-
     let formatSpecifiers = format.substring(1, format.indexOf('m')).split('.').map(x => parseInt(x));
-    let width = formatSpecifiers[0];
+    let width = formatSpecifiers[0] - formatSpecifiers[1];
     let fracSpecifier = formatSpecifiers[1];
     let fracBase;
-
-    let w = width - fracSpecifier;
 
     switch(fracSpecifier) {
         case 9:
@@ -41,18 +38,18 @@ const sex2string = (format, value) => {
     let a = isNegative ? Math.abs(value) : value;
 
     /* convert to an integral number of whole portions */
-    let n = Math.trunc(a * fracBase + 0.5);
-    let d = n / fracBase;
-    let f = n % fracBase;
+    let number = Math.trunc(a * fracBase + 0.5);
+    let d = number / fracBase;
+    let f = number % fracBase;
     let out = "";
     let m;
     let s;
 
     /* form the whole part; "negative 0" is a special case */
     if (isNegative && d == 0)
-        out += PRINTJ.sprintf("%*s-0", w - 2, "");
+        out += PRINTJ.sprintf("%*s-0", width - 2, "");
     else
-        out += PRINTJ.sprintf("%*d", w, isNegative ? -d : d);
+        out += PRINTJ.sprintf("%*d", width, isNegative ? -d : d);
 
     /* do the rest */
     switch (fracBase)
@@ -82,15 +79,15 @@ const sex2string = (format, value) => {
         default:
             return value;
     }
-    return out;
+    return out.trim()
 }
+
+// end INDI code
 
 const isSexagesimalEnabled = false
 const isFormattingenabled = false;
 
 const isSexagesimal = format => isSexagesimalEnabled && format.endsWith('m')
-
-const typeForFormat = format => isSexagesimal(format) ? 'text' : 'number';
 
 const formatValue = (value, displayValue) => {
     if(!isFormattingenabled)
@@ -110,16 +107,16 @@ const INDINumberProperty = ({device, property, isWriteable, pendingValues, displ
             {property.values.map(value => (
                 <div className="row" key={value.name} >
                     <div className="col-xs-2"><p>{value.label}</p></div>
-                    <input
+                    <NumericInput
                         className="col-xs-10"
-                        type={typeForFormat(value.format)}
                         min={value.min}
                         max={value.max}
                         step={value.step}
                         name={value.name}
-                        value={formatValue(value, displayValues[value.name])}
-                        onChange={e => addPendingValues(device, property, { [value.name]: parseFloat(e.target.value) })}
+                        value={displayValues[value.name]}
+                        onChange={(numValue, stringValue) => addPendingValues(device, property, { [value.name]: numValue })}
                         readOnly={!isWriteable}
+                        format={n => formatValue(value, displayValues[value.name])}
                         />
                 </div> 
             ))}
