@@ -3,6 +3,19 @@ import CommitPendingValuesButton from './CommitPendingValuesButton'
 import INDILight from './INDILight'
 import { Form, FormGroup } from 'react-bootstrap';
 
+const editableInput = (name, value, onChange) => (
+    <div className="col-xs-5">
+        <input
+            type="text"
+            className="col-xs-12"
+            name={name}
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            />
+    </div>
+
+)
+
 
 const INDITextProperty = ({device, property, isWriteable, pendingValues, displayValues, addPendingValues, commitPendingValues }) => (
     <div className="row">
@@ -12,37 +25,17 @@ const INDITextProperty = ({device, property, isWriteable, pendingValues, display
             {property.values.map(value => (
                 <div className="row" key={value.name} >
                     <div className="col-xs-2"><p>{value.label}</p></div>
-                    <div className="col-xs-10">
-                        <Form inline>
-                            <FormGroup controlId={'display_' + value.name}>
+                    <div className={isWriteable ? 'col-xs-5' : 'col-xs-10'}>
                                 <input
                                     type="text"
+                                    className="col-xs-12"
                                     name={'display_' + value.name} 
                                     value={value.value}
                                     readOnly={true}
                                     disabled={true}
                                     />
-                            </FormGroup>
-                            <FormGroup controlId={'display_' + value.name}>
-                                <input
-                                    type="text"
-                                    name={value.name}
-                                    value={displayValues[value.name]}
-                                    onChange={(numValue, stringValue) => addPendingValues(device, property, { [value.name]: numValue })}
-                                    readOnly={!isWriteable}
-                                    />
-                            </FormGroup>
-                        </Form>
                     </div>
-
-                    <input
-                        className="col-xs-10"
-                        type="text"
-                        name={value.name} 
-                        value={displayValues[value.name]}
-                        onChange={e => addPendingValues(device, property, { [value.name]: e.target.value })}
-                        readOnly={!isWriteable}
-                    />
+                    { isWriteable ? editableInput(value.name, displayValues[value.name], text => addPendingValues(device, property, { [value.name]: text})) : null }
                 </div> 
             ))}
         </div>
