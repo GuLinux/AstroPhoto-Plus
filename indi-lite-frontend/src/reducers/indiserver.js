@@ -70,11 +70,15 @@ const indiPropertyRemoved = (state, property) => {
 };
 
 const addPendingValues = (state, property, pendingValues) => {
-    Object.keys(pendingValues).forEach(name => {
-        if(pendingValues[name] === property.values.filter(v => v.name === name)[0].value)
-            delete pendingValues[name]
+    let currentPendingValues = property.id in state.pendingValues ? state.pendingValues[property.id] : {}
+    let mergedPendingValues = {...currentPendingValues, ...pendingValues};
+    
+    Object.keys(mergedPendingValues).forEach(name => {
+        if(mergedPendingValues[name] === property.values.filter(v => v.name === name)[0].value)
+            delete mergedPendingValues[name]
     });
-    return {...state, pendingValues: {...pendingValues, [property.id]: pendingValues} };
+    
+    return {...state, pendingValues: {...pendingValues, [property.id]: mergedPendingValues } };
 }
 
 const commitPendingValues = (state, property, pendingValues) => {

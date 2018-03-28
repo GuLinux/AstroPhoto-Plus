@@ -3,6 +3,7 @@ import NumericInput from 'react-numeric-input';
 import CommitPendingValuesButton from './CommitPendingValuesButton'
 import INDILight from './INDILight'
 import PRINTJ from 'printj'
+import { Form, FormGroup } from 'react-bootstrap';
 
 // copied from INDI github repo: https://github.com/indilib/indi/blob/bda9177ef25c6a219ac3879994c6efcae3b2d1c6/libindi/libs/indicom.c#L117
 // TODO: rewrite in a more modern/readable way
@@ -60,14 +61,13 @@ const sex2string = (format, value) => {
 // end INDI code
 
 
-const isSexagesimalEnabled = false
+const isSexagesimalEnabled = true
 const isFormattingenabled = true;
 
 
 const isSexagesimal = format => format.endsWith('m')
 
 const parseStringValue = (stringValue, format) => {
-//    console.log(`parseStringValue called with ${stringValue}, ${format}`);
     stringValue = stringValue.trim();
     if(!isSexagesimal(format) || ! isSexagesimalEnabled)
         return parseFloat(stringValue);
@@ -78,7 +78,6 @@ const parseStringValue = (stringValue, format) => {
         degs += sign * parseFloat(tokens[1])/60;
     if(tokens.length > 2)
         degs += sign * parseFloat(tokens[2])/3600;
-    console.log(`format: ${format}, string: ${stringValue}, parsed to: ${degs}`);
     return degs;
 }
 
@@ -102,18 +101,33 @@ const INDINumberProperty = ({device, property, isWriteable, pendingValues, displ
             {property.values.map(value => (
                 <div className="row" key={value.name} >
                     <div className="col-xs-2"><p>{value.label}</p></div>
-                    <NumericInput
-                        className="col-xs-10"
-                        min={value.min}
-                        max={value.max}
-                        step={value.step}
-                        name={value.name}
-                        value={displayValues[value.name]}
-                        onChange={(numValue, stringValue) => addPendingValues(device, property, { [value.name]: numValue })}
-                        readOnly={!isWriteable}
-                        format={v => formatValue(v, value.format)}
-                        parse={s => parseStringValue(s, value.format)}
-                        />
+                    <div className="col-xs-10">
+                        <Form inline>
+                            <FormGroup controlId={'display_' + value.name}>
+                                <NumericInput
+                                    name={'display_' + value.name}
+                                    value={value.value}
+                                    readOnly={true}
+                                    disabled={true}
+                                    format={v => formatValue(v, value.format)}
+                                    parse={s => parseStringValue(s, value.format)}
+                                    />
+                            </FormGroup>
+                            <FormGroup controlId={'display_' + value.name}>
+                                <NumericInput
+                                    min={value.min}
+                                    max={value.max}
+                                    step={value.step}
+                                    name={value.name}
+                                    value={displayValues[value.name]}
+                                    onChange={(numValue, stringValue) => addPendingValues(device, property, { [value.name]: numValue })}
+                                    readOnly={!isWriteable}
+                                    format={v => formatValue(v, value.format)}
+                                    parse={s => parseStringValue(s, value.format)}
+                                    />
+                            </FormGroup>
+                        </Form>
+                    </div>
                 </div> 
             ))}
         </div>
