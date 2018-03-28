@@ -61,15 +61,11 @@ const sex2string = (format, value) => {
 // end INDI code
 
 
-const isSexagesimalEnabled = true
-const isFormattingenabled = true;
-
-
 const isSexagesimal = format => format.endsWith('m')
 
 const parseStringValue = (stringValue, format) => {
     stringValue = stringValue.trim();
-    if(!isSexagesimal(format) || ! isSexagesimalEnabled)
+    if(!isSexagesimal(format))
         return parseFloat(stringValue);
     let tokens = stringValue.split(':');
     let degs = parseFloat(tokens[0]);
@@ -84,10 +80,8 @@ const parseStringValue = (stringValue, format) => {
 
 
 const formatValue = (displayValue, format) => {
-    if(!isFormattingenabled)
-        return displayValue;
     if(isSexagesimal(format)) {
-        return isSexagesimalEnabled ? sex2string(format, displayValue) : displayValue;
+        return sex2string(format, displayValue);
     }
     let formatted = PRINTJ.sprintf(format, displayValue)
     return formatted;
@@ -101,33 +95,33 @@ const INDINumberProperty = ({device, property, isWriteable, pendingValues, displ
             {property.values.map(value => (
                 <div className="row" key={value.name} >
                     <div className="col-xs-2"><p>{value.label}</p></div>
-                    <div className="col-xs-10">
-                        <Form inline>
-                            <FormGroup controlId={'display_' + value.name}>
-                                <NumericInput
-                                    name={'display_' + value.name}
-                                    value={value.value}
-                                    readOnly={true}
-                                    disabled={true}
-                                    format={v => formatValue(v, value.format)}
-                                    parse={s => parseStringValue(s, value.format)}
-                                    />
-                            </FormGroup>
-                            <FormGroup controlId={'display_' + value.name}>
-                                <NumericInput
-                                    min={value.min}
-                                    max={value.max}
-                                    step={value.step}
-                                    name={value.name}
-                                    value={displayValues[value.name]}
-                                    onChange={(numValue, stringValue) => addPendingValues(device, property, { [value.name]: numValue })}
-                                    readOnly={!isWriteable}
-                                    format={v => formatValue(v, value.format)}
-                                    parse={s => parseStringValue(s, value.format)}
-                                    />
-                            </FormGroup>
-                        </Form>
+                    <div className={isWriteable ? 'col-xs-5' : 'col-xs-10'}>
+                        <NumericInput
+                            name={'display_' + value.name}
+                            className="col-xs-12"
+                            value={value.value}
+                            readOnly={true}
+                            disabled={true}
+                            format={v => formatValue(v, value.format)}
+                            parse={s => parseStringValue(s, value.format)}
+                            />
                     </div>
+                    { isWriteable ? (
+                    <div className="col-xs-5">
+                        <NumericInput
+                            className="col-xs-12"
+                            min={value.min}
+                            max={value.max}
+                            step={value.step}
+                            name={value.name}
+                            value={displayValues[value.name]}
+                            onChange={(numValue, stringValue) => addPendingValues(device, property, { [value.name]: numValue })}
+                            readOnly={!isWriteable}
+                            format={v => formatValue(v, value.format)}
+                            parse={s => parseStringValue(s, value.format)}
+                            />
+                    </div>
+                    ) : null }
                 </div> 
             ))}
         </div>
