@@ -33,7 +33,7 @@ export const Sessions = {
             dispatch({type: 'REQUEST_SESSIONS'});
             return fetchSessionsAPI( dispatch, data => {
                 dispatch(Sessions.receive(data.entities.sessions, data.result, data.entities.sequences));
-            }, error => console.log(error));
+            });
         }
     },
 
@@ -42,7 +42,7 @@ export const Sessions = {
             dispatch({type: 'REQUEST_ADD_SESSION'});
             return createSessionAPI( dispatch, {name: name}, data => {
                 dispatch(Sessions.created(data.entities.sessions, data.result));
-            }, error => console.log(error));
+            });
         }
     },
     remove: id => {
@@ -52,7 +52,7 @@ export const Sessions = {
                 dispatch(Sessions.deleted(data.entities.sessions, data.result));
                 dispatch(Navigation.toSession('sessions'));
                 dispatch(Sessions.fetch());
-            }, error => console.log(error));
+            });
         }
     },
 }

@@ -54,28 +54,28 @@ export const INDIServer = {
             dispatch({type: 'FETCH_INDI_DEVICE_PROPERTIES'});
             return getINDIDevicePropertiesAPI(dispatch, device, data => {
                 dispatch(INDIServer.receivedDeviceProperties(device, data));
-            }, error => console.log(error));
+            });
         }
     },
 
     fetchDevices: () => {
         return dispatch => {
             dispatch({type: 'FETCH_INDI_DEVICES'});
-            return getINDIDevicesAPI(dispatch, data => dispatch(INDIServer.receivedDevices(data, dispatch)), error => console.log(error));
+            return getINDIDevicesAPI(dispatch, data => dispatch(INDIServer.receivedDevices(data, dispatch)));
         }
     },
 
     fetchServerState: (fetchFullTree = false) => {
         return dispatch => {
             dispatch({type: 'FETCH_INDI_SERVER_STATE'});
-            return getINDIServerStatusAPI(dispatch, data => dispatch(INDIServer.receivedServerState(data, dispatch, fetchFullTree)), error => console.log(error));
+            return getINDIServerStatusAPI(dispatch, data => dispatch(INDIServer.receivedServerState(data, dispatch, fetchFullTree)));
         }
     },
 
     setServerConnection: connect => {
         return dispatch => {
             dispatch({type: connect ? 'CONNECT_INDI_SERVER' : 'DISCONNECT_INDI_SERVER'});
-            return setINDIServerConnectionAPI(dispatch, connect, data => dispatch(INDIServer.receivedServerState(data, dispatch)), error => console.log(error));
+            return setINDIServerConnectionAPI(dispatch, connect, data => dispatch(INDIServer.receivedServerState(data, dispatch)));
         }
     },
 
@@ -90,7 +90,7 @@ export const INDIServer = {
 
     commitPendingValues: (device, property, pendingValues) => {
         return dispatch => {
-            setINDIValuesAPI(dispatch, device, property, pendingValues, json => console.log(json), error => console.log(error));
+            setINDIValuesAPI(dispatch, device, property, pendingValues, json => console.log(json));
             return { type: 'COMMIT_PENDING_VALUES', property, pendingValues }
         }
     },
