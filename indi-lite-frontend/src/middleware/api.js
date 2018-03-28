@@ -7,86 +7,50 @@ const sessionSchema = new schema.Entity('sessions', {
 });
 const sessionList = [ sessionSchema ]
 
-export const fetchSessionsAPI = (onSuccess, onError) => {
-    return fetch('/api/sessions')
-        .then(response => response.json(), onError)
-        .then(json => {
-            let data = normalize(json, sessionList);
-            onSuccess(data);
-        })
-}
+const fetchJSON = (url, options, onSuccess, onError) => fetch(url, options)
+                                                    .then(response => {
+                                                        if(! response.ok)
+                                                            throw response;
+                                                        return response.json();
+                                                    })
+                                                    .then(onSuccess)
+                                                    .catch(error => onError(error));
 
-export const createSessionAPI = (session, onSuccess, onError) => {
-    return fetch('/api/sessions', {
+export const fetchSessionsAPI = (onSuccess, onError) => fetchJSON('/api/sessions', {}, json => onSuccess(normalize(json, sessionList)), onError);
+
+export const createSessionAPI = (session, onSuccess, onError) => fetchJSON('/api/sessions', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(session)
-    }).then(response => response.json(), onError)
-    .then(json => {
-        let data = normalize(json, sessionSchema);
-        onSuccess(data);
-    })
-}
+    }, json => onSuccess(normalize(json, sessionSchema)), onError);
 
-export const deleteSessionAPI = (sessionId, onSuccess, onError) => {
-    return fetch('/api/sessions/' + sessionId, {
+export const deleteSessionAPI = (sessionId, onSuccess, onError) => fetchJSON(`/api/sessions/${sessionId}`, {
         method: 'DELETE'
-    }).then(response => response.json(), onError)
-    .then(json => {
-console.log(json);
-        let data = normalize(json, sessionSchema);
-        onSuccess(data);
-    })
-}
+    }, json => onSuccess(normalize(json, sessionSchema)), onError);
 
 
-export const createSequenceAPI = (sequence, onSuccess, onError) => {
-    return fetch('/api/sessions/' + sequence.session + '/sequences', {
+export const createSequenceAPI = (sequence, onSuccess, onError) => fetchJSON(`/api/sessions/${sequence.session}/sequences`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({name: sequence.name})
-    }).then(response => response.json(), onError)
-    .then(json => {
-        let data = normalize(json, sequenceSchema);
-        onSuccess(data);
-    })
-}
+    }, json => onSuccess(normalize(json, sequenceSchema)), onError);
 
-export const getINDIServerStatusAPI = (onSuccess, onError) => {
-    return fetch('/api/server/status').then(response => response.json(), onError)
-    .then(json => {
-        onSuccess(json);
-    })
-}
+export const getINDIServerStatusAPI = (onSuccess, onError) => fetchJSON('/api/server/status', {}, onSuccess, onError);
 
-export const setINDIServerConnectionAPI = (connect, onSuccess, onError) => {
-    let endpoint = connect ? '/api/server/connect' : '/api/server/disconnect';
-    return fetch(endpoint, { method: 'PUT'}).then(response => response.json(), onError)
-    .then(json => {
-        onSuccess(json);
-    })
-}
+export const setINDIServerConnectionAPI = (connect, onSuccess, onError) => fetchJSON(`/api/server/${ connect ? 'connect' : 'disconnect'}`, { method: 'PUT'}, onSuccess, onError);
 
-export const getINDIDevicesAPI = (onSuccess, onError) => {
-    return fetch('/api/server/devices').then(response => response.json(), onError).then(json => onSuccess(json))
-}
+export const getINDIDevicesAPI = (onSuccess, onError) => fetchJSON('/api/server/devices', {}, onSuccess, onError);
 
-export const getINDIDevicePropertiesAPI = (device, onSuccess, onError) => {
-    return fetch('/api/server/devices/' + device.name + '/properties').then(response => response.json(), onError).then(json => onSuccess(json))
-}
+export const getINDIDevicePropertiesAPI = (device, onSuccess, onError) => fetchJSON(`/api/server/devices/${device.name}/properties`, {}, onSuccess, onError);
 
-export const setINDIValuesAPI = (device, property, pendingValues, onSuccess, onError) => {
-    let propertiesMap = {};
-    let url = '/api/server/devices/' + device.name + '/properties/' + property.name;
-    fetch(url, {
+export const setINDIValuesAPI = (device, property, pendingValues, onSuccess, onError) => fetchJSON(`/api/server/devices/${device.name}/properties/${property.name}`, {
         method: 'PUT',
         body: JSON.stringify(pendingValues),
         headers: {
             'Content-Type': 'application/json'
         },
-    }).then(response => response.json(), onError).then(json => onSuccess(json))
-}
+    }, onSuccess, onError);
