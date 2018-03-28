@@ -2,12 +2,10 @@ import { connect } from 'react-redux'
 import INDINavbar from '../components/INDINavbar'
 import Actions from '../actions'
 
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = state => ({
     section: state.navigation.section,
     disabled: state.errors.isError,
-  }
-}
+})
 
 const mapDispatchToProps = dispatch => {
   return {
