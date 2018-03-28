@@ -32,10 +32,12 @@ class Device:
     def __init_by_value(self, name):
         self.name = name
 
+    @with_indi_device
     def to_map(self):
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'interfaces': self.indi_device.interfaces,
         }
 
     def find_indi_device(self):

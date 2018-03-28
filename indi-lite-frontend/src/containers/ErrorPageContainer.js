@@ -11,8 +11,10 @@ const mapStateToProps = (state, ownProps) => {
             break;
         case 'event':
             payloadAsString = String(payload.target);
+            break;
         case 'response':
             payloadAsString = `status: ${payload.status} - ${payload.statusText}\nURL: ${payload.url}\nBody:\n${state.errors.lastResponseBody}`;
+            break;
         default:
             break;
     };
