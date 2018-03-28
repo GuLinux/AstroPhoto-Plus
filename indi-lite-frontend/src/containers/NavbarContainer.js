@@ -4,7 +4,8 @@ import Actions from '../actions'
 
 const mapStateToProps = state => {
   return {
-    section: state.navigation.section
+    section: state.navigation.section,
+    disabled: state.errors.isError,
   }
 }
 

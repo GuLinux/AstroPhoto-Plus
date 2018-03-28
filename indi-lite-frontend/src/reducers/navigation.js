@@ -17,6 +17,8 @@ const navigation = (state = defaultState, action) => {
             return {...state, indiDevice: action.device, indiGroup: null}
         case 'NAVIGATE_TO_INDI_GROUP':
             return {...state, indiDevice: action.device, indiGroup: action.group}
+        case 'SERVER_ERROR':
+            return {...state, section: 'error_page'};
         default:
             return state;
     }

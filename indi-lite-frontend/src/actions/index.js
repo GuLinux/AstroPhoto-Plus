@@ -10,6 +10,7 @@ export const Actions = {
     Navigation,
     INDIServer,
     Notifications,
+    serverError: (source, payloadType, payload) => ({ type: 'SERVER_ERROR', source, payloadType, payload }),
 }
 
 export default Actions

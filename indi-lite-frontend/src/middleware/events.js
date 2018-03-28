@@ -1,5 +1,5 @@
 import 'eventsource'
-import INDIServer from '../actions/indiserver';
+import Actions from '../actions';
 declare var EventSourcePolyfill: any;
 
 
@@ -13,31 +13,31 @@ const indiserverEvents = (event, dispatch) => {
     let eventObject = JSON.parse(event.data);
     switch(eventObject.event) {
         case 'indi_server_connect':
-            dispatch(INDIServer.serverConnectionNotify(eventObject, dispatch));
+            dispatch(Actions.INDIServer.serverConnectionNotify(eventObject, dispatch));
             break;
         case 'indi_server_disconnect':
-            dispatch(INDIServer.serverDisconnectNotify(eventObject, dispatch));
+            dispatch(Actions.INDIServer.serverDisconnectNotify(eventObject, dispatch));
             break;
         case 'indi_server_disconnect_error':
-            dispatch(INDIServer.serverDisconnectErrorNotify(eventObject, dispatch));
+            dispatch(Actions.INDIServer.serverDisconnectErrorNotify(eventObject, dispatch));
             break;
         case 'indi_message':
-            dispatch(INDIServer.deviceMessage(eventObject.payload.device, eventObject.payload.message));
+            dispatch(Actions.INDIServer.deviceMessage(eventObject.payload.device, eventObject.payload.message));
             break;
         case 'indi_property_updated':
-            dispatch(INDIServer.propertyUpdated(eventObject.payload));
+            dispatch(Actions.INDIServer.propertyUpdated(eventObject.payload));
             break;
         case 'indi_property_added':
-            dispatch(INDIServer.propertyAdded(eventObject.payload));
+            dispatch(Actions.INDIServer.propertyAdded(eventObject.payload));
             break
         case 'indi_property_removed':
-            dispatch(INDIServer.propertyRemoved(eventObject.payload));
+            dispatch(Actions.INDIServer.propertyRemoved(eventObject.payload));
             break
         case 'indi_device_added':
-            dispatch(INDIServer.deviceAdded(eventObject.payload));
+            dispatch(Actions.INDIServer.deviceAdded(eventObject.payload));
             break;
         case 'indi_device_removed':
-            dispatch(INDIServer.deviceRemoved(eventObject.payload));
+            dispatch(Actions.INDIServer.deviceRemoved(eventObject.payload));
         default:
             logEvent(event);
     }
@@ -55,6 +55,7 @@ const listenToEvents = (dispatch) => {
         }
     }
     es.addEventListener('indi_server', indiServerListener);
+    es.onerror = e => dispatch(Actions.serverError('event_source', 'event', e));
 }
 
 export default listenToEvents; 

@@ -5,6 +5,7 @@ import LoadingPage from '../containers/LoadingPage';
 import SessionsPageContainer from '../containers/SessionsPageContainer';
 import INDIServerContainer from '../containers/INDIServerContainer';
 import NotificationsContainer from '../containers/NotificationsContainer';
+import ErrorPageContainer from '../containers/ErrorPageContainer';
 import './App.css';
 
 
@@ -17,6 +18,7 @@ class App extends Component {
         <PagesListContainer navigationKey="section">
             <SessionsPageContainer key="sessions" />
             <INDIServerContainer key="indi_server" />
+            <ErrorPageContainer key="error_page" />
         </PagesListContainer>
         <LoadingPage />
       </div>

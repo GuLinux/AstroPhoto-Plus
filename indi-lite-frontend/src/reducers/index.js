@@ -5,7 +5,8 @@ import network from './network'
 import navigation from './navigation'
 import indiserver from './indiserver'
 import notifications from './notifications'
+import errors from './errors'
 
-const indiLiteApp = combineReducers({sequences, sessions, network, navigation, indiserver, notifications });
+const indiLiteApp = combineReducers({sequences, sessions, network, navigation, indiserver, notifications, errors });
 
 export default indiLiteApp

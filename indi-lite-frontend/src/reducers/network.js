@@ -16,6 +16,7 @@ const requests = (state = { fetching: false }, action) => {
         case 'RECEIVED_SERVER_STATE':
         case 'RECEIVED_INDI_DEVICES':
         case 'RECEIVED_DEVICE_PROPERTIES':
+        case 'SERVER_ERROR':
 //        case 'COMMITTED_PENDING_PROPERTIES':
             return {...state, fetching: false};
         default:

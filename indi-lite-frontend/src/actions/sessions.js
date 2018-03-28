@@ -31,7 +31,7 @@ export const Sessions = {
     fetch: () => {
         return dispatch => {
             dispatch({type: 'REQUEST_SESSIONS'});
-            return fetchSessionsAPI( data => {
+            return fetchSessionsAPI( dispatch, data => {
                 dispatch(Sessions.receive(data.entities.sessions, data.result, data.entities.sequences));
             }, error => console.log(error));
         }
@@ -40,7 +40,7 @@ export const Sessions = {
     add: name => {
         return dispatch => {
             dispatch({type: 'REQUEST_ADD_SESSION'});
-            return createSessionAPI( {name: name}, data => {
+            return createSessionAPI( dispatch, {name: name}, data => {
                 dispatch(Sessions.created(data.entities.sessions, data.result));
             }, error => console.log(error));
         }
@@ -48,7 +48,7 @@ export const Sessions = {
     remove: id => {
         return dispatch => {
             dispatch({type: 'REQUEST_DELETE_SESSION'});
-            return deleteSessionAPI( id, data => {
+            return deleteSessionAPI( dispatch, id, data => {
                 dispatch(Sessions.deleted(data.entities.sessions, data.result));
                 dispatch(Navigation.toSession('sessions'));
                 dispatch(Sessions.fetch());

@@ -12,7 +12,7 @@ export const Sequences = {
     add: (name, sessionId) => {
         return dispatch => {
             dispatch({type: 'REQUEST_ADD_SEQUENCE'});
-            return createSequenceAPI( {name: name, session: sessionId}, data => {
+            return createSequenceAPI(dispatch, {name: name, session: sessionId}, data => {
                 dispatch(Sequences.created(data.entities.sequences[data.result], sessionId));
             }, error => console.log(error));
         }

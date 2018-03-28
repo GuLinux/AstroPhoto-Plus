@@ -52,7 +52,7 @@ export const INDIServer = {
     fetchDeviceProperties: device => {
         return dispatch => {
             dispatch({type: 'FETCH_INDI_DEVICE_PROPERTIES'});
-            return getINDIDevicePropertiesAPI(device, data => {
+            return getINDIDevicePropertiesAPI(dispatch, device, data => {
                 dispatch(INDIServer.receivedDeviceProperties(device, data));
             }, error => console.log(error));
         }
@@ -61,21 +61,21 @@ export const INDIServer = {
     fetchDevices: () => {
         return dispatch => {
             dispatch({type: 'FETCH_INDI_DEVICES'});
-            return getINDIDevicesAPI(data => dispatch(INDIServer.receivedDevices(data, dispatch)), error => console.log(error));
+            return getINDIDevicesAPI(dispatch, data => dispatch(INDIServer.receivedDevices(data, dispatch)), error => console.log(error));
         }
     },
 
     fetchServerState: (fetchFullTree = false) => {
         return dispatch => {
             dispatch({type: 'FETCH_INDI_SERVER_STATE'});
-            return getINDIServerStatusAPI(data => dispatch(INDIServer.receivedServerState(data, dispatch, fetchFullTree)), error => console.log(error));
+            return getINDIServerStatusAPI(dispatch, data => dispatch(INDIServer.receivedServerState(data, dispatch, fetchFullTree)), error => console.log(error));
         }
     },
 
     setServerConnection: connect => {
         return dispatch => {
             dispatch({type: connect ? 'CONNECT_INDI_SERVER' : 'DISCONNECT_INDI_SERVER'});
-            return setINDIServerConnectionAPI(connect, data => dispatch(INDIServer.receivedServerState(data, dispatch)), error => console.log(error));
+            return setINDIServerConnectionAPI(dispatch, connect, data => dispatch(INDIServer.receivedServerState(data, dispatch)), error => console.log(error));
         }
     },
 
@@ -89,8 +89,10 @@ export const INDIServer = {
     },
 
     commitPendingValues: (device, property, pendingValues) => {
-        setINDIValuesAPI(device, property, pendingValues, json => console.log(json), error => console.log(error));
-        return { type: 'COMMIT_PENDING_VALUES', property, pendingValues }
+        return dispatch => {
+            setINDIValuesAPI(dispatch, device, property, pendingValues, json => console.log(json), error => console.log(error));
+            return { type: 'COMMIT_PENDING_VALUES', property, pendingValues }
+        }
     },
 
     deviceMessage: (device, message) => ({ type: 'INDI_DEVICE_MESSAGE', device, message }),
