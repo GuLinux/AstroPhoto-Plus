@@ -19,6 +19,7 @@ class Camera:
     def to_map(self):
         return {
             'id': self.device.id,
-            'device': self.device.to_map()
+            'device': self.device.to_map(),
+            'connected': self.camera.connected,
         }
 

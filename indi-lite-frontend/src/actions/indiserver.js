@@ -93,7 +93,7 @@ export const INDIServer = {
     commitPendingValues: (device, property, pendingValues) => {
         return dispatch => {
             setINDIValuesAPI(dispatch, device, property, pendingValues, json => console.log(json));
-            return { type: 'COMMIT_PENDING_VALUES', property, pendingValues }
+            dispatch({ type: 'COMMIT_PENDING_VALUES', property, pendingValues })
         }
     },
 
@@ -103,8 +103,8 @@ export const INDIServer = {
     propertyRemoved: property => ({ type: 'INDI_PROPERTY_REMOVED', property }),
     deviceAdded: device => {
         return dispatch => {
+            dispatch({ type: 'INDI_DEVICE_ADDED', device })
             dispatch(Gear.fetchCameras())
-            return { type: 'INDI_DEVICE_ADDED', device }
         }
     },
     
