@@ -4,10 +4,9 @@ import Actions from '../actions'
 
 
 const mapStateToProps = (state, ownProps) => {
-    let device = ownProps.device;
+    let device = state.indiserver.deviceEntities[ownProps.device];
     let group = ownProps.group;
     return {
-        device, 
         group,
         properties: device.properties.map(id => state.indiserver.properties[id]).filter(p => p.group === group.id),
     }

@@ -17,7 +17,7 @@ const getPropertyComponent = property => {
     }
 }
 
-const INDIDeviceGroup = ({device, group, properties}) => (
+const INDIDeviceGroup = ({group, properties}) => (
     <div className="container-fluid indi-device-group">
         { properties.map(property => (
             <div className="indi-property" key={property.id}>{getPropertyComponent(property)}</div>
