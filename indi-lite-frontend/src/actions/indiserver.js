@@ -1,5 +1,6 @@
 import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI } from '../middleware/api'
 import Notifications from './notifications'
+import Gear from './gear'
 
 export const INDIServer = {
 
@@ -36,6 +37,7 @@ export const INDIServer = {
     },
 
     receivedDevices: (devices, dispatch) => {
+        dispatch(Gear.fetchCameras())
         devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device)));
         return {
             type: 'RECEIVED_INDI_DEVICES',
@@ -99,7 +101,13 @@ export const INDIServer = {
     propertyUpdated: property => ({ type: 'INDI_PROPERTY_UPDATED', property }),
     propertyAdded: property => ({ type: 'INDI_PROPERTY_ADDED', property }),
     propertyRemoved: property => ({ type: 'INDI_PROPERTY_REMOVED', property }),
-    deviceAdded: device => ({ type: 'INDI_DEVICE_ADDED', device }),
+    deviceAdded: device => {
+        return dispatch => {
+            dispatch(Gear.fetchCameras())
+            return { type: 'INDI_DEVICE_ADDED', device }
+        }
+    },
+    
     deviceRemoved: device => ({ type: 'INDI_DEVICE_REMOVED', device }),
 }
 

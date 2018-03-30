@@ -3,6 +3,7 @@ import Sequences from './sequences'
 import Navigation from './navigation'
 import INDIServer from './indiserver'
 import Notifications from './notifications'
+import Gear from './gear'
 
 export const Actions = {
     Sessions,
@@ -10,6 +11,7 @@ export const Actions = {
     Navigation,
     INDIServer,
     Notifications,
+    Gear,
     serverError: (source, payloadType, payload, responseBody) => ({ type: 'SERVER_ERROR', source, payloadType, payload, responseBody }),
 }
 
