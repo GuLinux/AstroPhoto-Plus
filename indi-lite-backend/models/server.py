@@ -53,7 +53,7 @@ class Server:
         return Property(self.client, self.logger, *args, **kwargs)
 
     def cameras(self):
-        return [Camera(c) for c in self.client.cameras()]
+        return [Camera(self.client, self.logger, camera=c) for c in self.client.cameras()]
 
     def __on_message(self, device, message):
         self.logger.debug('INDI message: device={}, {}'.format(device.name, message))
