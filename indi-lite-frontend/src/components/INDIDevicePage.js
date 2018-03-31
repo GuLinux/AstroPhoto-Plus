@@ -4,18 +4,18 @@ import INDIDeviceGroupContainer from '../containers/INDIDeviceGroupContainer';
 import INDIMessagesPanel from './INDIMessagesPanel';
 
 const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendingProperties, commitPendingProperties, navigateToDeviceGroup, indiGroupTab, messages}) => (
-    <Tab.Container id="device_properties" activeKey={indiGroupTab} onSelect={g => navigateToDeviceGroup(device, g)} >
+    <Tab.Container id="device" activeKey={indiGroupTab} onSelect={g => navigateToDeviceGroup(device, g)} >
         <div>
             <Row>
                 <Col xs={2}>
                     <Nav bsStyle="pills" stacked>
-                        { groups.map( group  => (<NavItem key={group.id} eventKey={group.id}>{group.name}</NavItem>) ) }
+                        { groups.map( group  => (<NavItem key={group} eventKey={group}>{group}</NavItem>) ) }
                     </Nav>
                 </Col>
                 <Col xs={10}>
                     <Tab.Content animation>
                     { groups.map( group => (
-                        <Tab.Pane key={group.id} eventKey={group.id} title={group.name}>
+                        <Tab.Pane key={group} eventKey={group} title={group}>
                             <INDIDeviceGroupContainer device={device} group={group} />
                         </Tab.Pane>
                     ))}

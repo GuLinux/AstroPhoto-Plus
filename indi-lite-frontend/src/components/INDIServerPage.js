@@ -16,7 +16,7 @@ const INDIServerPage = ({devices, indiDeviceTab, navigateToDevice}) => (
             </Tab>
             { devices.map( device => (
                 <Tab key={device.id} eventKey={device.id} title={device.name}>
-                    <INDIDeviceContainer device={device} />
+                    <INDIDeviceContainer device={device.id} />
                 </Tab>
             ))}
         </Tabs>

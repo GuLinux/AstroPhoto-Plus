@@ -6,21 +6,16 @@ const defaultState = {
     },
     deviceEntities: {},
     devices: [],
-    groups: {},
     properties: {},
     pendingValues: {},
     messages: [],
 };
-
-const groupID = (deviceID, group) => deviceID + '-' + group;
-const createGroup = (deviceID, group) => ({name: group, id: groupID(deviceID, group) });
 
 const receivedServerState = (state, action) => {
     let nextState = {...state, state: {connected: action.state.connected, host: action.state.host, port: action.state.port.toString()}};
     if(! nextState.state.connected) {
         nextState.devices = [];
         nextState.deviceEntities = {}
-        nextState.groups = {};
         nextState.properties = {};
         nextState.pendingValues = {};
     }
@@ -29,44 +24,26 @@ const receivedServerState = (state, action) => {
 
 const arrayToObjectById = array => array.reduce( (obj, element) => ({...obj, [element.id]: element}), {});
 
-const remapProperty = (property, device) => ({...property, group: groupID(property.device, property.group)})
-
 const receivedDeviceProperties = (state, device, properties) => {
 
-    let allGroups = arrayToObjectById(Object.keys(state.groups).filter(id => state.groups[id].device !== device.id).map(id => state.groups[id]));
     let allProperties = arrayToObjectById(Object.keys(state.properties).filter(id => state.properties[id].device !== device.id).map(id => state.properties[id]));
+    allProperties = {...allProperties, ...arrayToObjectById(properties)};
 
-    let deviceGroups = properties.map(p => p.group);
-    deviceGroups = deviceGroups.filter( (name, index) => index === deviceGroups.indexOf(name)).map(name => createGroup(device.id, name));
-    let deviceProperties = properties.map(p => remapProperty(p, device));
-
-    let deviceUpdated = {...state.deviceEntities[device.id], groups: deviceGroups.map(g => g.id), properties: deviceProperties.map(p => p.id)};
-
-    allGroups = {...allGroups, ...arrayToObjectById(deviceGroups)};
-    allProperties = {...allProperties, ...arrayToObjectById(deviceProperties)};
-
-    return {...state, deviceEntities: {...state.deviceEntities, [deviceUpdated.id]: deviceUpdated}, groups: allGroups, properties: allProperties };
+    return {...state, properties: allProperties };
 }
 
 const indiPropertyUpdated = (state, property) => {
-    let device = state.deviceEntities[property.device];
-    return {...state, properties: {...state.properties, [property.id]: remapProperty(property, device) } }
+    return {...state, properties: {...state.properties, [property.id]: property } }
 };
 
 const indiPropertyAdded = (state, property) => {
-    let device = state.deviceEntities[property.device];
-    let group = createGroup(property.device, property.group);
-    let groupIds = [...device.groups, group.id];
-    device = {...device, properties: [...device.properties, property.id], groups: groupIds.filter( (id, index) => index === groupIds.indexOf(id)) };
-    let newProperty = remapProperty(property);
-    return {...state, deviceEntities: {...state.deviceEntities, [device.id]: device}, groups: {...state.groups, [group.id]: group}, properties: {...state.properties, [newProperty.id]: newProperty} };
+    return {...state, properties: {...state.properties, [property.id]: property} };
 };
 
 const indiPropertyRemoved = (state, property) => {
-    let device = {...state.deviceEntities[property.device], properties: state.deviceEntities[property.device].properties.filter(id => id !== property.id)};
     let properties = {...state.properties};
     delete properties[property.id]
-    return {...state, properties, deviceEntities: {...state.deviceEntities, [device.id]: device}};    
+    return {...state, properties};    
 };
 
 const addPendingValues = (state, property, pendingValues) => {
@@ -95,11 +72,9 @@ const commitPendingValues = (state, property, pendingValues) => {
     };
 }
 
-const deviceEntity = (device, groups=[], properties=[]) => ({...device, properties, groups, })
-
 const receivedINDIDevices = (state, devices) => ({
     ...state,
-    deviceEntities: arrayToObjectById(devices.map(d => ({...d, properties: [], groups: []}) )),
+    deviceEntities: arrayToObjectById(devices),
     devices: devices.map(d => d.id),
 })
 
@@ -132,7 +107,7 @@ const indiserver = (state = defaultState, action) => {
         case 'INDI_PROPERTY_REMOVED':
             return indiPropertyRemoved(state, action.property);
         case 'INDI_DEVICE_ADDED':
-            return {...state, devices: [...state.devices, action.device.id], deviceEntities: {...state.deviceEntities, [action.device.id]: {...action.device, groups: [], properties: []}}}
+            return {...state, devices: [...state.devices, action.device.id], deviceEntities: {...state.deviceEntities, [action.device.id]: action.device}}
         case 'INDI_DEVICE_REMOVED':
             return indiDeviceRemoved(state, action.device);
         default:

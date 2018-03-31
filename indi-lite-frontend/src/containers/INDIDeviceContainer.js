@@ -1,26 +1,32 @@
 import { connect } from 'react-redux'
 import INDIDevicePage from '../components/INDIDevicePage'
 import Actions from '../actions'
+import { makeGetDeviceGroups } from '../selectors/indi-groups';
 
 
-const mapStateToProps = (state, ownProps) => {
-    let device = ownProps.device;
-    let groups = device.groups.map(id => state.indiserver.groups[id]);
-    let defaultGroup = groups.length > 0 ? groups[0].id : '';
-    return {
-        device: device.id,
-        groups,
-        indiGroupTab: state.navigation.indiGroup in state.indiserver.groups ? state.navigation.indiGroup : defaultGroup,
-        messages: state.indiserver.messages.filter(m => m.device == device.id),
+const makeMapStateToProps = () => {
+    const getDeviceGroups = makeGetDeviceGroups();
+    const mapStateToProps = (state, ownProps) => {
+        let device = ownProps.device;
+        let groups = getDeviceGroups(state, ownProps);
+        let defaultGroup = groups.length > 0 ? groups[0]: '';
+        console.log(`device: ${device}, groups: ${groups}, defaultGroup: ${defaultGroup}, navigationGroup: ${state.navigation.indiGroup}, present: ${ groups.includes(state.navigation.indiGroup)}`);
+        return {
+            device,
+            groups,
+            indiGroupTab: groups.includes(state.navigation.indiGroup) ? state.navigation.indiGroup : defaultGroup,
+            messages: state.indiserver.messages.filter(m => m.device == device),
+        }
     }
+    return mapStateToProps
 }
 
 const mapDispatchToProps = dispatch => ({
-    navigateToDeviceGroup: (device, group) => dispatch(Actions.Navigation.toINDIGroup(device.id, group)),
+    navigateToDeviceGroup: (device, group) => dispatch(Actions.Navigation.toINDIGroup(device, group)),
 })
 
 const INDIDeviceContainer = connect(
-  mapStateToProps,
+  makeMapStateToProps,
   mapDispatchToProps
 )(INDIDevicePage)
 

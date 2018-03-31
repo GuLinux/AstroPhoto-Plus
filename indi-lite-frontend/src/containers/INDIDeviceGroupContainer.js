@@ -1,20 +1,25 @@
 import { connect } from 'react-redux'
 import INDIDeviceGroup from '../components/INDIDeviceGroup'
 import Actions from '../actions'
+import { makeGetDeviceProperties } from '../selectors/indi-properties';
 
 
-const mapStateToProps = (state, ownProps) => {
-    let device = state.indiserver.deviceEntities[ownProps.device];
-    let group = ownProps.group;
-    return {
-        group,
-        properties: device.properties.map(id => state.indiserver.properties[id]).filter(p => p.group === group.id),
+const makeMapStateToProps = () => {
+    const getDeviceProperties = makeGetDeviceProperties();
+    const mapStateToProps = (state, ownProps) => {
+        let device = state.indiserver.deviceEntities[ownProps.device];
+        let group = ownProps.group;
+        return {
+            group,
+            properties: getDeviceProperties(state, ownProps)
+        }
     }
+    return mapStateToProps;
 }
 
 
 const INDIDeviceGroupContainer = connect(
-  mapStateToProps,
+  makeMapStateToProps,
 )(INDIDeviceGroup)
 
 export default INDIDeviceGroupContainer 
