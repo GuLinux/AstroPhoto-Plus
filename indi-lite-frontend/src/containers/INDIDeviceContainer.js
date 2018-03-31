@@ -10,7 +10,6 @@ const makeMapStateToProps = () => {
         let device = ownProps.device;
         let groups = getDeviceGroups(state, ownProps);
         let defaultGroup = groups.length > 0 ? groups[0]: '';
-        console.log(`device: ${device}, groups: ${groups}, defaultGroup: ${defaultGroup}, navigationGroup: ${state.navigation.indiGroup}, present: ${ groups.includes(state.navigation.indiGroup)}`);
         return {
             device,
             groups,
