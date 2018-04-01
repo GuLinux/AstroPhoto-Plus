@@ -3,13 +3,13 @@ import React from 'react';
 import { Table, Glyphicon } from 'react-bootstrap';
 
 
-        // <Session key={session.id} {...session} onCreateSequence={onCreateSequence} />
-const SessionsList = ({sessions, onCreateSequence, onSessionEdit, onSessionDelete}) =>
+const SessionsList = ({sessions, cameras, onCreateSequence, onSessionEdit, onSessionDelete}) =>
 (
     <Table striped bordered hover>
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Camera</th>
                 <th>Sequences</th>
                 <th>State</th>
                 <th>Actions</th>
@@ -19,6 +19,7 @@ const SessionsList = ({sessions, onCreateSequence, onSessionEdit, onSessionDelet
         {sessions.map(session => (
             <tr key={session.id}>
                 <td><a href='#' onClick={e => onSessionEdit(session.id)} >{session.name}</a></td>
+                <td>{session.camera in cameras ? cameras[session.camera] : 'N/A'}</td>
                 <td>{session.sequences.length}</td>
                 <td></td>
                 <td>

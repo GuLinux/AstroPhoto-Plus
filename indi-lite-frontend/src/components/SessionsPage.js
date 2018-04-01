@@ -2,7 +2,7 @@ import AddSession from '../components/AddSession';
 import React from 'react';
 import PagesListContainer from '../containers/PagesListContainer';
 import SessionContainer from '../containers/SessionContainer';
-import SessionsList from './SessionsList'
+import SessionsListContainer from '../containers/SessionsListContainer'
 
 const SessionsPage = ({sessions, onSessionEdit, onAddSession, onSessionDelete}) => 
 (
@@ -10,7 +10,7 @@ const SessionsPage = ({sessions, onSessionEdit, onAddSession, onSessionDelete}) 
         <PagesListContainer navigationKey="sessionPage">
             <div key="sessions">
                 <AddSession />
-                <SessionsList sessions={sessions} onSessionEdit={onSessionEdit} onSessionDelete={onSessionDelete} />
+                <SessionsListContainer />
             </div>
             <SessionContainer key="session" />
         </PagesListContainer>

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import SessionsPage from '../components/SessionsPage'
+import SessionsList from '../components/SessionsList'
 import Actions from '../actions'
 
 const getSessions = (entities, ids) => {
@@ -7,9 +7,13 @@ const getSessions = (entities, ids) => {
 }
 
 const mapStateToProps = state => {
-  return {
-    sessions: getSessions(state.sessions.entities, state.sessions.ids)
-  }
+
+    let cameras = state.gear.cameras.reduce( (cameras, id) => ({...cameras, [id]: state.gear.cameraEntities[id].device.name }), {} );
+
+    return {
+        sessions: getSessions(state.sessions.entities, state.sessions.ids),
+        cameras,
+    }
 }
 
 const mapDispatchToProps = dispatch => {
@@ -19,10 +23,10 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const SessionsPageContainer = connect(
+const SessionsListContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(SessionsPage)
+)(SessionsList)
 
-export default SessionsPageContainer
+export default SessionsListContainer
 

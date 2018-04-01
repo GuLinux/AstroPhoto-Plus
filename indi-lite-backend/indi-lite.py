@@ -104,9 +104,12 @@ def delete_session(id):
 @json_input
 @json_api
 def new_session(json):
-    new_session = Session(json['name'])
-    controller.sessions.append(new_session)
-    return new_session.to_map()
+    try:
+        new_session = Session(json['name'], json['camera'])
+        controller.sessions.append(new_session)
+        return new_session.to_map()
+    except KeyError:
+        raise BadRequestError('Invalid json')
 
 
 @app.route('/api/sessions/<id>/sequences', methods=['POST'])

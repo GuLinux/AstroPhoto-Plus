@@ -40,7 +40,7 @@ export const Sessions = {
     add: (name, cameraID) => {
         return dispatch => {
             dispatch({type: 'REQUEST_ADD_SESSION'});
-            return createSessionAPI( dispatch, {name: name}, data => {
+            return createSessionAPI( dispatch, {name, camera: cameraID }, data => {
                 dispatch(Sessions.created(data.entities.sessions, data.result));
             });
         }
