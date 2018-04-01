@@ -17,6 +17,8 @@ services:
         - react-app:/app/build
     expose:
         - "3000"
+    environment:
+        - BUNDLE
   backend:
     build: backend
     volumes:
