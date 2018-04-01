@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Table, Col } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
 const INDIMessagesPanel = ({messages}) => (
     <Table striped bordered condensed>

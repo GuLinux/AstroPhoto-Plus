@@ -1,7 +1,6 @@
 import React from 'react';
 import CommitPendingValuesButton from './CommitPendingValuesButton'
 import INDILight from './INDILight'
-import { Form, FormGroup } from 'react-bootstrap';
 
 const editableInput = (name, value, onChange) => (
     <div className="col-xs-5">

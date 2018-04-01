@@ -3,18 +3,17 @@ import NumericInput from 'react-numeric-input';
 import CommitPendingValuesButton from './CommitPendingValuesButton'
 import INDILight from './INDILight'
 import PRINTJ from 'printj'
-import { Form, FormGroup } from 'react-bootstrap';
 
 // copied from INDI github repo: https://github.com/indilib/indi/blob/bda9177ef25c6a219ac3879994c6efcae3b2d1c6/libindi/libs/indicom.c#L117
 // TODO: rewrite in a more modern/readable way
 const sex2string = (format, value) => {
-    let formatSpecifiers = format.substring(1, format.indexOf('m')).split('.').map(x => parseInt(x));
+    let formatSpecifiers = format.substring(1, format.indexOf('m')).split('.').map(x => parseInt(x, 10));
     let width = formatSpecifiers[0] - formatSpecifiers[1];
     let fracSpecifier = formatSpecifiers[1].toString();
     let fracBase = { 9: 360000, 8: 36000, 6: 3600, 5: 600, 4: 60 };
     fracBase = fracSpecifier in fracBase ? fracBase[fracSpecifier] : fracBase[4];
 
-    let isNegative = parseInt(value) < 0;
+    let isNegative = parseInt(value, 10) < 0;
     /* convert to an integral number of whole portions */
     let number = Math.trunc(Math.abs(value) * fracBase + 0.5);
     let d = Math.trunc(number / fracBase);
@@ -24,7 +23,7 @@ const sex2string = (format, value) => {
     let s;
 
     /* form the whole part; "negative 0" is a special case */
-    if (isNegative && d == 0)
+    if (isNegative && d === 0)
         out += PRINTJ.sprintf("%*s-0", width - 2, "");
     else
         out += PRINTJ.sprintf("%*d", width, isNegative ? -d : d);

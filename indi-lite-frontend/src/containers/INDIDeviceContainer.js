@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => {
         device,
         groups,
         indiGroupTab: groups.includes(state.navigation.indiGroup) ? state.navigation.indiGroup : defaultGroup,
-        messages: state.indiserver.messages.filter(m => m.device == device),
+        messages: state.indiserver.messages.filter(m => m.device === device),
     }
 }
 
