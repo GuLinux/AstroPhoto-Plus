@@ -26,6 +26,8 @@ services:
         - ../../..:/pythonpath
     expose:
         - "5000"
+    ports:
+        - "5000:5000"
     environment:
         - INDI_SERVER_HOST
         - INDI_SERVER_PORT
