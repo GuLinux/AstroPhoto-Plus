@@ -37,7 +37,7 @@ export const Sessions = {
         }
     },
 
-    add: name => {
+    add: (name, cameraID) => {
         return dispatch => {
             dispatch({type: 'REQUEST_ADD_SESSION'});
             return createSessionAPI( dispatch, {name: name}, data => {

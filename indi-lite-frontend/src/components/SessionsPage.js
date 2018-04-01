@@ -9,8 +9,8 @@ const SessionsPage = ({sessions, onSessionEdit, onAddSession, onSessionDelete}) 
     <div className="sessions container-fluid">
         <PagesListContainer navigationKey="sessionPage">
             <div key="sessions">
+                <AddSession />
                 <SessionsList sessions={sessions} onSessionEdit={onSessionEdit} onSessionDelete={onSessionDelete} />
-                <AddSession onAddSession={onAddSession} />
             </div>
             <SessionContainer key="session" />
         </PagesListContainer>

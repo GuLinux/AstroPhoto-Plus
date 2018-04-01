@@ -16,7 +16,6 @@ const mapDispatchToProps = dispatch => {
   return {
     onSessionEdit: (sessionId) => dispatch(Actions.Navigation.toSession('session', sessionId)),
     onSessionDelete: (sessionId) => dispatch(Actions.Sessions.remove(sessionId)),
-    onAddSession: (sessionName) => dispatch(Actions.Sessions.add(sessionName))
   }
 }
 
