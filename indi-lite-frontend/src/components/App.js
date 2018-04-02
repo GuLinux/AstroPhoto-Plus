@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import NavbarContainer from '../containers/NavbarContainer';
 import PagesListContainer from '../containers/PagesListContainer';
 import LoadingPage from '../containers/LoadingPage';
-import SessionsPage from '../components/SessionsPage';
+import SequencesPage from '../components/SequencesPage';
 import INDIServerContainer from '../containers/INDIServerContainer';
 import NotificationsContainer from '../containers/NotificationsContainer';
 import ErrorPageContainer from '../containers/ErrorPageContainer';
@@ -16,7 +16,7 @@ class App extends Component {
         <NavbarContainer />
         <NotificationsContainer />
         <PagesListContainer navigationKey="section">
-            <SessionsPage key="sessions" />
+            <SequencesPage key="sequences" />
             <INDIServerContainer key="indi_server" />
             <ErrorPageContainer key="error_page" />
         </PagesListContainer>

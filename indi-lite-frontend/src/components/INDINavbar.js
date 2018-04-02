@@ -12,8 +12,8 @@ const INDINavbar = ({onSelected, section, disabled}) => (
   </Navbar.Header>
   <Navbar.Collapse>
     <Nav onSelect={onSelected}>
-      <NavItem eventKey={'sessions'} active={section==='sessions'} href="#" disabled={disabled}>
-        Sessions
+      <NavItem eventKey={'sequences'} active={section==='sequences'} href="#" disabled={disabled}>
+        Sequences
       </NavItem>
       <NavItem eventKey={'indi_server'} active={section==='indi_server'} href="#" disabled={disabled}>
         INDI Server

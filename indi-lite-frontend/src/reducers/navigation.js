@@ -1,8 +1,8 @@
 
 const defaultState = {
-    section: 'sessions',
-    sessionPage: 'sessions',
-    sessionId: null,
+    section: 'sequences',
+    sequencePage: 'sequences',
+    sequenceId: null,
     indiDevice: null,
     indiGroup: null,
 }
@@ -11,8 +11,8 @@ const navigation = (state = defaultState, action) => {
     switch(action.type) {
         case 'NAVIGATE_TO_SECTION':
             return {...state, section: action.section};
-        case 'NAVIGATE_TO_SESSION':
-            return {...state, section: 'sessions', sessionPage: action.sessionPage, sessionId: action.sessionId}
+        case 'NAVIGATE_TO_SEQUENCE':
+            return {...state, section: 'sequences', sequencePage: action.sequencePage, sequenceId: action.sequenceId}
         case 'NAVIGATE_TO_INDI_DEVICE':
             return {...state, indiDevice: action.device, indiGroup: null}
         case 'NAVIGATE_TO_INDI_GROUP':

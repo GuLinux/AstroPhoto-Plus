@@ -1,7 +1,7 @@
 from flask import jsonify, Response
 from api_decorators import *
 from api_utils import *
-from models import Server, Session, Sequence, NotFoundError, Property, Device
+from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device
 import os
 from controller import controller
 from app import app
@@ -67,68 +67,68 @@ def get_cameras():
     return [x.to_map() for x in controller.indi_server.cameras()]
   
 
-@app.route('/api/sessions', methods=['GET'])
+@app.route('/api/sequences', methods=['GET'])
 @json_api
-def get_sessions():
-    return [x.to_map() for x in controller.sessions]
+def get_sequences():
+    return [x.to_map() for x in controller.sequences]
 
-def find_session(id):
-    session = [x for x in controller.sessions if x.id == id]
-    if session:
-        return session[0]
-    raise NotFoundError()
-
-def find_sequence(session_id, sequence_id):
-    session = find_session(session_id)
-    sequence = [x for x in session.sequences if x.id == sequence_id]
+def find_sequence(id):
+    sequence = [x for x in controller.sequences if x.id == id]
     if sequence:
-        return session, sequence[0]
+        return sequence[0]
     raise NotFoundError()
 
-@app.route('/api/sessions/<id>', methods=['GET'])
+def find_sequence_item(sequence_id, sequence_item_id):
+    sequence = find_sequence(sequence_id)
+    sequence_item = [x for x in sequence.sequence_items if x.id == sequence_item_id]
+    if sequence_item:
+        return sequence, sequence_item[0]
+    raise NotFoundError()
+
+@app.route('/api/sequences/<id>', methods=['GET'])
 @json_api
-def get_session(id):
-    return find_session(id).to_map()
+def get_sequence(id):
+    return find_sequence(id).to_map()
 
 
-@app.route('/api/sessions/<id>', methods=['DELETE'])
+@app.route('/api/sequences/<id>', methods=['DELETE'])
 @json_api
-def delete_session(id):
-    session = find_session(id).to_map()
-    session.update({'status': 'deleted'})
-    controller.sessions = [x for x in controller.sessions if x.id != id]
-    return session
+def delete_sequence(id):
+    sequence = find_sequence(id).to_map()
+    sequence.update({'status': 'deleted'})
+    controller.sequences = [x for x in controller.sequences if x.id != id]
+    return sequence
 
 
-@app.route('/api/sessions', methods=['POST'])
+@app.route('/api/sequences', methods=['POST'])
 @json_input
 @json_api
-def new_session(json):
+def new_sequence(json):
     try:
-        new_session = Session(json['name'], json['camera'])
-        controller.sessions.append(new_session)
-        return new_session.to_map()
+        new_sequence = Sequence(json['name'], json['camera'])
+        controller.sequences.append(new_sequence)
+        return new_sequence.to_map()
     except KeyError:
         raise BadRequestError('Invalid json')
 
 
-@app.route('/api/sessions/<id>/sequences', methods=['POST'])
+@app.route('/api/sequences/<id>/sequence_items', methods=['POST'])
 @json_input
 @json_api
-def add_sequence(id, json):
-    session = find_session(id)
-    new_sequence = Sequence(json['name'])
-    app.logger.debug('adding sequence {} to id {}'.format(new_sequence, id))
-    session.sequences.append(new_sequence)
-    return new_sequence.to_map()
+def add_sequence_item(id, json):
+    sequence = find_sequence(id)
+    new_sequence_item = SequenceItem(json['name'])
+    app.logger.debug('adding sequence item {} to id {}'.format(new_sequence_item, id))
+    sequence.sequence_items.append(new_sequence_item)
+    return new_sequence_item.to_map()
 
     
-@app.route('/api/sessions/<session_id>/sequences/<sequence_id>', methods=['DELETE'])
+@app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>', methods=['DELETE'])
 @json_api
-def delete_sequence(session_id, sequence_id):
-    session, sequence = find_sequence(session_id, sequence_id)
-    sequence = sequence.to_map()
-    sequence.update({'status': 'deleted'})
-    session.sequences = [x for x in session.sequences if x.id != sequence_id]
-    return sequence
+def delete_sequence_item(sequence_id, sequence_item_id):
+    sequence, sequence_item = find_sequence_item(sequence_id, sequence_item_id)
+    sequence_item = sequence_item.to_map()
+    sequence_item.update({'status': 'deleted'})
+    sequence.sequence_items = [x for x in sequence.sequence_items if x.id != sequence_item_id]
+    return sequence_item
 

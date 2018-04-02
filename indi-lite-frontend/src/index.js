@@ -18,7 +18,7 @@ import listenToEvents from './middleware/events';
 const loggerMiddleware = createLogger()
 
 let store = createStore(indiLiteApp, applyMiddleware(thunkMiddleware, loggerMiddleware))
-store.dispatch(Actions.Sessions.fetch())
+store.dispatch(Actions.Sequences.fetch())
 store.dispatch(Actions.INDIServer.fetchServerState(true))
 listenToEvents(store.dispatch)
 

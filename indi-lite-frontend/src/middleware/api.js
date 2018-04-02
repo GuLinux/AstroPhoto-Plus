@@ -2,11 +2,11 @@ import { normalize, schema } from 'normalizr'
 import fetch from 'isomorphic-fetch'
 import Actions from '../actions'
 
-const sequenceSchema = new schema.Entity('sequences');
-const sessionSchema = new schema.Entity('sessions', {
-    sequences: [ sequenceSchema ]
+const sequenceItemSchema = new schema.Entity('sequenceItems');
+const sequenceSchema = new schema.Entity('sequences', {
+    sequenceItems: [ sequenceItemSchema ]
 });
-const sessionList = [ sessionSchema ]
+const sequenceList = [ sequenceSchema ]
 
 const fetchJSON = (dispatch, url, options, onSuccess) => fetch(url, options)
                                                     .then(response => {
@@ -25,28 +25,28 @@ const fetchJSON = (dispatch, url, options, onSuccess) => fetch(url, options)
                                                         }
                                                     });
 
-export const fetchSessionsAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/sessions', {}, json => onSuccess(normalize(json, sessionList)));
+export const fetchSequencesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/sequences', {}, json => onSuccess(normalize(json, sequenceList)));
 
-export const createSessionAPI = (dispatch, session, onSuccess) => fetchJSON(dispatch, '/api/sessions', {
+export const createSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, '/api/sequences', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(session)
-    }, json => onSuccess(normalize(json, sessionSchema)));
-
-export const deleteSessionAPI = (dispatch, sessionId, onSuccess) => fetchJSON(dispatch, `/api/sessions/${sessionId}`, {
-        method: 'DELETE'
-    }, json => onSuccess(normalize(json, sessionSchema)));
-
-
-export const createSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, `/api/sessions/${sequence.session}/sequences`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({name: sequence.name})
+        body: JSON.stringify(sequence)
     }, json => onSuccess(normalize(json, sequenceSchema)));
+
+export const deleteSequenceAPI = (dispatch, sequenceId, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}`, {
+        method: 'DELETE'
+    }, json => onSuccess(normalize(json, sequenceSchema)));
+
+
+export const createSequenceItemAPI = (dispatch, sequenceItem, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceItem.sequence}/sequence_items`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({name: sequenceItem.name})
+    }, json => onSuccess(normalize(json, sequenceItemSchema)));
 
 export const getINDIServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/status', {}, onSuccess);
 

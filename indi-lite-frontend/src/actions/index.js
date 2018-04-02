@@ -1,13 +1,13 @@
-import Sessions from './sessions'
 import Sequences from './sequences'
+import SequenceItems from './sequenceitems'
 import Navigation from './navigation'
 import INDIServer from './indiserver'
 import Notifications from './notifications'
 import Gear from './gear'
 
 export const Actions = {
-    Sessions,
     Sequences,
+    SequenceItems,
     Navigation,
     INDIServer,
     Notifications,

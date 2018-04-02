@@ -8,7 +8,7 @@ const initialState = {
 }
 
 
-class AddSessionModal extends React.Component {
+class AddSequenceModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = initialState;
@@ -26,7 +26,7 @@ class AddSessionModal extends React.Component {
     }
 
     onAddClicked() {
-        this.props.onAddSession(this.state.name, this.state.camera)
+        this.props.onAddSequence(this.state.name, this.state.camera)
         this.setState(initialState);
         this.props.closeModal();
     }
@@ -35,13 +35,13 @@ class AddSessionModal extends React.Component {
         return (
           <Modal show={this.props.show}>
             <Modal.Header>
-              <Modal.Title>Add new Session</Modal.Title>
+              <Modal.Title>Add new Sequence</Modal.Title>
             </Modal.Header>
                 <Modal.Body>
                     <form>
                       <div className="form-group">
-                        <label htmlFor="newSessionName">Session name</label>
-                        <input type="text" className="form-control" id="newSessionName" placeholder="session name" onChange={this.onNameChanged} value={this.state.name}/>
+                        <label htmlFor="newSequenceName">Sequence name</label>
+                        <input type="text" className="form-control" id="newSequenceName" placeholder="sequence name" onChange={this.onNameChanged} value={this.state.name}/>
                       </div>
 
                       <div className="form-group">
@@ -64,4 +64,4 @@ class AddSessionModal extends React.Component {
     }
 }
 
-export default AddSessionModal;
+export default AddSequenceModal;

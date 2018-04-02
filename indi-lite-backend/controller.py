@@ -36,7 +36,7 @@ class Controller:
         self.sse = SSE(app.logger)
         self.event_listener = EventListener(self)
         self.indi_server = Server(app.logger, self.event_listener, os.environ.get('INDI_SERVER_HOST', 'localhost'))
-        self.sessions = []
+        self.sequences = []
 
     def notification(self, event_type, event_name, payload, is_error, error_code=None, error_message=None):
         self.sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import AddSessionModal from '../components/AddSessionModal'
+import AddSequenceModal from '../components/AddSequenceModal'
 import Actions from '../actions'
 
 const mapStateToProps = state => {
@@ -11,13 +11,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAddSession: (sessionName, cameraID) => dispatch(Actions.Sessions.add(sessionName, cameraID))
+    onAddSequence: (sequenceName, cameraID) => dispatch(Actions.Sequences.add(sequenceName, cameraID))
   }
 }
 
-const AddSessionModalContainer = connect(
+const AddSequenceModalContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddSessionModal)
+)(AddSequenceModal)
 
-export default AddSessionModalContainer
+export default AddSequenceModalContainer
