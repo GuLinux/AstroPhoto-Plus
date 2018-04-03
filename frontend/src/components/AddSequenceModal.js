@@ -56,7 +56,7 @@ class AddSequenceModal extends React.Component {
                     </form>
                 </Modal.Body>
             <Modal.Footer>
-              <Button onClick={() => this.props.closeModal()}>Close</Button>
+              <Button onClick={this.props.closeModal}>Close</Button>
               <Button bsStyle="primary" disabled={! (this.state.nameValid && this.state.cameraValid) } onClick={this.onAddClicked}>Add</Button>
             </Modal.Footer>
           </Modal>

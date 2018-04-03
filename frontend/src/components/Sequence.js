@@ -1,23 +1,31 @@
 import React from 'react'
-import AddSequenceItem from '../components/AddSequenceItem';
+import AddSequenceItemModal from './AddSequenceItemModal'
 import SequenceItemsContainer from '../containers/SequenceItemsContainer';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
-const Sequence = ({ sequence, navigateBack, onCreateSequenceItem }) => {
-    if(sequence === null)
-        return null;
-    return (
-    <div>
-        <h2>
-            {sequence.name}
-            <ButtonGroup className="pull-right">
-                <Button onClick={navigateBack} bsSize="xsmall">back</Button>
-                <Button bsStyle="primary" bsSize="xsmall">new</Button>
-            </ButtonGroup>
-        </h2>
-        <SequenceItemsContainer sequenceId={sequence.id} />
-        <AddSequenceItem onCreateSequenceItem={onCreateSequenceItem} sequenceId={sequence.id} />
-    </div>
-)}
+class Sequence extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { showNewSequenceItemModal: false };
+    }
+
+    render() {
+        if(this.props.sequence === null)
+            return null;
+        return (
+        <div>
+            <h2>
+                {this.props.sequence.name}
+                <ButtonGroup className="pull-right">
+                    <Button onClick={this.props.navigateBack} bsSize="xsmall">back</Button>
+                    <Button bsStyle="primary" bsSize="xsmall" className="pull-right" onClick={() => this.setState({...this.state, showNewSequenceItemModal: true })}>new</Button>
+                </ButtonGroup>
+            </h2>
+            <AddSequenceItemModal show={this.state.showNewSequenceItemModal} closeModal={() => this.setState({...this.state, showNewSequenceItemModal: false})} />
+            <SequenceItemsContainer sequenceId={this.props.sequence.id} />
+        </div>
+    )}
+
+}
 
 export default Sequence
