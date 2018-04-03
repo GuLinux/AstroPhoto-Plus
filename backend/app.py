@@ -1,3 +1,3 @@
 from flask import Flask
 
-app = Flask('StarQueW')
+app = Flask('StarQuew')

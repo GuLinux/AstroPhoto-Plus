@@ -6,7 +6,7 @@ A lightweight, web based sequence generator and INDI client written in Python an
 
 Run the following command:
 ```
-git clone --recurse-submodules https://github.com/GuLinux/StarQueW
+git clone --recurse-submodules https://github.com/GuLinux/StarQuew
 ```
 Note: the `--recurse-submodules` is important since the repository contains a link to another repository.
 Similarly, when updating the repository you need to specify the parameter again:
@@ -23,7 +23,7 @@ TODO
 
 ### Prerequisites
 
-Right now using docker is the preferred way of using StarQueW due to the very minimal amount of dependencies required.
+Right now using docker is the preferred way of using StarQuew due to the very minimal amount of dependencies required.
 
  - Install `docker` and `docker-compose`. Please refer to your distribution documentations on the installation procedure, or docker official pages at [https://docs.docker.com/install/](https://docs.docker.com/install/) and [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/).
 
