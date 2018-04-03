@@ -31,8 +31,5 @@ services:
         - INDI_SERVER_HOST
         - INDI_SERVER_PORT
         - WEB_THREADS
-        - DEV_BACKEND_SERVER
-        - GUNICORN_WORKER_CLASS
-  
 volumes:
   react-app:
