@@ -4,7 +4,7 @@ import Actions from '../actions'
 
 
 const mapStateToProps = (state) => {
-    let sequenceId = state.navigation.sequenceId;
+    let sequenceId = state.navigation.sequencePage.sequenceID;
     if(!(sequenceId in state.sequences.entities)) {
         return { sequence: null }
     }
@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch, props) => {
     let navigateBack = () => dispatch(Actions.Navigation.toSequence('sequences'));
     let onCreateSequenceItem = (type, sequenceId) => {
         dispatch(Actions.SequenceItems.newPending(type, sequenceId));
-        dispatch(Actions.Navigation.toSequence('sequence-item', 'pending'));
+        dispatch(Actions.Navigation.toSequenceItem('sequence-item', 'pending'));
     }
     return { navigateBack, onCreateSequenceItem }
 }

@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
 const getProperties = state => state.indiserver.properties;
-const getVisibleDevice = state => state.navigation.indiDevice;
-const getVisibleGroup = state => state.navigation.indiGroup ? state.navigation.indiGroup : 'Main Control';
+const getVisibleDevice = state => state.navigation.indi.device;
+const getVisibleGroup = state => state.navigation.indi.group ? state.navigation.indi.group : 'Main Control';
 
 export const getVisibleDeviceProperties = createSelector([getProperties, getVisibleDevice], (properties, visibleDevice) =>
     Object.keys(properties).map(p => properties[p]).filter(p => p.device === visibleDevice)

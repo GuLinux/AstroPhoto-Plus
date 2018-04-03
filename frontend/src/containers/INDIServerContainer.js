@@ -5,7 +5,7 @@ import Actions from '../actions'
 
 const mapStateToProps = (state, ownProps) => ({
     devices: state.indiserver.devices.map(d => state.indiserver.deviceEntities[d]),
-    indiDeviceTab: state.navigation.indiDevice in state.indiserver.deviceEntities ? state.navigation.indiDevice : null,
+    indiDeviceTab: state.navigation.indi.device in state.indiserver.deviceEntities ? state.navigation.indi.device : null,
 })
 
 const mapDispatchToProps = dispatch => ({ navigateToDevice: device => dispatch(Actions.Navigation.toINDIDevice(device)) })

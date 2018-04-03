@@ -15,7 +15,7 @@ class App extends Component {
       <div className="App">
         <NavbarContainer />
         <NotificationsContainer />
-        <PagesListContainer navigationKey="section">
+        <PagesListContainer navigation="section">
             <SequencesPage key="sequences" />
             <INDIServerContainer key="indi_server" />
             <ErrorPageContainer key="error_page" />

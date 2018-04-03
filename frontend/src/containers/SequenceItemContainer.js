@@ -4,7 +4,7 @@ import Actions from '../actions'
 
 
 const mapStateToProps = (state) => {
-    let sequenceItemId = state.navigation.sequenceId;
+    let sequenceItemId = state.navigation.sequencePage.sequenceItemID;
 
     if(!(sequenceItemId in state.sequenceItems)) {
         return { sequenceItem: null }
