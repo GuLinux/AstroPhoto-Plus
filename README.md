@@ -2,6 +2,19 @@
 
 A lightweight, web based sequence generator and INDI client written in Python and React.
 
+## Get the sources
+
+Run the following command:
+```
+git clone --recurse-submodules https://github.com/GuLinux/StarQueW
+```
+Note: the `--recurse-submodules` is important since the repository contains a link to another repository.
+Similarly, when updating the repository you need to specify the parameter again:
+
+```
+git pull --recurse-submodules
+```
+
 ## Install
 
 TODO
