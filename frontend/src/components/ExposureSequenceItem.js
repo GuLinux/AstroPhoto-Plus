@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
 
 class ExposureSequenceItem extends React.Component {
     constructor(props) {
@@ -7,6 +7,7 @@ class ExposureSequenceItem extends React.Component {
         this.state = {
             sequenceItem: {shots: '', exposure: '', globalExposure: '', ...props.sequenceItem},
             shootingParamsChangesSequence: ['shots', 'exposure'],
+            validation: {}
         }
     }
 
@@ -15,18 +16,24 @@ class ExposureSequenceItem extends React.Component {
     }
 
     onNameChanged(name) {
-        this.setState(this.buildSequenceItemState({name}))
+        this.validate(this.buildSequenceItemState({name}))
     }
 
     onShotsChanged(shots) {
+        if(isNaN(shots))
+            return
         this.updateShootingParams('shots', shots)
     }
 
     onExposureChanged(exposure) {
+        if(isNaN(exposure))
+            return
         this.updateShootingParams('exposure', exposure)
     }
     
     onGlobalExposureChanged(globalExposure) {
+        if(isNaN(globalExposure))
+            return
         this.updateShootingParams('globalExposure', globalExposure)
     }
 
@@ -43,7 +50,17 @@ class ExposureSequenceItem extends React.Component {
             if(changedParams.includes('shots') && changedParams.includes('globalExposure'))
                 newState.sequenceItem.exposure = newState.sequenceItem.globalExposure / newState.sequenceItem.shots;
         }
-        this.setState({...newState, shootingParamsChangesSequence});
+        this.validate({...newState, shootingParamsChangesSequence});
+    }
+
+    validate(state) {
+        let validation = {
+            name: !! state.sequenceItem.name,
+            exposure: !! state.sequenceItem.shots && !! state.sequenceItem.exposure && !! state.sequenceItem.globalExposure,
+        }
+        state = {...state, validation}
+        this.setState(state)
+        return state;
     }
 
     render() {
@@ -69,6 +86,7 @@ class ExposureSequenceItem extends React.Component {
                     <FormControl type="number" value={this.state.sequenceItem.globalExposure} min={0} onChange={e => this.onGlobalExposureChanged(e.target.value)} />
                     <HelpBlock>Total exposure time for this sequence</HelpBlock>
                 </FormGroup>
+                <Button bsStyle="primary" disabled={ ! this.state.validation.name || ! this.state.validation.exposure}>Save</Button>
             </form>
         );
     }
