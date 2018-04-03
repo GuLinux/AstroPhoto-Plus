@@ -1,0 +1,39 @@
+version: '2'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+        - "3000:80"
+    volumes:
+        - ./nginx-conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+        - frontend
+        - backend
+  frontend:
+    build: frontend
+    volumes:
+        - ../../indi-lite-frontend:/app
+    expose:
+        - "3000"
+  backend:
+    build: backend
+    volumes:
+        - ../../indi-lite-backend:/app
+        - ../../..:/pythonpath
+    expose:
+        - "5000"
+    depends_on:
+        - indiserver
+    environment:
+        - INDI_SERVER_HOST
+        - INDI_SERVER_PORT
+        - WEB_THREADS
+        - DEV_BACKEND_SERVER
+        - GUNICORN_WORKER_CLASS
+  indiserver:
+    expose:
+        - "7624"
+    build: indi-server
+    environment:
+        - INDI_SERVER_HOST
+

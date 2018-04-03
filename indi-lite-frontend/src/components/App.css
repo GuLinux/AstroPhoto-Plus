@@ -1,0 +1,29 @@
+.loadingOverlay {
+    width: 100%;
+    height: 100%;
+    background-color: #0000001f;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 999;
+}
+
+.loadingOverlay img {
+    left: 50%; 
+    top: 50%;
+    position: absolute;
+}
+
+.indi-property {
+    border: #dddddd;
+    border-style: solid;
+    border-width: 1px;
+    border-top-width: 0px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.indi-property:first-child {
+    margin-top: 10px;
+    border-top-width: 1px;
+}
