@@ -3,8 +3,8 @@ const navigate = (navigationKey, object) => ({ type: 'NAVIGATE_TO', navigationKe
 
 export const Navigation = {
     toSection: section => navigate('section', {key: section}),
-    toSequence: (page, sequence) => navigate('sequencePage', {key: page, sequenceID: sequence }),
-    toSequenceItem: (page, sequenceItem) => navigate('sequencePage', {key: page, sequenceItemID: sequenceItem }),
+    toSequence: (page, sequence) => navigate('sequencesPage', {key: page, sequenceID: sequence }),
+    toSequenceItem: (page, sequenceItem) => navigate('sequencesPage', {key: page, sequenceItemID: sequenceItem }),
     toINDIDevice: device => navigate('indi', { device }),
     toINDIGroup: (device, group) => navigate('indi', { device, group} ),
 }

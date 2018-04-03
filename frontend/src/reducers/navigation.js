@@ -1,7 +1,7 @@
 
 const defaultState = {
     section: { key: 'sequences' },
-    sequencePage: { key: 'sequences', sequenceID: null, sequenceItemID: null },
+    sequencesPage: { key: 'sequences', sequenceID: null, sequenceItemID: null },
     indi: { device: null, group: null },
 }
 

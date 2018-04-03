@@ -16,7 +16,7 @@ class SequencesPage extends React.Component {
     render() {
         return (
             <div className="sequences container-fluid">
-                <PagesListContainer navigation="sequencePage">
+                <PagesListContainer navigation="sequencesPage">
                     <div key="sequences">
                         <Button bsStyle="primary" bsSize="xsmall" className="pull-right" onClick={() => this.setState({...this.state, showNewSequenceModal: true})}>new sequence</Button>
                         <AddSequenceModalContainer show={this.state.showNewSequenceModal} closeModal={() => this.setState({...this.state, showNewSequenceModal: false }) } />
