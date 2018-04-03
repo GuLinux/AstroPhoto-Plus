@@ -7,7 +7,7 @@ case "$DEV_BACKEND_SERVER" in
         flask run -h 0.0.0.0 --with-threads
         ;;
     gunicorn)
-        gunicorn --threads $WEB_THREADS -t 999999 -k $GUNICORN_WORKER_CLASS -b 0.0.0.0:5000 indi-lite:app
+        gunicorn --threads $WEB_THREADS -t 999999 -k $GUNICORN_WORKER_CLASS -b 0.0.0.0:5000 star-quew:app
         ;;
     *)
         echo "Backend $DEV_BACKEND_SERVER not supported; exiting" >&2

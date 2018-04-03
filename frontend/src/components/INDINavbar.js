@@ -6,7 +6,7 @@ const INDINavbar = ({onSelected, section, disabled}) => (
 <Navbar inverse collapseOnSelect>
   <Navbar.Header>
     <Navbar.Brand>
-      <a href="#home">INDI Lite</a>
+      <a href="#home">StarQueW</a>
     </Navbar.Brand>
   <Navbar.Toggle />
   </Navbar.Header>

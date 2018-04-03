@@ -1,4 +1,4 @@
-# INDI-Lite Server
+# StarQueW Server
 
 A lightweight, web based sequence generator and INDI client written in Python and React.
 
@@ -10,7 +10,7 @@ TODO
 
 ### Prerequisites
 
-Right now using docker is the preferred way of using INDI-Lite due to the very minimal amount of dependencies required.
+Right now using docker is the preferred way of using StarQueW due to the very minimal amount of dependencies required.
 
  - Install `docker` and `docker-compose`. Please refer to your distribution documentations on the installation procedure, or docker official pages at [https://docs.docker.com/install/](https://docs.docker.com/install/) and [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/).
 

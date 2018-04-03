@@ -13,7 +13,7 @@ services:
   frontend:
     build: frontend
     volumes:
-        - ../../indi-lite-frontend:/app
+        - ../../frontend:/app
         - react-app:/app/build
     expose:
         - "3000"
@@ -22,8 +22,7 @@ services:
   backend:
     build: backend
     volumes:
-        - ../../indi-lite-backend:/app
-        - ../../..:/pythonpath
+        - ../../backend:/app
     expose:
         - "5000"
     ports:
