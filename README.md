@@ -1,4 +1,4 @@
-# StarQueW Server
+# StarQuew Server
 
 A lightweight, web based sequence generator and INDI client written in Python and React.
 
