@@ -18,10 +18,10 @@ class AddSequence extends React.Component {
 
     render() {
         return (
-            <div>
+            <span className={this.props.className} >
                 <Button bsStyle="primary" bsSize="xsmall" onClick={() => this.toggleModal(true)}>new sequence</Button>
                 <AddSequenceModalContainer show={this.state.modalVisible} closeModal={() => this.toggleModal(false)} />
-            </div>
+            </span>
           )
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import AddSequenceItem from '../components/AddSequenceItem';
 import SequenceItemsContainer from '../containers/SequenceItemsContainer';
-import { Button } from 'react-bootstrap';
+import { Button, ButtonGroup } from 'react-bootstrap';
 
 const Sequence = ({ sequence, navigateBack, onCreateSequenceItem }) => {
     if(sequence === null)
@@ -10,7 +10,10 @@ const Sequence = ({ sequence, navigateBack, onCreateSequenceItem }) => {
     <div>
         <h2>
             {sequence.name}
-            <Button onClick={navigateBack} className="pull-right">Back</Button>
+            <ButtonGroup className="pull-right">
+                <Button onClick={navigateBack} bsSize="xsmall">back</Button>
+                <Button bsStyle="primary" bsSize="xsmall">new</Button>
+            </ButtonGroup>
         </h2>
         <SequenceItemsContainer sequenceId={sequence.id} />
         <AddSequenceItem onCreateSequenceItem={onCreateSequenceItem} sequenceId={sequence.id} />

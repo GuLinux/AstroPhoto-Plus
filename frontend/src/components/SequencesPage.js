@@ -9,7 +9,7 @@ const SequencesPage = ({sequences, onSequenceEdit, onAddSequence, onSequenceDele
     <div className="sequences container-fluid">
         <PagesListContainer navigationKey="sequencePage">
             <div key="sequences">
-                <AddSequence />
+                <AddSequence className="pull-right"/>
                 <SequencesListContainer />
             </div>
             <SequenceContainer key="sequence" />
