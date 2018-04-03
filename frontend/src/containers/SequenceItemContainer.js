@@ -14,7 +14,9 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch, props) => {
-    return { }
+    return {
+        saveSequenceItem: (sequenceItem) => dispatch(Actions.SequenceItems.saveSequenceItem(sequenceItem)),
+    }
 }
 
 const SequenceItemContainer = connect(

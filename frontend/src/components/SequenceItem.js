@@ -1,17 +1,17 @@
 import React from 'react';
 import ExposureSequenceItem from './ExposureSequenceItem'
 
-const mapItemType = (sequenceItem) => {
+const mapItemType = (sequenceItem, saveSequenceItem) => {
     switch(sequenceItem.type) {
         case 'shots':
-            return <ExposureSequenceItem sequenceItem={sequenceItem} />;
+            return <ExposureSequenceItem sequenceItem={sequenceItem} saveSequenceItem={saveSequenceItem} />;
         default:
             return null;
         }
 }
 
-const SequenceItem = ({sequenceItem}) => (
-    <div className="container">{mapItemType(sequenceItem)}</div>
+const SequenceItem = ({sequenceItem, saveSequenceItem}) => (
+    <div className="container">{mapItemType(sequenceItem, saveSequenceItem)}</div>
 )
 
 export default SequenceItem

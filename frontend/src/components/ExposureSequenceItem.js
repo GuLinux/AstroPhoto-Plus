@@ -5,7 +5,7 @@ class ExposureSequenceItem extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            sequenceItem: {shots: '', exposure: '', globalExposure: '', ...props.sequenceItem},
+            sequenceItem: {name: '', shots: '', exposure: '', globalExposure: '', ...props.sequenceItem},
             shootingParamsChangesSequence: ['shots', 'exposure'],
             validation: {}
         }
@@ -86,7 +86,7 @@ class ExposureSequenceItem extends React.Component {
                     <FormControl type="number" value={this.state.sequenceItem.globalExposure} min={0} onChange={e => this.onGlobalExposureChanged(e.target.value)} />
                     <HelpBlock>Total exposure time for this sequence</HelpBlock>
                 </FormGroup>
-                <Button bsStyle="primary" disabled={ ! this.state.validation.name || ! this.state.validation.exposure}>Save</Button>
+                <Button bsStyle="primary" disabled={ ! this.state.validation.name || ! this.state.validation.exposure} onClick={() => this.props.saveSequenceItem(this.state.sequenceItem)}>Save</Button>
             </form>
         );
     }

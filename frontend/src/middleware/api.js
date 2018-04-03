@@ -45,8 +45,17 @@ export const createSequenceItemAPI = (dispatch, sequenceItem, onSuccess) => fetc
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({name: sequenceItem.name})
+        body: JSON.stringify(sequenceItem)
     }, json => onSuccess(normalize(json, sequenceItemSchema)));
+
+export const updateSequenceItemAPI = (dispatch, sequenceItem, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceItem.sequence}/sequence_items/${sequenceItem.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(sequenceItem)
+    }, json => onSuccess(normalize(json, sequenceItemSchema)));
+
 
 export const getINDIServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/status', {}, onSuccess);
 

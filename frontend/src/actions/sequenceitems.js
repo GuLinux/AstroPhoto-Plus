@@ -1,4 +1,4 @@
-import {  createSequenceItemAPI } from '../middleware/api'
+import {  updateSequenceItemAPI, createSequenceItemAPI } from '../middleware/api'
 
 export const SequenceItems = {
     newPending: (itemType, sequenceID) => ({
@@ -6,6 +6,13 @@ export const SequenceItems = {
         itemType,
         sequenceID,
     }),
+
+    saveSequenceItem: (sequenceItem) => dispatch => {
+        dispatch({type: 'REQUEST_SAVE_SEQUENCE_ITEM'});
+        if(sequenceItem.id === 'pending')
+            return createSequenceItemAPI(dispatch, sequenceItem, data => console.log(data));
+        return updateSequenceItemAPI(dispatch, sequenceItem, data => console.log(data));
+    },
 
     created: (sequenceItem, sequenceId) => {
         return {
