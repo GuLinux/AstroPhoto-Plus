@@ -1,6 +1,12 @@
 import {  createSequenceItemAPI } from '../middleware/api'
 
 export const SequenceItems = {
+    newPending: (itemType, sequenceID) => ({
+        type: 'NEW_SEQUENCE_ITEM',
+        itemType,
+        sequenceID,
+    }),
+
     created: (sequenceItem, sequenceId) => {
         return {
             type: 'SEQUENCE_ITEM_CREATED',

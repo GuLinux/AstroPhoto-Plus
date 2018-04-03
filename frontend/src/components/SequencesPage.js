@@ -1,6 +1,7 @@
 import React from 'react';
 import PagesListContainer from '../containers/PagesListContainer';
 import SequenceContainer from '../containers/SequenceContainer';
+import SequenceItemContainer from '../containers/SequenceItemContainer';
 import SequencesListContainer from '../containers/SequencesListContainer';
 import AddSequenceModalContainer from '../containers/AddSequenceModalContainer';
 import { Button } from 'react-bootstrap';
@@ -22,6 +23,7 @@ class SequencesPage extends React.Component {
                         <SequencesListContainer />
                     </div>
                     <SequenceContainer key="sequence" />
+                    <SequenceItemContainer key="sequence-item" />
                 </PagesListContainer>
             </div>
         )

@@ -21,7 +21,7 @@ class Sequence extends React.Component {
                     <Button bsStyle="primary" bsSize="xsmall" className="pull-right" onClick={() => this.setState({...this.state, showNewSequenceItemModal: true })}>new</Button>
                 </ButtonGroup>
             </h2>
-            <AddSequenceItemModal show={this.state.showNewSequenceItemModal} closeModal={() => this.setState({...this.state, showNewSequenceItemModal: false})} />
+            <AddSequenceItemModal show={this.state.showNewSequenceItemModal} onAddSequenceItem={(type) => this.props.onCreateSequenceItem(type, this.props.sequence.id)} closeModal={() => this.setState({...this.state, showNewSequenceItemModal: false})} />
             <SequenceItemsContainer sequenceId={this.props.sequence.id} />
         </div>
     )}

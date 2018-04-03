@@ -12,9 +12,12 @@ const mapStateToProps = (state) => {
     return {sequence}
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, props) => {
     let navigateBack = () => dispatch(Actions.Navigation.toSequence('sequences'));
-    let onCreateSequenceItem = (name, sequenceId) => dispatch(Actions.SequenceItems.add(name, sequenceId))
+    let onCreateSequenceItem = (type, sequenceId) => {
+        dispatch(Actions.SequenceItems.newPending(type, sequenceId));
+        dispatch(Actions.Navigation.toSequence('sequence-item', 'pending'));
+    }
     return { navigateBack, onCreateSequenceItem }
 }
 
