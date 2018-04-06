@@ -34,7 +34,7 @@ class AddSequenceItemModal extends React.Component {
                 <Modal.Body>
                     <form>
                       <div className="form-group">
-                        <label htmlFor="item-type">Primary camera</label>
+                        <label htmlFor="item-type">Sequence item type</label>
                         <select className="form-control" id="item-type" onChange={this.onTypeChanged}>
                             <option value="none">--- Select type</option>
                             <option value="shots">Exposures sequence</option>
