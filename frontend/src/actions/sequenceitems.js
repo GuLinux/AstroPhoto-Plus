@@ -9,8 +9,10 @@ export const SequenceItems = {
 
     saveSequenceItem: (sequenceItem) => dispatch => {
         dispatch({type: 'REQUEST_SAVE_SEQUENCE_ITEM'});
-        if(sequenceItem.id === 'pending')
+        if(sequenceItem.id === 'pending') {
+            delete sequenceItem.id
             return createSequenceItemAPI(dispatch, sequenceItem, data => console.log(data));
+        }
         return updateSequenceItemAPI(dispatch, sequenceItem, data => console.log(data));
     },
 

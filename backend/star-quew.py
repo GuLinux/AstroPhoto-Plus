@@ -117,7 +117,7 @@ def new_sequence(json):
 @json_api
 def add_sequence_item(id, json):
     sequence = find_sequence(id)
-    new_sequence_item = SequenceItem(json['name'])
+    new_sequence_item = SequenceItem(json)
     app.logger.debug('adding sequence item {} to id {}'.format(new_sequence_item, id))
     sequence.sequence_items.append(new_sequence_item)
     return new_sequence_item.to_map()
