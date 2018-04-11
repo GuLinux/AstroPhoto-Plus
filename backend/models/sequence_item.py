@@ -39,6 +39,7 @@ class SequenceItem:
     def to_map(self):
         data = {
             "id": self.id,
+            "type": self.type,
         }
         data.update(self.job.to_map())
         return data
