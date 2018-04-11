@@ -1,18 +1,14 @@
 import React from 'react'
-import {Modal} from 'react-bootstrap';
+import {Button, Modal } from 'react-bootstrap';
 
-class ModalDialog extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        let children = React.Children.map(this.props.children, child => React.cloneElement(child, { closeModal: this.props.close, modalProps: this.props.modalProps}));
-        return (
-            <Modal show={this.props.visible} keyboard={true}>
-                {children}
-            </Modal>
-        )
-    }
+export const ModalDialog = ({visible, close, modalProps, children}) => {
+    children = React.Children.map(children, child => React.cloneElement(child, { closeModal: close, modalProps: modalProps}));
+    return (
+        <Modal show={visible} keyboard={true}>
+            {children}
+        </Modal>
+    )
 }
-export default ModalDialog
+
+
+export const ShowModalDialogButton = (props) => <Button {...props}>{props.text}</Button>
