@@ -6,7 +6,7 @@ const SequenceItemsList = ({sequenceItems}) => (
     <Table striped bordered hover>
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Type</th>
                 <th>Description</th>
                 <th>State</th>
                 <th>Actions</th>
@@ -15,8 +15,8 @@ const SequenceItemsList = ({sequenceItems}) => (
         <tbody>
             {sequenceItems.map(sequenceItem => (
                 <tr key={sequenceItem.id}>
-                    <td>{sequenceItem.name}</td>
-                    <td></td>
+                    <td>{sequenceItem.typeLabel}</td>
+                    <td>{sequenceItem.description}</td>
                     <td></td>
                     <td>
                         <Glyphicon glyph="edit" />

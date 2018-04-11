@@ -7,31 +7,24 @@ export const SequenceItems = {
         sequenceID,
     }),
 
+    updated: (dispatch, sequence, data, wasNew) => {
+        console.log(data);
+        let sequenceItem = data.entities.sequenceItems[data.result];
+        dispatch({ type: 'SEQUENCE_ITEM_UPDATED', sequenceItem})
+        if(wasNew) {
+            dispatch({type: 'SEQUENCE_ITEM_REMOVED', id: 'pending', sequence})
+            dispatch({type: 'SEQUENCE_ITEM_CREATED', sequenceItem, sequence})
+        }
+    },
+
     saveSequenceItem: (sequenceItem) => dispatch => {
-        dispatch({type: 'REQUEST_SAVE_SEQUENCE_ITEM'});
+        dispatch({type: 'REQUEST_SAVE_SEQUENCE_ITEM', sequenceItem});
         if(sequenceItem.id === 'pending') {
             delete sequenceItem.id
-            return createSequenceItemAPI(dispatch, sequenceItem, data => console.log(data));
+            return createSequenceItemAPI(dispatch, sequenceItem, (data) => SequenceItems.updated(dispatch, sequenceItem.sequence, data, true) );
         }
-        return updateSequenceItemAPI(dispatch, sequenceItem, data => console.log(data));
+        return updateSequenceItemAPI(dispatch, sequenceItem, (data) => SequenceItems.updated(dispatch, sequenceItem.sequence, data) );
     },
-
-    created: (sequenceItem, sequenceId) => {
-        return {
-            type: 'SEQUENCE_ITEM_CREATED',
-            sequence: sequenceId,
-            sequenceItem
-        }
-    },
-
-    add: (name, sequenceId) => {
-        return dispatch => {
-            dispatch({type: 'REQUEST_ADD_SEQUENCE_ITEM'});
-            return createSequenceItemAPI(dispatch, {name: name, sequence: sequenceId}, data => {
-                dispatch(SequenceItems.created(data.entities.sequenceItems[data.result], sequenceId));
-            });
-        }
-    }
 }
 
 export default SequenceItems;

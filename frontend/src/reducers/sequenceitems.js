@@ -7,13 +7,22 @@ let addSequenceItem = (state, action) => {
     }
 }
 
+let sequenceItemRemoved = (state, action) => {
+    let sequenceItemID = action.id;
+    let newState = {...state};
+    delete newState[sequenceItemID];
+    return newState;
+}
+
 
 const sequenceItems = (state = {}, action) => {
     switch(action.type) {
         case 'NEW_SEQUENCE_ITEM':
             return {...state, 'pending': { id: 'pending', type: action.itemType, sequence: action.sequenceID }};
-        case 'SEQUENCE_ITEM_CREATED':
+        case 'SEQUENCE_ITEM_UPDATED':
             return addSequenceItem(state, action);
+        case 'SEQUENCE_ITEM_REMOVED':
+            return sequenceItemRemoved(state, action)
         case 'RECEIVE_SEQUENCES':
             return {...state, ...action.sequenceItems};
         default:

@@ -1,18 +1,28 @@
 import React from 'react';
 import { Button, FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
 import { sanitizePath } from '../utils'
+import SequenceItemButtonsContainer from '../containers/SequenceItemButtonsContainer'
 
 class ExposureSequenceItem extends React.Component {
     constructor(props) {
         super(props)
+        this.initialSequenceItem = 
         this.state = {
-            sequenceItem: {filename: '', directory: '', count: '', exposure: '', globalExposure: '', ...props.sequenceItem},
+            sequenceItem: this.initialValues(),
             shootingParamsChangesSequence: ['count', 'exposure'],
             validation: {}
         }
     }
 
-    
+    initialValues() {
+        return {filename: '', directory: '', count: '', exposure: '', globalExposure: '', ...this.props.sequenceItem}
+    }
+
+    isChanged() {
+        return ['filename', 'directory', 'count', 'exposure', 'globalExposure']
+            .map(f => this.state.sequenceItem[f] !== this.initialValues()[f])
+            .reduce( (isChanged, current) => isChanged || current, false)
+    }
 
     buildSequenceItemState(options) {
         return {...this.state, sequenceItem: {...this.state.sequenceItem, ...options}};
@@ -105,7 +115,7 @@ class ExposureSequenceItem extends React.Component {
                     <FormControl type="number" value={this.state.sequenceItem.globalExposure} min={0} onChange={e => this.onGlobalExposureChanged(e.target.value)} />
                     <HelpBlock>Total exposure time for this sequence</HelpBlock>
                 </FormGroup>
-                <Button bsStyle="primary" disabled={ ! this.isValid() } onClick={() => this.props.saveSequenceItem(this.state.sequenceItem)}>Save</Button>
+                <SequenceItemButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceItem={this.state.sequenceItem} />
             </form>
         );
     }
