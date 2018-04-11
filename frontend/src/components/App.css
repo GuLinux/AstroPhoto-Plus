@@ -27,3 +27,9 @@
     margin-top: 10px;
     border-top-width: 1px;
 }
+
+.notifications-container {
+    position: fixed;
+    top: 54px;
+    right: 0px;
+}

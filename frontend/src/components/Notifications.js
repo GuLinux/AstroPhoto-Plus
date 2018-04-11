@@ -15,7 +15,7 @@ const setAutoclose = (notification, onClosed) => {
 }
 
 const Notificatons = ({notifications, onClosed}) => (
-    <div>
+    <div className="notifications-container">
         {notifications.map( (notification, index) => {
             setAutoclose(notification, onClosed);
             return (
