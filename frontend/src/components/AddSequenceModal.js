@@ -36,10 +36,10 @@ class AddSequenceModal extends React.Component {
 
     render() {
         return (
-          <Modal show={this.props.show}>
-            <Modal.Header>
-              <Modal.Title>Add new Sequence</Modal.Title>
-            </Modal.Header>
+            <div>
+                <Modal.Header>
+                  <Modal.Title>Add new Sequence</Modal.Title>
+                </Modal.Header>
                 <Modal.Body>
                     <form>
                       <div className="form-group">
@@ -70,7 +70,7 @@ class AddSequenceModal extends React.Component {
               <Button onClick={this.props.closeModal}>Close</Button>
               <Button bsStyle="primary" disabled={! (this.state.nameValid && this.state.directoryValid && this.state.cameraValid) } onClick={() => this.onAddClicked()}>Add</Button>
             </Modal.Footer>
-          </Modal>
+          </div>
         )
     }
 }
