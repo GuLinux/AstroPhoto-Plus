@@ -11,7 +11,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAddSequence: (sequenceName, cameraID) => dispatch(Actions.Sequences.add(sequenceName, cameraID))
+    onAddSequence: (sequenceName, sequenceDirectory, cameraID) => dispatch(Actions.Sequences.add(sequenceName, sequenceDirectory, cameraID))
   }
 }
 

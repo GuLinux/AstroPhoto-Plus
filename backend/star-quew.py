@@ -6,7 +6,12 @@ import os
 from controller import controller
 from app import app
 
+default_settings = {}
+
 app.logger.info('Using INDI server at %s:%d', controller.indi_server.host, controller.indi_server.port)
+app.config['SEQUENCES_PATH'] = os.environ.get('STARQUEW_SEQUENCES_PATH', os.path.join(os.environ['HOME'], 'StarQuew'))
+
+import sys
 
 @app.route('/api/events')
 def events():
@@ -105,7 +110,7 @@ def delete_sequence(id):
 @json_api
 def new_sequence(json):
     try:
-        new_sequence = Sequence(json['name'], json['camera'])
+        new_sequence = Sequence(json['name'], json['directory'], json['camera'])
         controller.sequences.append(new_sequence)
         return new_sequence.to_map()
     except KeyError:

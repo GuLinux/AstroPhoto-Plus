@@ -1,28 +1,35 @@
 import React from 'react';
 import { Button, FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { sanitizePath } from '../utils'
 
 class ExposureSequenceItem extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            sequenceItem: {name: '', shots: '', exposure: '', globalExposure: '', ...props.sequenceItem},
-            shootingParamsChangesSequence: ['shots', 'exposure'],
+            sequenceItem: {filename: '', directory: '', count: '', exposure: '', globalExposure: '', ...props.sequenceItem},
+            shootingParamsChangesSequence: ['count', 'exposure'],
             validation: {}
         }
     }
+
+    
 
     buildSequenceItemState(options) {
         return {...this.state, sequenceItem: {...this.state.sequenceItem, ...options}};
     }
 
-    onNameChanged(name) {
-        this.validate(this.buildSequenceItemState({name}))
+    onFilenameChanged(filename) {
+        this.validate(this.buildSequenceItemState({filename: sanitizePath(filename)}))
     }
 
-    onShotsChanged(shots) {
-        if(isNaN(shots))
+    onDirectoryChanged(directory) {
+        this.validate(this.buildSequenceItemState({directory: sanitizePath(directory) }))
+    }
+
+    onCountChanged(count) {
+        if(isNaN(count))
             return
-        this.updateShootingParams('shots', shots)
+        this.updateShootingParams('count', count)
     }
 
     onExposureChanged(exposure) {
@@ -40,40 +47,52 @@ class ExposureSequenceItem extends React.Component {
     updateShootingParams(key, value) {
         let newState = this.buildSequenceItemState({[key]: value});
         let shootingParamsChangesSequence = [key, ...this.state.shootingParamsChangesSequence];
-        shootingParamsChangesSequence = shootingParamsChangesSequence.filter( (key, index) => index == shootingParamsChangesSequence.indexOf(key) && newState.sequenceItem[key] > 0);
+        shootingParamsChangesSequence = shootingParamsChangesSequence.filter( (key, index) => index === shootingParamsChangesSequence.indexOf(key) && newState.sequenceItem[key] > 0);
         if(shootingParamsChangesSequence.length > 1) {
             let changedParams = shootingParamsChangesSequence.slice(0, 2);
-            if(changedParams.includes('shots') && changedParams.includes('exposure'))
-                newState.sequenceItem.globalExposure = newState.sequenceItem.shots * newState.sequenceItem.exposure;
+            if(changedParams.includes('count') && changedParams.includes('exposure'))
+                newState.sequenceItem.globalExposure = newState.sequenceItem.count * newState.sequenceItem.exposure;
             if(changedParams.includes('globalExposure') && changedParams.includes('exposure'))
-                newState.sequenceItem.shots= newState.sequenceItem.globalExposure / newState.sequenceItem.exposure;
-            if(changedParams.includes('shots') && changedParams.includes('globalExposure'))
-                newState.sequenceItem.exposure = newState.sequenceItem.globalExposure / newState.sequenceItem.shots;
+                newState.sequenceItem.count= newState.sequenceItem.globalExposure / newState.sequenceItem.exposure;
+            if(changedParams.includes('count') && changedParams.includes('globalExposure'))
+                newState.sequenceItem.exposure = newState.sequenceItem.globalExposure / newState.sequenceItem.count;
         }
         this.validate({...newState, shootingParamsChangesSequence});
     }
 
     validate(state) {
         let validation = {
-            name: !! state.sequenceItem.name,
-            exposure: !! state.sequenceItem.shots && !! state.sequenceItem.exposure && !! state.sequenceItem.globalExposure,
+            filename: !! state.sequenceItem.filename,
+            directory: !! state.sequenceItem.directory,
+            exposure: !! state.sequenceItem.count && !! state.sequenceItem.exposure && !! state.sequenceItem.globalExposure,
         }
         state = {...state, validation}
         this.setState(state)
         return state;
     }
 
+    isValid() {
+        return this.state.validation.filename &&
+                this.state.validation.directory && 
+                this.state.validation.exposure
+    }
+
     render() {
         return (
             <form>
-                <FormGroup controlId="name">
-                    <ControlLabel>Name</ControlLabel>
-                    <FormControl type="text" value={this.state.sequenceItem.name} onChange={ e => this.onNameChanged(e.target.value) } />
-                    <HelpBlock>This will be used as a template for file names</HelpBlock>
+                <FormGroup controlId="filename">
+                    <ControlLabel>Filename</ControlLabel>
+                    <FormControl type="text" value={this.state.sequenceItem.filename} onChange={ e => this.onFilenameChanged(e.target.value) } />
+                    <HelpBlock>Filename template for each shot</HelpBlock>
                 </FormGroup>
-                <FormGroup controlId="shots-num">
-                    <ControlLabel>Shots</ControlLabel>
-                    <FormControl type="number" value={this.state.sequenceItem.shots} min={1} step={1} onChange={e => this.onShotsChanged(e.target.value)} />
+                <FormGroup controlId="directory">
+                    <ControlLabel>Directory</ControlLabel>
+                    <FormControl type="text" value={this.state.sequenceItem.directory} onChange={ e => this.onDirectoryChanged(e.target.value) } />
+                    <HelpBlock>Directory for this sequence</HelpBlock>
+                </FormGroup>
+                <FormGroup controlId="count">
+                    <ControlLabel>Count</ControlLabel>
+                    <FormControl type="number" value={this.state.sequenceItem.count} min={1} step={1} onChange={e => this.onCountChanged(e.target.value)} />
                     <HelpBlock>Number of shots in this sequence item</HelpBlock>
                 </FormGroup>
                 <FormGroup controlId="exposure">
@@ -86,7 +105,7 @@ class ExposureSequenceItem extends React.Component {
                     <FormControl type="number" value={this.state.sequenceItem.globalExposure} min={0} onChange={e => this.onGlobalExposureChanged(e.target.value)} />
                     <HelpBlock>Total exposure time for this sequence</HelpBlock>
                 </FormGroup>
-                <Button bsStyle="primary" disabled={ ! this.state.validation.name || ! this.state.validation.exposure} onClick={() => this.props.saveSequenceItem(this.state.sequenceItem)}>Save</Button>
+                <Button bsStyle="primary" disabled={ ! this.isValid() } onClick={() => this.props.saveSequenceItem(this.state.sequenceItem)}>Save</Button>
             </form>
         );
     }
