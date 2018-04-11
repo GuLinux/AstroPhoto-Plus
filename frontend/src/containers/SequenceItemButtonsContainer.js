@@ -14,7 +14,6 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         onSave: (sequenceItem) => dispatch(Actions.SequenceItems.saveSequenceItem(sequenceItem)),
         navigateBack: (sequence) => dispatch(Actions.Navigation.toSequence('sequence', sequence)),
-        showSequenceItemUnsavedChangesModal: () => dispatch(Actions.Navigation.toggleModal('sequenceItemUnsavedChanges', true))
     }
 }
 
