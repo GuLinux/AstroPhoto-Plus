@@ -7,7 +7,7 @@ class ModalDialog extends React.Component {
     }
 
     render() {
-        let children = React.Children.map(this.props.children, child => React.cloneElement(child, { closeModal: this.props.close}));
+        let children = React.Children.map(this.props.children, child => React.cloneElement(child, { closeModal: this.props.close, modalProps: this.props.modalProps}));
         return (
             <Modal show={this.props.visible} keyboard={true}>
                 {children}
