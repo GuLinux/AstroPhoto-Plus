@@ -1,15 +1,14 @@
 import React from 'react';
 import { Button, Table, Glyphicon } from 'react-bootstrap';
 import AddSequenceModalContainer from '../containers/AddSequenceModalContainer';
-import ModalContainer, { ShowModalDialogButtonContainer } from '../containers/ModalContainer'
-
+import ModalContainer from '../containers/ModalContainer'
 
 const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete}) =>
 (
     <div>
-        <ShowModalDialogButtonContainer bsStyle="primary" bsSize="xsmall" className="pull-right" text="new sequence" modal="addSequence" />
+        <ModalContainer.Open bsStyle="primary" bsSize="xsmall" className="pull-right" modal="addSequence">new sequence</ModalContainer.Open>
         <ModalContainer name="addSequence">
-            <AddSequenceModalContainer />
+            <AddSequenceModalContainer modalName="addSequence"/>
         </ModalContainer>
 
         <Table striped bordered hover>

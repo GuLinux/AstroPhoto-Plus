@@ -3,15 +3,15 @@ import { Button, Modal } from 'react-bootstrap'
 import ModalContainer from '../containers/ModalContainer'
 
 
-const UnsavedChangesModal = ({closeModal, navigateBack}) => (
+const UnsavedChangesModal = ({navigateBack, modalName}) => (
     <div>
         <Modal.Header>
             <Modal.Title>Unsaved Changes</Modal.Title>
         </Modal.Header>
         <Modal.Body><p>If you go back now, your changes will not be saved.</p><p>Do you want to proceed?</p></Modal.Body>
         <Modal.Footer>
-            <Button onClick={closeModal} bsStyle="primary">Continue editing</Button>
-            <Button onClick={() => { closeModal(); navigateBack(); }} bsStyle="danger">Go back</Button>
+            <ModalContainer.Close modal={modalName} bsStyle="primary">Continue editing</ModalContainer.Close>
+            <ModalContainer.Close modal={modalName} afterToggle={navigateBack} bsStyle="danger">Close and go back</ModalContainer.Close>
         </Modal.Footer>
     </div>
 )
@@ -27,17 +27,17 @@ const SequenceItemButtons = ({isValid, isChanged, onSave, navigateBack, sequence
     let onBackClicked = () => {
         if(! isChanged) {
             navigateBack(sequenceId);
-            return;
+            return false;
         }
-        showSequenceItemUnsavedChangesModal();
+        return true;
     }
 
     return (
     <div>
-        <Button bsStyle="default" onClick={onBackClicked}>Back</Button>
+        <ModalContainer.Open bsStyle="default" beforeToggle={onBackClicked} modal="sequenceItemUnsavedChanges">Back</ModalContainer.Open>
         <Button bsStyle="primary" disabled={ ! canSave } onClick={onSaveClicked}>Save</Button>
         <ModalContainer name="sequenceItemUnsavedChanges">
-            <UnsavedChangesModal navigateBack={ () => navigateBack(sequenceId)} />
+            <UnsavedChangesModal modalName="sequenceItemUnsavedChanges" navigateBack={ () => navigateBack(sequenceId)} />
         </ModalContainer>
     </div>
 )}

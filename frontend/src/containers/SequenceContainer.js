@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch, props) => {
         dispatch(Actions.SequenceItems.newPending(type, sequenceId));
         dispatch(Actions.Navigation.toSequenceItem('sequence-item', 'pending'));
     }
-    return { navigateBack, onCreateSequenceItem, showAddSequenceItemModal: () => dispatch(Actions.Navigation.toggleModal('newSequenceItem', true)) }
+    return { navigateBack, onCreateSequenceItem, }
 }
 
 const SequenceContainer = connect(

@@ -1,11 +1,13 @@
 import React from 'react'
 import { Modal, Button, HelpBlock } from 'react-bootstrap'
 import { sanitizePath } from '../utils'
+import ModalContainer from '../containers/ModalContainer'
 
 const initialState = {
     name: '',
     nameValid: false,
     camera: '',
+    directory: '',
 }
 
 
@@ -31,7 +33,10 @@ class AddSequenceModal extends React.Component {
     onAddClicked() {
         this.props.onAddSequence(this.state.name, this.state.directory, this.state.camera)
         this.setState(initialState);
-        this.props.closeModal();
+    }
+
+    isValid() {
+        return this.state.nameValid && this.state.directoryValid && this.state.cameraValid
     }
 
     render() {
@@ -67,8 +72,8 @@ class AddSequenceModal extends React.Component {
                     </form>
                 </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.props.closeModal}>Close</Button>
-              <Button bsStyle="primary" disabled={! (this.state.nameValid && this.state.directoryValid && this.state.cameraValid) } onClick={() => this.onAddClicked()}>Add</Button>
+                <ModalContainer.Close modal={this.props.modalName}>Close</ModalContainer.Close>
+                <ModalContainer.Toggle bsStyle="primary" action="close" modal={this.props.modalName} disabled={!this.isValid()} afterToggle={() => this.onAddClicked()}>Add</ModalContainer.Toggle>
             </Modal.Footer>
           </div>
         )

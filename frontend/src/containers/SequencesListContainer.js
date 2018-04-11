@@ -20,7 +20,6 @@ const mapDispatchToProps = dispatch => {
   return {
     onSequenceEdit: (sequenceId) => dispatch(Actions.Navigation.toSequence('sequence', sequenceId)),
     onSequenceDelete: (sequenceId) => dispatch(Actions.Sequences.remove(sequenceId)),
-    showNewSequenceModal: () => dispatch(Actions.Navigation.toggleModal('addSequence', true)),
   }
 }
 

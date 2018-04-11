@@ -1,5 +1,6 @@
 import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
+import ModalContainer from '../containers/ModalContainer'
 
 const initialState = {
     type: '',
@@ -22,7 +23,6 @@ class AddSequenceItemModal extends React.Component {
     onAddClicked() {
         this.props.onAddSequenceItem(this.state.type)
         this.setState(initialState);
-        this.props.closeModal();
     }
 
     render() {
@@ -43,8 +43,8 @@ class AddSequenceItemModal extends React.Component {
                 </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.props.closeModal}>Close</Button>
-              <Button bsStyle="primary" disabled={! (this.state.typeValid) } onClick={this.onAddClicked}>Add</Button>
+                <ModalContainer.Close modal={this.props.modalName}>Close</ModalContainer.Close>
+                <ModalContainer.Close modal={this.props.modalName} bsStyle="primary" disabled={!this.state.typeValid} afterToggle={() => this.onAddClicked()}>Add</ModalContainer.Close>
             </Modal.Footer>
           </div>
         )

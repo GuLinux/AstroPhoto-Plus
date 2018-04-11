@@ -4,7 +4,7 @@ import AddSequenceItemModal from './AddSequenceItemModal'
 import SequenceItemsContainer from '../containers/SequenceItemsContainer';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
-const Sequence = ({sequence, showAddSequenceItemModal, onCreateSequenceItem, navigateBack}) => {
+const Sequence = ({sequence, onCreateSequenceItem, navigateBack}) => {
     if(sequence === null)
         return null;
     return (
@@ -13,11 +13,11 @@ const Sequence = ({sequence, showAddSequenceItemModal, onCreateSequenceItem, nav
             {sequence.name}
             <ButtonGroup className="pull-right">
                 <Button onClick={navigateBack} bsSize="xsmall">back</Button>
-                <Button bsStyle="primary" bsSize="xsmall" className="pull-right" onClick={showAddSequenceItemModal}>new</Button>
+                <ModalContainer.Open modal="newSequenceItem" bsStyle="primary" bsSize="xsmall" className="pull-right">new</ModalContainer.Open>
             </ButtonGroup>
         </h2>
         <ModalContainer name="newSequenceItem">
-            <AddSequenceItemModal onAddSequenceItem={(type) => onCreateSequenceItem(type, sequence.id)} />
+            <AddSequenceItemModal modalName="newSequenceItem" onAddSequenceItem={(type) => onCreateSequenceItem(type, sequence.id)} />
         </ModalContainer>
         <SequenceItemsContainer sequenceId={sequence.id} />
     </div>
