@@ -3,7 +3,7 @@ import { Table, Glyphicon, ButtonGroup, Button } from 'react-bootstrap';
 import { Dialog, QuestionDialog } from './Dialogs'
 
 
-const SequenceItemsList = ({sequenceItems, editSequenceItem}) => (
+const SequenceItemsList = ({sequenceItems, editSequenceItem, deleteSequenceItem}) => (
     <Table striped bordered hover>
         <thead>
             <tr>
@@ -22,7 +22,10 @@ const SequenceItemsList = ({sequenceItems, editSequenceItem}) => (
                     <td>
                         <ButtonGroup>
                             <Button bsSize="xsmall" onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
-                            <Dialog.Open modal="confirmDeleteSequenceItem" bsSize="xsmall" disabled={true}><Glyphicon glyph="minus" /></Dialog.Open>
+                            <Dialog.Open modal="confirmDeleteSequenceItem" bsSize="xsmall"><Glyphicon glyph="minus" /></Dialog.Open>
+                            <QuestionDialog name="confirmDeleteSequenceItem" title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), bsStyle: 'danger'} ]}>
+                                Do you really want to remove this element?
+                            </QuestionDialog>
                         </ButtonGroup>
                     </td>
                 </tr>

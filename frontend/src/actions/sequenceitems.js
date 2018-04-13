@@ -1,4 +1,4 @@
-import {  updateSequenceItemAPI, createSequenceItemAPI } from '../middleware/api'
+import {  updateSequenceItemAPI, createSequenceItemAPI, deleteSequenceItemAPI } from '../middleware/api'
 
 export const SequenceItems = {
     newPending: (itemType, sequenceID) => ({
@@ -24,6 +24,15 @@ export const SequenceItems = {
         }
         return updateSequenceItemAPI(dispatch, sequenceItem, (data) => SequenceItems.updated(dispatch, sequenceItem.sequence, data) );
     },
+
+    delete: (sequenceItem) => dispatch => {
+        dispatch({type: 'REQUEST_DELETE_SEQUENCE_ITEM', sequenceItem});
+        return deleteSequenceItemAPI(dispatch, sequenceItem.sequence, sequenceItem.id, (data) => SequenceItems.deleted(dispatch, sequenceItem));
+    },
+
+    deleted: (dispatch, sequenceItem) => {
+        dispatch({type: 'SEQUENCE_ITEM_DELETED', sequenceItem});
+    }
 }
 
 export default SequenceItems;

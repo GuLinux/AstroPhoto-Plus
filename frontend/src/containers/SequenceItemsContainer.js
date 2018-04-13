@@ -36,12 +36,13 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => {
   return {
     editSequenceItem: (sequenceItemId) => dispatch(Actions.Navigation.toSequenceItem('sequence-item', sequenceItemId)),
+    deleteSequenceItem: (sequenceItem) => dispatch(Actions.SequenceItems.delete(sequenceItem)),
   }
 }
 
 const SequenceItemsContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SequenceItemsList)
 
 export default SequenceItemsContainer

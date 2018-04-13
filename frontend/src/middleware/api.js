@@ -63,6 +63,12 @@ export const updateSequenceItemAPI = (dispatch, sequenceItem, onSuccess) => fetc
         body: JSON.stringify(sequenceItem)
     }, json => onSuccess(normalize(json, sequenceItemSchema)));
 
+export const deleteSequenceItemAPI = (dispatch, sequenceId, sequenceItemId, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}/sequence_items/${sequenceItemId}`, {
+        method: 'DELETE'
+    }, json => onSuccess(normalize(json, sequenceSchema)));
+
+
+
 
 export const getINDIServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/status', {}, onSuccess);
 
