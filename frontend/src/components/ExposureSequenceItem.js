@@ -86,7 +86,6 @@ class ExposureSequenceItem extends React.Component {
 
     isValid() {
         return this.state.validation.filename &&
-                this.state.validation.directory && 
                 this.state.validation.exposure
     }
 
