@@ -8,8 +8,7 @@ export const SequenceItems = {
     }),
 
     updated: (dispatch, sequence, data, wasNew) => {
-        console.log(data);
-        let sequenceItem = data.entities.sequenceItems[data.result];
+        let sequenceItem = {...data.entities.sequenceItems[data.result], sequence};
         dispatch({ type: 'SEQUENCE_ITEM_UPDATED', sequenceItem})
         if(wasNew) {
             dispatch({type: 'SEQUENCE_ITEM_REMOVED', id: 'pending', sequence})

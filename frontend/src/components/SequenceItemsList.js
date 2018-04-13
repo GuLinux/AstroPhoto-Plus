@@ -3,7 +3,7 @@ import { Table, Glyphicon, ButtonGroup, Button } from 'react-bootstrap';
 import { Dialog, QuestionDialog } from './Dialogs'
 
 
-const SequenceItemsList = ({sequenceItems}) => (
+const SequenceItemsList = ({sequenceItems, editSequenceItem}) => (
     <Table striped bordered hover>
         <thead>
             <tr>
@@ -21,7 +21,7 @@ const SequenceItemsList = ({sequenceItems}) => (
                     <td></td>
                     <td>
                         <ButtonGroup>
-                            <Button bsSize="xsmall" disabled={true}><Glyphicon glyph="edit" /></Button>
+                            <Button bsSize="xsmall" onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
                             <Dialog.Open modal="confirmDeleteSequenceItem" bsSize="xsmall" disabled={true}><Glyphicon glyph="minus" /></Dialog.Open>
                         </ButtonGroup>
                     </td>

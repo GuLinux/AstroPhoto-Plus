@@ -2,10 +2,17 @@ import { normalize, schema } from 'normalizr'
 import fetch from 'isomorphic-fetch'
 import Actions from '../actions'
 
-const sequenceItemSchema = new schema.Entity('sequenceItems');
-const sequenceSchema = new schema.Entity('sequences', {
-    sequenceItems: [ sequenceItemSchema ]
+const sequenceItemSchema = new schema.Entity('sequenceItems', {}, {
+    idAttribute: 'id',
+    processStrategy: (v, p) => ({...v, sequence: p.id} ),
+
 });
+const sequenceSchema = new schema.Entity('sequences', {
+        sequenceItems: [ sequenceItemSchema ]
+    }, {
+        idAttribute: 'id',
+    }
+);
 const sequenceList = [ sequenceSchema ]
 
 const fetchJSON = (dispatch, url, options, onSuccess) => fetch(url, options)

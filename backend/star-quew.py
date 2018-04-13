@@ -10,6 +10,7 @@ default_settings = {}
 
 app.logger.info('Using INDI server at %s:%d', controller.indi_server.host, controller.indi_server.port)
 app.config['SEQUENCES_PATH'] = os.environ.get('STARQUEW_SEQUENCES_PATH', os.path.join(os.environ['HOME'], 'StarQuew'))
+app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG'))
 
 import sys
 
@@ -126,6 +127,19 @@ def add_sequence_item(id, json):
     app.logger.debug('adding sequence item {} to id {}'.format(new_sequence_item, id))
     sequence.sequence_items.append(new_sequence_item)
     return new_sequence_item.to_map()
+
+
+@app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>', methods=['PUT'])
+@json_input
+@json_api
+def update_sequence_item(sequence_id, sequence_item_id, json):
+    app.logger.debug('modifying sequence item {} from sequence'.format(sequence_item_id, sequence_id))
+    sequence = find_sequence(sequence_id)
+    new_sequence_item = SequenceItem(json)
+    sequence.sequence_items = [x for x in sequence.sequence_items if x.id != sequence_item_id]
+    sequence.sequence_items.append(new_sequence_item)
+    return new_sequence_item.to_map()
+
 
     
 @app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>', methods=['DELETE'])

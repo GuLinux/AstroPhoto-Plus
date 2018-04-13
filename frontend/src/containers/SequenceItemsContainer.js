@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import SequenceItemsList from '../components/SequenceItemsList'
+import Actions from '../actions'
 
 const getTypeLabel = type => {
     switch(type) {
@@ -34,6 +35,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    editSequenceItem: (sequenceItemId) => dispatch(Actions.Navigation.toSequenceItem('sequence-item', sequenceItemId)),
   }
 }
 

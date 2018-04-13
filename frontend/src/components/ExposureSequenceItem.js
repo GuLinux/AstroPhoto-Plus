@@ -15,7 +15,10 @@ class ExposureSequenceItem extends React.Component {
     }
 
     initialValues() {
-        return {filename: '', directory: '', count: '', exposure: '', globalExposure: '', ...this.props.sequenceItem}
+        let values = {filename: '', directory: '', count: '', exposure: '', globalExposure: '', ...this.props.sequenceItem}
+        if(values.exposure && values.count)
+            values.globalExposure = values.exposure * values.count;
+        return values;
     }
 
     isChanged() {
