@@ -1,20 +1,6 @@
 import React from 'react'
 import { Button, Modal } from 'react-bootstrap'
-import ModalContainer from '../containers/ModalContainer'
-
-
-const UnsavedChangesModal = ({navigateBack, modalName}) => (
-    <div>
-        <Modal.Header>
-            <Modal.Title>Unsaved Changes</Modal.Title>
-        </Modal.Header>
-        <Modal.Body><p>If you go back now, your changes will not be saved.</p><p>Do you want to proceed?</p></Modal.Body>
-        <Modal.Footer>
-            <ModalContainer.Close modal={modalName} bsStyle="primary">Continue editing</ModalContainer.Close>
-            <ModalContainer.Close modal={modalName} afterToggle={navigateBack} bsStyle="danger">Close and go back</ModalContainer.Close>
-        </Modal.Footer>
-    </div>
-)
+import { Dialog, QuestionDialog } from './Dialogs.js'
 
 const SequenceItemButtons = ({isValid, isChanged, onSave, navigateBack, sequenceId, sequenceItem, showSequenceItemUnsavedChangesModal}) => { 
     let onSaveClicked = () => {
@@ -26,7 +12,7 @@ const SequenceItemButtons = ({isValid, isChanged, onSave, navigateBack, sequence
 
     let onBackClicked = () => {
         if(! isChanged) {
-            navigateBack(sequenceId);
+            navigateBack();
             return false;
         }
         return true;
@@ -34,11 +20,12 @@ const SequenceItemButtons = ({isValid, isChanged, onSave, navigateBack, sequence
 
     return (
     <div>
-        <ModalContainer.Open bsStyle="default" beforeToggle={onBackClicked} modal="sequenceItemUnsavedChanges">Back</ModalContainer.Open>
+        <Dialog.Open bsStyle="default" beforeToggle={onBackClicked} modal="sequenceItemUnsavedChanges">Back</Dialog.Open>
         <Button bsStyle="primary" disabled={ ! canSave } onClick={onSaveClicked}>Save</Button>
-        <ModalContainer name="sequenceItemUnsavedChanges">
-            <UnsavedChangesModal modalName="sequenceItemUnsavedChanges" navigateBack={ () => navigateBack(sequenceId)} />
-        </ModalContainer>
+        <QuestionDialog name="sequenceItemUnsavedChanges" title="Unsaved Changes" buttons={ [{text: 'Continue editing', bsStyle: 'primary'}, {text: 'Close and go back', bsStyle: 'danger', afterClose: navigateBack}] }>
+            <p>If you go back now, your changes will not be saved.</p>
+            <p>Do you want to proceed?</p>
+        </QuestionDialog>
     </div>
 )}
 export default SequenceItemButtons;

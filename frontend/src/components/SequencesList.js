@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Table, Glyphicon } from 'react-bootstrap';
+import { Button, ButtonGroup, Table, Glyphicon, Modal } from 'react-bootstrap';
 import AddSequenceModalContainer from '../containers/AddSequenceModalContainer';
 import ModalContainer from '../containers/ModalContainer'
+import { Dialog, QuestionDialog } from './Dialogs'
 
 const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete}) =>
 (
@@ -29,11 +30,16 @@ const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete}) =
                     <td>{sequence.sequenceItems.length}</td>
                     <td></td>
                     <td>
-                        <a href='#' onClick={e => onSequenceEdit(sequence.id)} ><Glyphicon glyph="edit" /></a>
-                        <a href='#' onClick={e => onSequenceDelete(sequence.id)} ><Glyphicon glyph="minus" /></a>
-                        <Glyphicon glyph="play" />
-                        <Glyphicon glyph="pause" />
-                        <Glyphicon glyph="stop" />
+                        <ButtonGroup>
+                            <Button onClick={e => onSequenceEdit(sequence.id)} bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
+                            <Dialog.Open modal="confirmSequenceDelete" bsSize="xsmall"><Glyphicon glyph="minus" /></Dialog.Open>
+                            <QuestionDialog name="confirmSequenceDelete" title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', bsStyle: 'danger', afterClose: () => onSequenceDelete(sequence.id)}]}>
+                                Do you really want to remove this sequence?
+                            </QuestionDialog>
+                            <Button bsSize="xsmall" disabled={true}><Glyphicon glyph="play" /></Button>
+                            <Button bsSize="xsmall" disabled={true}><Glyphicon glyph="pause" /></Button>
+                            <Button bsSize="xsmall" disabled={true}><Glyphicon glyph="stop" /></Button>
+                        </ButtonGroup>
                     </td>
                 </tr>
             ))}
@@ -41,5 +47,7 @@ const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete}) =
         </Table>
     </div>
 )
+
+                            //<Button onClick={e => onSequenceDelete(sequence.id)} bsSize="xsmall"><Glyphicon glyph="minus" /></Button>
 
 export default SequencesList;

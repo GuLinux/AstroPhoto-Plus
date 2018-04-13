@@ -17,9 +17,12 @@ const mapDispatchToProps = (dispatch, props) => {
     }
 }
 
+const mergeProps = (stateProps, dispatchProps, ownProps) => ({ ...stateProps, ...dispatchProps, ...ownProps, navigateBack: () => dispatchProps.navigateBack(stateProps.sequenceId) })
+
 const SequenceItemButtonsContainer = connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    mergeProps
 )(SequenceItemButtons)
 
 export default SequenceItemButtonsContainer

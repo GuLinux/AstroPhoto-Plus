@@ -1,5 +1,6 @@
 import React from 'react';
-import { Table, Glyphicon } from 'react-bootstrap';
+import { Table, Glyphicon, ButtonGroup, Button } from 'react-bootstrap';
+import { Dialog, QuestionDialog } from './Dialogs'
 
 
 const SequenceItemsList = ({sequenceItems}) => (
@@ -19,11 +20,10 @@ const SequenceItemsList = ({sequenceItems}) => (
                     <td>{sequenceItem.description}</td>
                     <td></td>
                     <td>
-                        <Glyphicon glyph="edit" />
-                        <Glyphicon glyph="minus" />
-                        <Glyphicon glyph="play" />
-                        <Glyphicon glyph="pause" />
-                        <Glyphicon glyph="stop" />
+                        <ButtonGroup>
+                            <Button bsSize="xsmall" disabled={true}><Glyphicon glyph="edit" /></Button>
+                            <Dialog.Open modal="confirmDeleteSequenceItem" bsSize="xsmall" disabled={true}><Glyphicon glyph="minus" /></Dialog.Open>
+                        </ButtonGroup>
                     </td>
                 </tr>
             ))}
