@@ -12,10 +12,19 @@ class ShotsSequenceItem:
         self.directory= data['directory']
         self.progress = data.get('progress', 0)
         self.last_message = data.get('last_message', '')
+        self.__validate(self.filename)
+        
+    def __validate(self, format_string):
+        test_params = { 'exposure': 1, 'number': 2, 'timestamp': 1, 'datetime': 'date-string', 'filter': 'filter-name', 'filter_index': 1}
+        if not os.path.splitext(format_string.lower())[1] in ['.fit', '.fits']:
+            raise BadRequestError('Unrecognized file extension')
         try:
-            self.filename.format(exposure=1, number=2, timestamp=1, datetime='date-string', filter='filter-name', filter_index=1)
-        except:
-            raise BadRequestError('Bad filename template')
+            first_string = format_string.format(**test_params)
+            test_params['number'] = 200
+            if first_string == format_string.format(**test_params):
+                raise BadRequestError('"number" parameter not present in format string: {}'.format(format_string))
+        except KeyError as e:
+            raise BadRequestError('Bad filename template: {} parameter not valid'.format(e.args[0]))
 
     def to_map(self):
         return {

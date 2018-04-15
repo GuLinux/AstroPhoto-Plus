@@ -1,4 +1,5 @@
 import {  updateSequenceItemAPI, createSequenceItemAPI, deleteSequenceItemAPI } from '../middleware/api'
+import Actions from './index'
 
 export const SequenceItems = {
     newPending: (itemType, sequenceID) => ({
@@ -18,11 +19,25 @@ export const SequenceItems = {
 
     saveSequenceItem: (sequenceItem) => dispatch => {
         dispatch({type: 'REQUEST_SAVE_SEQUENCE_ITEM', sequenceItem});
+
+        let onError = response => {
+            if(response.status == 400) {
+                response.json().then(data => dispatch(Actions.Notifications.add('Error saving sequence item', data.error_message, 'warning')) );
+                return true;
+            } 
+            return false;
+        } 
+
+        let onSuccess = (data, wasCreated) => {
+            SequenceItems.updated(dispatch, sequenceItem.sequence, data, wasCreated)
+            dispatch(Actions.Navigation.toSequence('sequence', sequenceItem.sequence))
+        }
+
         if(sequenceItem.id === 'pending') {
             delete sequenceItem.id
-            return createSequenceItemAPI(dispatch, sequenceItem, (data) => SequenceItems.updated(dispatch, sequenceItem.sequence, data, true) );
+            return createSequenceItemAPI(dispatch, sequenceItem, (data) => onSuccess(data, true) , onError);
         }
-        return updateSequenceItemAPI(dispatch, sequenceItem, (data) => SequenceItems.updated(dispatch, sequenceItem.sequence, data) );
+        return updateSequenceItemAPI(dispatch, sequenceItem, data => onSuccess(data, false), onError );
     },
 
     delete: (sequenceItem) => dispatch => {

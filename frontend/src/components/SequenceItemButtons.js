@@ -5,7 +5,6 @@ import { Dialog, QuestionDialog } from './Dialogs.js'
 const SequenceItemButtons = ({isValid, isChanged, onSave, navigateBack, sequenceId, sequenceItem, showSequenceItemUnsavedChangesModal}) => { 
     let onSaveClicked = () => {
         onSave(sequenceItem);
-        navigateBack();
     }
 
     let canSave = isValid && isChanged;

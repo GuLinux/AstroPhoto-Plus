@@ -15,22 +15,29 @@ const sequenceSchema = new schema.Entity('sequences', {
 );
 const sequenceList = [ sequenceSchema ]
 
-const fetchJSON = (dispatch, url, options, onSuccess) => fetch(url, options)
-                                                    .then(response => {
-                                                        if(! response.ok)
-                                                            throw response;
-                                                        return response.json();
-                                                    }).then(onSuccess)
-                                                    .catch(error => {
-                                                        if('status' in error) {
-                                                            console.log(error);
-                                                            error.text().then( body => {
-                                                                dispatch(Actions.serverError('network_request', 'response', error, body))
-                                                            })
-                                                        } else {
-                                                            dispatch(Actions.serverError('network_request', 'exception', error))
-                                                        }
-                                                    });
+const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
+    let dispatchError = response => {
+        response.text().then( body => { dispatch(Actions.serverError('network_request', 'response', response, body)) })
+    }
+    
+    let errorHandler = response => {
+        if(! onError || ! onError(response))
+            dispatchError(response);
+    }
+    return fetch(url, options)
+        .then(response => {
+            if(! response.ok)
+                throw response;
+            return response.json();
+        }).then(onSuccess)
+        .catch(error => {
+            if('status' in error) {
+                errorHandler(error)
+            } else {
+                dispatch(Actions.serverError('network_request', 'exception', error))
+            }
+        });
+}
 
 export const fetchSequencesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/sequences', {}, json => onSuccess(normalize(json, sequenceList)));
 
@@ -55,13 +62,13 @@ export const createSequenceItemAPI = (dispatch, sequenceItem, onSuccess) => fetc
         body: JSON.stringify(sequenceItem)
     }, json => onSuccess(normalize(json, sequenceItemSchema)));
 
-export const updateSequenceItemAPI = (dispatch, sequenceItem, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceItem.sequence}/sequence_items/${sequenceItem.id}`, {
+export const updateSequenceItemAPI = (dispatch, sequenceItem, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceItem.sequence}/sequence_items/${sequenceItem.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(sequenceItem)
-    }, json => onSuccess(normalize(json, sequenceItemSchema)));
+    }, json => onSuccess(normalize(json, sequenceItemSchema)), onError);
 
 export const deleteSequenceItemAPI = (dispatch, sequenceId, sequenceItemId, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}/sequence_items/${sequenceItemId}`, {
         method: 'DELETE'
