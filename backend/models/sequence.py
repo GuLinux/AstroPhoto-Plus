@@ -1,5 +1,6 @@
 import uuid
 from .exceptions import NotFoundError
+from .sequence_item import SequenceItem
 
 class Sequence:
     def __init__(self, name, upload_path, camera, id=None, sequence_items=None):
@@ -15,6 +16,9 @@ class Sequence:
             return sequence_item[0]
         raise NotFoundError()
 
+    @staticmethod
+    def from_map(map_object):
+        return Sequence(map_object['name'], map_object['directory'], map_object['camera'], id=map_object['id'], sequence_items=[SequenceItem.from_map(x) for x in map_object['sequenceItems']])
 
     def to_map(self):
         return {

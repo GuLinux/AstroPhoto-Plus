@@ -1,13 +1,13 @@
-import uuid
 import six
 import functools
+import hashlib
 
-
-__uuid_namespace = uuid.uuid4()
 
 def id_by_properties(properties):
     module_name = properties if isinstance(properties, six.string_types) else '-'.join(properties)
-    return uuid.uuid5(__uuid_namespace, module_name).hex
+    m = hashlib.md5()
+    m.update(str.encode(module_name))
+    return m.hexdigest()
 
 
 

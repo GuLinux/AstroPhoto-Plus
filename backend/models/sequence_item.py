@@ -34,7 +34,9 @@ class SequenceItem:
         else:
             raise BadRequestError('Invalid sequence item type: {}'.format(self.type))
 
-    
+    @staticmethod
+    def from_map(map_object):
+        return SequenceItem(map_object)
 
     def to_map(self):
         data = {

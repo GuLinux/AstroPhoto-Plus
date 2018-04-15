@@ -12,7 +12,7 @@ app.logger.info('Using INDI server at %s:%d', controller.indi_server.host, contr
 app.config['SEQUENCES_PATH'] = os.environ.get('STARQUEW_SEQUENCES_PATH', os.path.join(os.environ['HOME'], 'StarQuew'))
 app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG'))
 
-import sys
+controller.load_sequences()
 
 @app.route('/api/events')
 def events():
@@ -91,10 +91,11 @@ def get_sequence(id):
 @app.route('/api/sequences/<id>', methods=['DELETE'])
 @json_api
 def delete_sequence(id):
-    sequence = controller.sequences.lookup(id).to_map()
-    sequence.update({'status': 'deleted'})
+    sequence = controller.sequences.lookup(id)
+    sequence_json = sequence.to_map()
+    sequence_json.update({'status': 'deleted'})
     controller.sequences.remove(sequence)
-    return sequence
+    return sequence_json
 
 
 @app.route('/api/sequences', methods=['POST'])
