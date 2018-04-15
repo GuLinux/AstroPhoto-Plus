@@ -42,19 +42,19 @@ class ExposureSequenceItem extends React.Component {
     onCountChanged(count) {
         if(isNaN(count))
             return
-        this.updateShootingParams('count', count)
+        this.updateShootingParams('count', parseInt(count))
     }
 
     onExposureChanged(exposure) {
         if(isNaN(exposure))
             return
-        this.updateShootingParams('exposure', exposure)
+        this.updateShootingParams('exposure', parseFloat(exposure))
     }
     
     onGlobalExposureChanged(globalExposure) {
         if(isNaN(globalExposure))
             return
-        this.updateShootingParams('globalExposure', globalExposure)
+        this.updateShootingParams('globalExposure', parseFloat(globalExposure))
     }
 
     updateShootingParams(key, value) {
@@ -95,7 +95,13 @@ class ExposureSequenceItem extends React.Component {
                 <FormGroup controlId="filename">
                     <ControlLabel>Filename</ControlLabel>
                     <FormControl type="text" value={this.state.sequenceItem.filename} onChange={ e => this.onFilenameChanged(e.target.value) } />
-                    <HelpBlock>Filename template for each shot</HelpBlock>
+                    <HelpBlock>Filename template for each shot. This will be formatted using <a href="https://docs.python.org/3.4/library/string.html#format-specification-mini-language" target="_BLANK">python string formatting rules</a>, you can use the following keywords:
+                        <ul>
+                            <li>exposure</li>
+                            <li>number</li>
+                        </ul> 
+                        Example: luminance_{'{exposure}_{number:04}.fits'}
+                    </HelpBlock>
                 </FormGroup>
                 <FormGroup controlId="directory">
                     <ControlLabel>Directory</ControlLabel>

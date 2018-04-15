@@ -23,6 +23,7 @@ services:
     build: backend
     volumes:
         - ../../backend:/app
+        - /tmp:/tmp
     expose:
         - "5000"
     ports:

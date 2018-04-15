@@ -16,10 +16,17 @@ class Camera:
             self.camera = camera
             self.device = Device(client, logger, name=camera.name)
 
+    @property
+    def id(self):
+        return self.device.id
+
     def to_map(self):
         return {
-            'id': self.device.id,
+            'id': self.id,
             'device': self.device.to_map(),
             'connected': self.camera.connected,
         }
 
+
+    def indi_sequence_camera(self):
+        return self.camera

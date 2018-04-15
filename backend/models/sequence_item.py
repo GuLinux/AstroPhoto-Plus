@@ -17,10 +17,12 @@ class ShotsSequenceItem:
             'directory': self.directory,
         }
 
-    def run(self, camera, root_path, parent_path):
-        upload_path = os.path.join([root_path, parent_path, self.directory])
-        sequence = Sequence(camera, self.exposure, self.count, upload_path, filename_template=self.filename)
-        # TODO: setup callbacks)
+    def run(self, devices, root_path, parent_path, logger, callbacks):
+        upload_path = os.path.join(root_path, parent_path, self.directory)
+        sequence = Sequence(devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, filename_template=self.filename)
+        logger.debug('Starting sequence: {}, upload_path={}'.format(sequence, upload_path))
+        for key, value in callbacks:
+            sequence.callbacks.add(key, value)
         sequence.run()
 
 class SequenceItem:
@@ -45,4 +47,8 @@ class SequenceItem:
         }
         data.update(self.job.to_map())
         return data
+
+
+    def run(self, *args, **kwargs):
+        self.job.run(*args, **kwargs)
 

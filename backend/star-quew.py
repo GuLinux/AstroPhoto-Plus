@@ -5,11 +5,16 @@ from models import Server, Sequence, SequenceItem, NotFoundError, Property, Devi
 import os
 from controller import controller
 from app import app
+import logging
 
 default_settings = {}
 
 app.logger.info('Using INDI server at %s:%d', controller.indi_server.host, controller.indi_server.port)
 app.config['SEQUENCES_PATH'] = os.environ.get('STARQUEW_SEQUENCES_PATH', os.path.join(os.environ['HOME'], 'StarQuew'))
+
+gunicorn_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers = gunicorn_logger.handlers
+
 app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG'))
 
 controller.load_sequences()
@@ -108,6 +113,13 @@ def new_sequence(json):
         return new_sequence.to_map()
     except KeyError:
         raise BadRequestError('Invalid json')
+
+
+@app.route('/api/sequences/<id>/start', methods=['POST'])
+@json_api
+def start_sequence(id):
+    controller.sequences_runner.run(id)
+    return { 'id': id, 'status': 'starting' }
 
 # Sequence Items
 

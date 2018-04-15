@@ -4,7 +4,7 @@ from models import Server, Device, Property, SequencesList
 from server_sent_events import SSE
 from app import app
 import time
-
+from sequences_runner import SequencesRunner
 
 class EventListener:
     def __init__(self, controller):
@@ -36,6 +36,7 @@ class Controller:
         self.sse = SSE(app.logger)
         self.event_listener = EventListener(self)
         self.indi_server = Server(app.logger, self.event_listener, os.environ.get('INDI_SERVER_HOST', 'localhost'))
+        self.sequences_runner = SequencesRunner(app.logger, self)
         self.sequences = None
 
 
@@ -44,7 +45,10 @@ class Controller:
 
     def load_sequences(self):
         self.sequences = SequencesList(os.path.join(app.config['SEQUENCES_PATH'], 'sequences'))
-      
+
+    @property
+    def root_path(self):
+      return app.config['SEQUENCES_PATH']
 
 controller = Controller()
 

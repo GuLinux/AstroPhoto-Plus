@@ -29,3 +29,12 @@ class Sequence:
             'sequenceItems': [x.to_map() for x in self.sequence_items]
         }
 
+    def run(self, server, root_directory, logger, callbacks):
+        camera = [c for c in server.cameras() if c.id == self.camera]
+        if not camera:
+            raise NotFoundError('Camera with id {} not found'.format(self.camera))
+        camera = camera[0]
+        logger.debug('Starting sequence with camera: {}={}'.format(self.camera, camera.device.name))
+
+        for sequence_item in self.sequence_items:
+            sequence_item.run({'camera': camera}, root_directory, self.upload_path, logger, callbacks)

@@ -18,6 +18,8 @@ services:
   backend:
     build: backend
     volumes:
+        - "/tmp:/tmp"
+        #- "indi-tmp:/tmp"
         - ../../backend:/app
     expose:
         - "5000"
@@ -33,4 +35,8 @@ services:
     build: indi-server
     environment:
         - INDI_SERVER_HOST
+    volumes:
+        - "indi-tmp:/tmp"
 
+volumes:
+    indi-tmp:
