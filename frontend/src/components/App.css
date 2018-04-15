@@ -32,4 +32,9 @@
     position: fixed;
     top: 54px;
     right: 0px;
+
+}
+
+.alert {
+    color: darkblue;
 }
