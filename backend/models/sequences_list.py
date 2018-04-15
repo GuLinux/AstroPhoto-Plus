@@ -24,6 +24,9 @@ class SequencesList:
         if not sequence:
             raise NotFoundError('Sequence with id {} was not found')
         return sequence[0]
+
+    def save(self, sequence):
+        self.__save_sequence(sequence)
     
     @contextmanager
     def lookup_edit(self, sequence_id):

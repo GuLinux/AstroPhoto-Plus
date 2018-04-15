@@ -31,6 +31,9 @@ class EventListener:
     def on_device_removed(self, device):
         self.controller.sse.publish({'event': 'indi_revice_removed', 'payload': device.to_map(), 'is_error': False}, type='indi_server')
 
+    def on_sequence_update(self, sequence):
+        self.controller.sse.publish({'event': 'sequence_updated', 'payload': sequence.to_map(), 'is_error': False}, type='sequences')
+
 class Controller:
     def __init__(self):
         self.sse = SSE(app.logger)

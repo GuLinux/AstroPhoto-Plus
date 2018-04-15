@@ -99,6 +99,10 @@ class ExposureSequenceItem extends React.Component {
                         <ul>
                             <li>exposure</li>
                             <li>number</li>
+                            <li>timestamp</li>
+                            <li>datetime</li>
+                            <li>filter</li>
+                            <li>filter_index</li>
                         </ul> 
                         Example: luminance_{'{exposure}_{number:04}.fits'}
                     </HelpBlock>

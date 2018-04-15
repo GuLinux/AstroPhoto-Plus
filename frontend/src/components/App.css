@@ -38,3 +38,7 @@
 .alert {
     color: darkblue;
 }
+
+.notifications-container {
+    z-index: 99;
+}
