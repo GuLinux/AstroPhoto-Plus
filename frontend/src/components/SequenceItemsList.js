@@ -26,10 +26,17 @@ const statusComponent = sequenceItem => {
     if(sequenceItem.type === 'shots' && sequenceItem.status !== 'idle') {
         statusSubComponent = buildProgressBar(sequenceItem.status, 0, sequenceItem.count, sequenceItem.progress);
     }
+    if(!statusSubComponent) {
+        return <span>{sequenceItem.status}</span>
+    }
     return (
         <span>
-            {sequenceItem.status}
-            {statusSubComponent}
+            <div className="col-xs-6">
+                {sequenceItem.status}
+            </div>
+            <div className="col-xs-6">
+                {statusSubComponent}
+            </div>
         </span>
     )
 }
@@ -52,8 +59,8 @@ const SequenceItemsList = ({sequenceItems, editSequenceItem, deleteSequenceItem}
                     <td>{statusComponent(sequenceItem)}</td>
                     <td>
                         <ButtonGroup>
-                            <Button bsSize="xsmall" onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
-                            <Dialog.Open modal={sequenceItem.id + 'confirmDeleteSequenceItem'} bsSize="xsmall"><Glyphicon glyph="minus" /></Dialog.Open>
+                            <Button bsSize="small" onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
+                            <Dialog.Open modal={sequenceItem.id + 'confirmDeleteSequenceItem'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Open>
                             <QuestionDialog name={sequenceItem.id + 'confirmDeleteSequenceItem'} title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), bsStyle: 'danger'} ]}>
                                 Do you really want to remove this element?
                             </QuestionDialog>

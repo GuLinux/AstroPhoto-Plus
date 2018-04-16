@@ -8,7 +8,7 @@ import { canStart } from '../models/sequences'
 const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete, startSequence, duplicateSequence}) =>
 (
     <div>
-        <ModalContainer.Open bsStyle="primary" bsSize="xsmall" className="pull-right" modal="addSequence">new sequence</ModalContainer.Open>
+        <ModalContainer.Open bsStyle="primary" bsSize="small" className="pull-right" modal="addSequence">new sequence</ModalContainer.Open>
         <ModalContainer name="addSequence">
             <AddSequenceModalContainer modalName="addSequence"/>
         </ModalContainer>
@@ -32,15 +32,15 @@ const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete, st
                     <td>{sequence.status}</td>
                     <td>
                         <ButtonGroup>
-                            <Button onClick={e => onSequenceEdit(sequence.id)} bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
-                            <Dialog.Open modal={sequence.id + 'confirmSequenceDelete'} bsSize="xsmall"><Glyphicon glyph="minus" /></Dialog.Open>
+                            <Button onClick={e => onSequenceEdit(sequence.id)} bsSize="small"><Glyphicon glyph="edit" /></Button>
+                            <Dialog.Open modal={sequence.id + 'confirmSequenceDelete'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Open>
                             <QuestionDialog name={sequence.id + 'confirmSequenceDelete'} title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', bsStyle: 'danger', afterClose: () => onSequenceDelete(sequence.id)}]}>
                                 Do you really want to remove this sequence?
                             </QuestionDialog>
-                            <Button bsSize="xsmall" disabled={!canStart(sequence)}><Glyphicon glyph="play" onClick={() => startSequence(sequence)}/></Button>
-                            <Button bsSize="xsmall" disabled={true}><Glyphicon glyph="pause" /></Button>
-                            <Button bsSize="xsmall" disabled={true}><Glyphicon glyph="stop" /></Button>
-                            <Button bsSize="xsmall" onClick={() => duplicateSequence(sequence)}><Glyphicon glyph="duplicate" /></Button>
+                            <Button bsSize="small" disabled={!canStart(sequence)}><Glyphicon glyph="play" onClick={() => startSequence(sequence)}/></Button>
+                            <Button bsSize="small" disabled={true}><Glyphicon glyph="pause" /></Button>
+                            <Button bsSize="small" disabled={true}><Glyphicon glyph="stop" /></Button>
+                            <Button bsSize="small" onClick={() => duplicateSequence(sequence)}><Glyphicon glyph="duplicate" /></Button>
                         </ButtonGroup>
                     </td>
                 </tr>

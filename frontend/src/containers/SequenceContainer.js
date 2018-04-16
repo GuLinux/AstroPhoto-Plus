@@ -9,7 +9,15 @@ const mapStateToProps = (state) => {
         return { sequence: null }
     }
     let sequence = state.sequences.entities[sequenceId];
-    return {sequence}
+    let properties = {sequence};
+    if(state.indiserver.state.connected && state.indiserver.deviceEntities[sequence.camera]) {
+        let camera = state.indiserver.deviceEntities[sequence.camera];
+        let cameraProperties = Object.keys(state.indiserver.properties).map(key => state.indiserver.properties[key]).filter(p => p.device === camera.id);
+        let exposureProperty = cameraProperties.find(p => p.name === 'CCD_EXPOSURE')
+        let exposureAbortProperty = cameraProperties.find(p => p.name === 'CCD_ABORT_EXPOSURE')
+        properties = {...properties, camera, exposureProperty, exposureAbortProperty}
+    }
+    return properties;
 }
 
 const mapDispatchToProps = (dispatch, props) => ({
