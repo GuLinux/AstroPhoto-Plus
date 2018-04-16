@@ -1,7 +1,38 @@
 import React from 'react';
-import { Table, Glyphicon, ButtonGroup, Button } from 'react-bootstrap';
+import { Table, Glyphicon, ButtonGroup, Button, ProgressBar } from 'react-bootstrap';
 import { Dialog, QuestionDialog } from './Dialogs'
 
+const descriptionComponent = sequenceItem => (
+    <span>
+        {sequenceItem.description}
+    </span>
+);
+
+const buildProgressBar = (status, min, max, progress) => {
+    let style;
+    switch(status) {
+        case 'finished':
+            style='success'; break;
+        case 'error':
+            style='danger'; break;
+        default:
+            style='info';
+    }
+    return <ProgressBar min={min} max={max} now={progress} striped bsStyle={style} animated={status === 'running'} />
+}
+
+const statusComponent = sequenceItem => {
+    let statusSubComponent = null;
+    if(sequenceItem.type === 'shots' && sequenceItem.status !== 'idle') {
+        statusSubComponent = buildProgressBar(sequenceItem.status, 0, sequenceItem.count, sequenceItem.progress);
+    }
+    return (
+        <span>
+            {sequenceItem.status}
+            {statusSubComponent}
+        </span>
+    )
+}
 
 const SequenceItemsList = ({sequenceItems, editSequenceItem, deleteSequenceItem}) => (
     <Table striped bordered hover>
@@ -17,8 +48,8 @@ const SequenceItemsList = ({sequenceItems, editSequenceItem, deleteSequenceItem}
             {sequenceItems.map(sequenceItem => (
                 <tr key={sequenceItem.id}>
                     <td>{sequenceItem.typeLabel}</td>
-                    <td>{sequenceItem.description}</td>
-                    <td>{sequenceItem.status}</td>
+                    <td>{descriptionComponent(sequenceItem)}</td>
+                    <td>{statusComponent(sequenceItem)}</td>
                     <td>
                         <ButtonGroup>
                             <Button bsSize="xsmall" onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
