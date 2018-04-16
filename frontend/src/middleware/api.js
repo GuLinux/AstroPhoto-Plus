@@ -1,19 +1,8 @@
-import { normalize, schema } from 'normalizr'
 import fetch from 'isomorphic-fetch'
 import Actions from '../actions'
 
-const sequenceItemSchema = new schema.Entity('sequenceItems', {}, {
-    idAttribute: 'id',
-    processStrategy: (v, p) => ({...v, sequence: p.id} ),
-
-});
-const sequenceSchema = new schema.Entity('sequences', {
-        sequenceItems: [ sequenceItemSchema ]
-    }, {
-        idAttribute: 'id',
-    }
-);
-const sequenceList = [ sequenceSchema ]
+import { normalize } from 'normalizr'
+import { sequenceSchema, sequenceListSchema, sequenceItemSchema } from './schemas'
 
 const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
     let dispatchError = response => {
@@ -49,7 +38,7 @@ export const duplicateSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON
     }, json => onSuccess(normalize(json, sequenceSchema)));
 
 
-export const fetchSequencesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/sequences', {}, json => onSuccess(normalize(json, sequenceList)));
+export const fetchSequencesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/sequences', {}, json => onSuccess(normalize(json, sequenceListSchema)));
 
 export const createSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, '/api/sequences', {
         method: 'POST',

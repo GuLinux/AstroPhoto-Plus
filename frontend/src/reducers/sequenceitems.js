@@ -27,6 +27,8 @@ const sequenceItems = (state = {}, action) => {
             return {...state, ...action.sequenceItems};
         case 'SEQUENCE_CREATED':
             return {...state, ...action.sequenceItems};
+        case 'SEQUENCE_UPDATED':
+            return {...state, ...action.data.entities.sequenceItems};
         default:
             return state;
     }

@@ -88,6 +88,7 @@ class SequenceItem:
     def duplicate(self):
         data = self.to_map()
         data.pop('id')
+        data.pop('status')
         return SequenceItem(data)
 
     @staticmethod

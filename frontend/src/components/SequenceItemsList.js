@@ -18,7 +18,7 @@ const SequenceItemsList = ({sequenceItems, editSequenceItem, deleteSequenceItem}
                 <tr key={sequenceItem.id}>
                     <td>{sequenceItem.typeLabel}</td>
                     <td>{sequenceItem.description}</td>
-                    <td></td>
+                    <td>{sequenceItem.status}</td>
                     <td>
                         <ButtonGroup>
                             <Button bsSize="xsmall" onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>

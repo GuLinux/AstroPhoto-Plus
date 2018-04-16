@@ -22,9 +22,9 @@ export const Sequences = {
             sequence: sequences[id]
     }),
 
-    updated: (sequence) => ({
+    updated: (data) => ({
         type: 'SEQUENCE_UPDATED',
-        sequence,
+        data,
     }),
 
     started: (sequence, status) => ({ type: 'SEQUENCE_STARTED', status}),

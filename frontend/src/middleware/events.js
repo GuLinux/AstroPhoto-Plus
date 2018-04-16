@@ -1,4 +1,6 @@
 import 'eventsource'
+import { normalize } from 'normalizr'
+import { sequenceSchema, sequenceListSchema, sequenceItemSchema } from './schemas'
 import Actions from '../actions';
 declare var EventSourcePolyfill: any;
 
@@ -50,7 +52,7 @@ const sequences = (event, dispatch) => {
     console.log(eventObject)
     switch(eventObject.event) {
         case 'sequence_updated':
-            dispatch(Actions.Sequences, eventObject.payload);
+            dispatch(Actions.Sequences.updated(normalize(eventObject.payload, sequenceSchema)));
             break;
         default:
             logEvent(event)

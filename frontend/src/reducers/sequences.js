@@ -34,6 +34,8 @@ const sequences = (state = { entities: {}, ids: [] }, action) => {
             return deleteSequenceItem(state, action);
         case 'RECEIVED_START_SEQUENCE_REPLY':
             return updateSequence(state, action.sequence);
+        case 'SEQUENCE_UPDATED':
+            return updateSequence(state, action.data.entities.sequences[action.data.result]);
         default:
             return state;
     }
