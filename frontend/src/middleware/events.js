@@ -59,7 +59,8 @@ const sequences = (event, dispatch) => {
 
 const listenToEvents = (dispatch) => {
     var es = new EventSource("/api/events");
-    var indiServerListener = event => {
+
+    var serverListener = event => {
         switch(event.type) {
             case 'indi_server':
                 indiserverEvents(event, dispatch);
@@ -71,7 +72,8 @@ const listenToEvents = (dispatch) => {
                 logEvent(event);
         }
     }
-    es.addEventListener('indi_server', indiServerListener);
+    es.addEventListener('indi_server', serverListener);
+    es.addEventListener('sequences', serverListener);
     es.onerror = e => dispatch(Actions.serverError('event_source', 'event', e));
 }
 
