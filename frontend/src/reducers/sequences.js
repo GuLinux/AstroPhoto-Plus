@@ -10,6 +10,11 @@ let addSequenceItem = (state, action) => {
     return {...state, entities: { ...state.entities, [sequenceId]: sequence } }
 }
 
+let updateSequence = (state, sequence) => ({
+    ...state,
+    entities: {...state.entities, [sequence.id]: {...state.entities[sequence.id], ...sequence} }
+})
+
 let deleteSequenceItem = (state, action) => {
     let sequence = state.entities[action.sequenceItem.sequence];
     sequence = {...sequence, sequenceItems: sequence.sequenceItems.filter(id => id !== action.sequenceItem.id)}
@@ -27,6 +32,8 @@ const sequences = (state = { entities: {}, ids: [] }, action) => {
             return {...state, ids: action.ids, entities: action.sequences};
         case 'SEQUENCE_ITEM_DELETED':
             return deleteSequenceItem(state, action);
+        case 'RECEIVED_START_SEQUENCE_REPLY':
+            return updateSequence(state, action.sequence);
         default:
             return state;
     }

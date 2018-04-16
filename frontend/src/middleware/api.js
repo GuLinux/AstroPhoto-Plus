@@ -39,6 +39,16 @@ const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
         });
 }
 
+export const startSequenceAPI = (dispatch, sequence, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/start`, {
+        method: 'POST',
+    }, json => onSuccess(json), onError);
+
+
+export const duplicateSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/duplicate`, {
+        method: 'POST',
+    }, json => onSuccess(normalize(json, sequenceSchema)));
+
+
 export const fetchSequencesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/sequences', {}, json => onSuccess(normalize(json, sequenceList)));
 
 export const createSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, '/api/sequences', {

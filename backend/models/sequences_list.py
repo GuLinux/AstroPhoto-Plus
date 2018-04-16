@@ -27,6 +27,11 @@ class SequencesList:
 
     def save(self, sequence):
         self.__save_sequence(sequence)
+
+    def duplicate(self, sequence_id):
+        sequence = self.lookup(sequence_id).duplicate()
+        self.append(sequence)
+        return sequence
     
     @contextmanager
     def lookup_edit(self, sequence_id):

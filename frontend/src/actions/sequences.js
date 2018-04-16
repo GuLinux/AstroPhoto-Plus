@@ -1,28 +1,59 @@
-import { createSequenceAPI, fetchSequencesAPI, deleteSequenceAPI } from '../middleware/api'
+import { createSequenceAPI, fetchSequencesAPI, deleteSequenceAPI, duplicateSequenceAPI, startSequenceAPI } from '../middleware/api'
 import { Navigation } from './navigation'
+import Actions from './index'
 
 export const Sequences = {
 
-    receive: (sequences, ids, sequenceItems) => {
-        return {
-            type: 'RECEIVE_SEQUENCES',
-            sequences,
-            ids,
-            sequenceItems
-        }
-    },
+    receive: (sequences, ids, sequenceItems) => ({
+        type: 'RECEIVE_SEQUENCES',
+        sequences,
+        ids,
+        sequenceItems
+    }),
 
-    created: (sequences, id) => {
-        return {
-            type: 'SEQUENCE_CREATED',
-            sequence: sequences[id]
-        }
-    },
+    created: (sequences, id, sequenceItems) => ({
+        type: 'SEQUENCE_CREATED',
+        sequence: sequences[id],
+        sequenceItems
+    }),
 
-    deleted: (sequences, id) => {
-        return {
+    deleted: (sequences, id) => ({
             type: 'SEQUENCE_DELETED',
             sequence: sequences[id]
+    }),
+
+    updated: (sequence) => ({
+        type: 'SEQUENCE_UPDATED',
+        sequence,
+    }),
+
+    started: (sequence, status) => ({ type: 'SEQUENCE_STARTED', status}),
+
+
+    start: sequence => {
+        return dispatch => {
+            dispatch({type: 'START_SEQUENCE_REQUESTED'});
+            return startSequenceAPI(dispatch, sequence, data => {
+                dispatch({type: 'RECEIVED_START_SEQUENCE_REPLY', sequence: { id: sequence.id, status: data.status} });
+            }, data => {
+                if(data.status === 400) {
+                    data.json().then(json => {
+                        dispatch(Actions.Notifications.add('Error starting sequence', json.error_message, 'warning'));
+                        dispatch({type: 'RECEIVED_START_SEQUENCE_REPLY', sequence: {id: sequence.id, status: 'error'}});
+                    });
+                    return true;
+                }
+                return false;
+            })
+        }
+    },
+
+    duplicate: sequence => {
+        return dispatch => {
+            dispatch({type: 'DUPLICATE_SEQUENCE_REQUESTED', sequence});
+            return duplicateSequenceAPI(dispatch, sequence, data => {
+                dispatch(Sequences.created(data.entities.sequences, data.result, data.entities.sequenceItems));
+            });
         }
     },
 
@@ -41,7 +72,7 @@ export const Sequences = {
         return dispatch => {
             dispatch({type: 'REQUEST_ADD_SEQUENCE'});
             return createSequenceAPI( dispatch, {name, directory, camera: cameraID }, data => {
-                dispatch(Sequences.created(data.entities.sequences, data.result));
+                dispatch(Sequences.created(data.entities.sequences, data.result, {}));
             });
         }
     },

@@ -39,6 +39,13 @@ class Sequence:
             'status': self.status,
         }
 
+    def duplicate(self):
+        new_sequence = Sequence(self.name, self.upload_path, self.camera)
+        for item in self.sequence_items:
+            new_sequence.sequence_items.append(item.duplicate())
+
+        return new_sequence
+
     def run(self, server, root_directory, logger, on_update=None):
         camera = [c for c in server.cameras() if c.id == self.camera]
         if not camera:
@@ -48,8 +55,10 @@ class Sequence:
 
         self.status = 'running'
         on_update()
-        for sequence_item in self.sequence_items:
-            sequence_item.run({'camera': camera}, os.path.join(root_directory, self.upload_path), logger, on_update)
-        self.status = 'finished'
+        try:
+            for sequence_item in self.sequence_items:
+                sequence_item.run({'camera': camera}, os.path.join(root_directory, self.upload_path), logger, on_update)
+            self.status = 'finished'
+        except:
+            self.status = 'error'
         on_update()
-

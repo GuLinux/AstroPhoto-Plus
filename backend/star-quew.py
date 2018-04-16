@@ -121,6 +121,13 @@ def start_sequence(id):
     controller.sequences_runner.run(id)
     return { 'id': id, 'status': 'starting' }
 
+
+@app.route('/api/sequences/<id>/duplicate', methods=['POST'])
+@json_api
+def duplicate_sequence(id):
+    return controller.sequences.duplicate(id).to_map()
+
+
 # Sequence Items
 
 @app.route('/api/sequences/<id>/sequence_items', methods=['POST'])

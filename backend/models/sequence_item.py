@@ -85,6 +85,11 @@ class SequenceItem:
 
         self.status = data.get('status', 'idle')
 
+    def duplicate(self):
+        data = self.to_map()
+        data.pop('id')
+        return SequenceItem(data)
+
     @staticmethod
     def from_map(map_object):
         return SequenceItem(map_object)
@@ -101,6 +106,11 @@ class SequenceItem:
     def run(self, devices, root_path, logger, on_update):
         self.status = 'running'
         on_update()
-        self.job.run(devices, root_path, logger, on_update)
-        self.status = 'finished'
-        on_update()
+        try:
+            self.job.run(devices, root_path, logger, on_update)
+            self.status = 'finished'
+            on_update()
+        except RuntimeError as e: # TODO: specific exception?
+            self.status = 'error'
+            raise e
+

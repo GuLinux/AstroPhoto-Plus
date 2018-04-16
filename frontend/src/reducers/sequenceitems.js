@@ -25,6 +25,8 @@ const sequenceItems = (state = {}, action) => {
             return sequenceItemRemoved(state, action)
         case 'RECEIVE_SEQUENCES':
             return {...state, ...action.sequenceItems};
+        case 'SEQUENCE_CREATED':
+            return {...state, ...action.sequenceItems};
         default:
             return state;
     }

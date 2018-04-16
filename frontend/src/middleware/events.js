@@ -44,12 +44,28 @@ const indiserverEvents = (event, dispatch) => {
     }
 }
 
+const sequences = (event, dispatch) => {
+    let eventObject = JSON.parse(event.data);
+    console.log(event)
+    console.log(eventObject)
+    switch(eventObject.event) {
+        case 'sequence_updated':
+            dispatch(Actions.Sequences, eventObject.payload);
+            break;
+        default:
+            logEvent(event)
+    }
+}
+
 const listenToEvents = (dispatch) => {
     var es = new EventSource("/api/events");
     var indiServerListener = event => {
         switch(event.type) {
             case 'indi_server':
                 indiserverEvents(event, dispatch);
+                break;
+            case 'sequences':
+                sequences(event, dispatch);
                 break;
             default:
                 logEvent(event);
