@@ -83,6 +83,7 @@ export const setINDIServerConnectionAPI = (dispatch, connect, onSuccess) => fetc
 export const getINDIDevicesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/devices', {}, onSuccess);
 
 export const getCamerasAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/cameras', {}, onSuccess);
+export const getFilterWheelsAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/filter_wheels', {}, onSuccess);
 
 export const getINDIDevicePropertiesAPI = (dispatch, device, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties`, {}, onSuccess);
 

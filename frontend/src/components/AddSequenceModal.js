@@ -8,6 +8,7 @@ const initialState = {
     nameValid: false,
     camera: '',
     directory: '',
+    filterWheel: 'none',
 }
 
 
@@ -30,8 +31,12 @@ class AddSequenceModal extends React.Component {
         this.setState({...this.state, camera, cameraValid: camera !== 'none'});
     }
 
+    onFilterWheelChanged(filterWheel) {
+        this.setState({...this.state, filterWheel});
+    }
+
     onAddClicked() {
-        this.props.onAddSequence(this.state.name, this.state.directory, this.state.camera)
+        this.props.onAddSequence(this.state.name, this.state.directory, this.state.camera, this.state.filterWheel !== 'none' ? this.state.filterWheel : null)
         this.setState(initialState);
     }
 
@@ -69,6 +74,18 @@ class AddSequenceModal extends React.Component {
                         </select>
                         <HelpBlock>The selected camera will be used for all the shots in this sequence.</HelpBlock>
                       </div>
+
+                      <div className="form-group">
+                        <label htmlFor="filterWheel">Filter wheel</label>
+                        <select className="form-control" id="filterWheel" onChange={e => this.onFilterWheelChanged(e.target.value)}>
+                            <option value="none">None</option>
+                            {this.props.filterWheels.map(f => (
+                            <option key={f.id} value={f.id}>{f.device.name}</option>
+                        ))}
+                        </select>
+                        <HelpBlock>The selected filter wheel will be used for all the shots in this sequence.</HelpBlock>
+                      </div>
+
                     </form>
                 </Modal.Body>
             <Modal.Footer>

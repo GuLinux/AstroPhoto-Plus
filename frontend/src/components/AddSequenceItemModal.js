@@ -38,6 +38,7 @@ class AddSequenceItemModal extends React.Component {
                     <select className="form-control" id="item-type" onChange={this.onTypeChanged}>
                         <option value="none">--- Select type</option>
                         <option value="shots">Exposures sequence</option>
+                        <option value="filter">Filter wheel</option>
                     </select>
                   </div>
                 </form>

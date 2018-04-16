@@ -79,6 +79,12 @@ def get_cameras():
     return [x.to_map() for x in controller.indi_server.cameras()]
   
 
+@app.route('/api/filter_wheels', methods=['GET'])
+@json_api
+@indi_connected
+def get_filter_wheels():
+    return [x.to_map() for x in controller.indi_server.filter_wheels()]
+  
 # Sequences
 
 @app.route('/api/sequences', methods=['GET'])
@@ -108,7 +114,7 @@ def delete_sequence(id):
 @json_api
 def new_sequence(json):
     try:
-        new_sequence = Sequence(json['name'], json['directory'], json['camera'])
+        new_sequence = Sequence(json['name'], json['directory'], json['camera'], json.get('filterWheel'))
         controller.sequences.append(new_sequence)
         return new_sequence.to_map()
     except KeyError:

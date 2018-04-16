@@ -1,5 +1,6 @@
 from pyindi_sequence import INDIClient
 from .camera import Camera
+from .filter_wheel import FilterWheel
 from .device import Device
 from .indi_property import Property
 import time
@@ -54,6 +55,10 @@ class Server:
 
     def cameras(self):
         return [Camera(self.client, self.logger, camera=c) for c in self.client.cameras()]
+
+    def filter_wheels(self):
+        return [FilterWheel(self.client, self.logger, filter_wheel=f) for f in self.client.filter_wheels()]
+
 
     def __on_message(self, device, message):
         self.logger.debug('INDI message: device={}, {}'.format(device.name, message))

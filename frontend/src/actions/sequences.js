@@ -68,10 +68,10 @@ export const Sequences = {
         }
     },
 
-    add: (name, directory, cameraID) => {
+    add: (name, directory, cameraID, filterWheelID) => {
         return dispatch => {
             dispatch({type: 'REQUEST_ADD_SEQUENCE'});
-            return createSequenceAPI( dispatch, {name, directory, camera: cameraID }, data => {
+            return createSequenceAPI( dispatch, {name, directory, camera: cameraID, filterWheel: filterWheelID }, data => {
                 dispatch(Sequences.created(data.entities.sequences, data.result, {}));
             });
         }

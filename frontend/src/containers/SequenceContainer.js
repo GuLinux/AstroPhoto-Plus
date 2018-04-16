@@ -17,6 +17,17 @@ const mapStateToProps = (state) => {
         let exposureAbortProperty = cameraProperties.find(p => p.name === 'CCD_ABORT_EXPOSURE')
         properties = {...properties, camera, exposureProperty, exposureAbortProperty}
     }
+    if(state.indiserver.state.connected && sequence.filterWheel && state.indiserver.deviceEntities[sequence.filterWheel]) {
+        let filterWheel = state.indiserver.deviceEntities[sequence.filterWheel];
+        let filterWheelProperties = Object.keys(state.indiserver.properties).map(key => state.indiserver.properties[key]).filter(p => p.device === filterWheel.id);
+        let filterProperty = filterWheelProperties.find(p => p.name === 'FILTER_SLOT') 
+        if(filterProperty) {
+            let filterNumber = filterProperty.values.find(v => v.name === 'FILTER_SLOT_VALUE').value
+            let filterNameProperty = filterWheelProperties.find(p => p.name === 'FILTER_NAME')
+            let filterName = filterNameProperty.values.find(p => p.name === `FILTER_SLOT_NAME_${filterNumber}`).value
+            properties = {...properties, filterWheel, filterNumber, filterName}
+        }
+    }
     return properties;
 }
 

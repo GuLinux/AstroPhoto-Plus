@@ -38,6 +38,7 @@ export const INDIServer = {
 
     receivedDevices: (devices, dispatch) => {
         dispatch(Gear.fetchCameras())
+        dispatch(Gear.fetchFilterWheels())
         devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device)));
         return {
             type: 'RECEIVED_INDI_DEVICES',
@@ -105,6 +106,7 @@ export const INDIServer = {
         return dispatch => {
             dispatch({ type: 'INDI_DEVICE_ADDED', device })
             dispatch(Gear.fetchCameras())
+            dispatch(Gear.fetchFilterWheels())
         }
     },
     
