@@ -32,8 +32,8 @@ const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete, st
                     <td>
                         <ButtonGroup>
                             <Button onClick={e => onSequenceEdit(sequence.id)} bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
-                            <Dialog.Open modal="confirmSequenceDelete" bsSize="xsmall"><Glyphicon glyph="minus" /></Dialog.Open>
-                            <QuestionDialog name="confirmSequenceDelete" title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', bsStyle: 'danger', afterClose: () => onSequenceDelete(sequence.id)}]}>
+                            <Dialog.Open modal={sequence.id + 'confirmSequenceDelete'} bsSize="xsmall"><Glyphicon glyph="minus" /></Dialog.Open>
+                            <QuestionDialog name={sequence.id + 'confirmSequenceDelete'} title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', bsStyle: 'danger', afterClose: () => onSequenceDelete(sequence.id)}]}>
                                 Do you really want to remove this sequence?
                             </QuestionDialog>
                             <Button bsSize="xsmall" disabled={ ! ['idle', 'error'].includes(sequence.status)}><Glyphicon glyph="play" onClick={() => startSequence(sequence)}/></Button>

@@ -22,8 +22,8 @@ const SequenceItemsList = ({sequenceItems, editSequenceItem, deleteSequenceItem}
                     <td>
                         <ButtonGroup>
                             <Button bsSize="xsmall" onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
-                            <Dialog.Open modal="confirmDeleteSequenceItem" bsSize="xsmall"><Glyphicon glyph="minus" /></Dialog.Open>
-                            <QuestionDialog name="confirmDeleteSequenceItem" title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), bsStyle: 'danger'} ]}>
+                            <Dialog.Open modal={sequenceItem.id + 'confirmDeleteSequenceItem'} bsSize="xsmall"><Glyphicon glyph="minus" /></Dialog.Open>
+                            <QuestionDialog name={sequenceItem.id + 'confirmDeleteSequenceItem'} title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), bsStyle: 'danger'} ]}>
                                 Do you really want to remove this element?
                             </QuestionDialog>
                         </ButtonGroup>
