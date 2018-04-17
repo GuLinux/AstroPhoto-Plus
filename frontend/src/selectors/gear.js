@@ -36,11 +36,13 @@ const buildFilterWheel = (deviceEntities, devicesProperties, filterWheelID) => {
     if(filterWheel.connected) {
         filterWheel.filterNameProperty = devicesProperties[filterWheelID].FILTER_NAME;
         filterWheel.filterSlotProperty = devicesProperties[filterWheelID].FILTER_SLOT;
-        filterWheel.filters = filterWheel.filterNameProperty.values.map( (value, index) => ({ number: index+1, name: value.value}) );
-        filterWheel.names2numbers = filterWheel.filters.reduce( (mapping, filter) => ({...mapping, [filter.name]: filter.number}), {});
-        filterWheel.numbers2names = filterWheel.filters.reduce( (mapping, filter) => ({...mapping, [filter.number]: filter.name}), {});
-        let filterSlot = filterWheel.filterSlotProperty.values[0].value;
-        filterWheel.currentFilter = { number: filterSlot, name: filterWheel.numbers2names[filterSlot] }
+        if(filterWheel.filterNameProperty && filterWheel.filterSlotProperty) {
+            filterWheel.filters = filterWheel.filterNameProperty.values.map( (value, index) => ({ number: index+1, name: value.value}) );
+            filterWheel.names2numbers = filterWheel.filters.reduce( (mapping, filter) => ({...mapping, [filter.name]: filter.number}), {});
+            filterWheel.numbers2names = filterWheel.filters.reduce( (mapping, filter) => ({...mapping, [filter.number]: filter.name}), {});
+            let filterSlot = filterWheel.filterSlotProperty.values[0].value;
+            filterWheel.currentFilter = { number: filterSlot, name: filterWheel.numbers2names[filterSlot] }
+        }
     }
     return filterWheel
 }
