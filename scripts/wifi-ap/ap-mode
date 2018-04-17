@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [[ "$1" != enable ]] && [[ "$1" != "disable" ]]; then
+	echo "Usage: $0 enable/disable" >&2
+	exit 1
+fi
+
+systemctl $1 hostapd
+systemctl $1 dnsmasq
+
+# svc_mode=start
+# [[ "$1" == enable ]] || svc_mode=stop
+# systemctl $svc_mode hostapd
+# systemctl $svc_mode dnsmasq
+
+rm /etc/dhcpcd.conf && ln -s /etc/dhcpcd.conf-ap-$1 /etc/dhcpcd.conf
+rm /etc/network/interfaces && ln -s /etc/network/interfaces-ap-$1 /etc/network/interfaces
+# systemctl reload networking
+# ifdown wlan0
+# ifup wlan0
+# ifdown wlan1
+# ifup wlan1
+reboot
+
