@@ -3,7 +3,7 @@ import ModalContainer from '../containers/ModalContainer'
 import AddSequenceItemModal from './AddSequenceItemModal'
 import SequenceItemsContainer from '../containers/SequenceItemsContainer';
 import { Button, ButtonGroup, Label } from 'react-bootstrap';
-import { canStart, canAddSequenceItems } from '../models/sequences'
+import { canStart } from '../models/sequences'
 import { INDINumberPropertyContainer, INDISwitchPropertyContainer } from '../containers/INDIPropertyContainer'
 
 
@@ -41,7 +41,7 @@ const FilterWheelDetailsPage = ({filterWheel, filterNumber, filterName}) => {
     </div>)
 }
 
-const Sequence = ({sequence, onCreateSequenceItem, navigateBack, startSequence, camera, filterWheel}) => {
+const Sequence = ({sequence, onCreateSequenceItem, navigateBack, startSequence, camera, filterWheel, canEdit}) => {
     if(sequence === null)
         return null;
     return (
@@ -51,14 +51,14 @@ const Sequence = ({sequence, onCreateSequenceItem, navigateBack, startSequence, 
             <ButtonGroup className="pull-right">
                 <Button onClick={navigateBack} bsSize="small">back</Button>
                 <Button onClick={() => startSequence()} bsSize="small" bsStyle="success" disabled={!canStart(sequence)}>start</Button>
-                <ModalContainer.Open modal="newSequenceItem" bsStyle="info" bsSize="small" className="pull-right" disabled={!canAddSequenceItems(sequence)}>new</ModalContainer.Open>
+                <ModalContainer.Open modal="newSequenceItem" bsStyle="info" bsSize="small" className="pull-right" disabled={!canEdit}>new</ModalContainer.Open>
             </ButtonGroup>
         </h2>
         <ModalContainer name="newSequenceItem">
             <AddSequenceItemModal modalName="newSequenceItem" onAddSequenceItem={onCreateSequenceItem} />
         </ModalContainer>
 
-        <SequenceItemsContainer sequenceId={sequence.id} />
+        <SequenceItemsContainer canEdit={canEdit} sequenceId={sequence.id} />
 
         <h3>Devices</h3>
         <CameraDetailsPage camera={camera} />

@@ -36,11 +36,11 @@ class SequenceItem:
         data.update(self.job.to_map())
         return data
 
-    def run(self, devices, root_path, logger, on_update):
+    def run(self, server, devices, root_path, logger, on_update):
         self.status = 'running'
         on_update()
         try:
-            self.job.run(devices, root_path, logger, on_update)
+            self.job.run(server, devices, root_path, logger, on_update)
             self.status = 'finished'
             on_update()
         except RuntimeError as e: # TODO: specific exception?

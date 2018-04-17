@@ -43,7 +43,7 @@ class Sequence:
         }
 
     def duplicate(self):
-        new_sequence = Sequence(self.name, self.upload_path, self.camera)
+        new_sequence = Sequence(self.name, self.upload_path, self.camera, self.filter_wheel)
         for item in self.sequence_items:
             new_sequence.sequence_items.append(item.duplicate())
 
@@ -68,7 +68,7 @@ class Sequence:
         on_update()
         try:
             for sequence_item in self.sequence_items:
-                sequence_item.run({'camera': camera, 'filter_wheel': filter_wheel}, os.path.join(root_directory, self.upload_path), logger, on_update)
+                sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, os.path.join(root_directory, self.upload_path), logger, on_update)
             self.status = 'finished'
         except:
             logger.exception('error running sequence')

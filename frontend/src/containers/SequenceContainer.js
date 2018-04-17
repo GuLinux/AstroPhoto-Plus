@@ -10,9 +10,19 @@ const mapStateToProps = (state) => {
     }
     let sequence = state.sequences.entities[sequenceId];
     let gear = getGears(state)[sequenceId];
-    let properties = {sequence, camera: gear.camera, filterWheel: gear.filterWheel};
+    let properties = {sequence, camera: gear.camera, filterWheel: gear.filterWheel, canEdit: canEdit(state, sequence)};
     return properties;
 }
+
+const canEdit = (state, sequence) => {
+    let gear = getGears(state)[sequence.id];
+    if(gear.camera && ! gear.camera.connected)
+        return false;
+    if(gear.filterWheel && ! gear.filterWheel.connected)
+        return false;
+    return ['idle', 'error'].includes(sequence.status)
+}
+
 
 const mapDispatchToProps = (dispatch, props) => ({
     navigateBack: () => dispatch(Actions.Navigation.toSequence('sequences')),

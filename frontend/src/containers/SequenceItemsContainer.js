@@ -29,20 +29,10 @@ const getDescription = (state, sequenceItem) => {
     }
 }
 
-const canEdit = (state, sequenceItem) => {
-    let gear = getGears(state)[sequenceItem.sequence];
-    if(gear.camera && ! gear.camera.connected)
-        return false;
-    if(gear.filterWheel && ! gear.filterWheel.connected)
-        return false;
-    return true;
-}
-
 const sequenceItemViewModel = (state, sequenceItem) => ({
     ...sequenceItem,
     typeLabel: getTypeLabel(sequenceItem.type),
     description: getDescription(state, sequenceItem),
-    canEdit: canEdit(state, sequenceItem),
 })
 
 const mapStateToProps = (state, ownProps) => {

@@ -41,7 +41,7 @@ const statusComponent = sequenceItem => {
     )
 }
 
-const SequenceItemsList = ({sequenceItems, editSequenceItem, deleteSequenceItem}) => (
+const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequenceItem}) => (
     <Table striped bordered hover>
         <thead>
             <tr>
@@ -59,7 +59,7 @@ const SequenceItemsList = ({sequenceItems, editSequenceItem, deleteSequenceItem}
                     <td>{statusComponent(sequenceItem)}</td>
                     <td>
                         <ButtonGroup>
-                            <Button bsSize="small" disabled={! sequenceItem.canEdit} onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
+                            <Button bsSize="small" disabled={!canEdit} onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
                             <Dialog.Open modal={sequenceItem.id + 'confirmDeleteSequenceItem'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Open>
                             <QuestionDialog name={sequenceItem.id + 'confirmDeleteSequenceItem'} title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), bsStyle: 'danger'} ]}>
                                 Do you really want to remove this element?

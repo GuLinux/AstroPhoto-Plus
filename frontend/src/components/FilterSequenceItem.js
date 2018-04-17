@@ -9,7 +9,7 @@ class FilterSequenceItem extends React.Component {
     }
 
     filterSelected(number) {
-        this.setState({...this.state, filterNumber: parseInt(number)})
+        this.setState({...this.state, sequenceItem: {...this.state.sequenceItem, filterNumber: parseInt(number)}})
     }
 
     render() {
@@ -18,7 +18,7 @@ class FilterSequenceItem extends React.Component {
                 <h4>Set filter wheel position</h4>
                 <FormGroup onChange={(e) => this.filterSelected(e.target.value)}>
                     {this.props.filters.map(filter => (
-                  <Radio name="filterWheel" key={filter.number} value={filter.number}>{filter.name} ({filter.number})</Radio>
+                  <Radio name="filterWheel" key={filter.number} checked={this.state.sequenceItem.filterNumber === filter.number} value={filter.number}>{filter.name} ({filter.number})</Radio>
                     ))}
                 </FormGroup>
 

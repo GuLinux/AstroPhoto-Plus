@@ -36,15 +36,16 @@ class ExposureSequenceItem:
             'last_message': self.last_message,
         }
 
-    def run(self, devices, root_path, logger, on_update):
+    def run(self, server, devices, root_path, logger, on_update):
         filename_template_params = {
             'timestamp': lambda _: time.time(),
             'datetime': lambda _: time.strftime('%Y-%m-%dT%H:%M:%S-%Z'),
             'filter': 'no-filter',
             'filter_index': -1,
         }
-        if 'filter-wheel' in devices:
-            pass # TODO: get current filter name/index
+        print(devices)
+        if 'filter_wheel' in devices:
+            filename_template_params['filter_index'], filename_template_params['filter'] = devices['filter_wheel'].indi_sequence_filter_wheel().current_filter()
 
         upload_path = os.path.join(root_path, self.directory)
         sequence = Sequence(devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, filename_template=self.filename, filename_template_params=filename_template_params)
