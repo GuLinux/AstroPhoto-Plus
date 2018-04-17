@@ -12,18 +12,27 @@ const mapStateToProps = (state) => {
     return {sequence}
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-    let navigateBack = () => dispatch(Actions.Navigation.toSequence('sequences'));
-    let onCreateSequenceItem = (type, sequenceId) => {
+const mapDispatchToProps = (dispatch, props) => ({
+    navigateBack: () => dispatch(Actions.Navigation.toSequence('sequences')),
+    startSequence: (sequence) => dispatch(Actions.Sequences.start(sequence)),
+    onCreateSequenceItem: (type, sequenceId) => {
         dispatch(Actions.SequenceItems.newPending(type, sequenceId));
         dispatch(Actions.Navigation.toSequenceItem('sequence-item', 'pending'));
     }
-    return { navigateBack, onCreateSequenceItem, }
-}
+})
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => ({
+    ...stateProps,
+    ...ownProps,
+    ...dispatchProps,
+    onCreateSequenceItem: type => dispatchProps.onCreateSequenceItem(type, stateProps.sequence.id),
+    startSequence: () => dispatchProps.startSequence(stateProps.sequence),
+})
 
 const SequenceContainer = connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    mergeProps
 )(Sequence)
 
 export default SequenceContainer

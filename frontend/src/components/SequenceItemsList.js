@@ -18,7 +18,7 @@ const buildProgressBar = (status, min, max, progress) => {
         default:
             style='info';
     }
-    return <ProgressBar min={min} max={max} now={progress} striped bsStyle={style} animated={status === 'running'} />
+    return <ProgressBar min={min} max={max} now={progress} striped bsStyle={style} active={status === 'running'} />
 }
 
 const statusComponent = sequenceItem => {

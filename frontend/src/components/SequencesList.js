@@ -3,6 +3,7 @@ import { Button, ButtonGroup, Table, Glyphicon, Modal } from 'react-bootstrap';
 import AddSequenceModalContainer from '../containers/AddSequenceModalContainer';
 import ModalContainer from '../containers/ModalContainer'
 import { Dialog, QuestionDialog } from './Dialogs'
+import { canStart } from '../models/sequences'
 
 const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete, startSequence, duplicateSequence}) =>
 (
@@ -36,7 +37,7 @@ const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete, st
                             <QuestionDialog name={sequence.id + 'confirmSequenceDelete'} title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', bsStyle: 'danger', afterClose: () => onSequenceDelete(sequence.id)}]}>
                                 Do you really want to remove this sequence?
                             </QuestionDialog>
-                            <Button bsSize="xsmall" disabled={ ! ['idle', 'error'].includes(sequence.status)}><Glyphicon glyph="play" onClick={() => startSequence(sequence)}/></Button>
+                            <Button bsSize="xsmall" disabled={!canStart(sequence)}><Glyphicon glyph="play" onClick={() => startSequence(sequence)}/></Button>
                             <Button bsSize="xsmall" disabled={true}><Glyphicon glyph="pause" /></Button>
                             <Button bsSize="xsmall" disabled={true}><Glyphicon glyph="stop" /></Button>
                             <Button bsSize="xsmall" onClick={() => duplicateSequence(sequence)}><Glyphicon glyph="duplicate" /></Button>
