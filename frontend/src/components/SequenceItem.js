@@ -2,6 +2,7 @@ import React from 'react';
 import ExposureSequenceItem from './ExposureSequenceItem'
 import CommandSequenceItem from './CommandSequenceItem'
 import FilterSequenceItemContainer from '../containers/FilterSequenceItemContainer'
+import INDIPropertySequenceItemContainer from '../containers/INDIPropertySequenceItemContainer'
 
 const mapItemType = (sequenceItem) => {
     switch(sequenceItem.type) {
@@ -11,6 +12,8 @@ const mapItemType = (sequenceItem) => {
             return <FilterSequenceItemContainer sequenceItem={sequenceItem} />;
         case 'command':
             return <CommandSequenceItem sequenceItem={sequenceItem} />
+        case 'property':
+            return <INDIPropertySequenceItemContainer sequenceItem={sequenceItem} />
         default:
             return null;
         }
