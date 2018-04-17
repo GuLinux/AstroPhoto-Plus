@@ -1,11 +1,10 @@
 import { connect } from 'react-redux'
 import FilterSequenceItem from '../components/FilterSequenceItem' 
+import { getGears } from '../selectors/gear'
 
 const mapStateToProps = (state, ownProps) => {
-    let sequence = state.sequences.entities[ownProps.sequenceItem.sequence];
-    let filterProperty = Object.keys(state.indiserver.properties).map(p => state.indiserver.properties[p]).find(p => p.name === 'FILTER_NAME' && p.device === sequence.filterWheel)
-    let filters = filterProperty.values.map( (v, index) => ({ name: v.value, number: index+1 }) );
-    return { filters }
+    let gear = getGears(state)[ownProps.sequenceItem.sequence];
+    return { filters: gear.filterWheel.filters }
 }
 
 const FilterSequenceItemContainer = connect(

@@ -1,8 +1,7 @@
 import { connect } from 'react-redux'
 import Sequence from '../components/Sequence'
 import Actions from '../actions'
-import { currentFilterNumber, filtersMap } from '../models/filterWheel'
-
+import { getGears } from '../selectors/gear'
 
 const mapStateToProps = (state) => {
     let sequenceId = state.navigation.sequencesPage.sequenceID;
@@ -10,20 +9,8 @@ const mapStateToProps = (state) => {
         return { sequence: null }
     }
     let sequence = state.sequences.entities[sequenceId];
-    let properties = {sequence};
-    if(state.indiserver.state.connected && state.indiserver.deviceEntities[sequence.camera]) {
-        let camera = state.indiserver.deviceEntities[sequence.camera];
-        let cameraProperties = Object.keys(state.indiserver.properties).map(key => state.indiserver.properties[key]).filter(p => p.device === camera.id);
-        let exposureProperty = cameraProperties.find(p => p.name === 'CCD_EXPOSURE')
-        let exposureAbortProperty = cameraProperties.find(p => p.name === 'CCD_ABORT_EXPOSURE')
-        properties = {...properties, camera, exposureProperty, exposureAbortProperty}
-    }
-    if(state.indiserver.state.connected && sequence.filterWheel && state.indiserver.deviceEntities[sequence.filterWheel]) {
-        let filterWheel = state.indiserver.deviceEntities[sequence.filterWheel];
-        let filterNumber = currentFilterNumber(state, sequence.filterWheel);
-        let filterName = filtersMap(state, sequence.filterWheel).find(f => f.number == filterNumber).name
-        properties = {...properties, filterWheel, filterNumber, filterName}
-    }
+    let gear = getGears(state)[sequenceId];
+    let properties = {sequence, camera: gear.camera, filterWheel: gear.filterWheel};
     return properties;
 }
 

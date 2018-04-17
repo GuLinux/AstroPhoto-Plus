@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import SequenceItemsList from '../components/SequenceItemsList'
 import Actions from '../actions'
-import { filtersMap } from '../models/filterWheel'
+import { getGears } from '../selectors/gear'
 
 const getTypeLabel = type => {
     switch(type) {
@@ -19,18 +19,30 @@ const getDescription = (state, sequenceItem) => {
         case 'shots':
             return `${sequenceItem.count} shots of ${sequenceItem.exposure} seconds, ${sequenceItem.count * sequenceItem.exposure} seconds total`;
         case 'filter':
-            let sequence = state.sequences.entities[sequenceItem.sequence];
-            let filterName = filtersMap(state, sequence.filterWheel).find(f => f.number == sequenceItem.filterNumber).name
-            return `Set filter wheel to filter ${filterName} (${sequenceItem.filterNumber})`
+            let gear = getGears(state)[sequenceItem.sequence];
+            if(gear.filterWheel.connected)
+                return `Set filter wheel to filter ${gear.filterWheel.numbers2names[sequenceItem.filterNumber]} (${sequenceItem.filterNumber})`
+            return `Set filter wheel to filter ${sequenceItem.filterNumber}`
+
         default:
             return '';
     }
+}
+
+const canEdit = (state, sequenceItem) => {
+    let gear = getGears(state)[sequenceItem.sequence];
+    if(gear.camera && ! gear.camera.connected)
+        return false;
+    if(gear.filterWheel && ! gear.filterWheel.connected)
+        return false;
+    return true;
 }
 
 const sequenceItemViewModel = (state, sequenceItem) => ({
     ...sequenceItem,
     typeLabel: getTypeLabel(sequenceItem.type),
     description: getDescription(state, sequenceItem),
+    canEdit: canEdit(state, sequenceItem),
 })
 
 const mapStateToProps = (state, ownProps) => {

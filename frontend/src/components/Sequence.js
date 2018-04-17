@@ -2,21 +2,25 @@ import React from 'react'
 import ModalContainer from '../containers/ModalContainer'
 import AddSequenceItemModal from './AddSequenceItemModal'
 import SequenceItemsContainer from '../containers/SequenceItemsContainer';
-import { Button, ButtonGroup } from 'react-bootstrap';
+import { Button, ButtonGroup, Label } from 'react-bootstrap';
 import { canStart, canAddSequenceItems } from '../models/sequences'
 import { INDINumberPropertyContainer, INDISwitchPropertyContainer } from '../containers/INDIPropertyContainer'
-const CameraDetailsPage = ({camera, exposureProperty, exposureAbortProperty}) => {
+
+
+const CameraDetailsPage = ({camera}) => {
     if(!camera)
         return null;
     let exposurePropertyComponent = null;
     let exposureAbortPropertyComponent = null;
-    if(exposureProperty)
-        exposurePropertyComponent = <INDINumberPropertyContainer property={exposureProperty} readOnly={true} />
-    if(exposureAbortProperty)
-        exposureAbortPropertyComponent = <INDISwitchPropertyContainer property={exposureAbortProperty} />
+    let labelStyle = camera.connected ? 'success' : 'warning'
+    let connection = camera.connected ? 'connected' : 'not connected';
+    if(camera.exposureProperty)
+        exposurePropertyComponent = <INDINumberPropertyContainer property={camera.exposureProperty} readOnly={true} />
+    if(camera.abortExposureProperty)
+        exposureAbortPropertyComponent = <INDISwitchPropertyContainer property={camera.abortExposureProperty} />
     return (
         <div className="container">
-            <h4>{camera.name}</h4>
+            <h4>{camera.name} <h5><Label bsStyle={labelStyle}>{connection}</Label></h5></h4>
             {exposurePropertyComponent}
             {exposureAbortPropertyComponent}
         </div>
@@ -26,13 +30,18 @@ const CameraDetailsPage = ({camera, exposureProperty, exposureAbortProperty}) =>
 const FilterWheelDetailsPage = ({filterWheel, filterNumber, filterName}) => {
     if(!filterWheel)
         return null;
+    let labelStyle = filterWheel.connected ? 'success' : 'warning'
+    let connection = filterWheel.connected ? 'connected' : 'not connected';
+    let currentFilter = null
+    if(filterWheel.connected)
+        currentFilter = <p>Filter: {filterWheel.currentFilter.name} ({filterWheel.currentFilter.number})</p> 
     return (<div className="container">
-        <h4>{filterWheel.name}</h4>
-        <p>Filter: {filterName} ({filterNumber})</p>
+        <h4>{filterWheel.name} <h5><Label bsStyle={labelStyle}>{connection}</Label></h5></h4>
+        {currentFilter}
     </div>)
 }
 
-const Sequence = ({sequence, onCreateSequenceItem, navigateBack, startSequence, camera, exposureProperty, exposureAbortProperty, filterWheel, filterName, filterNumber}) => {
+const Sequence = ({sequence, onCreateSequenceItem, navigateBack, startSequence, camera, filterWheel}) => {
     if(sequence === null)
         return null;
     return (
@@ -52,8 +61,8 @@ const Sequence = ({sequence, onCreateSequenceItem, navigateBack, startSequence, 
         <SequenceItemsContainer sequenceId={sequence.id} />
 
         <h3>Devices</h3>
-        <CameraDetailsPage camera={camera} exposureProperty={exposureProperty} exposureAbortProperty={exposureAbortProperty} />
-        <FilterWheelDetailsPage filterWheel={filterWheel} filterNumber={filterNumber} filterName={filterName} />
+        <CameraDetailsPage camera={camera} />
+        <FilterWheelDetailsPage filterWheel={filterWheel} />
     </div>
 )}
 

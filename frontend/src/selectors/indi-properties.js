@@ -1,8 +1,10 @@
 import { createSelector } from 'reselect'
 
-const getProperties = state => state.indiserver.properties;
-const getVisibleDevice = state => state.navigation.indi.device;
-const getVisibleGroup = state => state.navigation.indi.group ? state.navigation.indi.group : 'Main Control';
+export const getProperties = state => state.indiserver.properties;
+export const getDeviceIds = state => state.indiserver.devices;
+export const getDeviceEntities = state => state.indiserver.deviceEntities;
+export const getVisibleDevice = state => state.navigation.indi.device;
+export const getVisibleGroup = state => state.navigation.indi.group ? state.navigation.indi.group : 'Main Control';
 
 export const getVisibleDeviceProperties = createSelector([getProperties, getVisibleDevice], (properties, visibleDevice) =>
     Object.keys(properties).map(p => properties[p]).filter(p => p.device === visibleDevice)
@@ -19,3 +21,10 @@ export const getVisibleGroups = createSelector([getVisibleDeviceProperties], pro
 });
 
 
+export const getDevicesProperties = createSelector([getDeviceIds, getProperties], (devices, properties) =>
+    Object.keys(properties).reduce( (mapping, id) => {
+        let property = properties[id];
+        let deviceID = property.device;
+        return {...mapping, [deviceID]: {...mapping[deviceID], [property.name]: property } }
+    } , {})
+)
