@@ -39,6 +39,8 @@ class AddSequenceItemModal extends React.Component {
                         <option value="none">--- Select type</option>
                         <option value="shots">Exposures sequence</option>
                         <option value="filter">Filter wheel</option>
+                        <option value="property">Change INDI property</option>
+                        <option value="command">Run command</option>
                     </select>
                   </div>
                 </form>

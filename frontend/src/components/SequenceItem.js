@@ -1,5 +1,6 @@
 import React from 'react';
 import ExposureSequenceItem from './ExposureSequenceItem'
+import CommandSequenceItem from './CommandSequenceItem'
 import FilterSequenceItemContainer from '../containers/FilterSequenceItemContainer'
 
 const mapItemType = (sequenceItem) => {
@@ -8,6 +9,8 @@ const mapItemType = (sequenceItem) => {
             return <ExposureSequenceItem sequenceItem={sequenceItem} />;
         case 'filter':
             return <FilterSequenceItemContainer sequenceItem={sequenceItem} />;
+        case 'command':
+            return <CommandSequenceItem sequenceItem={sequenceItem} />
         default:
             return null;
         }

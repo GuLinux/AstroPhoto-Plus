@@ -9,6 +9,10 @@ const getTypeLabel = type => {
             return 'Exposures';
         case 'filter':
             return 'Filter Wheel';
+        case 'command':
+            return 'Run command'
+        case 'property':
+            return 'Change property'
         default:
             return '';
     }
@@ -23,7 +27,9 @@ const getDescription = (state, sequenceItem) => {
             if(gear.filterWheel.connected)
                 return `Set filter wheel to filter ${gear.filterWheel.numbers2names[sequenceItem.filterNumber]} (${sequenceItem.filterNumber})`
             return `Set filter wheel to filter ${sequenceItem.filterNumber}`
-
+        case 'command':
+            return `Run command: ${sequenceItem.command}`
+        case 'property':
         default:
             return '';
     }

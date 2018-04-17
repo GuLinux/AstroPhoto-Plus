@@ -1,4 +1,4 @@
-from .exceptions import NotFoundError 
+from .indi_property import Property
 
 
 class PropertySequenceItem:
@@ -15,10 +15,6 @@ class PropertySequenceItem:
         }
 
     def run(self, server, devices, root_path, logger, on_update):
-        device = [d for d in devices['all'] if d.id == self.device]
-        if not device:
-            raise NotFoundError('Device with id {} not found'.format(self.device)
-        device = device[0]
-        indi_device = device.find_indi_device()
-
+        property = server.property(device=self.device, name=self.name)
+        property.set_values(self.values)
 

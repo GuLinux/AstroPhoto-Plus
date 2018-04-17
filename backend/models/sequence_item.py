@@ -2,6 +2,8 @@ import uuid
 from .exceptions import BadRequestError
 from .exposure_sequence_item import ExposureSequenceItem
 from .filter_wheel_sequence_item import FilterWheelSequenceItem
+from .property_sequence_item import PropertySequenceItem
+from .command_sequence_item import CommandSequenceItem
 
 class SequenceItem:
     def __init__(self, data):
@@ -12,6 +14,10 @@ class SequenceItem:
             self.job = ExposureSequenceItem(data)
         elif self.type == 'filter':
             self.job = FilterWheelSequenceItem(data)
+        elif self.type == 'property':
+            self.job = PropertySequenceItem(data)
+        elif self.type == 'command':
+            self.job = CommandSequenceItem(data)
         else:
             raise BadRequestError('Invalid sequence item type: {}'.format(self.type))
 
