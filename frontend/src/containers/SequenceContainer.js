@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import Sequence from '../components/Sequence'
 import Actions from '../actions'
+import { currentFilterNumber, filtersMap } from '../models/filterWheel'
 
 
 const mapStateToProps = (state) => {
@@ -19,14 +20,9 @@ const mapStateToProps = (state) => {
     }
     if(state.indiserver.state.connected && sequence.filterWheel && state.indiserver.deviceEntities[sequence.filterWheel]) {
         let filterWheel = state.indiserver.deviceEntities[sequence.filterWheel];
-        let filterWheelProperties = Object.keys(state.indiserver.properties).map(key => state.indiserver.properties[key]).filter(p => p.device === filterWheel.id);
-        let filterProperty = filterWheelProperties.find(p => p.name === 'FILTER_SLOT') 
-        if(filterProperty) {
-            let filterNumber = filterProperty.values.find(v => v.name === 'FILTER_SLOT_VALUE').value
-            let filterNameProperty = filterWheelProperties.find(p => p.name === 'FILTER_NAME')
-            let filterName = filterNameProperty.values.find(p => p.name === `FILTER_SLOT_NAME_${filterNumber}`).value
-            properties = {...properties, filterWheel, filterNumber, filterName}
-        }
+        let filterNumber = currentFilterNumber(state, sequence.filterWheel);
+        let filterName = filtersMap(state, sequence.filterWheel).find(f => f.number == filterNumber).name
+        properties = {...properties, filterWheel, filterNumber, filterName}
     }
     return properties;
 }

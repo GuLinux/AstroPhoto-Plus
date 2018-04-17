@@ -71,5 +71,6 @@ class Sequence:
                 sequence_item.run({'camera': camera, 'filter_wheel': filter_wheel}, os.path.join(root_directory, self.upload_path), logger, on_update)
             self.status = 'finished'
         except:
+            logger.exception('error running sequence')
             self.status = 'error'
         on_update()

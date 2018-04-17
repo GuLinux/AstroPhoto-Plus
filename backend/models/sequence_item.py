@@ -1,15 +1,17 @@
 import uuid
 from .exceptions import BadRequestError
 from .exposure_sequence_item import ExposureSequenceItem
+from .filter_wheel_sequence_item import FilterWheelSequenceItem
 
 class SequenceItem:
     def __init__(self, data):
-        self.filename = data['filename']
         self.id = data['id'] if 'id' in data else uuid.uuid4().hex
         self.type = data['type']
         self.job = None
         if self.type == 'shots':
             self.job = ExposureSequenceItem(data)
+        elif self.type == 'filter':
+            self.job = FilterWheelSequenceItem(data)
         else:
             raise BadRequestError('Invalid sequence item type: {}'.format(self.type))
 
