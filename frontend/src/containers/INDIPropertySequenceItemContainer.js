@@ -9,8 +9,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 
-const mapDispatchToProps = dispatch => {
-}
+const mapDispatchToProps = dispatch => ({})
 
 const INDIPropertySequenceItemContainer = connect(
   mapStateToProps,

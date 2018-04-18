@@ -42,3 +42,7 @@
 .notifications-container {
     z-index: 99;
 }
+
+.device-connection-status {
+    font-size: small;
+}

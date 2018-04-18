@@ -16,9 +16,16 @@ class FilterSequenceItem extends React.Component {
         return (
             <div>
                 <h4>Set filter wheel position</h4>
-                <FormGroup onChange={(e) => this.filterSelected(e.target.value)}>
+                <FormGroup>
                     {this.props.filters.map(filter => (
-                  <Radio name="filterWheel" key={filter.number} checked={this.state.sequenceItem.filterNumber === filter.number} value={filter.number}>{filter.name} ({filter.number})</Radio>
+                  <Radio
+                        name="filterWheel"
+                        key={filter.number}
+                        checked={this.state.sequenceItem.filterNumber === filter.number}
+                        onChange={ e => this.filterSelected(filter.number) }
+                        value={filter.number}>
+                            {filter.name} ({filter.number})
+                        </Radio>
                     ))}
                 </FormGroup>
 

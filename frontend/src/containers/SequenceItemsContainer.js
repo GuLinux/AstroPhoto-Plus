@@ -30,6 +30,7 @@ const getDescription = (state, sequenceItem) => {
         case 'command':
             return `Run command: ${sequenceItem.command}`
         case 'property':
+            return `Change INDI property ${sequenceItem.property} on ${sequenceItem.device}`
         default:
             return '';
     }

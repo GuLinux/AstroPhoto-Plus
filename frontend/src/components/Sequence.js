@@ -6,21 +6,24 @@ import { Button, ButtonGroup, Label } from 'react-bootstrap';
 import { canStart } from '../models/sequences'
 import { INDINumberPropertyContainer, INDISwitchPropertyContainer } from '../containers/INDIPropertyContainer'
 
+const DeviceHeader = ({device}) => {
+    let labelStyle = device.connected ? 'success' : 'warning'
+    let connection = device.connected ? 'connected' : 'not connected';
+    return <h4>{device.name} <span className="device-connection-status"><Label bsStyle={labelStyle}>{connection}</Label></span></h4>
+}
 
 const CameraDetailsPage = ({camera}) => {
     if(!camera)
         return null;
     let exposurePropertyComponent = null;
     let exposureAbortPropertyComponent = null;
-    let labelStyle = camera.connected ? 'success' : 'warning'
-    let connection = camera.connected ? 'connected' : 'not connected';
     if(camera.exposureProperty)
         exposurePropertyComponent = <INDINumberPropertyContainer property={camera.exposureProperty} readOnly={true} />
     if(camera.abortExposureProperty)
         exposureAbortPropertyComponent = <INDISwitchPropertyContainer property={camera.abortExposureProperty} />
     return (
         <div className="container">
-            <h4>{camera.name} <h5><Label bsStyle={labelStyle}>{connection}</Label></h5></h4>
+            <DeviceHeader device={camera} />
             {exposurePropertyComponent}
             {exposureAbortPropertyComponent}
         </div>
@@ -30,13 +33,11 @@ const CameraDetailsPage = ({camera}) => {
 const FilterWheelDetailsPage = ({filterWheel, filterNumber, filterName}) => {
     if(!filterWheel)
         return null;
-    let labelStyle = filterWheel.connected ? 'success' : 'warning'
-    let connection = filterWheel.connected ? 'connected' : 'not connected';
     let currentFilter = null
     if(filterWheel.connected)
         currentFilter = <p>Filter: {filterWheel.currentFilter.name} ({filterWheel.currentFilter.number})</p> 
     return (<div className="container">
-        <h4>{filterWheel.name} <h5><Label bsStyle={labelStyle}>{connection}</Label></h5></h4>
+        <DeviceHeader device={filterWheel} />
         {currentFilter}
     </div>)
 }

@@ -49,7 +49,6 @@ const buildFilterWheel = (deviceEntities, devicesProperties, filterWheelID) => {
 
 
 const buildGear = (deviceEntities, devicesProperties, sequence) => {
-    console.log(devicesProperties);
     let gear = { sequence: sequence.id };
     if(sequence.camera)
         gear.camera = buildCamera(deviceEntities, devicesProperties, sequence.camera);

@@ -2,18 +2,27 @@ import React from 'react';
 import { Button, FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
 import SequenceItemButtonsContainer from '../containers/SequenceItemButtonsContainer'
 
+import INDIText from './INDIText';
+import INDINumber from './INDINumber';
+import INDISwitch from './INDISwitch';
+
 class INDIPropertySequenceItem extends React.Component {
     constructor(props) {
         super(props)
         this.state = { group: '', sequenceItem: {device: '', property: '', ...props.sequenceItem }} 
+
+        if(props.sequenceItem.device && props.sequenceItem.property) {
+            this.state.group = this.getProperties()[props.sequenceItem.property].group
+        }
     }
 
     isValid() {
-        return this.state.sequenceItem.device !== '' && this.state.sequenceItem.property !== '';
+        return this.state.sequenceItem.device !== '' && this.state.sequenceItem.property !== '' && Object.keys(this.state.sequenceItem.values).length !== 0;
     }
 
     isChanged() {
-        return this.state.sequenceItem.device !== this.props.sequenceItem.device && this.state.sequenceItem.property !== this.props.sequenceItem.property;
+        //this.state.sequenceItem.device !== this.props.sequenceItem.device && this.state.sequenceItem.property !== this.props.sequenceItem.property;
+        return true;
     }
 
     onDeviceChanged(device) {
@@ -25,7 +34,8 @@ class INDIPropertySequenceItem extends React.Component {
     }
 
     onPropertyChanged(property) {
-        this.setState({...this.state, sequenceItem: {...this.state.sequenceItem, property } });
+        let values = this.getProperties()[property].values.reduce( (values, value) => ({...values, [value.name]: value.value}), {} )
+        this.setState({...this.state, sequenceItem: {...this.state.sequenceItem, property, values  } });
     }
 
     getDevice() {
@@ -34,6 +44,27 @@ class INDIPropertySequenceItem extends React.Component {
 
     getProperties() {
         return this.props.propertiesMap[this.getDevice().id]
+    }
+
+    getValuesForm() {
+        if( this.state.sequenceItem.property === '')
+            return null;
+        let property = this.getProperties()[this.state.sequenceItem.property];
+        let displayValues = this.state.sequenceItem.values
+        let addPendingValues = (values) => this.setState({...this.state, sequenceItem: {...this.state.sequenceItem, values: {...this.state.sequenceItem.values, ...values} } });
+        return property.values.map( (value, index) => {
+            let props = { key: index, value, property, displayValue: displayValues[value.name], isWriteable: true, addPendingValues, hideCurrent: true }
+            switch(property.type) {
+                case 'switch':
+                    return <INDISwitch {...props} />;
+                case 'number':
+                    return <INDINumber {...props} />
+                case 'text':
+                    return <INDIText {...props} />
+                default:
+                    return null
+            }
+        })
     }
 
     getGroups() {
@@ -103,6 +134,7 @@ class INDIPropertySequenceItem extends React.Component {
                 </FormGroup>
                 { this.getGroupsForm() }
                 { this.getPropertiesForm() }
+                { this.getValuesForm() }
                 <SequenceItemButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceItem={this.state.sequenceItem} />
             </form>
         )

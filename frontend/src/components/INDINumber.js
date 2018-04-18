@@ -84,29 +84,31 @@ const formatValue = (displayValue, format) => {
     return formatted;
 }
 
-const INDINumber = ({value, displayValues, addPendingValues, isWriteable}) => (
+const INDINumber = ({value, displayValue, addPendingValues, isWriteable, hideCurrent}) => (
     <div className="row" key={value.name} >
         <div className="col-xs-2"><p>{value.label}</p></div>
-        <div className={isWriteable ? 'col-xs-5' : 'col-xs-10'}>
-            <NumericInput
-                name={'display_' + value.name}
-                className="col-xs-12"
-                value={value.value}
-                readOnly={true}
-                disabled={true}
-                format={v => formatValue(v, value.format)}
-                parse={s => parseStringValue(s, value.format)}
-                />
-        </div>
+        { hideCurrent ? null : (
+            <div className={isWriteable ? 'col-xs-5' : 'col-xs-10'}>
+                <NumericInput
+                    name={'display_' + value.name}
+                    className="col-xs-12"
+                    value={value.value}
+                    readOnly={true}
+                    disabled={true}
+                    format={v => formatValue(v, value.format)}
+                    parse={s => parseStringValue(s, value.format)}
+                    />
+            </div>
+        )}
         { isWriteable ? (
-        <div className="col-xs-5">
+        <div className={ hideCurrent ? 'col-xs-10' : 'col-xs-5' }>
             <NumericInput
                 className="col-xs-12"
                 min={value.min}
                 max={value.max}
                 step={value.step}
                 name={value.name}
-                value={displayValues[value.name]}
+                value={displayValue}
                 onChange={(numValue, stringValue) => addPendingValues({ [value.name]: numValue })}
                 readOnly={!isWriteable}
                 format={v => formatValue(v, value.format)}
