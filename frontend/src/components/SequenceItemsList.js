@@ -8,7 +8,7 @@ const descriptionComponent = sequenceItem => (
     </span>
 );
 
-const buildProgressBar = (status, min, max, progress) => {
+const JobProgressBar = ({status, min, max, progress}) => {
     let style;
     switch(status) {
         case 'finished':
@@ -22,12 +22,11 @@ const buildProgressBar = (status, min, max, progress) => {
 }
 
 const statusComponent = sequenceItem => {
-    let statusSubComponent = null;
+    let count = 1;
+    let progress = sequenceItem.status == 'finished' ? 1 : 0;
     if(sequenceItem.type === 'shots' && sequenceItem.status !== 'idle') {
-        statusSubComponent = buildProgressBar(sequenceItem.status, 0, sequenceItem.count, sequenceItem.progress);
-    }
-    if(!statusSubComponent) {
-        return <span>{sequenceItem.status}</span>
+        count = sequenceItem.count;
+        progress = sequenceItem.progress;
     }
     return (
         <span>
@@ -35,7 +34,7 @@ const statusComponent = sequenceItem => {
                 {sequenceItem.status}
             </div>
             <div className="col-xs-6">
-                {statusSubComponent}
+                <JobProgressBar status={sequenceItem.status} min={0} max={count} progress={progress} />
             </div>
         </span>
     )
