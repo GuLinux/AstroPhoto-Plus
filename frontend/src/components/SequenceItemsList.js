@@ -40,7 +40,7 @@ const statusComponent = sequenceItem => {
     )
 }
 
-const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequenceItem}) => (
+const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequenceItem, moveSequenceItem}) => (
     <Table striped bordered hover>
         <thead>
             <tr>
@@ -51,7 +51,7 @@ const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequ
             </tr>
         </thead>
         <tbody>
-            {sequenceItems.map(sequenceItem => (
+            {sequenceItems.map( (sequenceItem, index) => (
                 <tr key={sequenceItem.id}>
                     <td>{sequenceItem.typeLabel}</td>
                     <td>{descriptionComponent(sequenceItem)}</td>
@@ -63,6 +63,8 @@ const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequ
                             <QuestionDialog name={sequenceItem.id + 'confirmDeleteSequenceItem'} title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), bsStyle: 'danger'} ]}>
                                 Do you really want to remove this element?
                             </QuestionDialog>
+                            <Button bsSize="small" disabled={index===0} onClick={() => moveSequenceItem(sequenceItem, 'up')}><Glyphicon glyph="chevron-up" /></Button>
+                            <Button bsSize="small" disabled={index===sequenceItems.length-1} onClick={() => moveSequenceItem(sequenceItem, 'down')}><Glyphicon glyph="chevron-down" /></Button>
                         </ButtonGroup>
                     </td>
                 </tr>

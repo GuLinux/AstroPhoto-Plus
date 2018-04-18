@@ -69,6 +69,15 @@ export const updateSequenceItemAPI = (dispatch, sequenceItem, onSuccess, onError
         body: JSON.stringify(sequenceItem)
     }, json => onSuccess(normalize(json, sequenceItemSchema)), onError);
 
+export const moveSequenceItemAPI = (dispatch, sequenceItem, direction, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceItem.sequence}/sequence_items/${sequenceItem.id}/move`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ direction })
+    }, json => onSuccess(normalize(json, sequenceSchema)), onError);
+
+
 export const deleteSequenceItemAPI = (dispatch, sequenceId, sequenceItemId, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}/sequence_items/${sequenceItemId}`, {
         method: 'DELETE'
     }, json => onSuccess(normalize(json, sequenceSchema)));
