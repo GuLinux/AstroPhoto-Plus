@@ -34,11 +34,11 @@ const INDITextProperty = ({device, property, isWriteable, pendingValues, display
                                     disabled={true}
                                     />
                     </div>
-                    { isWriteable ? editableInput(value.name, displayValues[value.name], text => addPendingValues(device, property, { [value.name]: text})) : null }
+                    { isWriteable ? editableInput(value.name, displayValues[value.name], text => addPendingValues({ [value.name]: text})) : null }
                 </div> 
             ))}
         </div>
-        <div className="col-xs-1"><CommitPendingValuesButton bsStyle="primary" size="xsmall" device={device} isWriteable={isWriteable} pendingValues={pendingValues} commitPendingValues={commitPendingValues} property={property} /></div>
+        <div className="col-xs-1"><CommitPendingValuesButton bsStyle="primary" size="xsmall" isWriteable={isWriteable} commitPendingValues={commitPendingValues} /></div>
     </div>
 )
  

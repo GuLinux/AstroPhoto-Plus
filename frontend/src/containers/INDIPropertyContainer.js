@@ -34,9 +34,16 @@ const mapDispatchToProps = dispatch => ({
     commitPendingValues: (device, property, pendingValues) => dispatch(Actions.INDIServer.commitPendingValues(device, property, pendingValues)),
 })
 
-export const INDILightPropertyContainer = connect(mapStateToProps, mapDispatchToProps)(INDILightProperty)
-export const INDISwitchPropertyContainer = connect(mapStateToProps, mapDispatchToProps)(INDISwitchProperty)
-export const INDINumberPropertyContainer = connect(mapStateToProps, mapDispatchToProps)(INDINumberProperty)
-export const INDITextPropertyContainer = connect(mapStateToProps, mapDispatchToProps)(INDITextProperty)
+const mergeProps = (stateProps, dispatchProps, ownProps) => ({
+    ...stateProps,
+    ...ownProps,
+    addPendingValues: (pendingValues, autoApply) => dispatchProps.addPendingValues(stateProps.device, stateProps.property, pendingValues, autoApply),
+    commitPendingValues: () => dispatchProps.commitPendingValues(stateProps.device, stateProps.property, stateProps.pendingValues),
+})
+
+export const INDILightPropertyContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(INDILightProperty)
+export const INDISwitchPropertyContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(INDISwitchProperty)
+export const INDINumberPropertyContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(INDINumberProperty)
+export const INDITextPropertyContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(INDITextProperty)
 
 

@@ -114,7 +114,7 @@ const INDINumberProperty = ({device, property, isWriteable, pendingValues, displ
                             step={value.step}
                             name={value.name}
                             value={displayValues[value.name]}
-                            onChange={(numValue, stringValue) => addPendingValues(device, property, { [value.name]: numValue })}
+                            onChange={(numValue, stringValue) => addPendingValues({ [value.name]: numValue })}
                             readOnly={!isWriteable}
                             format={v => formatValue(v, value.format)}
                             parse={s => parseStringValue(s, value.format)}
@@ -124,7 +124,7 @@ const INDINumberProperty = ({device, property, isWriteable, pendingValues, displ
                 </div> 
             ))}
         </div>
-        <div className="col-xs-1"><CommitPendingValuesButton bsStyle="primary" size="xsmall" device={device} isWriteable={isWriteable} pendingValues={pendingValues} commitPendingValues={commitPendingValues} property={property} /></div>
+        <div className="col-xs-1"><CommitPendingValuesButton bsStyle="primary" size="xsmall" isWriteable={isWriteable} commitPendingValues={commitPendingValues} /></div>
     </div>
 )
  

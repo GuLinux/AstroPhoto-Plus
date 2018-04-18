@@ -9,12 +9,12 @@ const onButtonClick = (device, property, value, displayValue, addPendingValues, 
     if(property.rule === 'ONE_OF_MANY') {
         property.values.filter(v => v.name !== value.name).forEach(v => newPendingValues[v.name] = false);
     }
-    addPendingValues(device, property, newPendingValues, true)
+    addPendingValues(newPendingValues, true)
 }
 
 const onCheckbox = (device, property, value, displayValue, addPendingValues, pendingValues) => {
     let newState = ! displayValue;
-    addPendingValues(device, property, {[value.name]: newState}, true)
+    addPendingValues({[value.name]: newState}, true)
 }
 
 const switchHTMLId = (property, value) => `${property.id}_${value.name}`
