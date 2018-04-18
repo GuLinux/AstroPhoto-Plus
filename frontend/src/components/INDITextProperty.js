@@ -16,7 +16,7 @@ const editableInput = (name, value, onChange) => (
 )
 
 
-const INDITextProperty = ({device, property, isWriteable, pendingValues, displayValues, addPendingValues, commitPendingValues }) => (
+const INDITextProperty = ({property, isWriteable, pendingValues, displayValues, addPendingValues, commitPendingValues }) => (
     <div className="row">
         <div className="col-xs-1"><INDILight state={property.state} /></div> 
         <div className="col-xs-2">{property.label}</div> 

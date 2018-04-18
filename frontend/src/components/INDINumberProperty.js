@@ -86,7 +86,7 @@ const formatValue = (displayValue, format) => {
     return formatted;
 }
 
-const INDINumberProperty = ({device, property, isWriteable, pendingValues, displayValues, addPendingValues, commitPendingValues }) => (
+const INDINumberProperty = ({property, isWriteable, pendingValues, displayValues, addPendingValues, commitPendingValues }) => (
     <div className="row">
         <div className="col-xs-1"><INDILight state={property.state} /></div> 
         <div className="col-xs-2">{property.label}</div> 
