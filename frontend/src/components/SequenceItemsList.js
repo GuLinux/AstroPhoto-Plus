@@ -40,7 +40,7 @@ const statusComponent = sequenceItem => {
     )
 }
 
-const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequenceItem, moveSequenceItem}) => (
+const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequenceItem, moveSequenceItem, duplicateSequenceItem}) => (
     <Table striped bordered hover>
         <thead>
             <tr>
@@ -65,6 +65,7 @@ const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequ
                             </QuestionDialog>
                             <Button bsSize="small" disabled={index===0} onClick={() => moveSequenceItem(sequenceItem, 'up')}><Glyphicon glyph="chevron-up" /></Button>
                             <Button bsSize="small" disabled={index===sequenceItems.length-1} onClick={() => moveSequenceItem(sequenceItem, 'down')}><Glyphicon glyph="chevron-down" /></Button>
+                            <Button bsSize="small" onClick={() => duplicateSequenceItem(sequenceItem)}><Glyphicon glyph="duplicate" /></Button>
                         </ButtonGroup>
                     </td>
                 </tr>

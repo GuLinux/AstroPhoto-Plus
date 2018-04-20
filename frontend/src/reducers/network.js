@@ -12,6 +12,7 @@ const requests = (state = { fetching: false }, action) => {
         case 'DUPLICATE_SEQUENCE_REQUESTED':
         case 'START_SEQUENCE_REQUESTED':
         case 'REQUEST_SEQUENCE_ITEM_MOVE':
+        case 'REQUEST_SEQUENCE_ITEM_DUPLICATE':
 //        case 'COMMIT_PENDING_PROPERTIES':
             return {...state, fetching: true };
         case 'RECEIVE_SESSIONS':

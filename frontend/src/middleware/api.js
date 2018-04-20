@@ -78,6 +78,11 @@ export const moveSequenceItemAPI = (dispatch, sequenceItem, direction, onSuccess
     }, json => onSuccess(normalize(json, sequenceSchema)), onError);
 
 
+export const duplicateSequenceItemAPI = (dispatch, sequenceItem, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceItem.sequence}/sequence_items/${sequenceItem.id}/duplicate`, {
+        method: 'PUT',
+    }, json => onSuccess(normalize(json, sequenceSchema)), onError);
+
+
 export const deleteSequenceItemAPI = (dispatch, sequenceId, sequenceItemId, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}/sequence_items/${sequenceItemId}`, {
         method: 'DELETE'
     }, json => onSuccess(normalize(json, sequenceSchema)));

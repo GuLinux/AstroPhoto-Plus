@@ -1,4 +1,4 @@
-import {  moveSequenceItemAPI, updateSequenceItemAPI, createSequenceItemAPI, deleteSequenceItemAPI } from '../middleware/api'
+import {  moveSequenceItemAPI, updateSequenceItemAPI, createSequenceItemAPI, deleteSequenceItemAPI, duplicateSequenceItemAPI } from '../middleware/api'
 import Actions from './index'
 
 export const SequenceItems = {
@@ -53,6 +53,12 @@ export const SequenceItems = {
         dispatch({type: 'REQUEST_SEQUENCE_ITEM_MOVE', sequenceItem, direction});
         return moveSequenceItemAPI(dispatch, sequenceItem, direction, (data) => dispatch(Actions.Sequences.updated(data)));
     },
+
+    duplicate: (sequenceItem) => dispatch => {
+        dispatch({type: 'REQUEST_SEQUENCE_ITEM_DUPLICATE', sequenceItem});
+        return duplicateSequenceItemAPI(dispatch, sequenceItem, (data) => dispatch(Actions.Sequences.updated(data)));
+    },
+
 
 }
 

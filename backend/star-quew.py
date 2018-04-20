@@ -175,6 +175,17 @@ def move_sequence_item(sequence_id, sequence_item_id, json):
 
 
 
+@app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>/duplicate', methods=['PUT'])
+@json_api
+def duplicate_sequence_item(sequence_id, sequence_item_id):
+    app.logger.debug('duplicate item {}'.format(sequence_item_id))
+    with controller.sequences.lookup_edit(sequence_id) as sequence:
+        sequence_item = sequence.item(sequence_item_id)
+        sequence.sequence_items.append(sequence_item.duplicate())
+        return sequence.to_map()
+
+
+
     
 @app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>', methods=['DELETE'])
 @json_api
