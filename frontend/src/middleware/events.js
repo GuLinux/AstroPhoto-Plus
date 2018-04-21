@@ -52,12 +52,13 @@ const indiserverEvents = (event, dispatch) => {
 
 const sequences = (event, dispatch) => {
     let eventObject = JSON.parse(event.data);
-    console.log(event)
-    console.log(eventObject)
     switch(eventObject.event) {
         case 'sequence_updated':
             dispatch(Actions.Sequences.updated(normalize(eventObject.payload, sequenceSchema)));
             break;
+        case 'sequence_error':
+            dispatch(Actions.Sequences.error(eventObject.payload));
+            break
         default:
             logEvent(event)
     }

@@ -48,6 +48,15 @@ export const Sequences = {
         }
     },
 
+    error: ({sequence, error_message}) => dispatch => {
+        dispatch(Actions.Notifications.add('Sequence error', `Error running sequence: ${error_message}`, 'error'));
+        return {
+            type: 'RUN_SEQUENCE_ERROR',
+            sequence,
+            message: error_message,
+        }
+    },
+
     duplicate: sequence => {
         return dispatch => {
             dispatch({type: 'DUPLICATE_SEQUENCE_REQUESTED', sequence});

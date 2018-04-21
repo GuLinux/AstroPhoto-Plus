@@ -34,6 +34,11 @@ class EventListener:
     def on_sequence_update(self, sequence):
         self.controller.sse.publish({'event': 'sequence_updated', 'payload': sequence.to_map(), 'is_error': False}, type='sequences')
 
+    def on_sequence_error(self, sequence, message):
+        self.controller.sse.publish({'event': 'sequence_error', 'payload': {'sequence': sequence.to_map(), 'error_message': message}, 'is_error': True}, type='sequences')
+
+
+
 class Controller:
     def __init__(self):
         self.sse = SSE(app.logger)

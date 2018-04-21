@@ -70,7 +70,9 @@ class Sequence:
             for sequence_item in self.sequence_items:
                 sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, os.path.join(root_directory, self.upload_path), logger, on_update)
             self.status = 'finished'
-        except:
+            on_update()
+        except RuntimeError as e:
             logger.exception('error running sequence')
             self.status = 'error'
-        on_update()
+            on_update()
+            raise e
