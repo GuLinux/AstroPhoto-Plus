@@ -37,6 +37,8 @@ class ExposureSequenceItem:
         }
 
     def run(self, server, devices, root_path, logger, on_update):
+        self.progress = 0
+
         filename_template_params = {
             'timestamp': lambda _: time.time(),
             'datetime': lambda _: time.strftime('%Y-%m-%dT%H:%M:%S-%Z'),

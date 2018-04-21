@@ -32,15 +32,15 @@ const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete, st
                     <td>{sequence.status}</td>
                     <td>
                         <ButtonGroup>
-                            <Button onClick={e => onSequenceEdit(sequence.id)} bsSize="small"><Glyphicon glyph="edit" /></Button>
-                            <Dialog.Open modal={sequence.id + 'confirmSequenceDelete'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Open>
+                            <Button title="Edit" onClick={e => onSequenceEdit(sequence.id)} bsSize="small"><Glyphicon glyph="edit" /></Button>
+                            <Dialog.Open title="Remove" modal={sequence.id + 'confirmSequenceDelete'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Open>
                             <QuestionDialog name={sequence.id + 'confirmSequenceDelete'} title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', bsStyle: 'danger', afterClose: () => onSequenceDelete(sequence.id)}]}>
                                 Do you really want to remove this sequence?
                             </QuestionDialog>
-                            <Button bsSize="small" disabled={!canStart(sequence)}><Glyphicon glyph="play" onClick={() => startSequence(sequence)}/></Button>
-                            <Button bsSize="small" disabled={true}><Glyphicon glyph="pause" /></Button>
-                            <Button bsSize="small" disabled={true}><Glyphicon glyph="stop" /></Button>
-                            <Button bsSize="small" onClick={() => duplicateSequence(sequence)}><Glyphicon glyph="duplicate" /></Button>
+                            <Button title="Start" bsSize="small" disabled={!canStart(sequence)}><Glyphicon glyph="play" onClick={() => startSequence(sequence)}/></Button>
+                            <Button title="Pause" bsSize="small" disabled={true}><Glyphicon glyph="pause" /></Button>
+                            <Button title="Stop" bsSize="small" disabled={true}><Glyphicon glyph="stop" /></Button>
+                            <Button title="Duplicate" bsSize="small" onClick={() => duplicateSequence(sequence)}><Glyphicon glyph="duplicate" /></Button>
                         </ButtonGroup>
                     </td>
                 </tr>

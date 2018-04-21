@@ -2,11 +2,7 @@ import React from 'react';
 import { Table, Glyphicon, ButtonGroup, Button, ProgressBar } from 'react-bootstrap';
 import { Dialog, QuestionDialog } from './Dialogs'
 
-const descriptionComponent = sequenceItem => (
-    <span>
-        {sequenceItem.description}
-    </span>
-);
+const descriptionComponent = sequenceItem => <span>{sequenceItem.description}</span>
 
 const JobProgressBar = ({status, min, max, progress}) => {
     let style;
@@ -18,7 +14,7 @@ const JobProgressBar = ({status, min, max, progress}) => {
         default:
             style='info';
     }
-    return <ProgressBar min={min} max={max} now={progress} striped bsStyle={style} active={status === 'running'} />
+    return <ProgressBar className="sequence-item-progress" min={min} max={max} now={progress} label={`${progress}/${max}`} striped bsStyle={style} active={status === 'running'} />
 }
 
 const statusComponent = sequenceItem => {
@@ -58,14 +54,14 @@ const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequ
                     <td>{statusComponent(sequenceItem)}</td>
                     <td>
                         <ButtonGroup>
-                            <Button bsSize="small" disabled={!canEdit} onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
-                            <Dialog.Open modal={sequenceItem.id + 'confirmDeleteSequenceItem'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Open>
+                            <Button title="Edit" bsSize="small" disabled={!canEdit} onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
+                            <Dialog.Open title="Remove" modal={sequenceItem.id + 'confirmDeleteSequenceItem'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Open>
                             <QuestionDialog name={sequenceItem.id + 'confirmDeleteSequenceItem'} title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), bsStyle: 'danger'} ]}>
                                 Do you really want to remove this element?
                             </QuestionDialog>
-                            <Button bsSize="small" disabled={index===0} onClick={() => moveSequenceItem(sequenceItem, 'up')}><Glyphicon glyph="chevron-up" /></Button>
-                            <Button bsSize="small" disabled={index===sequenceItems.length-1} onClick={() => moveSequenceItem(sequenceItem, 'down')}><Glyphicon glyph="chevron-down" /></Button>
-                            <Button bsSize="small" onClick={() => duplicateSequenceItem(sequenceItem)}><Glyphicon glyph="duplicate" /></Button>
+                            <Button title="Move up" bsSize="small" disabled={index===0} onClick={() => moveSequenceItem(sequenceItem, 'up')}><Glyphicon glyph="chevron-up" /></Button>
+                            <Button title="Move down" bsSize="small" disabled={index===sequenceItems.length-1} onClick={() => moveSequenceItem(sequenceItem, 'down')}><Glyphicon glyph="chevron-down" /></Button>
+                            <Button title="Duplicate" bsSize="small" onClick={() => duplicateSequenceItem(sequenceItem)}><Glyphicon glyph="duplicate" /></Button>
                         </ButtonGroup>
                     </td>
                 </tr>
