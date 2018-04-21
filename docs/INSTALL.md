@@ -73,3 +73,5 @@ sudo systemctl restart nginx
 
 open your browser to `http://localhost` (change if you configured a remote server), *StarQuew* should now be up and running.
 
+Also remember to start your INDI server before running StarQuew.
+You can use [INDI Server Manager](http://www.indilib.org/support/tutorials/162-indi-web-manager.html) for the job.

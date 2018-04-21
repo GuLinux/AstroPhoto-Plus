@@ -55,5 +55,10 @@ docker-compose up\
 ```
 
 
+## Credits
+
+Icon: [Space Exploration Set](https://www.iconfinder.com/icons/3088382/astronomy_galaxy_space_star_universe_icon#size=256)
+
+
 
 

@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 let LoadingPage= ({ isLoading }) => {
-    if(! isLoading)
-        return null;
+  if(! isLoading)
+      return null;
   return (
     <div className="loadingOverlay">
-        <img src='/loading.gif' alt='Loading' />
+        <img src='/spinner.svg' alt='Loading' />
     </div>
   )
 }
