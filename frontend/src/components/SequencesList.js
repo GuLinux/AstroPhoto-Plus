@@ -13,7 +13,7 @@ const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete, st
             <AddSequenceModalContainer modalName="addSequence"/>
         </ModalContainer>
 
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
             <thead>
                 <tr>
                     <th>Name</th>

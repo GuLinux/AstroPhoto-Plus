@@ -37,7 +37,7 @@ const statusComponent = sequenceItem => {
 }
 
 const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequenceItem, moveSequenceItem, duplicateSequenceItem}) => (
-    <Table striped bordered hover>
+    <Table striped bordered hover responsive>
         <thead>
             <tr>
                 <th>Type</th>
