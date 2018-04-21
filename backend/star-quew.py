@@ -10,7 +10,7 @@ import logging
 default_settings = {}
 
 app.logger.info('Using INDI server at %s:%d', controller.indi_server.host, controller.indi_server.port)
-app.config['SEQUENCES_PATH'] = os.environ.get('STARQUEW_SEQUENCES_PATH', os.path.join(os.environ['HOME'], 'StarQuew'))
+app.config['SEQUENCES_PATH'] = os.environ.get('STARQUEW_SEQUENCES_PATH', os.path.join(os.environ['HOME'], 'StarQuew-Data'))
 
 gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers = gunicorn_logger.handlers

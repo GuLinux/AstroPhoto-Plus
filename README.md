@@ -17,7 +17,8 @@ git pull --recurse-submodules
 
 ## Install
 
-TODO
+Please refer to [docs/INSTALL.md](docs/INSTALL.md) for an installation walkthrough.
+
 
 ## Deploy via Docker
 
