@@ -24,6 +24,7 @@ services:
     volumes:
         - ../../backend:/app
         - /tmp:/tmp
+        - $STARQUEW_SEQUENCES_PATH:/root/StarQuew-Data
     expose:
         - "5000"
     ports:
