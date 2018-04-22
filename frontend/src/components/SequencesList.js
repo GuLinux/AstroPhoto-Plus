@@ -5,7 +5,16 @@ import ModalContainer from '../containers/ModalContainer'
 import { Dialog, QuestionDialog } from './Dialogs'
 import { canStart } from '../models/sequences'
 
-const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete, startSequence, duplicateSequence}) =>
+const GearDescription = ({gear}) => {
+    let elements = [];
+    elements.push({ label: 'camera', description: gear.camera.connected ? gear.camera.name : 'N/A'})
+    if(gear.filterWheel)
+        elements.push({ label: 'filter wheel', description: gear.filterWheel.connected ? gear.filterWheel.name : 'N/A'})
+    let description = elements.map(e => `${e.label}: ${e.description}`).join(', ');
+    return <span>{description}</span>
+}
+
+const SequencesList = ({sequences, gear, onSequenceEdit, onSequenceDelete, startSequence, duplicateSequence}) =>
 (
     <div>
         <ModalContainer.Open bsStyle="primary" bsSize="small" className="pull-right" modal="addSequence">new sequence</ModalContainer.Open>
@@ -17,7 +26,7 @@ const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete, st
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Camera</th>
+                    <th>Gear</th>
                     <th>Sequence Items</th>
                     <th>State</th>
                     <th>Actions</th>
@@ -27,7 +36,7 @@ const SequencesList = ({sequences, cameras, onSequenceEdit, onSequenceDelete, st
             {sequences.map(sequence => (
                 <tr key={sequence.id}>
                     <td><a href='#' onClick={e => onSequenceEdit(sequence.id)} >{sequence.name}</a></td>
-                    <td>{sequence.camera in cameras ? cameras[sequence.camera] : 'N/A'}</td>
+                    <td><GearDescription gear={gear[sequence.id]} /></td>
                     <td>{sequence.sequenceItems.length}</td>
                     <td>{sequence.status}</td>
                     <td>

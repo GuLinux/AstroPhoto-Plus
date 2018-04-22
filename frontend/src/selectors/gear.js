@@ -1,8 +1,10 @@
-import { getDeviceEntities, getDevicesProperties} from './indi-properties'
+import { getDeviceEntities, getDevicesProperties, getDevicesConnectionState } from './indi-properties'
 import { createSelector } from 'reselect'
 
 export const getSequences = state => state.sequences;
 export const getSequenceItems = state => state.sequenceItems;
+
+export const getGear = state => state.gear
 
 const isDeviceConnected = (devicesProperties, deviceID) => {
     if(!(deviceID in devicesProperties))
@@ -57,6 +59,6 @@ const buildGear = (deviceEntities, devicesProperties, sequence) => {
     return gear;
 }
 
-export const getGears = createSelector([getDeviceEntities, getDevicesProperties, getSequences], (deviceEntities, devicesProperties, sequences) => {
+export const getGears = createSelector([getDeviceEntities, getDevicesProperties, getSequences, getDevicesConnectionState], (deviceEntities, devicesProperties, sequences, devicesConnectionState) => {
     return sequences.ids.reduce( (gears, sequenceID) => ({...gears, [sequenceID]: buildGear(deviceEntities, devicesProperties, sequences.entities[sequenceID]) }), {});
 })

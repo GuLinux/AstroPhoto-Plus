@@ -6,6 +6,10 @@ export const getDeviceEntities = state => state.indiserver.deviceEntities;
 export const getVisibleDevice = state => state.navigation.indi.device;
 export const getVisibleGroup = state => state.navigation.indi.group ? state.navigation.indi.group : 'Main Control';
 
+export const getDeviceNames = createSelector([getDeviceIds, getDeviceEntities], (deviceIds, devices) => {
+    return deviceIds.map(id => ({ id, name: devices[id].name }))
+})
+
 export const getVisibleDeviceProperties = createSelector([getProperties, getVisibleDevice], (properties, visibleDevice) =>
     Object.keys(properties).map(p => properties[p]).filter(p => p.device === visibleDevice)
 )
@@ -27,4 +31,11 @@ export const getDevicesProperties = createSelector([getDeviceIds, getProperties]
         let deviceID = property.device;
         return {...mapping, [deviceID]: {...mapping[deviceID], [property.name]: property } }
     } , {})
+)
+
+export const getDevicesConnectionState = createSelector([getDevicesProperties], (devicesProperties) => 
+    Object.keys(devicesProperties).reduce( (mapping, id) => ({
+        ...mapping,
+        [id]: 'CONNECTION' in devicesProperties[id] && !! devicesProperties[id].CONNECTION.values.find(v => v.name === 'CONNECT' && v.value) 
+    }), {})
 )
