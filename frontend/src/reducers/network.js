@@ -13,6 +13,7 @@ const requests = (state = { fetching: false }, action) => {
         case 'START_SEQUENCE_REQUESTED':
         case 'REQUEST_SEQUENCE_ITEM_MOVE':
         case 'REQUEST_SEQUENCE_ITEM_DUPLICATE':
+        case 'REQUEST_SAVE_SEQUENCE_ITEM':
 //        case 'COMMIT_PENDING_PROPERTIES':
             return {...state, fetching: true };
         case 'RECEIVE_SESSIONS':
@@ -27,6 +28,7 @@ const requests = (state = { fetching: false }, action) => {
         case 'RESPONSE_ERROR':
         case 'SEQUENCE_ITEM_UPDATED':
         case 'SEQUENCE_UPDATED':
+        case 'REQUEST_SAVE_SEQUENCE_ITEM_ERROR':
 //        case 'COMMITTED_PENDING_PROPERTIES':
             return {...state, fetching: false};
         default:
