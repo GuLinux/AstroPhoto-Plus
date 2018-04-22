@@ -64,7 +64,12 @@ class Sequence:
  
         logger.debug('Starting sequence with camera: {}={} and filter_wheel: {}={}'.format(self.camera, camera.device.name, self.filter_wheel, filter_wheel.device.name if filter_wheel else 'N/A'))
 
+        for sequence_item in self.sequence_items:
+            logger.debug('resetting sequence item {}'.format(sequence_item))
+            sequence_item.reset()
+
         self.status = 'running'
+
         on_update()
         try:
             for sequence_item in self.sequence_items:

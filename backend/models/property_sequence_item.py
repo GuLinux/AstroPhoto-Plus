@@ -18,3 +18,6 @@ class PropertySequenceItem:
         property = server.property(device=self.device, name=self.property)
         property.set_values(self.values)
 
+    def reset(self):
+        pass
+

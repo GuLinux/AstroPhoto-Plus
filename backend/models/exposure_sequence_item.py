@@ -26,6 +26,9 @@ class ExposureSequenceItem:
         except KeyError as e:
             raise BadRequestError('Bad filename template: {} parameter not valid'.format(e.args[0]))
 
+    def reset(self):
+        self.progress = 0
+
     def to_map(self):
         return {
             'count': self.count,

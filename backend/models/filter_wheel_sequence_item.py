@@ -15,3 +15,7 @@ class FilterWheelSequenceItem:
         if wheel.indi_sequence_filter_wheel().current_filter()[0] != self.filter_number:
             raise RuntimeError('Error changing filter wheel to filter {}'.format(self.filter_number))
 
+
+    def reset(self):
+        pass
+

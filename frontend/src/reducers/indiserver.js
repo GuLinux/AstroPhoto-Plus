@@ -40,7 +40,6 @@ const receivedDeviceProperties = (state, device, deviceProperties) => {
 
 const indiPropertyUpdated = (state, property) => {
     return {...state, properties: {...state.properties, [property.id]: property }, values: {...state.values, [property.id]: property.values } }
-return state
 };
 
 const indiPropertyAdded = (state, property) => {

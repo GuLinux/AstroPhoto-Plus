@@ -14,7 +14,8 @@ const JobProgressBar = ({status, min, max, progress}) => {
         default:
             style='info';
     }
-    return <ProgressBar className="sequence-item-progress" min={min} max={max} now={progress} label={`${progress}/${max}`} striped bsStyle={style} active={status === 'running'} />
+    let progressLabel = progress > 0 ? `${progress}/${max}` : '';
+    return <ProgressBar className="sequence-item-progress" min={min} max={max} now={progress} label={progressLabel} striped bsStyle={style} active={status === 'running'} />
 }
 
 const statusComponent = sequenceItem => {

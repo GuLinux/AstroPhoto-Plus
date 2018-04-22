@@ -15,3 +15,6 @@ class CommandSequenceItem:
         if exit_code != 0:
             raise RuntimeError('Error running command {}'.format(self.command))
 
+    def reset(self):
+        pass
+

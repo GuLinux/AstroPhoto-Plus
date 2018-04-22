@@ -51,6 +51,10 @@ class SequenceItem:
         data.update(self.job.to_map())
         return data
 
+    def reset(self):
+        self.status = 'idle'
+        self.job.reset()
+
     def run(self, server, devices, root_path, logger, on_update):
         self.status = 'running'
         self.started_ts = time.time()
