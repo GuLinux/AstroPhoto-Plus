@@ -24,6 +24,7 @@ class SequenceItem:
             raise BadRequestError('Invalid sequence item type: {}'.format(self.type))
 
         self.status = data.get('status', 'idle')
+        self.started_ts, self.finished_ts = None, None
 
     def duplicate(self):
         data = self.to_map()
@@ -41,17 +42,23 @@ class SequenceItem:
             'type': self.type,
             'status': self.status,
         }
+        if self.started_ts:
+            data['started'] = self.started_ts
+        if self.finished_ts:
+            data['finished'] = self.finished_ts
+            data['elapsed'] = self.finished_ts - self.started_ts
+
         data.update(self.job.to_map())
         return data
 
     def run(self, server, devices, root_path, logger, on_update):
         self.status = 'running'
-        self.started = time.time()
+        self.started_ts = time.time()
         on_update()
         try:
             self.job.run(server, devices, root_path, logger, on_update)
             self.status = 'finished'
-            self.ended = time.time()
+            self.finished_ts = time.time()
             on_update()
         except RuntimeError as e: # TODO: specific exception?
             self.status = 'error'
