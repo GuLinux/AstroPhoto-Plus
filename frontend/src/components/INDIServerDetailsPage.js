@@ -15,19 +15,18 @@ const INDIServerDetailsPage = ({serverState, setServerConnection}) => {
     let connectionView = getConnectionView(serverState.connected);
     let connectionAction = () => setServerConnection(! serverState.connected);
     return (
-        <Table bordered hover>
-            <tbody>
-                <tr>
-                    <th>Address</th>
-                    <td colSpan="2">{serverState.host}:{serverState.port}</td>
-                </tr>
-                <tr>
-                    <th>Connection</th>
-                    <td><span className={'label label-' + connectionView.stateLabelClass}>{connectionView.stateLabel}</span></td>
-                    <td><Button bsSize="xsmall" bsStyle={connectionView.connectionButtonClass} onClick={connectionAction}>{connectionView.connectionButtonLabel}</Button></td>
-                </tr>
-            </tbody>
-        </Table>
+        <div className="indi-server-details-container">
+            <div className="row">
+                <div className="col-xs-2 col-xs-offset-2">Address</div>
+                <div className="col-xs-6">{serverState.host}:{serverState.port}</div>
+            </div>
+            <hr />
+            <div className="row">
+                <div className="col-xs-2 col-xs-offset-2">Connection</div>
+                <div className="col-xs-1"><span className={'label label-' + connectionView.stateLabelClass}>{connectionView.stateLabel}</span></div>
+                <div className="col-xs-1"><Button bsSize="xsmall" bsStyle={connectionView.connectionButtonClass} onClick={connectionAction}>{connectionView.connectionButtonLabel}</Button></div>
+            </div>
+        </div>
 )}
 
 export default INDIServerDetailsPage

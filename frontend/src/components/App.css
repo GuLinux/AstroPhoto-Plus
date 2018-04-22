@@ -57,3 +57,7 @@
 .sequence-item-progress .progress-bar {
     color: black;
 }
+
+.indi-server-details-container {
+    margin-top: 10px;
+}

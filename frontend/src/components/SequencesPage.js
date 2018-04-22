@@ -5,7 +5,7 @@ import SequenceItemContainer from '../containers/SequenceItemContainer';
 import SequencesListContainer from '../containers/SequencesListContainer';
 
 const SequencesPage = () => (
-    <div className="sequences container-fluid">
+    <div className="sequences container">
         <PagesListContainer navigation="sequencesPage">
             <SequencesListContainer key="sequences" />
             <SequenceContainer key="sequence" />

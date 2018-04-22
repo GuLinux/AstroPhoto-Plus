@@ -5,7 +5,7 @@ import INDIDeviceContainer from '../containers/INDIDeviceContainer'
 
 
 const INDIServerPage = ({devices, indiDeviceTab, navigateToDevice}) => (
-    <div className="container-fluid">
+    <div className="container">
         <Tabs
             id="INDIServerTabs"
             activeKey={indiDeviceTab ? indiDeviceTab : 'server_status'}
