@@ -5,6 +5,7 @@ from server_sent_events import SSE
 from app import app
 import time
 from sequences_runner import SequencesRunner
+import threading
 
 class EventListener:
     def __init__(self, controller):
@@ -46,6 +47,8 @@ class Controller:
         self.indi_server = Server(app.logger, self.event_listener, os.environ.get('INDI_SERVER_HOST', 'localhost'))
         self.sequences_runner = SequencesRunner(app.logger, self)
         self.sequences = None
+        self.ping_thread = threading.Thread(target=self.__ping_clients)
+        self.ping_thread.start()
 
 
     def notification(self, event_type, event_name, payload, is_error, error_code=None, error_message=None):
@@ -57,6 +60,14 @@ class Controller:
     @property
     def root_path(self):
       return app.config['SEQUENCES_PATH']
+
+    def __ping_clients(self):
+        while True:
+            time.sleep(10)
+            app.logger.debug('pinging clients on SSE interface')
+            self.sse.publish({'event': 'ping'}, type='main')
+
+
 
 controller = Controller()
 
