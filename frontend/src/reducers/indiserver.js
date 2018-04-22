@@ -7,7 +7,6 @@ const defaultState = {
     deviceEntities: {},
     devices: [],
     properties: {},
-    values: {},
     pendingValues: {},
     messages: [],
 };
@@ -19,7 +18,6 @@ const receivedServerState = (state, action) => {
         nextState.deviceEntities = {}
         nextState.properties = {};
         nextState.pendingValues = {};
-        nextState.values = {};
     }
     return nextState;
 }
@@ -28,30 +26,27 @@ const arrayToObjectById = array => array.reduce( (obj, element) => ({...obj, [el
 
 const receivedDeviceProperties = (state, device, deviceProperties) => {
     let properties = {...state.properties}
-    let values = {...state.values}
 
     deviceProperties.forEach(property => {
         properties[property.id] = property
-        values[property.id] = property.values
     })
 
-    return {...state, properties, values };
+    return {...state, properties};
 }
 
 const indiPropertyUpdated = (state, property) => {
-    return {...state, properties: {...state.properties, [property.id]: property }, values: {...state.values, [property.id]: property.values } }
+    return {...state, properties: {...state.properties, [property.id]: property } }
 };
 
 const indiPropertyAdded = (state, property) => {
-    return {...state, properties: {...state.properties, [property.id]: property}, values: {...state.values, [property.id]: property.values } };
+    return {...state, properties: {...state.properties, [property.id]: property} };
 };
 
 const indiPropertyRemoved = (state, property) => {
     let properties = {...state.properties};
     let values = {...state.values};
     delete properties[property.id]
-    delete values[property.id]
-    return {...state, properties, values}
+    return {...state, properties}
 };
 
 const addPendingValues = (state, property, pendingValues) => {
