@@ -1,12 +1,12 @@
 import React from 'react'
 import { Modal } from 'react-bootstrap'
 import ModalContainer from '../containers/ModalContainer'
+import CheckableItem from './CheckableItem'
 
 const initialState = {
     type: '',
     typeValid: false
 }
-
 
 class AddSequenceItemModal extends React.Component {
     constructor(props) {
@@ -16,8 +16,8 @@ class AddSequenceItemModal extends React.Component {
         this.onAddClicked = this.onAddClicked.bind(this);
     }
 
-    onTypeChanged(e) {
-        this.setState({...this.state, type: e.target.value, typeValid: e.target.value !== 'none'});
+    onTypeChanged(type) {
+        this.setState({...this.state, type, typeValid: type !== ''});
     }
 
     onAddClicked() {
@@ -32,18 +32,11 @@ class AddSequenceItemModal extends React.Component {
               <Modal.Title>Add new Sequence</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form>
-                  <div className="form-group">
-                    <label htmlFor="item-type">Sequence item type</label>
-                    <select className="form-control" id="item-type" onChange={this.onTypeChanged}>
-                        <option value="none">--- Select type</option>
-                        <option value="shots">Exposures sequence</option>
-                        <option value="filter">Filter wheel</option>
-                        <option value="property">Change INDI property</option>
-                        <option value="command">Run command</option>
-                    </select>
-                  </div>
-                </form>
+                <span>Sequence item type</span>
+                    <p><CheckableItem bsSize="large" checked={this.state.type === 'shots'} onChange={(type) => this.onTypeChanged(type)} name="shots">Exposures sequence</CheckableItem></p>
+                    <p><CheckableItem bsSize="large" checked={this.state.type === 'filter'} onChange={(type) => this.onTypeChanged(type)} name="filter">Filter wheel</CheckableItem></p>
+                    <p><CheckableItem bsSize="large" checked={this.state.type === 'property'} onChange={(type) => this.onTypeChanged(type)} name="property">Change INDI property</CheckableItem></p>
+                    <p><CheckableItem bsSize="large" checked={this.state.type === 'command'} onChange={(type) => this.onTypeChanged(type)} name="command">Run command</CheckableItem></p>
             </Modal.Body>
             <Modal.Footer>
                 <ModalContainer.Close modal={this.props.modalName}>Close</ModalContainer.Close>
