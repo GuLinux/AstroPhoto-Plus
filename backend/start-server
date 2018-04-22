@@ -5,5 +5,5 @@ case "$( tr A-Z a-z <<<"$DEV_MODE" )" in
         RELOAD_PARAM=--reload
         ;;
 esac
-    
+export PYTHONPATH="$PWD/indi-lite-tools/:$PYTHONPATH"
 gunicorn --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t 999999 -k gthread -b 0.0.0.0:5000 star-quew:app "$@"
