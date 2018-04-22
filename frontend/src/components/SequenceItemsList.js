@@ -19,7 +19,7 @@ const JobProgressBar = ({status, min, max, progress}) => {
 
 const statusComponent = sequenceItem => {
     let count = 1;
-    let progress = sequenceItem.status == 'finished' ? 1 : 0;
+    let progress = sequenceItem.status === 'finished' ? 1 : 0;
     if(sequenceItem.type === 'shots' && sequenceItem.status !== 'idle') {
         count = sequenceItem.count;
         progress = sequenceItem.progress;

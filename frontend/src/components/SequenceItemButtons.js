@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Modal } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import { Dialog, QuestionDialog } from './Dialogs.js'
 
 const SequenceItemButtons = ({isValid, isChanged, onSave, navigateBack, sequenceId, sequenceItem, showSequenceItemUnsavedChangesModal}) => { 

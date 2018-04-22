@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
 import { sanitizePath } from '../utils'
 import SequenceItemButtonsContainer from '../containers/SequenceItemButtonsContainer'
 
@@ -42,7 +42,7 @@ class ExposureSequenceItem extends React.Component {
     onCountChanged(count) {
         if(isNaN(count))
             return
-        this.updateShootingParams('count', parseInt(count))
+        this.updateShootingParams('count', parseInt(count, 10))
     }
 
     onExposureChanged(exposure) {
@@ -95,7 +95,7 @@ class ExposureSequenceItem extends React.Component {
                 <FormGroup controlId="filename">
                     <ControlLabel>Filename</ControlLabel>
                     <FormControl type="text" value={this.state.sequenceItem.filename} onChange={ e => this.onFilenameChanged(e.target.value) } />
-                    <HelpBlock>Filename template for each shot. This will be formatted using <a href="https://docs.python.org/3.4/library/string.html#format-specification-mini-language" target="_BLANK">python string formatting rules</a>, you can use the following keywords:
+                    <HelpBlock>Filename template for each shot. This will be formatted using <a rel="noopener noreferrer" href="https://docs.python.org/3.4/library/string.html#format-specification-mini-language" target="_BLANK">python string formatting rules</a>, you can use the following keywords:
                         <ul>
                             <li>exposure</li>
                             <li>number</li>

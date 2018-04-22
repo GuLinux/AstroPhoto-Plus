@@ -21,7 +21,7 @@ export const SequenceItems = {
         dispatch({type: 'REQUEST_SAVE_SEQUENCE_ITEM', sequenceItem});
 
         let onError = response => {
-            if(response.status == 400) {
+            if(response.status === 400) {
                 response.json().then(data => dispatch(Actions.Notifications.add('Error saving sequence item', data.error_message, 'warning')) );
                 return true;
             } 

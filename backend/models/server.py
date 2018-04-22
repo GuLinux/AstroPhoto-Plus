@@ -61,7 +61,6 @@ class Server:
 
 
     def __on_message(self, device, message):
-        self.logger.debug('INDI message: device={}, {}'.format(device.name, message))
         self.event_listener.on_indi_message(self.device(indi_device=device), message)
 
     def __on_disconnected(self, error_code):

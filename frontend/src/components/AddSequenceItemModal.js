@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import ModalContainer from '../containers/ModalContainer'
 
 const initialState = {

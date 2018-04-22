@@ -78,6 +78,23 @@ const receivedINDIDevices = (state, devices) => ({
     devices: devices.map(d => d.id),
 })
 
+const indiDeviceConnected = (state, device) => ({
+    ...state,
+    deviceEntities: {...state.deviceEntities, [device]: {...state.deviceEntities[device], lastConnected: Date.now(), configAutoloaded: false } },
+});
+
+const indiConfigAutoloaded = (state, device) => ({
+    ...state,
+    deviceEntities: {...state.deviceEntities, [device]: {...state.deviceEntities[device], configAutoloaded: true } },
+});
+
+
+
+const indiDeviceDisconnected = (state, device) => ({
+    ...state,
+    deviceEntities: {...state.deviceEntities, [device]: {...state.deviceEntities[device], lastDisConnected: Date.now() } },    
+});
+
 
 const indiDeviceRemoved = (state, device) => {
     let devices = state.devices.filter(d => d !== device.id);
@@ -110,6 +127,12 @@ const indiserver = (state = defaultState, action) => {
             return {...state, devices: [...state.devices, action.device.id], deviceEntities: {...state.deviceEntities, [action.device.id]: action.device}}
         case 'INDI_DEVICE_REMOVED':
             return indiDeviceRemoved(state, action.device);
+        case 'INDI_DEVICE_CONNECTED':
+            return indiDeviceConnected(state, action.device);
+        case 'INDI_DEVICE_DISCONNECTED':
+            return indiDeviceDisconnected(state, action.device);
+        case 'INDI_CONFIG_AUTOLOADED':
+            return indiConfigAutoloaded(state, action.device);
         default:
             return state;
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonGroup, Table, Glyphicon, Modal } from 'react-bootstrap';
+import { Button, ButtonGroup, Table, Glyphicon } from 'react-bootstrap';
 import AddSequenceModalContainer from '../containers/AddSequenceModalContainer';
 import ModalContainer from '../containers/ModalContainer'
 import { Dialog, QuestionDialog } from './Dialogs'

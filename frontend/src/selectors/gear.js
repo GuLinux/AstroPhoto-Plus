@@ -1,4 +1,4 @@
-import { getDevices, getDeviceEntities, getProperties, getDevicesProperties} from './indi-properties'
+import { getDeviceEntities, getDevicesProperties} from './indi-properties'
 import { createSelector } from 'reselect'
 
 export const getSequences = state => state.sequences;

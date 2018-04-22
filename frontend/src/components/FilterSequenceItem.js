@@ -9,7 +9,7 @@ class FilterSequenceItem extends React.Component {
     }
 
     filterSelected(number) {
-        this.setState({...this.state, sequenceItem: {...this.state.sequenceItem, filterNumber: parseInt(number)}})
+        this.setState({...this.state, sequenceItem: {...this.state.sequenceItem, filterNumber: parseInt(number, 10)}})
     }
 
     render() {

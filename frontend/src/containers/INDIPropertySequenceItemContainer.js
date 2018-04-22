@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import Actions from '../actions'
 import { getDevicesProperties } from '../selectors/indi-properties'
 import INDIPropertySequenceItem from '../components/INDIPropertySequenceItem'
 

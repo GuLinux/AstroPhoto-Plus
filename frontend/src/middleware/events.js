@@ -1,6 +1,6 @@
 import 'eventsource'
 import { normalize } from 'normalizr'
-import { sequenceSchema, sequenceListSchema, sequenceItemSchema } from './schemas'
+import { sequenceSchema } from './schemas'
 import Actions from '../actions';
 declare var EventSourcePolyfill: any;
 

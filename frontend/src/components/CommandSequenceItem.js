@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
 import SequenceItemButtonsContainer from '../containers/SequenceItemButtonsContainer'
 
 class CommandSequenceItem extends React.Component {

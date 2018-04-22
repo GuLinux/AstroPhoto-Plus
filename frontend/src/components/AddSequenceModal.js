@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Button, HelpBlock } from 'react-bootstrap'
+import { Modal, HelpBlock } from 'react-bootstrap'
 import { sanitizePath } from '../utils'
 import ModalContainer from '../containers/ModalContainer'
 

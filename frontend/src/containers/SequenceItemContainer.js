@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import SequenceItem from '../components/SequenceItem'
-import Actions from '../actions'
 
 
 const mapStateToProps = (state) => {

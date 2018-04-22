@@ -89,6 +89,13 @@ export const deleteSequenceItemAPI = (dispatch, sequenceId, sequenceItemId, onSu
 
 
 
+export const autoloadConfigurationAPI = (dispatch, device) => fetchJSON(dispatch, `/api/server/devices/${device}/properties/CONFIG_PROCESS`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ CONFIG_LOAD: true }),
+    }, json => {});
 
 export const getINDIServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/status', {}, onSuccess);
 

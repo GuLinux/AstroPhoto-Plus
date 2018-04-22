@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Tab, Col, Nav, NavItem } from 'react-bootstrap';
 import INDIDeviceGroupContainer from '../containers/INDIDeviceGroupContainer';
 import INDIMessagesPanel from './INDIMessagesPanel';
+import INDIAutoloadConfiguration from '../containers/INDIAutoloadConfiguration';
 
 const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendingProperties, commitPendingProperties, navigateToDeviceGroup, indiGroupTab, messages}) => (
     <Tab.Container id="device" activeKey={indiGroupTab} onSelect={g => navigateToDeviceGroup(device, g)} >
@@ -25,6 +26,7 @@ const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendi
             <Row>
                 <Col xs={12}><INDIMessagesPanel messages={messages} /></Col>
             </Row>
+            <INDIAutoloadConfiguration device={device} />
         </div>
     </Tab.Container>
 )
