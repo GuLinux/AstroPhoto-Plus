@@ -4,6 +4,8 @@ from .exposure_sequence_item import ExposureSequenceItem
 from .filter_wheel_sequence_item import FilterWheelSequenceItem
 from .property_sequence_item import PropertySequenceItem
 from .command_sequence_item import CommandSequenceItem
+import time
+
 
 class SequenceItem:
     def __init__(self, data):
@@ -44,12 +46,15 @@ class SequenceItem:
 
     def run(self, server, devices, root_path, logger, on_update):
         self.status = 'running'
+        self.started = time.time()
         on_update()
         try:
             self.job.run(server, devices, root_path, logger, on_update)
             self.status = 'finished'
+            self.ended = time.time()
             on_update()
         except RuntimeError as e: # TODO: specific exception?
             self.status = 'error'
+            self.error_message = str(e)
             raise e
 
