@@ -8,20 +8,16 @@ const INDIDevicePage = ({device, groups, addPendingProperties, commitPendingProp
     <Tab.Container id="device" activeKey={indiGroupTab} onSelect={g => navigateToDeviceGroup(device, g)} >
         <div>
             <Row>
-                <Col xs={2}>
-                    <Nav bsStyle="pills" stacked>
-                        { groups.map( group  => (<NavItem key={group} eventKey={group}>{group}</NavItem>) ) }
-                    </Nav>
-                </Col>
-                <Col xs={10}>
-                    <Tab.Content animation>
-                    { groups.map( group => (
-                        <Tab.Pane key={group} eventKey={group} title={group}>
-                            <INDIDeviceGroupContainer device={device} group={group} />
-                        </Tab.Pane>
-                    ))}
-                    </Tab.Content>
-                </Col>
+                <Nav bsStyle="pills" >
+                    { groups.map( group  => (<NavItem key={group} eventKey={group}>{group}</NavItem>) ) }
+                </Nav>
+                <Tab.Content animation>
+                { groups.map( group => (
+                    <Tab.Pane key={group} eventKey={group} title={group}>
+                        <INDIDeviceGroupContainer device={device} group={group} />
+                    </Tab.Pane>
+                ))}
+                </Tab.Content>
             </Row>
             <Row>
                 <Col xs={12}><INDIMessagesPanel messages={messages} /></Col>

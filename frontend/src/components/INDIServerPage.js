@@ -10,6 +10,7 @@ const INDIServerPage = ({devices, indiDeviceTab, navigateToDevice}) => (
             id="INDIServerTabs"
             activeKey={indiDeviceTab ? indiDeviceTab : 'server_status'}
             onSelect={navigateToDevice}
+            bsStyle="tabs"
         >
             <Tab eventKey="server_status" title="Server status">
                 <INDIServerDetailsContainer />
