@@ -1,8 +1,8 @@
 import json
-import gevent
-from gevent.queue import Queue
+from queue import Queue
 import uuid
 import time
+import threading
 
 
 class SSEMessage:
@@ -44,8 +44,8 @@ class SSE:
         self.logger = logger
 
     def publish(self, data, type):
-        gevent.spawn(self.__publish_to_clients, data, type)
-        gevent.sleep(0)
+        publish_thread = threading.Thread(target=self.__publish_to_clients, args=(data, type))
+        publish_thread.start()
 
     def __publish_to_clients(self, data, type):
         for client in self.clients:
