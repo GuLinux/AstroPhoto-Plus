@@ -1,6 +1,6 @@
 import React from 'react';
-import { FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
-import { sanitizePath } from '../utils'
+import { FormGroup, FormControl, ControlLabel, HelpBlock, InputGroup } from 'react-bootstrap';
+import { sanitizePath, secs2time } from '../utils'
 import SequenceItemButtonsContainer from '../containers/SequenceItemButtonsContainer'
 
 class ExposureSequenceItem extends React.Component {
@@ -88,6 +88,12 @@ class ExposureSequenceItem extends React.Component {
         return this.state.validation.filename &&
                 this.state.validation.exposure
     }
+    
+    renderTime(time) {
+        if(!time || time === '')
+            return ''
+        return secs2time(time);
+    }
 
     render() {
         return (
@@ -119,12 +125,18 @@ class ExposureSequenceItem extends React.Component {
                 </FormGroup>
                 <FormGroup controlId="exposure">
                     <ControlLabel>Exposure</ControlLabel>
-                    <FormControl type="number" value={this.state.sequenceItem.exposure} min={0} onChange={e => this.onExposureChanged(e.target.value)} />
+                    <InputGroup>
+                        <FormControl type="number" value={this.state.sequenceItem.exposure} min={0} onChange={e => this.onExposureChanged(e.target.value)} />
+                        <InputGroup.Addon>{this.renderTime(this.state.sequenceItem.exposure)}</InputGroup.Addon>
+                    </InputGroup>
                     <HelpBlock>Exposure for each shot in seconds</HelpBlock>
                 </FormGroup>
                 <FormGroup controlId="total-exposure">
                     <ControlLabel>Total Exposure</ControlLabel>
-                    <FormControl type="number" value={this.state.sequenceItem.globalExposure} min={0} onChange={e => this.onGlobalExposureChanged(e.target.value)} />
+                    <InputGroup>
+                        <FormControl type="number" value={this.state.sequenceItem.globalExposure} min={0} onChange={e => this.onGlobalExposureChanged(e.target.value)} />
+                        <InputGroup.Addon>{this.renderTime(this.state.sequenceItem.globalExposure)}</InputGroup.Addon>
+                    </InputGroup>
                     <HelpBlock>Total exposure time for this sequence</HelpBlock>
                 </FormGroup>
                 <SequenceItemButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceItem={this.state.sequenceItem} />
