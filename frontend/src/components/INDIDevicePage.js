@@ -4,7 +4,7 @@ import INDIDeviceGroupContainer from '../containers/INDIDeviceGroupContainer';
 import INDIMessagesPanel from './INDIMessagesPanel';
 import INDIAutoloadConfiguration from '../containers/INDIAutoloadConfiguration';
 
-const INDIDevicePage = ({device, groups, properties, pendingProperties, addPendingProperties, commitPendingProperties, navigateToDeviceGroup, indiGroupTab, messages}) => (
+const INDIDevicePage = ({device, groups, addPendingProperties, commitPendingProperties, navigateToDeviceGroup, indiGroupTab, messages}) => (
     <Tab.Container id="device" activeKey={indiGroupTab} onSelect={g => navigateToDeviceGroup(device, g)} >
         <div>
             <Row>
