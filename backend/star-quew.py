@@ -11,17 +11,48 @@ default_settings = {}
 
 app.logger.info('Using INDI server at %s:%d', controller.indi_server.host, controller.indi_server.port)
 app.config['SEQUENCES_PATH'] = os.environ.get('STARQUEW_SEQUENCES_PATH', os.path.join(os.environ['HOME'], 'StarQuew-Data'))
+app.config['INDI_PREFIX'] = os.environ.get('INDI_PREFIX', '/usr')
 
 gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers = gunicorn_logger.handlers
 
 app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG'))
 
-controller.load_sequences()
+controller.init()
 
 @app.route('/api/events')
 def events():
     return Response(controller.sse.subscribe().feed(), mimetype='text/event-stream')
+
+# INDI Server management
+
+@app.route('/api/indi_service/status', methods=['GET'])
+@json_api
+def get_indi_service_status():
+    return controller.indi_service.status()
+
+
+@app.route('/api/indi_service', methods=['GET'])
+@json_api
+def get_indi_service():
+    return controller.indi_service.to_map()
+
+
+@app.route('/api/indi_service/start', methods=['POST'])
+@json_input
+@json_api
+def start_indi_service(json):
+    controller.indi_service.start(json['devices'])
+    return { 'indi_service': 'starting' }
+
+
+@app.route('/api/indi_service/stop', methods=['POST'])
+@json_input
+@json_api
+def stop_indi_service(json):
+    controller.indi_service.stop()
+    return { 'indi_service': 'stopping' }
+
 
 # INDI Methods
 

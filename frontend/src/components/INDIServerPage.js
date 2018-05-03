@@ -2,6 +2,7 @@ import React from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import INDIServerDetailsContainer from '../containers/INDIServerDetailsContainer'
 import INDIDeviceContainer from '../containers/INDIDeviceContainer'
+import INDIServiceContainer from '../containers/INDIServiceContainer'
 
 
 const INDIServerPage = ({devices, indiDeviceTab, navigateToDevice}) => (
@@ -13,7 +14,10 @@ const INDIServerPage = ({devices, indiDeviceTab, navigateToDevice}) => (
             bsStyle="tabs"
         >
             <Tab eventKey="server_status" title="Server status">
-                <INDIServerDetailsContainer />
+                <div>
+                    <INDIServiceContainer />
+                    <INDIServerDetailsContainer />
+                </div>
             </Tab>
             { devices.map( device => (
                 <Tab key={device.id} eventKey={device.id} title={device.name}>

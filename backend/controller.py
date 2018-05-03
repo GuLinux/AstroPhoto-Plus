@@ -1,6 +1,6 @@
 from functools import wraps
 import os
-from models import Server, Device, Property, SequencesList
+from models import Server, Device, Property, SequencesList, INDIService
 from server_sent_events import SSE
 from app import app
 import time
@@ -49,13 +49,16 @@ class Controller:
         self.sequences = None
         self.ping_thread = threading.Thread(target=self.__ping_clients)
         self.ping_thread.start()
+        self.indi_service = None
+
 
 
     def notification(self, event_type, event_name, payload, is_error, error_code=None, error_message=None):
         self.sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)
 
-    def load_sequences(self):
+    def init(self):
         self.sequences = SequencesList(os.path.join(app.config['SEQUENCES_PATH'], 'sequences'))
+        self.indi_service = INDIService(app.config['INDI_PREFIX'], app.config['SEQUENCES_PATH'])
 
     @property
     def root_path(self):

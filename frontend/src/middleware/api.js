@@ -115,3 +115,5 @@ export const setINDIValuesAPI = (dispatch, device, property, pendingValues, onSu
             'Content-Type': 'application/json'
         }
     }, onSuccess);
+
+export const getINDIServiceAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/indi_service', {}, onSuccess);
