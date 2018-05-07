@@ -17,14 +17,14 @@ const INDIServerDetailsPage = ({serverState, setServerConnection}) => {
     return (
         <div className="indi-server-details-container">
             <div className="row">
-                <div className="col-xs-2 col-xs-offset-2">Address</div>
+                <div className="col-xs-2">Address</div>
                 <div className="col-xs-6">{serverState.host}:{serverState.port}</div>
             </div>
             <hr />
             <div className="row">
-                <div className="col-xs-2 col-xs-offset-2">Connection</div>
-                <div className="col-xs-1"><span className={'label label-' + connectionView.stateLabelClass}>{connectionView.stateLabel}</span></div>
-                <div className="col-xs-1"><Button bsSize="xsmall" bsStyle={connectionView.connectionButtonClass} onClick={connectionAction}>{connectionView.connectionButtonLabel}</Button></div>
+                <div className="col-xs-2">Connection</div>
+                <div className="col-xs-2"><span className={'label label-' + connectionView.stateLabelClass}>{connectionView.stateLabel}</span></div>
+                <div className="col-xs-2"><Button bsSize="xsmall" bsStyle={connectionView.connectionButtonClass} onClick={connectionAction}>{connectionView.connectionButtonLabel}</Button></div>
             </div>
         </div>
 )}
