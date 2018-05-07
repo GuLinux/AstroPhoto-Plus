@@ -25,7 +25,7 @@ class INDIDriversGroup extends React.Component {
 
     render() {
         return (
-            <Panel expanded={this.state.expanded} onToggle={ () => this.toggle()} bsStyle={this.hasSelectedDrivers() ? 'primary' : '' }>
+            <Panel expanded={this.state.expanded} onToggle={ () => this.toggle()} bsStyle={this.hasSelectedDrivers() ? 'primary' : 'default' }>
                 <Panel.Heading>
                     <Panel.Title toggle className="driverGroupTitle">{this.props.group.name}</Panel.Title>
                 </Panel.Heading>

@@ -10,6 +10,7 @@ class INDIService:
         self.service = Service('indiserver', os.path.join(data_path, 'logs', 'indi_server'))
         self.groups = {}
         self.drivers = {}
+        self.devices_running = []
         if self.server_exists:
             self.__parse_drivers()
 
@@ -30,6 +31,7 @@ class INDIService:
         return {
             'is_running': self.service.is_running(),
             'is_error': self.service.is_error(),
+            'devices_enabled': self.devices_running,
         }
 
     def start(self, devices, on_exit=None):
@@ -42,6 +44,7 @@ class INDIService:
 
         driver_binaries = [self.__binpath(self.drivers[device]['binary']) for device in devices]
         self.service.start(self.indiserver_path, driver_binaries)
+        self.devices_running = devices
 
     def stop(*args, **kwargs):
         self.service.stop(*args, **kwargs)

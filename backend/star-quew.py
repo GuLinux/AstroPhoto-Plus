@@ -47,9 +47,8 @@ def start_indi_service(json):
 
 
 @app.route('/api/indi_service/stop', methods=['POST'])
-@json_input
 @json_api
-def stop_indi_service(json):
+def stop_indi_service():
     controller.indi_service.stop()
     return { 'indi_service': 'stopping' }
 

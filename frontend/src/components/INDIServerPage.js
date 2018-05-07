@@ -2,6 +2,7 @@ import React from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import INDIServerDetailsContainer from '../containers/INDIServerDetailsContainer'
 import INDIDeviceContainer from '../containers/INDIDeviceContainer'
+import INDIServiceContainer from '../containers/INDIServiceContainer'
 import INDIServiceDevicesContainer from '../containers/INDIServiceDevicesContainer'
 
 
@@ -24,6 +25,9 @@ const INDISettingsPage = ({hasLocalServer}) => {
                 <INDIServiceDevicesContainer/>
             </div>
             <div className="col-xs-6">
+                <h5>Server manager</h5>
+                <INDIServiceContainer />
+
                 <h5>Server connection</h5>
                 <INDIServerDetailsContainer />
             </div>

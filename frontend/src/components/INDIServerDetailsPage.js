@@ -15,7 +15,7 @@ const INDIServerDetailsPage = ({serverState, setServerConnection}) => {
     let connectionView = getConnectionView(serverState.connected);
     let connectionAction = () => setServerConnection(! serverState.connected);
     return (
-        <div className="indi-server-details-container">
+        <div className="indi-server-details-container container">
             <div className="row">
                 <div className="col-xs-2">Address</div>
                 <div className="col-xs-6">{serverState.host}:{serverState.port}</div>

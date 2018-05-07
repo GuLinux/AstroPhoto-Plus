@@ -1,6 +1,7 @@
 import React from 'react'
+import { Button } from 'react-bootstrap'
 
-const INDIServicePage = ({serverFound, serverRunning, onServerStopStartClick}) => {
+const INDIServicePage = ({serverFound, serverRunning, onServerStopStart}) => {
     if(! serverFound)
         return null;
     const stateParams = {
@@ -15,9 +16,10 @@ const INDIServicePage = ({serverFound, serverRunning, onServerStopStartClick}) =
             <div className="row">
                 <div className="col-xs-2">Status</div>
                 <div className="col-xs-2"><span className={'label label-' + stateParams.labelClass}>{stateParams.label}</span></div>
-                <div className="col-xs-2"><Button bsSize="xsmall" bsStyle={stateParams.buttonClass} onClick={onServerStopStartClick}>{stateParams.buttonLabel}</Button></div>
+                <div className="col-xs-2"><Button bsSize="xsmall" bsStyle={stateParams.buttonClass} onClick={() => onServerStopStart()}>{stateParams.buttonLabel}</Button></div>
             </div>
         </div>
     )
 }
 
+export default INDIServicePage

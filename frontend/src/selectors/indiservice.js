@@ -15,3 +15,5 @@ export const getINDIServiceGroups = createSelector([getINDIServiceGroupsInputSel
         return {...acc, [groupName]: {...groups[groupName], selectedDrivers: groups[groupName].drivers.filter(d => selectedDrivers.includes(d)) } }
     }, {});
 }); 
+
+export const getINDIEnabledDrivers = createSelector([getINDIServiceDrivers], (drivers) => Object.keys(drivers).filter(d => drivers[d].selected))
