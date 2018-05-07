@@ -13,7 +13,11 @@ export const INDIService = {
         }
     },
 
-
+    toggleDriver: (name, selected) => ({
+        type: 'SELECTED_INDI_DRIVER',
+        driver: name,
+        selected
+    })
 }
 
 export default INDIService;
