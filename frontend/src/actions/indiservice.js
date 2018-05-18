@@ -1,4 +1,5 @@
 import { getINDIServiceAPI, startINDIServiceAPI, stopINDIServiceAPI } from '../middleware/api'
+import Actions from './index'
 
 export const INDIService = {
     receivedService: (data) => ({
@@ -13,17 +14,41 @@ export const INDIService = {
         }
     },
 
+    serviceStarted: (data) => ({
+        type: 'INDI_SERVICE_STARTED',
+        ...data
+    }),
+
+    serviceExited: (data) => ({
+        type: 'INDI_SERVICE_EXITED',
+        ...data
+    }),
+
     startService: (devices) => {
         return dispatch => {
             dispatch({type: 'FETCH_START_INDI_SERVICE'});
-            return startINDIServiceAPI(dispatch, devices, data => console.log(data));
+            return startINDIServiceAPI(dispatch, devices, data => {}, error => {
+                if(error.status === 400) {
+                    error.json().then(t => dispatch(Actions.Notifications.add('INDI Service', `Error starting INDI Service: ${t.error_message}`, 'error')))
+                    dispatch({ type: 'INDI_SERVICE_ERROR_STARTING'})
+                    return true;
+                }
+                return false
+            });
         }
     },
 
     stopService: () => {
         return dispatch => {
             dispatch({type: 'FETCH_STOP_INDI_SERVICE'});
-            return stopINDIServiceAPI(dispatch, data => console.log(data));
+            return stopINDIServiceAPI(dispatch, data => {}, error => {
+                if(error.status === 400) {
+                    error.json().then(t => dispatch(Actions.Notifications.add('INDI Service', `Error stopping INDI Service: ${t.error_message}`, 'error')))
+                    dispatch({ type: 'INDI_SERVICE_ERROR_STOPPING'})
+                    return true;
+                }
+                return false
+            });
         }
     },
 

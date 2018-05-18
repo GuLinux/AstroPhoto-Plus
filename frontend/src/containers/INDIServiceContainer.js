@@ -7,6 +7,7 @@ const mapStateToProps = (state, ownProps) => ({
     serverFound: state.indiservice.server_found,
     serverRunning: state.indiservice.server_running,
     drivers: getINDIEnabledDrivers(state),
+    startStopPending: state.indiservice.startStopPending,
 })
 
 const mapDispatchToProps = dispatch => ({

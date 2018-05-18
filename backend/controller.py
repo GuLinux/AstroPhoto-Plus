@@ -39,7 +39,7 @@ class EventListener:
         self.sse.publish({'event': 'sequence_error', 'payload': {'sequence': sequence.to_map(), 'error_message': message}, 'is_error': True}, type='sequences')
 
     def on_indi_service_started(self, devices, service):
-        self.sse.publish({'event': 'indi_service_started', 'payload': { 'devices': devices, 'status': service.status() }, 'is_error': False}, type='indi_service')
+        self.sse.publish({'event': 'started', 'payload': { 'devices': devices, 'status': service.status() }, 'is_error': False}, type='indi_service')
 
     def on_indi_service_exit(self, service):
         service_stdout, service_stderr = None, None
@@ -48,7 +48,7 @@ class EventListener:
         with open(service.stderr_path, 'r') as f:
             service_stderr = f.read()
 
-        self.sse.publish({'event': 'indi_service_exited', 'payload': { 'exit_code': service.exit_code(), 'is_error': service.is_error(), 'stdout': service_stdout, 'stderr': service_stderr }, 'is_error': False}, type='indi_service')
+        self.sse.publish({'event': 'exited', 'payload': { 'exit_code': service.exit_code(), 'stdout': service_stdout, 'stderr': service_stderr }, 'is_error': service.is_error()}, type='indi_service')
 
 
 class Controller:

@@ -117,13 +117,13 @@ export const setINDIValuesAPI = (dispatch, device, property, pendingValues, onSu
     }, onSuccess);
 
 export const getINDIServiceAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/indi_service', {}, onSuccess);
-export const startINDIServiceAPI = (dispatch, devices, onSuccess) => fetchJSON(dispatch, '/api/indi_service/start', {
+export const startINDIServiceAPI = (dispatch, devices, onSuccess, onError) => fetchJSON(dispatch, '/api/indi_service/start', {
         method: 'POST',
         body: JSON.stringify({ devices }),
         headers: {
             'Content-Type': 'application/json'
         }
-    }, onSuccess);
-export const stopINDIServiceAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/indi_service/stop', {
+    }, onSuccess, onError);
+export const stopINDIServiceAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/indi_service/stop', {
         method: 'POST',
-    }, onSuccess);
+    }, onSuccess, onError);
