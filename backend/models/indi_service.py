@@ -3,10 +3,12 @@ from xml.etree import ElementTree
 from .service import Service
 
 class INDIService:
-    def __init__(self, indi_prefix, data_path):
+    def __init__(self, indi_prefix, data_path, on_started=None, on_exit=None):
         self.indi_prefix = indi_prefix
         self.indiserver_path = self.__binpath('indiserver')
         self.indi_drivers_path = os.path.join(self.indi_prefix, 'share', 'indi')
+        self.on_started = on_started
+        self.on_exit = on_exit
         self.service = Service('indiserver', os.path.join(data_path, 'logs', 'indi_server'))
         self.groups = {}
         self.drivers = {}
@@ -34,7 +36,7 @@ class INDIService:
             'devices_enabled': self.devices_running,
         }
 
-    def start(self, devices, on_exit=None):
+    def start(self, devices):
         if not self.server_exists:
             raise RuntimeError('INDI Server not found in {}'.format(self.indi_prefix))
         if not devices:
@@ -43,10 +45,10 @@ class INDIService:
             raise RuntimeError('Service is already running')
 
         driver_binaries = [self.__binpath(self.drivers[device]['binary']) for device in devices]
-        self.service.start(self.indiserver_path, driver_binaries)
+        self.service.start(self.indiserver_path, driver_binaries, on_started=lambda service: self.on_started(devices, service), on_exit=self.on_exit)
         self.devices_running = devices
 
-    def stop(*args, **kwargs):
+    def stop(self, *args, **kwargs):
         self.service.stop(*args, **kwargs)
 
     def __parse_drivers(self):

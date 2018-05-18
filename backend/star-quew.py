@@ -42,8 +42,11 @@ def get_indi_service():
 @json_input
 @json_api
 def start_indi_service(json):
-    controller.indi_service.start(json['devices'])
-    return { 'indi_service': 'starting' }
+    try:
+        controller.indi_service.start(json['devices'])
+        return { 'indi_service': 'starting' }
+    except RuntimeError as e:
+        raise BadRequestError(str(e))
 
 
 @app.route('/api/indi_service/stop', methods=['POST'])

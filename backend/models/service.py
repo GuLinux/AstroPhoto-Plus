@@ -32,7 +32,7 @@ class Service:
         exit_code = self.exit_code()
         return exit_code != None and exit_code != 0
 
-    def start(self, command, arguments, on_exit=None):
+    def start(self, command, arguments, on_started=None, on_exit=None):
         if self.is_running():
             raise RuntimeError('Process is already running.')
         args = [command]
@@ -41,6 +41,8 @@ class Service:
             with open(self.stdout_path, 'a') as stdout_fd:
                 with open(self.stderr_path, 'a') as stderr_fd:
                     self.process = subprocess.Popen(args, stdout=stdout_fd, stderr=stderr_fd)
+                    if on_started:
+                        on_started(self)
                     self.process.wait()
                     if on_exit:
                         on_exit(self)
