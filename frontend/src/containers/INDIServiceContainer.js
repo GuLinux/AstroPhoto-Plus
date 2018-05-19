@@ -8,11 +8,13 @@ const mapStateToProps = (state, ownProps) => ({
     serverRunning: state.indiservice.server_running,
     drivers: getINDIEnabledDrivers(state),
     startStopPending: state.indiservice.startStopPending,
+    lastError: state.indiservice.lastError,
 })
 
 const mapDispatchToProps = dispatch => ({
     startService: (devices) => dispatch(Actions.INDIService.startService(devices)),
     stopService: () => dispatch(Actions.INDIService.stopService()),
+    dismissError: () => dispatch(Actions.INDIService.dismissError()),
 })
 
 const INDIServiceContainer = connect(

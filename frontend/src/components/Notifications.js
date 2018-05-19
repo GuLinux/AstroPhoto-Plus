@@ -30,7 +30,7 @@ const ModalNotification = ({notification, onDismiss}) => (
     <Modal.Body>{notification.text}</Modal.Body>
 
     <Modal.Footer>
-      <Button>Close</Button>
+      <Button bsStyle="primary" onClick={onDismiss}>Close</Button>
     </Modal.Footer>
   </Modal.Dialog>
 )
@@ -41,7 +41,7 @@ const Notificatons = ({notifications, onClosed}) => (
         {notifications.map( (notification, index) => {
             const NotificationTag = notification.isModal ? ModalNotification : AlertNotification
             setAutoclose(notification, onClosed);
-            return <NotificationTag notification={notification} onDismiss={() => onClosed(notification)} />
+            return <NotificationTag key={index} notification={notification} onDismiss={() => onClosed(notification)} />
         }
         )}
     </div>

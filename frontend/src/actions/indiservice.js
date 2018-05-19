@@ -24,6 +24,8 @@ export const INDIService = {
         ...data
     }),
 
+    dismissError: () => ({ type: 'INDI_SERVICE_DISMISS_ERROR' }),
+
     startService: (devices) => {
         return dispatch => {
             dispatch({type: 'FETCH_START_INDI_SERVICE'});

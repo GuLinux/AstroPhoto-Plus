@@ -70,7 +70,7 @@ def connect_server():
     controller.indi_server.connect()
     is_error = not timeout(5)(controller.indi_server.is_connected)()
     return notify('indi_server', 'indi_server_connect', controller.indi_server.to_map(), is_error)
- 
+
 @app.route('/api/server/disconnect', methods=['PUT'])
 @json_api
 @indi_connected
@@ -110,14 +110,14 @@ def update_indi_property(device, property_name, json):
 @indi_connected
 def get_cameras():
     return [x.to_map() for x in controller.indi_server.cameras()]
-  
+
 
 @app.route('/api/filter_wheels', methods=['GET'])
 @json_api
 @indi_connected
 def get_filter_wheels():
     return [x.to_map() for x in controller.indi_server.filter_wheels()]
-  
+
 # Sequences
 
 @app.route('/api/sequences', methods=['GET'])
@@ -219,7 +219,7 @@ def duplicate_sequence_item(sequence_id, sequence_item_id):
 
 
 
-    
+
 @app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>', methods=['DELETE'])
 @json_api
 def delete_sequence_item(sequence_id, sequence_item_id):
@@ -229,4 +229,3 @@ def delete_sequence_item(sequence_id, sequence_item_id):
         sequence_item.update({'status': 'deleted'})
         sequence.sequence_items = [x for x in sequence.sequence_items if x.id != sequence_item_id]
         return sequence_item
-

@@ -6,6 +6,7 @@ const defaultState = {
     server_error: false,
     startStopPending: false,
     selectedDrivers: [],
+    lastError: {}
 };
 
 const receivedFullState = (state, {drivers, groups, is_error, is_running, server_found}) => ({
@@ -30,10 +31,15 @@ const indiServiceStarted = (state, devices) => ({
     startStopPending: false,
 })
 
-const indiServiceExited = (state) => ({
+const indiServiceExited = (state, isError, payload) => ({
     ...state,
     startStopPending: false,
     server_running: false,
+    lastError: isError ? {
+        exitCode: payload.exit_code,
+        stdout: payload.stdout,
+        stderr: payload.stderr,
+    } : {}
 })
 
 const indiservice = (state = defaultState, action) => {
@@ -51,7 +57,9 @@ const indiservice = (state = defaultState, action) => {
         case 'INDI_SERVICE_STARTED':
             return indiServiceStarted(state, action.payload.devices)
         case 'INDI_SERVICE_EXITED':
-            return indiServiceExited(state)
+            return indiServiceExited(state, action.is_error, action.payload)
+        case 'INDI_SERVICE_DISMISS_ERROR':
+            return {...state, lastError: {}}
         default:
             return state
     }

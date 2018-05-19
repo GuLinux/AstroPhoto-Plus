@@ -72,10 +72,6 @@ const indiserviceEvents = (event, dispatch) => {
             break;
         case 'exited':
             dispatch(Actions.INDIService.serviceExited(eventObject));
-            if(eventObject.is_error) {
-                let message = 'INDI Service stopped with an error:<pre>\nstdout:\n' + eventObject.payload.stdout + '\n\nstderr:\n' + eventObject.payload.stderr + '</pre>';
-                dispatch(Actions.Notifications.add('INDI Service', message, 'error', null, true))
-            }
             break;
         default:
             logEvent(event)
@@ -106,4 +102,4 @@ const listenToEvents = (dispatch) => {
     es.onerror = e => dispatch(Actions.serverError('event_source', 'event', e));
 }
 
-export default listenToEvents; 
+export default listenToEvents;
