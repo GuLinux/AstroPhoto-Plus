@@ -1,6 +1,6 @@
 from functools import wraps
 import os
-from models import Server, Device, Property, SequencesList, INDIService
+from models import Server, Device, Property, SavedList, INDIService, Sequence, INDIProfile
 from server_sent_events import SSE
 from app import app
 import time
@@ -58,6 +58,7 @@ class Controller:
         self.indi_server = Server(app.logger, self.event_listener, os.environ.get('INDI_SERVER_HOST', 'localhost'))
         self.sequences_runner = SequencesRunner(app.logger, self)
         self.sequences = None
+        self.indi_profiles = None
         self.ping_thread = threading.Thread(target=self.__ping_clients)
         self.ping_thread.start()
         self.indi_service = None
@@ -68,7 +69,8 @@ class Controller:
         self.sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)
 
     def init(self):
-        self.sequences = SequencesList(os.path.join(app.config['SEQUENCES_PATH'], 'sequences'))
+        self.sequences = SavedList(os.path.join(app.config['SEQUENCES_PATH'], 'sequences'), Sequence)
+        self.indi_profiles = SavedList(os.path.join(app.config['SEQUENCES_PATH'], 'profiles'), INDIProfile)
         self.indi_service = INDIService(app.config['INDI_PREFIX'], app.config['SEQUENCES_PATH'], on_started=self.event_listener.on_indi_service_started, on_exit=self.event_listener.on_indi_service_exit)
 
     @property

@@ -1,4 +1,4 @@
-import uuid
+from .model import random_id
 from .exceptions import NotFoundError
 from .sequence_item import SequenceItem
 import os
@@ -9,7 +9,7 @@ class Sequence:
         self.upload_path = upload_path
         self.camera = camera
         self.filter_wheel = filter_wheel
-        self.id = id if id else uuid.uuid4().hex
+        self.id = random_id(id)
         self.sequence_items = sequence_items if sequence_items else []
         self.status = status if status else 'idle'
 
