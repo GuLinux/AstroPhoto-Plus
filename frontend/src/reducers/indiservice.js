@@ -44,6 +44,15 @@ const indiServiceExited = (state, isError, payload) => ({
     } : {}
 })
 
+const selectedProfile = (state, id) => {
+    let profile = state.profiles.find(profile => profile.id === id);
+    return {
+        ...state,
+        selectedProfile: id,
+        selectedDrivers: profile ? profile.devices : state.selectedDrivers,
+    }
+}
+
 const indiservice = (state = defaultState, action) => {
     switch(action.type) {
         case 'RECEIVED_INDI_SERVICE':
@@ -65,7 +74,8 @@ const indiservice = (state = defaultState, action) => {
         case 'RECEIVED_INDI_PROFILES':
             return {...state, profiles: action.data}
         case 'SELECTED_INDI_PROFILE':
-            return {...state, selectedProfile: action.id}
+            return selectedProfile(state, action.id)
+
         default:
             return state
     }
