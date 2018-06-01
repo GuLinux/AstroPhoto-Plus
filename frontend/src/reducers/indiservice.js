@@ -6,6 +6,8 @@ const defaultState = {
     server_error: false,
     startStopPending: false,
     selectedDrivers: [],
+    profiles: [],
+    selectedProfile: null,
     lastError: {}
 };
 
@@ -60,6 +62,10 @@ const indiservice = (state = defaultState, action) => {
             return indiServiceExited(state, action.is_error, action.payload)
         case 'INDI_SERVICE_DISMISS_ERROR':
             return {...state, lastError: {}}
+        case 'RECEIVED_INDI_PROFILES':
+            return {...state, profiles: action.data}
+        case 'SELECTED_INDI_PROFILE':
+            return {...state, selectedProfile: action.id}
         default:
             return state
     }

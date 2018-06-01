@@ -4,6 +4,7 @@ import INDIServerDetailsContainer from '../containers/INDIServerDetailsContainer
 import INDIDeviceContainer from '../containers/INDIDeviceContainer'
 import INDIServiceContainer from '../containers/INDIServiceContainer'
 import INDIServiceDevicesContainer from '../containers/INDIServiceDevicesContainer'
+import INDIServiceProfilesContainer from '../containers/INDIServiceProfilesContainer'
 
 
 const SETTINGS_PAGE = 'server_status'
@@ -21,8 +22,9 @@ const INDISettingsPage = ({hasLocalServer}) => {
     return (
         <div className="container">
             <div className="col-xs-6">
+                <INDIServiceProfilesContainer />
                 <h5>Available devices</h5>
-                <INDIServiceDevicesContainer/>
+                <INDIServiceDevicesContainer />
             </div>
             <div className="col-xs-6">
                 <h5>Server manager</h5>

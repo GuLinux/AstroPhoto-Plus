@@ -127,3 +127,17 @@ export const startINDIServiceAPI = (dispatch, devices, onSuccess, onError) => fe
 export const stopINDIServiceAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/indi_service/stop', {
         method: 'POST',
     }, onSuccess, onError);
+
+
+export const fetchINDIProfilesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/indi_profiles', {}, json => onSuccess(json));
+export const addINDIProfileAPI = (dispatch, data, onSuccess) => fetchJSON(dispatch, '/api/indi_profiles', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+        'Content-Type': 'application/json',
+    },
+}, json => onSuccess(json));
+export const removeINDIProfileAPI = (dispatch, id, onSuccess) => fetchJSON(dispatch, '/api/indi_profiles/' + id, {
+    method: 'DELETE',
+}, json => onSuccess(json));
+

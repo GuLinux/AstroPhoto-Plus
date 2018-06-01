@@ -29,6 +29,7 @@ let store = createStore(
 store.dispatch(Actions.Sequences.fetch())
 store.dispatch(Actions.INDIServer.fetchServerState(true))
 store.dispatch(Actions.INDIService.fetchService())
+store.dispatch(Actions.INDIService.fetchProfiles())
 listenToEvents(store.dispatch)
 
 render(
