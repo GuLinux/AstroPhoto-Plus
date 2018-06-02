@@ -1,7 +1,7 @@
 from flask import jsonify, Response
 from api_decorators import *
 from api_utils import *
-from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device
+from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device, INDIProfile
 import os
 from controller import controller
 from app import app
@@ -42,17 +42,65 @@ def get_indi_service():
 @json_input
 @json_api
 def start_indi_service(json):
-    controller.indi_service.start(json['devices'])
-    return { 'indi_service': 'starting' }
+    try:
+        controller.indi_service.start(json['devices'])
+        return { 'indi_service': 'starting' }
+    except RuntimeError as e:
+        raise BadRequestError(str(e))
 
 
 @app.route('/api/indi_service/stop', methods=['POST'])
-@json_input
 @json_api
-def stop_indi_service(json):
+def stop_indi_service():
     controller.indi_service.stop()
     return { 'indi_service': 'stopping' }
 
+## INDI Profiles
+@app.route('/api/indi_profiles', methods=['GET'])
+@json_api
+def get_indi_profiles():
+    return [x.to_map() for x in controller.indi_profiles]
+
+
+@app.route('/api/indi_profiles/<id>', methods=['GET'])
+@json_api
+def get_indi_profile(id):
+    return controller.indi_profiles.lookup(id).to_map()
+
+
+@app.route('/api/indi_profiles/<id>', methods=['DELETE'])
+@json_api
+def delete_indi_profile(id):
+    indi_profile = controller.indi_profiles.lookup(id)
+    indi_profile_json = indi_profile.to_map()
+    indi_profile_json.update({'status': 'deleted'})
+    controller.indi_profiles.remove(indi_profile)
+    return indi_profile_json
+
+
+@app.route('/api/indi_profiles', methods=['POST'])
+@json_input
+@json_api
+def new_indi_profile(json):
+    try:
+        new_indi_profile = INDIProfile(name=json['name'], devices=json['devices'])
+        controller.indi_profiles.append(new_indi_profile)
+        return new_indi_profile.to_map()
+    except KeyError:
+        raise BadRequestError('Invalid json')
+
+@app.route('/api/indi_profiles/<id>', methods=['PUT'])
+@json_input
+@json_api
+def update_indi_profile(id, json):
+    try:
+        updated_profile = None
+        with controller.indi_profiles.lookup_edit(id) as profile:
+            profile.update(json)
+            updated_profile = profile.to_map()
+        return updated_profile
+    except KeyError:
+        raise BadRequestError('Invalid json')
 
 # INDI Methods
 
@@ -68,7 +116,7 @@ def connect_server():
     controller.indi_server.connect()
     is_error = not timeout(5)(controller.indi_server.is_connected)()
     return notify('indi_server', 'indi_server_connect', controller.indi_server.to_map(), is_error)
- 
+
 @app.route('/api/server/disconnect', methods=['PUT'])
 @json_api
 @indi_connected
@@ -108,14 +156,14 @@ def update_indi_property(device, property_name, json):
 @indi_connected
 def get_cameras():
     return [x.to_map() for x in controller.indi_server.cameras()]
-  
+
 
 @app.route('/api/filter_wheels', methods=['GET'])
 @json_api
 @indi_connected
 def get_filter_wheels():
     return [x.to_map() for x in controller.indi_server.filter_wheels()]
-  
+
 # Sequences
 
 @app.route('/api/sequences', methods=['GET'])
@@ -217,7 +265,7 @@ def duplicate_sequence_item(sequence_id, sequence_item_id):
 
 
 
-    
+
 @app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>', methods=['DELETE'])
 @json_api
 def delete_sequence_item(sequence_id, sequence_item_id):
@@ -227,4 +275,3 @@ def delete_sequence_item(sequence_id, sequence_item_id):
         sequence_item.update({'status': 'deleted'})
         sequence.sequence_items = [x for x in sequence.sequence_items if x.id != sequence_item_id]
         return sequence_item
-

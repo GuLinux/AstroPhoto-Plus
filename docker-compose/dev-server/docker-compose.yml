@@ -18,21 +18,11 @@ services:
   backend:
     build: backend
     volumes:
-        - "/tmp:/tmp"
         - ../../backend:/app
     expose:
         - "5000"
-    depends_on:
-        - indiserver
     environment:
         - INDI_SERVER_HOST
         - INDI_SERVER_PORT
         - WEB_THREADS
-  indiserver:
-    expose:
-        - "7624"
-    build: indi-server
-    environment:
-        - INDI_SERVER_HOST
-    volumes:
-        - "/tmp:/tmp"
+

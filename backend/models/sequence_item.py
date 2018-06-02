@@ -1,4 +1,4 @@
-import uuid
+from .model import random_id
 from .exceptions import BadRequestError
 from .exposure_sequence_item import ExposureSequenceItem
 from .filter_wheel_sequence_item import FilterWheelSequenceItem
@@ -9,7 +9,7 @@ import time
 
 class SequenceItem:
     def __init__(self, data):
-        self.id = data['id'] if 'id' in data else uuid.uuid4().hex
+        self.id = random_id(data.get('id'))
         self.type = data['type']
         self.job = None
         if self.type == 'shots':

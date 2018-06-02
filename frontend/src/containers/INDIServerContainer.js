@@ -6,6 +6,7 @@ import { getDeviceNames } from '../selectors/indi-properties';
 const mapStateToProps = (state, ownProps) => ({
     devices: getDeviceNames(state),
     indiDeviceTab: state.navigation.indi.device in state.indiserver.deviceEntities ? state.navigation.indi.device : null,
+    hasLocalServer: state.indiservice.server_found && state.indiserver.state.host === 'localhost',
 })
 
 const mapDispatchToProps = dispatch => ({ navigateToDevice: device => dispatch(Actions.Navigation.toINDIDevice(device)) })
@@ -15,5 +16,4 @@ const INDIServerContainer = connect(
   mapDispatchToProps
 )(INDIServerPage)
 
-export default INDIServerContainer 
-
+export default INDIServerContainer

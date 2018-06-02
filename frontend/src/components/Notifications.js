@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert } from 'react-bootstrap';
+import { Alert, Modal, Button} from 'react-bootstrap';
 
 const notificationStyles = {
     error: 'danger',
@@ -14,16 +14,35 @@ const setAutoclose = (notification, onClosed) => {
     }
 }
 
+const AlertNotification = ({notification, onDismiss}) => (
+    <Alert bsStyle={notificationStyles[notification.type]} onDismiss={() => onDismiss() }>
+        <h4>{notification.title}</h4>
+        {notification.text}
+    </Alert>
+)
+
+const ModalNotification = ({notification, onDismiss}) => (
+  <Modal.Dialog>
+    <Modal.Header>
+      <Modal.Title>{notification.title}</Modal.Title>
+    </Modal.Header>
+
+    <Modal.Body>{notification.text}</Modal.Body>
+
+    <Modal.Footer>
+      <Button bsStyle="primary" onClick={onDismiss}>Close</Button>
+    </Modal.Footer>
+  </Modal.Dialog>
+)
+
+
 const Notificatons = ({notifications, onClosed}) => (
     <div className="notifications-container">
         {notifications.map( (notification, index) => {
+            const NotificationTag = notification.isModal ? ModalNotification : AlertNotification
             setAutoclose(notification, onClosed);
-            return (
-            <Alert key={index} bsStyle={notificationStyles[notification.type]} onDismiss={() => onClosed(notification)}>
-                <h4>{notification.title}</h4>
-                {notification.text}
-            </Alert>
-        )}
+            return <NotificationTag key={index} notification={notification} onDismiss={() => onClosed(notification)} />
+        }
         )}
     </div>
 )

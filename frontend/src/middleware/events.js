@@ -64,6 +64,20 @@ const sequences = (event, dispatch) => {
     }
 }
 
+const indiserviceEvents = (event, dispatch) => {
+    let eventObject = JSON.parse(event.data);
+    switch(eventObject.event) {
+        case 'started':
+            dispatch(Actions.INDIService.serviceStarted(eventObject));
+            break;
+        case 'exited':
+            dispatch(Actions.INDIService.serviceExited(eventObject));
+            break;
+        default:
+            logEvent(event)
+    }
+}
+
 const listenToEvents = (dispatch) => {
     var es = new EventSource("/api/events");
 
@@ -75,13 +89,17 @@ const listenToEvents = (dispatch) => {
             case 'sequences':
                 sequences(event, dispatch);
                 break;
+            case 'indi_service':
+                indiserviceEvents(event, dispatch);
+                break
             default:
                 logEvent(event);
         }
     }
     es.addEventListener('indi_server', serverListener);
     es.addEventListener('sequences', serverListener);
+    es.addEventListener('indi_service', serverListener);
     es.onerror = e => dispatch(Actions.serverError('event_source', 'event', e));
 }
 
-export default listenToEvents; 
+export default listenToEvents;

@@ -11,15 +11,16 @@ export const Dialog = ({name, title, children}) => (
 
 Dialog.Body = Modal.Body;
 Dialog.Footer = Modal.Footer;
-Dialog.Open = ModalContainer.Open;
-Dialog.Close = ModalContainer.Close;
+Dialog.Button = ModalContainer.Button
+
+Dialog.MenuItem = ModalContainer.MenuItem
 
 export const QuestionDialog = ({name, title, buttons, children}) => (
     <Dialog name={name} title={title}>
         <Dialog.Body>{children}</Dialog.Body>
         <Dialog.Footer>
             { buttons.map( (button, index) => (
-                <ModalContainer.Close key={index} modal={name} beforeToggle={button.beforeClose} afterToggle={button.afterClose} bsStyle={button.bsStyle} bsSize={button.bsSize}>{button.text}</ModalContainer.Close>
+                <ModalContainer.Button.Close key={index} modal={name} beforeToggle={button.beforeClose} afterToggle={button.afterClose} bsStyle={button.bsStyle} bsSize={button.bsSize}>{button.text}</ModalContainer.Button.Close>
             )
         )}
         </Dialog.Footer>

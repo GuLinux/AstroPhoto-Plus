@@ -39,8 +39,8 @@ class AddSequenceItemModal extends React.Component {
                     <p><CheckableItem bsSize="large" checked={this.state.type === 'command'} onChange={(type) => this.onTypeChanged(type)} name="command">Run command</CheckableItem></p>
             </Modal.Body>
             <Modal.Footer>
-                <ModalContainer.Close modal={this.props.modalName}>Close</ModalContainer.Close>
-                <ModalContainer.Close modal={this.props.modalName} bsStyle="primary" disabled={!this.state.typeValid} afterToggle={() => this.onAddClicked()}>Add</ModalContainer.Close>
+                <ModalContainer.Button.Close modal={this.props.modalName}>Close</ModalContainer.Button.Close>
+                <ModalContainer.Button.Close modal={this.props.modalName} bsStyle="primary" disabled={!this.state.typeValid} afterToggle={() => this.onAddClicked()}>Add</ModalContainer.Button.Close>
             </Modal.Footer>
           </div>
         )

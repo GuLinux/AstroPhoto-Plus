@@ -89,8 +89,8 @@ class AddSequenceModal extends React.Component {
                     </form>
                 </Modal.Body>
             <Modal.Footer>
-                <ModalContainer.Close modal={this.props.modalName}>Close</ModalContainer.Close>
-                <ModalContainer.Toggle bsStyle="primary" action="close" modal={this.props.modalName} disabled={!this.isValid()} afterToggle={() => this.onAddClicked()}>Add</ModalContainer.Toggle>
+                <ModalContainer.Button.Close modal={this.props.modalName}>Close</ModalContainer.Button.Close>
+                <ModalContainer.Button.Close bsStyle="primary" action="close" modal={this.props.modalName} disabled={!this.isValid()} afterToggle={() => this.onAddClicked()}>Add</ModalContainer.Button.Close>
             </Modal.Footer>
           </div>
         )

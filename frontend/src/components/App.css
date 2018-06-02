@@ -9,7 +9,7 @@
 }
 
 .loadingOverlay img {
-    left: 50%; 
+    left: 50%;
     top: 50%;
     margin-left: -50px;
     margin-top: -50px;
@@ -64,4 +64,13 @@
 
 .driverGroupTitle {
     font-size: 9pt
+}
+
+.driverGroupTitle a {
+    display: block;
+}
+
+.indi-service-error-dialog {
+    overflow-y: auto;
+    max-height: 400px;
 }

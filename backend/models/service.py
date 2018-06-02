@@ -11,7 +11,7 @@ class Service:
         self.stdout_path = os.path.join(logs_directory, name + '-stdout.log')
         self.stderr_path = os.path.join(logs_directory, name + '-stderr.log')
 
-        
+
 
     def status(self):
         return {
@@ -32,15 +32,17 @@ class Service:
         exit_code = self.exit_code()
         return exit_code != None and exit_code != 0
 
-    def start(self, command, arguments, on_exit=None):
+    def start(self, command, arguments, on_started=None, on_exit=None):
         if self.is_running():
             raise RuntimeError('Process is already running.')
         args = [command]
         args.extend(arguments)
         def run_process():
-            with open(self.stdout_path, 'a') as stdout_fd:
-                with open(self.stderr_path, 'a') as stderr_fd:
+            with open(self.stdout_path, 'w') as stdout_fd:
+                with open(self.stderr_path, 'w') as stderr_fd:
                     self.process = subprocess.Popen(args, stdout=stdout_fd, stderr=stderr_fd)
+                    if on_started:
+                        on_started(self)
                     self.process.wait()
                     if on_exit:
                         on_exit(self)
@@ -68,4 +70,3 @@ class Service:
 
     def __has_process(self):
         return self.process != None
-
