@@ -27,7 +27,7 @@ sudo pip install -r requirements.txt
 Configuration of backend is currently done via environment variables.
 Just export one of the following variables in your shell before starting the backend server. You can also put them in your bash profile.
 
- - `STARQUEW_SEQUENCES_PATH`: directory where sequences will be saved. Defaults to `$HOME/StarQuew-Data`
+ - `STARQUEW_DATADIR`: directory where sequences will be saved. Defaults to `$HOME/StarQuew-Data`
 
 
 ### Start backend server

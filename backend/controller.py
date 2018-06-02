@@ -69,13 +69,13 @@ class Controller:
         self.sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)
 
     def init(self):
-        self.sequences = SavedList(os.path.join(app.config['SEQUENCES_PATH'], 'sequences'), Sequence)
-        self.indi_profiles = SavedList(os.path.join(app.config['SEQUENCES_PATH'], 'profiles'), INDIProfile)
-        self.indi_service = INDIService(app.config['INDI_PREFIX'], app.config['SEQUENCES_PATH'], on_started=self.event_listener.on_indi_service_started, on_exit=self.event_listener.on_indi_service_exit)
+        self.sequences = SavedList(os.path.join(app.config['DATADIR'], 'sequences'), Sequence)
+        self.indi_profiles = SavedList(os.path.join(app.config['DATADIR'], 'profiles'), INDIProfile)
+        self.indi_service = INDIService(app.config['INDI_PREFIX'], app.config['DATADIR'], on_started=self.event_listener.on_indi_service_started, on_exit=self.event_listener.on_indi_service_exit)
 
     @property
     def root_path(self):
-      return app.config['SEQUENCES_PATH']
+      return app.config['DATADIR']
 
     def __ping_clients(self):
         while True:
@@ -86,5 +86,3 @@ class Controller:
 
 
 controller = Controller()
-
-

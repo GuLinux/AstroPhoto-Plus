@@ -14,7 +14,7 @@ Right now using docker is the preferred way of using StarQuew due to the very mi
 This option will start an optimized version of the application (javascript and minified, no debug code, etc).
 
 ```
-export STARQUEW_SEQUENCES_PATH="$HOME/StarQuew-Sequences" # change this to wherever you want sequences to be saved
+export STARQUEW_DATADIR="$HOME/StarQuew-Sequences" # change this to wherever you want sequences to be saved
 cd docker-compose/prod
 docker-compose build # only necessary the first time, or after you update the project
 INDI_SERVER_HOST=<YOUR_IP_ADDRESS> docker-compose up
