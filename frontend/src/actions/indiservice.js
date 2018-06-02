@@ -81,9 +81,9 @@ export const INDIService = {
         }
     },
 
-    stopService: () => {
+    stopService: (disconnect) => {
         return dispatch => {
-            dispatch(Actions.INDIServer.setServerConnection(false))
+            disconnect && dispatch(Actions.INDIServer.setServerConnection(false))
             dispatch({type: 'FETCH_STOP_INDI_SERVICE'});
             return stopINDIServiceAPI(dispatch, data => {}, error => {
                 if(error.status === 400) {

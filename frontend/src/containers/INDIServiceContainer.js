@@ -5,6 +5,7 @@ import { getINDIEnabledDrivers } from '../selectors/indiservice'
 
 const mapStateToProps = (state, ownProps) => ({
     serverFound: state.indiservice.server_found,
+    serverConnected: state.indiserver.state.connected,
     serverRunning: state.indiservice.server_running,
     drivers: getINDIEnabledDrivers(state),
     startStopPending: state.indiservice.startStopPending,
@@ -13,7 +14,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
     startService: (devices) => dispatch(Actions.INDIService.startService(devices)),
-    stopService: () => dispatch(Actions.INDIService.stopService()),
+    stopService: (disconnect) => dispatch(Actions.INDIService.stopService(disconnect)),
     dismissError: () => dispatch(Actions.INDIService.dismissError()),
 })
 
@@ -24,7 +25,7 @@ const INDIServiceContainer = connect(
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    onServerStopStart: () => stateProps.serverRunning ? dispatchProps.stopService() : dispatchProps.startService(stateProps.drivers),
+    onServerStopStart: () => stateProps.serverRunning ? dispatchProps.stopService(stateProps.serverConnected) : dispatchProps.startService(stateProps.drivers),
   })
 )(INDIServicePage)
 

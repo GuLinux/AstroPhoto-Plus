@@ -36,7 +36,7 @@ const INDIServicePage = ({serverFound, serverRunning, onServerStopStart, startSt
     const stateParams = {
         labelClass: serverRunning ? 'success' : 'danger',
         label: serverRunning ? 'running' : 'not running',
-        buttonClass: serverRunning ? 'danger': 'success',
+        buttonClass: serverRunning ? 'warning': 'success',
         buttonLabel: serverRunning ? 'stop' : 'start',
     }
 

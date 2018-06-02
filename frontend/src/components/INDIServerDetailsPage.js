@@ -5,7 +5,7 @@ const getConnectionView = (isConnected, connectAction, disconnectAction) => {
     return {
         stateLabelClass: isConnected ? 'success' : 'danger',
         stateLabel: isConnected ? 'Connected' : 'Disconnected',
-        connectionButtonClass: isConnected ? 'danger' : 'success',
+        connectionButtonClass: isConnected ? 'warning' : 'success',
         connectionButtonLabel: isConnected ? 'Disconnect' : 'Connect',
         connectionButtonAction: isConnected? disconnectAction : connectAction,
     }
