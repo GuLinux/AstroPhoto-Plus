@@ -17,7 +17,7 @@ const GearDescription = ({gear}) => {
 const SequencesList = ({sequences, gear, onSequenceEdit, onSequenceDelete, startSequence, duplicateSequence}) =>
 (
     <div>
-        <ModalContainer.Open bsStyle="primary" bsSize="small" className="pull-right" modal="addSequence">new sequence</ModalContainer.Open>
+        <ModalContainer.Button.Open bsStyle="primary" bsSize="small" className="pull-right" modal="addSequence">new sequence</ModalContainer.Button.Open>
         <ModalContainer name="addSequence">
             <AddSequenceModalContainer modalName="addSequence"/>
         </ModalContainer>
@@ -42,7 +42,7 @@ const SequencesList = ({sequences, gear, onSequenceEdit, onSequenceDelete, start
                     <td>
                         <ButtonGroup>
                             <Button title="Edit" onClick={e => onSequenceEdit(sequence.id)} bsSize="small"><Glyphicon glyph="edit" /></Button>
-                            <Dialog.Open title="Remove" modal={sequence.id + 'confirmSequenceDelete'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Open>
+                            <Dialog.Button.Open title="Remove" modal={sequence.id + 'confirmSequenceDelete'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Button.Open>
                             <QuestionDialog name={sequence.id + 'confirmSequenceDelete'} title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', bsStyle: 'danger', afterClose: () => onSequenceDelete(sequence.id)}]}>
                                 Do you really want to remove this sequence?
                             </QuestionDialog>

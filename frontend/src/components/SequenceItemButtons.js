@@ -19,7 +19,7 @@ const SequenceItemButtons = ({isValid, isChanged, onSave, navigateBack, sequence
 
     return (
     <div>
-        <Dialog.Open bsStyle="default" beforeToggle={onBackClicked} modal="sequenceItemUnsavedChanges">Back</Dialog.Open>
+        <Dialog.Button.Open bsStyle="default" beforeToggle={onBackClicked} modal="sequenceItemUnsavedChanges">Back</Dialog.Button.Open>
         <Button bsStyle="primary" disabled={ ! canSave } onClick={onSaveClicked}>Save</Button>
         <QuestionDialog name="sequenceItemUnsavedChanges" title="Unsaved Changes" buttons={ [{text: 'Continue editing', bsStyle: 'primary'}, {text: 'Close and go back', bsStyle: 'danger', afterClose: navigateBack}] }>
             <p>If you go back now, your changes will not be saved.</p>

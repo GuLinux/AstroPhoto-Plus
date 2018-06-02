@@ -8,7 +8,7 @@ const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
     let dispatchError = response => {
         response.text().then( body => { dispatch(Actions.serverError('network_request', 'response', response, body)) })
     }
-    
+
     let errorHandler = response => {
         if(! onError || ! onError(response))
             dispatchError(response);
@@ -141,3 +141,10 @@ export const removeINDIProfileAPI = (dispatch, id, onSuccess) => fetchJSON(dispa
     method: 'DELETE',
 }, json => onSuccess(json));
 
+export const updateINDIProfileAPI = (dispatch, data, onSuccess) => fetchJSON(dispatch, '/api/indi_profiles/' + data.id, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+    headers: {
+        'Content-Type': 'application/json',
+    }
+}, json => onSuccess(json));

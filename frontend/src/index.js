@@ -20,10 +20,16 @@ import listenToEvents from './middleware/events';
 
 const loggerMiddleware = createLogger()
 
+const createMiddleware = () => {
+    if(window.__REDUX_DEVTOOLS_EXTENSION__)
+        return applyMiddleware(thunkMiddleware);
+    return applyMiddleware(thunkMiddleware, loggerMiddleware)
+}
+
 let store = createStore(
     indiLiteApp,
-//    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-    applyMiddleware(thunkMiddleware, loggerMiddleware)
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+    createMiddleware()
 )
 
 store.dispatch(Actions.Sequences.fetch())

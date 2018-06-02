@@ -52,7 +52,7 @@ const Sequence = ({sequence, onCreateSequenceItem, navigateBack, startSequence, 
             <ButtonGroup className="pull-right">
                 <Button onClick={navigateBack} bsSize="small">back</Button>
                 <Button onClick={() => startSequence()} bsSize="small" bsStyle="success" disabled={!canStart(sequence)}>start</Button>
-                <ModalContainer.Open modal="newSequenceItem" bsStyle="info" bsSize="small" className="pull-right" disabled={!canEdit}>new</ModalContainer.Open>
+                <ModalContainer.Button.Open modal="newSequenceItem" bsStyle="info" bsSize="small" className="pull-right" disabled={!canEdit}>new</ModalContainer.Button.Open>
             </ButtonGroup>
         </h2>
         <ModalContainer name="newSequenceItem">

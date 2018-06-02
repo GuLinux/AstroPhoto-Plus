@@ -1,4 +1,4 @@
-import { getINDIServiceAPI, startINDIServiceAPI, stopINDIServiceAPI, fetchINDIProfilesAPI, addINDIProfileAPI, removeINDIProfileAPI } from '../middleware/api'
+import { getINDIServiceAPI, startINDIServiceAPI, stopINDIServiceAPI, fetchINDIProfilesAPI, addINDIProfileAPI, removeINDIProfileAPI, updateINDIProfileAPI } from '../middleware/api'
 import Actions from './index'
 
 export const INDIService = {
@@ -17,7 +17,9 @@ export const INDIService = {
     addProfile: (name, devices) => {
         return dispatch => {
             dispatch({type: 'FETCH_ADD_PROFILE'});
-            return addINDIProfileAPI(dispatch, {name, devices}, data => dispatch(INDIService.fetchProfiles()));
+            return addINDIProfileAPI(dispatch, {name, devices}, data => {
+                dispatch({type: 'INDI_SERVICE_PROFILE_ADDED', data})
+            });
         }
     },
 
@@ -25,6 +27,15 @@ export const INDIService = {
         return dispatch => {
             dispatch({type: 'FETCH_ADD_PROFILE'});
             return removeINDIProfileAPI(dispatch, id, data => dispatch(INDIService.fetchProfiles()));
+        }
+    },
+
+    updateProfile: (id, name, devices) => {
+        return dispatch => {
+            dispatch({type: 'FETCH_UPDATE_PROFILE'});
+            return updateINDIProfileAPI(dispatch, {id, name, devices}, data => {
+                dispatch(INDIService.fetchProfiles())
+            })
         }
     },
 

@@ -72,10 +72,11 @@ const indiservice = (state = defaultState, action) => {
         case 'INDI_SERVICE_DISMISS_ERROR':
             return {...state, lastError: {}}
         case 'RECEIVED_INDI_PROFILES':
-            return {...state, profiles: action.data}
+            return {...state, profiles: action.data, selectedProfile: state.selectedProfile in action.data ? state.selectedProfile : null}
         case 'SELECTED_INDI_PROFILE':
             return selectedProfile(state, action.id)
-
+        case 'INDI_SERVICE_PROFILE_ADDED':
+            return {...state, profiles: [...state.profiles, action.data], selectedProfile: action.data.id}
         default:
             return state
     }

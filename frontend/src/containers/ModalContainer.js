@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Actions from '../actions'
 import { ModalDialog } from '../components/ModalDialog'
-import { Button } from 'react-bootstrap'
+import { Button, MenuItem } from 'react-bootstrap'
 import React from 'react'
 
 const mapStateToProps = (state, ownProps) => ({
@@ -14,23 +14,34 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 const ModalContainer = connect(mapStateToProps, mapDispatchToProps)(ModalDialog)
 
-const mapToggleModalButtonDispatchToProps = (dispatch, ownProps) => {
-    let onClick = () => {
+const mapToggleModalDispatchToProps = (toggleKey) => (dispatch, ownProps) => {
+    let toggle = () => {
         if(ownProps.beforeToggle && !ownProps.beforeToggle())
             return;
         dispatch(Actions.Navigation.toggleModal(ownProps.modal, ownProps.action === 'visible'))
         ownProps.afterToggle && ownProps.afterToggle()
     }
-    return { onClick };
+    return { [toggleKey]: toggle };
 }
 
-const mergeButtonProps = (stateProps, dispatchProps, ownProps) => {
+const mergeToggleProps = (stateProps, dispatchProps, ownProps) => {
     const { beforeToggle, afterToggle, modal, action, ...rest } = ownProps;
-    return {...stateProps, ...dispatchProps, ...rest};
+    return {...stateProps, ...rest, ...dispatchProps};
 }
-const ToggleModalButton = connect(null, mapToggleModalButtonDispatchToProps, mergeButtonProps)(Button)
-ModalContainer.Toggle = ToggleModalButton;
-ModalContainer.Close = (props) => <ModalContainer.Toggle action="close" {...props} />
-ModalContainer.Open= (props) => <ModalContainer.Toggle action="visible" {...props} />
+
+ModalContainer.MenuItem = {
+    Toggle: connect(null, mapToggleModalDispatchToProps('onSelect'), mergeToggleProps)(MenuItem),
+    Close: (props) => <ModalContainer.MenuItem.Toggle action="close" {...props} />,
+    Open: (props) => <ModalContainer.MenuItem.Toggle action="visible" {...props} />,
+}
+
+ModalContainer.Button = {
+    Toggle: connect(null, mapToggleModalDispatchToProps('onClick'), mergeToggleProps)(Button),
+    Close: (props) => <ModalContainer.Button.Toggle action="close" {...props} />,
+    Open: (props) => <ModalContainer.Button.Toggle action="visible" {...props} />,
+
+}
+
+
 
 export default ModalContainer;

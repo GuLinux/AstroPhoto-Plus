@@ -1,47 +1,67 @@
 import React from 'react'
-import { FormGroup, ControlLabel, FormControl, InputGroup, Button, Glyphicon } from 'react-bootstrap';
+import { FormGroup, ControlLabel, FormControl, InputGroup, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Dialog } from '../components/Dialogs'
 
 
-class AddNewProfileDialog extends React.Component {
+class ProfileNameDialog extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { name: '' };
+        this.state = { name: props.initialValue};
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps.initialValue !== this.props.initialValue)
+            this.setState({...this.state, name: this.props.initialValue})
     }
 
     render = () => (
-        <Dialog name="newProfileName" title="New Profile name">
+        <Dialog name={this.props.name} title={this.props.title}>
             <Dialog.Body>
                 <FormGroup>
                     <FormControl type="text" placeholder="Enter the profile name" value={this.state.name} onChange={ (e) => this.setState({...this.state, name: e.target.value})} />
                 </FormGroup>
             </Dialog.Body>
             <Dialog.Footer>
-                <Dialog.Close modal="newProfileName">Cancel</Dialog.Close>
-                <Dialog.Close disabled={this.state.name === ''} afterToggle={() => this.props.addProfile(this.state.name)} bsStyle="primary" modal="newProfileName">Create</Dialog.Close>
+                <Dialog.Button.Close modal={this.props.name}>Cancel</Dialog.Button.Close>
+                <Dialog.Button.Close disabled={this.state.name === '' || this.state.name === this.props.initialValue} afterToggle={() => this.props.onAccepted(this.state.name)} bsStyle="primary" modal={this.props.name}>{this.props.buttonText}</Dialog.Button.Close>
             </Dialog.Footer>
         </Dialog>
     )
 }
 
-const INDIServiceProfilesPage = ({profiles, selectedProfile, selectProfile, canAddProfile, canRemoveProfile, addProfile, removeProfile}) => (
+
+const INDIServiceProfilesPage = ({
+    profiles,
+    selectedProfile,
+    selectProfile,
+    canAddProfile,
+    canRemoveProfile,
+    addProfile,
+    canRenameProfile,
+    removeProfile,
+    updateProfile,
+    selectedProfileDriversChanged,
+    renameProfile,
+    selectedProfileName
+}) => (
     <form>
         <FormGroup controlId="formControlsSelect">
-          <ControlLabel>Profiles</ControlLabel>
-          <InputGroup>
-              <FormControl componentClass="select" placeholder="select" value={selectedProfile} onChange={ e => selectProfile(e.target.value) }>
-                <option value="select">select</option>
-                { profiles.map(profile => <option key={profile.id} value={profile.id}>{profile.name}</option>)}
-              </FormControl>
-              <InputGroup.Button>
-                <Dialog.Open modal="newProfileName" disabled={!canAddProfile}><Glyphicon glyph="plus" /></Dialog.Open>
-              </InputGroup.Button>
-              <InputGroup.Button>
-                <Button disabled={!canRemoveProfile} onClick={removeProfile}><Glyphicon glyph="minus" /></Button>
-              </InputGroup.Button>
-        </InputGroup>
+            <ControlLabel>Profiles</ControlLabel>
+            <InputGroup>
+                <FormControl componentClass="select" placeholder="select" value={selectedProfile} onChange={ e => selectProfile(e.target.value) }>
+                    <option value="select">select</option>
+                    { profiles.map(profile => <option key={profile.id} value={profile.id}>{profile.name}</option>)}
+                </FormControl>
+                <DropdownButton componentClass={InputGroup.Button} id="input-dropdown-addon" title="..." >
+                    <Dialog.MenuItem.Open key="newprofile" modal="newProfileDialog" disabled={!canAddProfile}>new</Dialog.MenuItem.Open>
+                    <Dialog.MenuItem.Open key="renameprofile" modal="renameProfileDialog" disabled={!canRenameProfile}>rename</Dialog.MenuItem.Open>
+                    <MenuItem key="updateProfile" disabled={!selectedProfileDriversChanged} onSelect={updateProfile}>update</MenuItem>
+                    <MenuItem key="removeProfile" disabled={!canRemoveProfile} onSelect={removeProfile}>remove</MenuItem>
+                </DropdownButton>
+            </InputGroup>
         </FormGroup>
-        <AddNewProfileDialog addProfile={addProfile} />
+        <ProfileNameDialog name="newProfileDialog" title="New profile" initialValue="" onAccepted={addProfile} buttonText="Create" />
+        <ProfileNameDialog name="renameProfileDialog" title="Rename profile" initialValue={selectedProfileName} onAccepted={renameProfile} buttonText="Rename" />
     </form>
 );
 
