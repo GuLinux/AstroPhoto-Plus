@@ -55,7 +55,7 @@ class EventListener:
 class Controller:
     def __init__(self):
         self.sse = SSE(app.logger)
-        self.settings = Settings()
+        self.settings = Settings(on_update=self.__on_settings_update)
         self.indi_profiles = SavedList(self.settings.indi_profiles_list, INDIProfile)
         self.event_listener = EventListener(self.sse)
         self.indi_server = Server(app.logger, self.event_listener, os.environ.get('INDI_SERVER_HOST', 'localhost'))
@@ -63,21 +63,26 @@ class Controller:
         self.sequences = None
         self.ping_thread = threading.Thread(target=self.__ping_clients)
         self.ping_thread.start()
-        self.indi_service = None
-
-
+        self.__create_indi_service()
+        self.sequences = SavedList(self.settings.sequences_list, Sequence)
 
     def notification(self, event_type, event_name, payload, is_error, error_code=None, error_message=None):
         self.sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)
 
-    def init(self):
-        self.sequences = SavedList(os.path.join(app.config['DATADIR'], 'sequences'), Sequence)
 
-        self.indi_service = INDIService(app.config['INDI_PREFIX'], app.config['DATADIR'], on_started=self.event_listener.on_indi_service_started, on_exit=self.event_listener.on_indi_service_exit)
+    def __on_settings_update(self, value_name, old_value, new_value):
+        app.logger.debug('setting [{}] updated: {} => {}'.format(value_name, old_value, new_value))
+        if value_name == 'indi_prefix':
+            app.logger.debug('restarting INDI service')
+            try:
+                self.indi_service.stop()
+            except:
+                pass
+            self.__create_indi_service()
+            
+    def __create_indi_service(self):
+        self.indi_service = INDIService(self.settings, on_started=self.event_listener.on_indi_service_started, on_exit=self.event_listener.on_indi_service_exit)
 
-    @property
-    def root_path(self):
-      return app.config['DATADIR']
 
     def __ping_clients(self):
         while True:

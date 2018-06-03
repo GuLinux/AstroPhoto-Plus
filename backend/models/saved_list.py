@@ -9,7 +9,6 @@ import os
 class SavedList:
     def __init__(self, items_path, item_class):
         self.items_path = items_path
-        os.makedirs(items_path, exist_ok=True)
         self.item_class = item_class
         self.items = [Serializer(os.path.join(items_path, filename), self.item_class).load() for filename in os.listdir(items_path) if filename.endswith('.json') ]
 

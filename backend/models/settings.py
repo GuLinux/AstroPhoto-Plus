@@ -1,20 +1,64 @@
 import os
 from .serializer import Serializer
+from .exceptions import BadRequestError
 
 
 class Settings:
-    def __init__(self):
+    def __init__(self, on_update=None):
         self.default_datadir = os.environ.get('STARQUEW_DATADIR', os.path.join(os.environ['HOME'], 'StarQuew-Data'))
-        self.serializer = Serializer(os.path.join(self.default_datadir, '.config', 'settings.json'), Settings)
-        self.sequences_list = os.path.join(self.default_datadir, '.config', 'sequences')
-        self.indi_profiles_list = os.path.join(self.default_datadir, '.config', 'indi_profiles')
+        self.serializer = Serializer(self.__build_path('.config', 'settings.json', isdir=False), Settings)
+        self.sequences_list = self.__build_path('.config', 'sequences', isdir=True)
+        self.indi_profiles_list = self.__build_path('.config', 'indi_profiles', isdir=True)
+        self.indi_service_logs = self.__build_path('.logs', 'indi_service', isdir=True)
+
+        self.ro_props = ['default_datadir', 'sequences_list', 'indi_profiles_list', 'indi_service_logs']
+        self.rw_props = ['sequences_dir', 'indi_prefix']
+
+        self.on_update = on_update
         self.reload()
 
     def reload(self):
-        json_map = {}
+        self.json_map = {}
         try:
-            json_map = self.serializer.get_map()
+            self.json_map = self.serializer.get_map()
         except FileNotFoundError:
             pass
-        self.sequences_dir = json_map.get('sequences_path', os.path.join(self.default_datadir, 'Sequences'))
-        self.indi_prefix = json_map.get('indi_prefix', '/usr')
+
+    def to_map(self):
+        props = []
+        props.extend(self.ro_props)
+        props.extend(self.rw_props)
+        map_object = {}
+        for prop in props:
+            map_object[prop] = getattr(self, prop)
+        return map_object
+
+    @property
+    def sequences_dir(self):
+        return self.json_map.get('sequences_path', os.path.join(self.default_datadir, 'Sequences'))
+
+    @property
+    def indi_prefix(self):
+        return self.json_map.get('indi_prefix', '/usr')
+
+    def update(self, new_data):
+        ro_props = [x for x in new_data.keys() if x in self.ro_props]
+        unsupported_props = [x for x in new_data.keys() if x not in self.rw_props]
+        if ro_props:
+            raise BadRequestError('The following settings are read only and cannot be updated: {}'.format(', '.join(ro_props)))
+        if unsupported_props:
+            raise BadRequestError('The following settings are invalid: {}'.format(', '.join(unsupported_props)))
+
+        on_update_args = [(x, getattr(self, x), new_data[x]) for x in new_data.keys()]
+        
+        self.json_map.update(new_data)
+        self.serializer.save(self)
+
+        if self.on_update:
+            for new_item in on_update_args:
+                self.on_update(*new_item)
+
+    def __build_path(self, parent, name, root=None, isdir=False):
+        path = os.path.join(root if root else self.default_datadir, parent, name)
+        os.makedirs(path if isdir else os.path.dirname(path), exist_ok=True)
+        return path

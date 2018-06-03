@@ -9,20 +9,27 @@ import logging
 
 default_settings = {}
 
-app.logger.info('Using INDI server at %s:%d', controller.indi_server.host, controller.indi_server.port)
-app.config['DATADIR'] = os.environ.get('STARQUEW_DATADIR', os.path.join(os.environ['HOME'], 'StarQuew-Data'))
-app.config['INDI_PREFIX'] = os.environ.get('INDI_PREFIX', '/usr')
-
 gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers = gunicorn_logger.handlers
 
 app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG'))
 
-controller.init()
 
 @app.route('/api/events')
 def events():
     return Response(controller.sse.subscribe().feed(), mimetype='text/event-stream')
+
+@app.route('/api/settings', methods=['GET'])
+@json_api
+def get_settings():
+    return controller.settings.to_map()
+
+@app.route('/api/settings', methods=['PUT'])
+@json_input
+@json_api
+def update_settings(json):
+    controller.settings.update(json)
+    return controller.settings.to_map()
 
 # INDI Server management
 

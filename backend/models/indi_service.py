@@ -3,13 +3,14 @@ from xml.etree import ElementTree
 from .service import Service
 
 class INDIService:
-    def __init__(self, indi_prefix, data_path, on_started=None, on_exit=None):
-        self.indi_prefix = indi_prefix
+    def __init__(self, settings, on_started=None, on_exit=None):
+        self.settings = settings
+        self.indi_prefix = settings.indi_prefix
         self.indiserver_path = self.__binpath('indiserver')
         self.indi_drivers_path = os.path.join(self.indi_prefix, 'share', 'indi')
         self.on_started = on_started
         self.on_exit = on_exit
-        self.service = Service('indiserver', os.path.join(data_path, 'logs', 'indi_server'))
+        self.service = Service('indiserver', settings.indi_service_logs)
         self.groups = {}
         self.drivers = {}
         self.devices_running = []
