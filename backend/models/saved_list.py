@@ -1,6 +1,7 @@
 from .exceptions import NotFoundError
 from contextlib import contextmanager
 from .sequence import Sequence
+from .serializer import Serializer
 import json
 import os
 
@@ -10,7 +11,7 @@ class SavedList:
         self.items_path = items_path
         os.makedirs(items_path, exist_ok=True)
         self.item_class = item_class
-        self.items = [self.__load_item(os.path.join(items_path, filename)) for filename in os.listdir(items_path) if filename.endswith('.json') ]
+        self.items = [Serializer(os.path.join(items_path, filename), self.item_class).load() for filename in os.listdir(items_path) if filename.endswith('.json') ]
 
 
     def append(self, item):
@@ -34,7 +35,7 @@ class SavedList:
         item = self.lookup(item_id).duplicate()
         self.append(item)
         return item
-    
+
     @contextmanager
     def lookup_edit(self, item_id):
         item = self.lookup(item_id)
@@ -56,13 +57,8 @@ class SavedList:
     def __iter__(self):
         return self.items.__iter__()
 
-    def __load_item(self, item_file):
-        with open(item_file, 'r') as json_file:
-            return self.item_class.from_map(json.load(json_file))
-
     def __save_item(self, item):
-        with open(self.__path_for(item), 'w') as json_file:
-            json.dump(item.to_map(), json_file)
+        Serializer(self.__path_for(item), self.item_class).save(item)
 
     def __path_for(self, item):
         return os.path.join(self.items_path, item.id + '.json')

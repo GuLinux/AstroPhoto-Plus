@@ -1,3 +1,4 @@
+from .settings import Settings
 from .server import Server
 from .sequence import Sequence
 from .saved_list import SavedList

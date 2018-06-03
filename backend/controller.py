@@ -1,11 +1,12 @@
 from functools import wraps
 import os
-from models import Server, Device, Property, SavedList, INDIService, Sequence, INDIProfile
+from models import Server, Device, Property, SavedList, INDIService, Sequence, INDIProfile, Settings
 from server_sent_events import SSE
 from app import app
 import time
 from sequences_runner import SequencesRunner
 import threading
+
 
 class EventListener:
     def __init__(self, sse):
@@ -54,11 +55,12 @@ class EventListener:
 class Controller:
     def __init__(self):
         self.sse = SSE(app.logger)
+        self.settings = Settings()
+        self.indi_profiles = SavedList(self.settings.indi_profiles_list, INDIProfile)
         self.event_listener = EventListener(self.sse)
         self.indi_server = Server(app.logger, self.event_listener, os.environ.get('INDI_SERVER_HOST', 'localhost'))
         self.sequences_runner = SequencesRunner(app.logger, self)
         self.sequences = None
-        self.indi_profiles = None
         self.ping_thread = threading.Thread(target=self.__ping_clients)
         self.ping_thread.start()
         self.indi_service = None
@@ -70,7 +72,7 @@ class Controller:
 
     def init(self):
         self.sequences = SavedList(os.path.join(app.config['DATADIR'], 'sequences'), Sequence)
-        self.indi_profiles = SavedList(os.path.join(app.config['DATADIR'], 'profiles'), INDIProfile)
+
         self.indi_service = INDIService(app.config['INDI_PREFIX'], app.config['DATADIR'], on_started=self.event_listener.on_indi_service_started, on_exit=self.event_listener.on_indi_service_exit)
 
     @property
