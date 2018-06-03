@@ -45,6 +45,10 @@ class EventListener:
     def on_indi_service_reloaded(self):
         self.sse.publish({'event': 'reloaded', 'payload': {}, 'is_error': False}, type='indi_service')
 
+    def on_indi_server_reloaded(self):
+        self.sse.publish({'event': 'reloaded', 'payload': {}, 'is_error': False}, type='indi_server')
+
+
 
     def on_indi_service_exit(self, service):
         service_stdout, service_stderr = None, None
@@ -62,12 +66,12 @@ class Controller:
         self.settings = Settings(on_update=self.__on_settings_update)
         self.indi_profiles = SavedList(self.settings.indi_profiles_list, INDIProfile)
         self.event_listener = EventListener(self.sse)
-        self.indi_server = Server(app.logger, self.event_listener, os.environ.get('INDI_SERVER_HOST', 'localhost'))
         self.sequences_runner = SequencesRunner(app.logger, self)
         self.sequences = None
         self.ping_thread = threading.Thread(target=self.__ping_clients)
         self.ping_thread.start()
         self.__create_indi_service()
+        self.__create_indi_server()
         self.sequences = SavedList(self.settings.sequences_list, Sequence)
 
     def notification(self, event_type, event_name, payload, is_error, error_code=None, error_message=None):
@@ -78,16 +82,28 @@ class Controller:
         app.logger.debug('setting [{}] updated: {} => {}'.format(value_name, old_value, new_value))
         if value_name == 'indi_prefix':
             app.logger.debug('restarting INDI service')
-            try:
-                self.indi_service.stop()
-            except:
-                pass
             self.__create_indi_service()
-            self.event_listener.on_indi_service_reloaded()
+        elif value_name == 'indi_host' or value_name == 'indi_port':
+            self.__create_indi_server()
+        elif value_name == 'indi_service':
+            self.__create_indi_server()
+
+
+    def __create_indi_server(self):
+        self.__disconnect_indi_server()
+        self.indi_server = Server(app.logger, self.event_listener, self.settings.indi_host, self.settings.indi_port)
+        self.event_listener.on_indi_server_reloaded()
             
     def __create_indi_service(self):
+        self.__disconnect_indi_server()
         self.indi_service = INDIService(self.settings, on_started=self.event_listener.on_indi_service_started, on_exit=self.event_listener.on_indi_service_exit)
+        self.event_listener.on_indi_service_reloaded()
 
+    def __disconnect_indi_server(self):
+        try:
+            self.indi_service.stop()
+        except:
+            pass
 
     def __ping_clients(self):
         while True:

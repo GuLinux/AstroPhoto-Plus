@@ -12,7 +12,7 @@ class Settings:
         self.indi_service_logs = self.__build_path('.logs', 'indi_service', isdir=True)
 
         self.ro_props = ['default_datadir', 'sequences_list', 'indi_profiles_list', 'indi_service_logs']
-        self.rw_props = ['sequences_dir', 'indi_prefix']
+        self.rw_props = ['sequences_dir', 'indi_prefix', 'indi_host', 'indi_port', 'indi_service']
 
         self.on_update = on_update
         self.reload()
@@ -40,6 +40,22 @@ class Settings:
     @property
     def indi_prefix(self):
         return self.json_map.get('indi_prefix', '/usr')
+
+    @property
+    def indi_host(self):
+        if self.indi_service:
+            return 'localhost'
+        return self.json_map.get('indi_host', 'localhost')
+
+    @property
+    def indi_port(self):
+        if self.indi_service:
+            return '7624'
+        return self.json_map.get('indi_port', 7624)
+
+    @property
+    def indi_service(self):
+        return self.json_map.get('indi_service', True)
 
     def update(self, new_data):
         ro_props = [x for x in new_data.keys() if x in self.ro_props]
