@@ -50,7 +50,7 @@ class Settings:
     @property
     def indi_port(self):
         if self.indi_service:
-            return '7624'
+            return 7624
         return self.json_map.get('indi_port', 7624)
 
     @property
