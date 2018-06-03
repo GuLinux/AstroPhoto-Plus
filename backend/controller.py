@@ -42,6 +42,10 @@ class EventListener:
     def on_indi_service_started(self, devices, service):
         self.sse.publish({'event': 'started', 'payload': { 'devices': devices, 'status': service.status() }, 'is_error': False}, type='indi_service')
 
+    def on_indi_service_reloaded(self):
+        self.sse.publish({'event': 'reloaded', 'payload': {}, 'is_error': False}, type='indi_service')
+
+
     def on_indi_service_exit(self, service):
         service_stdout, service_stderr = None, None
         with open(service.stdout_path, 'r') as f:
@@ -79,6 +83,7 @@ class Controller:
             except:
                 pass
             self.__create_indi_service()
+            self.event_listener.on_indi_service_reloaded()
             
     def __create_indi_service(self):
         self.indi_service = INDIService(self.settings, on_started=self.event_listener.on_indi_service_started, on_exit=self.event_listener.on_indi_service_exit)
