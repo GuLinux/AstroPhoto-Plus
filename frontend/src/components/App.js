@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import NavbarContainer from '../containers/NavbarContainer';
-import PagesListContainer from '../containers/PagesListContainer';
+import NavbarContainer from '../Navigation/NavbarContainer';
+import PagesListContainer from '../Navigation/PagesListContainer';
 import LoadingPage from '../containers/LoadingPage';
-import SequencesPage from '../components/SequencesPage';
-import INDIServerContainer from '../containers/INDIServerContainer';
-import NotificationsContainer from '../containers/NotificationsContainer';
-import ErrorPageContainer from '../containers/ErrorPageContainer';
+import SequencesPage from '../Sequences/SequencesPage';
+import INDIServerContainer from '../INDI-Server/INDIServerContainer';
+import NotificationsContainer from '../Notifications/NotificationsContainer';
+import ErrorPageContainer from '../Errors/ErrorPageContainer';
 import './App.css';
 
 
