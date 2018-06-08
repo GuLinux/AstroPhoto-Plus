@@ -18,6 +18,9 @@ import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 import listenToEvents from './middleware/events';
 
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+
+
 const loggerMiddleware = createLogger()
 
 const createMiddleware = () => {
@@ -40,7 +43,11 @@ listenToEvents(store.dispatch)
 
 render(
   <Provider store={store}>
-    <App />
+    <Router>
+        <Route path="/">
+            {({location}) => <App location={location} /> }
+        </Route>
+    </Router>
   </Provider>,
   document.getElementById('root')
 )

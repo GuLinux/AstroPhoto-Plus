@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import ErrorPage from './ErrorPage'
+import React from 'react'
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -21,11 +22,19 @@ const mapStateToProps = (state, ownProps) => {
     return {
         errorSource: state.errors.lastErrorSource,
         errorPayload: payloadAsString,
+        isError: state.errors.isError,
     }
 }
 
 
-const ErrorPageContainer = connect(mapStateToProps)(ErrorPage)
+const ErrorPageContainer = ({isError, errorSource, errorPayload, children}) => {
+    if(isError) {
+        return <ErrorPage errorSource={errorSource} errorPayload={errorPayload} />
+    }
+    return children;
+}
 
-export default ErrorPageContainer
+
+
+export default connect(mapStateToProps)(ErrorPageContainer)
 

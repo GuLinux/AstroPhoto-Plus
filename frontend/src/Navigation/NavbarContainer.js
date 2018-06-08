@@ -3,7 +3,6 @@ import Navigation from './Navigation'
 import Actions from '../actions'
 
 const mapStateToProps = state => ({
-    section: state.navigation.section,
     disabled: state.errors.isError,
 })
 
