@@ -5,11 +5,11 @@ import { Button, MenuItem } from 'react-bootstrap'
 import React from 'react'
 
 const mapStateToProps = (state, ownProps) => ({
-    visible: !!state.navigation.modals[ownProps.name]
+    visible: !!state.modals[ownProps.name]
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    close: () => dispatch(Actions.Navigation.toggleModal(ownProps.name, false)),
+    close: () => dispatch(Actions.Modals.toggleModal(ownProps.name, false)),
 })
 
 const ModalContainer = connect(mapStateToProps, mapDispatchToProps)(ModalDialog)
@@ -18,7 +18,7 @@ const mapToggleModalDispatchToProps = (toggleKey) => (dispatch, ownProps) => {
     let toggle = () => {
         if(ownProps.beforeToggle && !ownProps.beforeToggle())
             return;
-        dispatch(Actions.Navigation.toggleModal(ownProps.modal, ownProps.action === 'visible'))
+        dispatch(Actions.Modals.toggleModal(ownProps.modal, ownProps.action === 'visible'))
         ownProps.afterToggle && ownProps.afterToggle()
     }
     return { [toggleKey]: toggle };

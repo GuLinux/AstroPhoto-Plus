@@ -4,6 +4,8 @@ import AddSequenceModalContainer from './AddSequenceModalContainer';
 import ModalContainer from '../Modals/ModalContainer'
 import { Dialog, QuestionDialog } from '../Modals/Dialogs'
 import { canStart } from './model'
+import { Link } from 'react-router-dom';
+import { LinkContainer } from 'react-router-bootstrap';
 
 const GearDescription = ({gear}) => {
     let elements = [];
@@ -14,7 +16,9 @@ const GearDescription = ({gear}) => {
     return <span>{description}</span>
 }
 
-const SequencesList = ({sequences, gear, onSequenceEdit, onSequenceDelete, startSequence, duplicateSequence}) =>
+const uriFor = sequence => '/sequences/' + sequence.id;
+
+const SequencesList = ({sequences, gear, onSequenceDelete, startSequence, duplicateSequence}) =>
 (
     <div>
         <ModalContainer.Button.Open bsStyle="primary" bsSize="small" className="pull-right" modal="addSequence">new sequence</ModalContainer.Button.Open>
@@ -35,13 +39,21 @@ const SequencesList = ({sequences, gear, onSequenceEdit, onSequenceDelete, start
             <tbody>
             {sequences.map(sequence => (
                 <tr key={sequence.id}>
-                    <td><a href='#' onClick={e => onSequenceEdit(sequence.id)} >{sequence.name}</a></td>
+                    <td>
+                        <Link to={uriFor(sequence)}>
+                            {sequence.name}
+                        </Link>
+                    </td>
                     <td><GearDescription gear={gear[sequence.id]} /></td>
                     <td>{sequence.sequenceItems.length}</td>
                     <td>{sequence.status}</td>
                     <td>
                         <ButtonGroup>
-                            <Button title="Edit" onClick={e => onSequenceEdit(sequence.id)} bsSize="small"><Glyphicon glyph="edit" /></Button>
+                            <LinkContainer to={uriFor(sequence)}>
+                                <Button title="Edit" bsSize="small">
+                                    <Glyphicon glyph="edit" />
+                                </Button>
+                            </LinkContainer>
                             <Dialog.Button.Open title="Remove" modal={sequence.id + 'confirmSequenceDelete'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Button.Open>
                             <QuestionDialog name={sequence.id + 'confirmSequenceDelete'} title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', bsStyle: 'danger', afterClose: () => onSequenceDelete(sequence.id)}]}>
                                 Do you really want to remove this sequence?

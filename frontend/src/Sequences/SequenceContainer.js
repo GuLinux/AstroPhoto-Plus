@@ -3,8 +3,8 @@ import Sequence from './Sequence'
 import Actions from '../actions'
 import { getGears } from '../Gear/selectors'
 
-const mapStateToProps = (state) => {
-    let sequenceId = state.navigation.sequencesPage.sequenceID;
+const mapStateToProps = (state, ownProps) => {
+    let sequenceId = ownProps.sequenceId;
     if(!(sequenceId in state.sequences.entities)) {
         return { sequence: null }
     }
@@ -25,11 +25,9 @@ const canEdit = (state, sequence) => {
 
 
 const mapDispatchToProps = (dispatch, props) => ({
-    navigateBack: () => dispatch(Actions.Navigation.toSequence('sequences')),
     startSequence: (sequence) => dispatch(Actions.Sequences.start(sequence)),
     onCreateSequenceItem: (type, sequenceId) => {
         dispatch(Actions.SequenceItems.newPending(type, sequenceId));
-        dispatch(Actions.Navigation.toSequenceItem('sequence-item', 'pending'));
     }
 })
 
@@ -48,4 +46,3 @@ const SequenceContainer = connect(
 )(Sequence)
 
 export default SequenceContainer
-

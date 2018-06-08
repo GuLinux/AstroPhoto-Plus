@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import NavbarContainer from '../Navigation/NavbarContainer';
-import PagesListContainer from '../Navigation/PagesListContainer';
 import LoadingPage from '../containers/LoadingPage';
 import SequencesPage from '../Sequences/SequencesPage';
 import INDIServerContainer from '../INDI-Server/INDIServerContainer';
@@ -15,8 +14,8 @@ const App = ({location}) => (
     <NotificationsContainer />
     <ErrorPageContainer>
         <Route exact path="/" render={() => <Redirect to="/sequences"/> }/>
-        <Route path="/sequences" component={SequencesPage} /> 
-        <Route path="/indi" component={INDIServerContainer} /> 
+        <Route path="/sequences" component={SequencesPage} />
+        <Route path="/indi" component={INDIServerContainer} />
     </ErrorPageContainer>
     <LoadingPage />
   </div>

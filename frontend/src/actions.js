@@ -5,6 +5,7 @@ import INDIServer from './INDI-Server/actions'
 import Notifications from './Notifications/actions'
 import Gear from './Gear/actions'
 import INDIService from './INDI-Service/actions'
+import Modals from './Modals/actions'
 
 export const Actions = {
     Sequences,
@@ -15,6 +16,7 @@ export const Actions = {
     Gear,
     serverError: (source, payloadType, payload, responseBody) => ({ type: 'SERVER_ERROR', source, payloadType, payload, responseBody }),
     INDIService,
+    Modals,
 }
 
 export default Actions

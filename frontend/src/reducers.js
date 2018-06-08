@@ -7,6 +7,7 @@ import notifications from './Notifications/reducer'
 import gear from './Gear/reducer'
 import errors from './Errors/reducer'
 import indiservice from './INDI-Service/reducer'
+import modals from './Modals/reducer'
 
 const network = (state = { fetching: false }, action) => {
     switch(action.type) {
@@ -50,6 +51,6 @@ const network = (state = { fetching: false }, action) => {
 
 
 
-const indiLiteApp = combineReducers({sequenceItems, sequences, network, navigation, indiserver, notifications, errors, gear, indiservice });
+const indiLiteApp = combineReducers({sequenceItems, sequences, network, navigation, indiserver, notifications, errors, gear, indiservice, modals });
 
 export default indiLiteApp

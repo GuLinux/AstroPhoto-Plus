@@ -1,10 +1,12 @@
-import React from 'react'
-import ModalContainer from '../Modals/ModalContainer'
+import React from 'react';
+import ModalContainer from '../Modals/ModalContainer';
 import AddSequenceItemModal from '../SequenceItems/AddSequenceItemModal'
 import SequenceItemsContainer from '../SequenceItems/SequenceItemsContainer';
 import { Button, ButtonGroup, Label } from 'react-bootstrap';
-import { canStart } from './model'
-import { INDINumberPropertyContainer, INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer'
+import { canStart } from './model';
+import { INDINumberPropertyContainer, INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
+import { LinkContainer } from 'react-router-bootstrap';
+import { withRouter } from 'react-router';
 
 
 // TODO: refactor Gear pages out of this
@@ -38,14 +40,23 @@ const FilterWheelDetailsPage = ({filterWheel, filterNumber, filterName}) => {
         return null;
     let currentFilter = null
     if(filterWheel.connected)
-        currentFilter = <p>Filter: {filterWheel.currentFilter.name} ({filterWheel.currentFilter.number})</p> 
+        currentFilter = <p>Filter: {filterWheel.currentFilter.name} ({filterWheel.currentFilter.number})</p>
     return (<div className="container">
         <DeviceHeader device={filterWheel} />
         {currentFilter}
     </div>)
 }
 
-const Sequence = ({sequence, onCreateSequenceItem, navigateBack, startSequence, camera, filterWheel, canEdit}) => {
+const AddSequenceItem = withRouter( ({history, onCreateSequenceItem, sequenceId}) => (
+    <ModalContainer name="newSequenceItem">
+        <AddSequenceItemModal modalName="newSequenceItem" onAddSequenceItem={(...args) => {
+            onCreateSequenceItem(...args);
+            history.push('/sequences/' + sequenceId + '/items/pending')
+        }} />
+    </ModalContainer>
+))
+
+const Sequence = ({sequence, onCreateSequenceItem, startSequence, camera, filterWheel, canEdit}) => {
     if(sequence === null)
         return null;
     return (
@@ -53,14 +64,14 @@ const Sequence = ({sequence, onCreateSequenceItem, navigateBack, startSequence, 
         <h2>
             {sequence.name}
             <ButtonGroup className="pull-right">
-                <Button onClick={navigateBack} bsSize="small">back</Button>
+                <LinkContainer to="/sequences">
+                    <Button bsSize="small">back</Button>
+                </LinkContainer>
                 <Button onClick={() => startSequence()} bsSize="small" bsStyle="success" disabled={!canStart(sequence)}>start</Button>
                 <ModalContainer.Button.Open modal="newSequenceItem" bsStyle="info" bsSize="small" className="pull-right" disabled={!canEdit}>new</ModalContainer.Button.Open>
             </ButtonGroup>
         </h2>
-        <ModalContainer name="newSequenceItem">
-            <AddSequenceItemModal modalName="newSequenceItem" onAddSequenceItem={onCreateSequenceItem} />
-        </ModalContainer>
+        <AddSequenceItem onCreateSequenceItem={onCreateSequenceItem} sequenceId={sequence.id} />
 
         <SequenceItemsContainer canEdit={canEdit} sequenceId={sequence.id} />
 

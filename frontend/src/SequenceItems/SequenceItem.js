@@ -3,6 +3,7 @@ import ExposureSequenceItem from './ExposureSequenceItem'
 import CommandSequenceItem from './CommandSequenceItem'
 import FilterSequenceItemContainer from './FilterSequenceItemContainer'
 import INDIPropertySequenceItemContainer from './INDIPropertySequenceItemContainer'
+import { Redirect } from 'react-router';
 
 const mapItemType = (sequenceItem) => {
     switch(sequenceItem.type) {
@@ -19,8 +20,12 @@ const mapItemType = (sequenceItem) => {
         }
 }
 
-const SequenceItem = ({sequenceItem}) => (
-    <div className="container">{mapItemType(sequenceItem)}</div>
-)
+const SequenceItem = ({sequenceItem}) => {
+    if(sequenceItem) {
+        return <div className="container">{mapItemType(sequenceItem)}</div>
+    }
+    //return null;
+    return <Redirect to="/sequences" />
+}
 
 export default SequenceItem
