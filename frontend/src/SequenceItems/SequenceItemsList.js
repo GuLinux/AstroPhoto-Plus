@@ -28,11 +28,15 @@ const statusComponent = sequenceItem => {
     }
     return (
         <span>
-            <div className="col-xs-6">
-                {sequenceItem.status}
+            <div className="row">
+                <div className="col-xs-12">
+                    {sequenceItem.status}
+                </div>
             </div>
-            <div className="col-xs-6">
-                <JobProgressBar status={sequenceItem.status} min={0} max={count} progress={progress} />
+            <div className="row">
+                <div className="col-xs-12">
+                    <JobProgressBar status={sequenceItem.status} min={0} max={count} progress={progress} />
+                </div>
             </div>
         </span>
     )
