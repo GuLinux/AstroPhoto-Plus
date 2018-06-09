@@ -10,7 +10,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const INDIAutoloadConfigurationDummy = ({device, onConnected}) => {
-    if(Date.now() - device.lastConnected < 5000 && ! device.configAutoloaded) {
+    if(device && Date.now() - device.lastConnected < 5000 && ! device.configAutoloaded) {
         setTimeout(() => onConnected(device), 5000);
     }
     return null;
@@ -21,5 +21,4 @@ const INDIAutoloadConfiguration = connect(
   mapDispatchToProps
 )(INDIAutoloadConfigurationDummy)
 
-export default INDIAutoloadConfiguration 
-
+export default INDIAutoloadConfiguration

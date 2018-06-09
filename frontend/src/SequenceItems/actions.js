@@ -17,7 +17,7 @@ export const SequenceItems = {
         }
     },
 
-    saveSequenceItem: (sequenceItem) => dispatch => {
+    saveSequenceItem: (sequenceItem,onSaved) => dispatch => {
         dispatch({type: 'REQUEST_SAVE_SEQUENCE_ITEM', sequenceItem});
 
         let onError = response => {
@@ -25,13 +25,13 @@ export const SequenceItems = {
             if(response.status === 400) {
                 response.json().then(data => dispatch(Actions.Notifications.add('Error saving sequence item', data.error_message, 'warning')) );
                 return true;
-            } 
+            }
             return false;
-        } 
+        }
 
         let onSuccess = (data, wasCreated) => {
             SequenceItems.updated(dispatch, sequenceItem.sequence, data, wasCreated)
-            dispatch(Actions.Navigation.toSequence('sequence', sequenceItem.sequence))
+            onSaved();
         }
 
         if(sequenceItem.id === 'pending') {

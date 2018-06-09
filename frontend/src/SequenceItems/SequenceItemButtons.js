@@ -1,11 +1,18 @@
-import React from 'react'
-import { Button } from 'react-bootstrap'
-import { Dialog, QuestionDialog } from '../Modals/Dialogs.js'
+import React from 'react';
+import { Button } from 'react-bootstrap';
+import { Dialog, QuestionDialog } from '../Modals/Dialogs.js';
+import { withRouter } from 'react-router';
 
-const SequenceItemButtons = ({isValid, isChanged, onSave, navigateBack, sequenceId, sequenceItem, showSequenceItemUnsavedChangesModal}) => { 
+const SequenceItemButtons = ({isValid, isChanged, onSave, sequenceItem, history }) => {
+
+    const navigateBack = () => {
+        history.push(`/sequences/${sequenceItem.sequence}`)
+    };
+
     let onSaveClicked = () => {
-        onSave(sequenceItem);
+        onSave(sequenceItem, navigateBack);
     }
+
 
     let canSave = isValid && isChanged;
 
@@ -27,4 +34,4 @@ const SequenceItemButtons = ({isValid, isChanged, onSave, navigateBack, sequence
         </QuestionDialog>
     </div>
 )}
-export default SequenceItemButtons;
+export default withRouter(SequenceItemButtons);

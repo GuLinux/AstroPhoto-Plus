@@ -1,8 +1,7 @@
 import React from 'react';
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { matchPath, Route} from 'react-router';
+import { Route} from 'react-router';
 
 
 export const NavLinkItem = ({linkRef, label, active, disabled}) => {
@@ -23,7 +22,7 @@ export const ActiveRoute = ({path, children, ...rest}) => {
     )
 }
 
-const Navigation = ({disabled, history}) => (
+const Navigation = ({disabled}) => (
 <Navbar inverse collapseOnSelect>
   <Navbar.Header>
     <Navbar.Brand>

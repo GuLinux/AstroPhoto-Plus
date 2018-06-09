@@ -5,9 +5,13 @@ import { getVisibleProperties } from './selectors';
 
 const mapStateToProps = (state, ownProps) => {
     let group = ownProps.group;
+    let properties;
+    if(group) {
+        properties = getVisibleProperties(state, ownProps);
+    }
     return {
         group,
-        properties: getVisibleProperties(state)
+        properties,
     }
 }
 
@@ -16,5 +20,4 @@ const INDIDeviceGroupContainer = connect(
   mapStateToProps,
 )(INDIDeviceGroup)
 
-export default INDIDeviceGroupContainer 
-
+export default INDIDeviceGroupContainer

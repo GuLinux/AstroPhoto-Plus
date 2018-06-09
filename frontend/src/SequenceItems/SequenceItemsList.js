@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table, Glyphicon, ButtonGroup, Button, ProgressBar } from 'react-bootstrap';
 import { Dialog, QuestionDialog } from '../Modals/Dialogs'
+import { LinkContainer } from 'react-router-bootstrap';
 
 const descriptionComponent = sequenceItem => <span>{sequenceItem.description}</span>
 
@@ -37,7 +38,7 @@ const statusComponent = sequenceItem => {
     )
 }
 
-const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequenceItem, moveSequenceItem, duplicateSequenceItem}) => (
+const SequenceItemsList = ({canEdit, sequenceItems, deleteSequenceItem, moveSequenceItem, duplicateSequenceItem}) => (
     <Table striped bordered hover responsive>
         <thead>
             <tr>
@@ -55,7 +56,9 @@ const SequenceItemsList = ({canEdit, sequenceItems, editSequenceItem, deleteSequ
                     <td>{statusComponent(sequenceItem)}</td>
                     <td>
                         <ButtonGroup>
-                            <Button title="Edit" bsSize="small" disabled={!canEdit} onClick={() => editSequenceItem(sequenceItem.id)}><Glyphicon glyph="edit" /></Button>
+                            <LinkContainer to={`/sequences/${sequenceItem.sequence}/items/${sequenceItem.id}`}>
+                            <Button title="Edit" bsSize="small" disabled={!canEdit}><Glyphicon glyph="edit" /></Button>
+                            </LinkContainer>
                             <Dialog.Button.Open title="Remove" modal={sequenceItem.id + 'confirmDeleteSequenceItem'} bsSize="small"><Glyphicon glyph="minus" /></Dialog.Button.Open>
                             <QuestionDialog name={sequenceItem.id + 'confirmDeleteSequenceItem'} title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), bsStyle: 'danger'} ]}>
                                 Do you really want to remove this element?

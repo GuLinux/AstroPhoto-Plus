@@ -53,12 +53,12 @@ const indiPropertyRemoved = (state, property) => {
 const addPendingValues = (state, property, pendingValues) => {
     let currentPendingValues = property.id in state.pendingValues ? state.pendingValues[property.id] : {}
     let mergedPendingValues = {...currentPendingValues, ...pendingValues};
-    
+
     Object.keys(mergedPendingValues).forEach(name => {
         if(mergedPendingValues[name] === property.values.filter(v => v.name === name)[0].value)
             delete mergedPendingValues[name]
     });
-    
+
     return {...state, pendingValues: {...pendingValues, [property.id]: mergedPendingValues } };
 }
 
@@ -96,7 +96,7 @@ const indiConfigAutoloaded = (state, device) => ({
 
 const indiDeviceDisconnected = (state, device) => ({
     ...state,
-    deviceEntities: {...state.deviceEntities, [device]: {...state.deviceEntities[device], lastDisConnected: Date.now() } },    
+    deviceEntities: {...state.deviceEntities, [device]: {...state.deviceEntities[device], lastDisConnected: Date.now() } },
 });
 
 

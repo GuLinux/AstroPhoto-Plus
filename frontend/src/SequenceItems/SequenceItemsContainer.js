@@ -51,7 +51,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    editSequenceItem: (sequenceItemId) => dispatch(Actions.Navigation.toSequenceItem('sequence-item', sequenceItemId)),
     deleteSequenceItem: (sequenceItem) => dispatch(Actions.SequenceItems.delete(sequenceItem)),
     moveSequenceItem: (sequenceItem, direction) => dispatch(Actions.SequenceItems.move(sequenceItem, direction) ),
     duplicateSequenceItem: (sequenceItem) => dispatch(Actions.SequenceItems.duplicate(sequenceItem) ),
@@ -64,4 +63,3 @@ const SequenceItemsContainer = connect(
 )(SequenceItemsList)
 
 export default SequenceItemsContainer
-

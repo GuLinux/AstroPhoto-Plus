@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import NavbarContainer from '../Navigation/NavbarContainer';
 import LoadingPage from '../containers/LoadingPage';
 import SequencesPage from '../Sequences/SequencesPage';

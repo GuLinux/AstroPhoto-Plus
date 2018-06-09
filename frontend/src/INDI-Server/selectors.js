@@ -3,8 +3,8 @@ import { createSelector } from 'reselect'
 export const getProperties = state => state.indiserver.properties;
 export const getDeviceIds = state => state.indiserver.devices;
 export const getDeviceEntities = state => state.indiserver.deviceEntities;
-export const getVisibleDevice = state => state.navigation.indi.device;
-export const getVisibleGroup = state => state.navigation.indi.group ? state.navigation.indi.group : 'Main Control';
+export const getVisibleDevice = (state, {device}) => device;
+export const getVisibleGroup = (state, {group}) => group;
 
 export const getDeviceNames = createSelector([getDeviceIds, getDeviceEntities], (deviceIds, devices) => {
     return deviceIds.map(id => ({ id, name: devices[id].name }))
@@ -33,9 +33,9 @@ export const getDevicesProperties = createSelector([getDeviceIds, getProperties]
     } , {})
 )
 
-export const getDevicesConnectionState = createSelector([getDevicesProperties], (devicesProperties) => 
+export const getDevicesConnectionState = createSelector([getDevicesProperties], (devicesProperties) =>
     Object.keys(devicesProperties).reduce( (mapping, id) => ({
         ...mapping,
-        [id]: 'CONNECTION' in devicesProperties[id] && !! devicesProperties[id].CONNECTION.values.find(v => v.name === 'CONNECT' && v.value) 
+        [id]: 'CONNECTION' in devicesProperties[id] && !! devicesProperties[id].CONNECTION.values.find(v => v.name === 'CONNECT' && v.value)
     }), {})
 )

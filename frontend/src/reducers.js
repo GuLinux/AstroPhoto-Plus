@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux'
 import sequenceItems from './SequenceItems/reducer'
 import sequences from './Sequences/reducer'
-import navigation from './Navigation/reducer'
 import indiserver from './INDI-Server/reducer'
 import notifications from './Notifications/reducer'
 import gear from './Gear/reducer'
@@ -51,6 +50,6 @@ const network = (state = { fetching: false }, action) => {
 
 
 
-const indiLiteApp = combineReducers({sequenceItems, sequences, network, navigation, indiserver, notifications, errors, gear, indiservice, modals });
+const indiLiteApp = combineReducers({sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, modals });
 
 export default indiLiteApp

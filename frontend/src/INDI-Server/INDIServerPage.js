@@ -1,13 +1,12 @@
 import React from 'react';
-import { Tabs, Tab } from 'react-bootstrap';
-import INDIServerDetailsContainer from './INDIServerDetailsContainer'
-import INDIDeviceContainer from './INDIDeviceContainer'
-import INDIServiceContainer from '../INDI-Service/INDIServiceContainer'
-import INDIServiceDevicesContainer from '../INDI-Service/INDIServiceDevicesContainer'
-import INDIServiceProfilesContainer from '../INDI-Service/INDIServiceProfilesContainer'
-
-
-const SETTINGS_PAGE = 'server_status'
+import { Nav } from 'react-bootstrap';
+import INDIServerDetailsContainer from './INDIServerDetailsContainer';
+import INDIDeviceContainer from './INDIDeviceContainer';
+import INDIServiceContainer from '../INDI-Service/INDIServiceContainer';
+import INDIServiceDevicesContainer from '../INDI-Service/INDIServiceDevicesContainer';
+import INDIServiceProfilesContainer from '../INDI-Service/INDIServiceProfilesContainer';
+import { ActiveRoute, NavLinkItem } from '../Navigation/Navigation';
+import { Route } from 'react-router';
 
 const INDISettingsPage = ({hasLocalServer}) => {
     if(! hasLocalServer)
@@ -37,25 +36,16 @@ const INDISettingsPage = ({hasLocalServer}) => {
     )
 }
 
-const INDIServerPage = ({devices, indiDeviceTab, navigateToDevice, hasLocalServer}) => (
+const INDIServerPage = ({devices, hasLocalServer}) => (
     <div className="container">
-        <Tabs
-            id="INDIServerTabs"
-            activeKey={indiDeviceTab ? indiDeviceTab : SETTINGS_PAGE}
-            onSelect={navigateToDevice}
-            bsStyle="tabs"
-        >
-            <Tab eventKey={SETTINGS_PAGE} title="INDI Server configuration">
-                <INDISettingsPage hasLocalServer={hasLocalServer} />
-            </Tab>
-            { devices.map( device => (
-                <Tab key={device.id} eventKey={device.id} title={device.name}>
-                    <INDIDeviceContainer device={device.id} />
-                </Tab>
-            ))}
-        </Tabs>
+        <Nav bsStyle="tabs">
+            <ActiveRoute exact={true} path="/indi"><NavLinkItem linkRef="/indi" label="INDI Server" /></ActiveRoute>
+            { devices.map( device =>
+                <ActiveRoute key={device.id} path={'/indi/' + device.id}><NavLinkItem linkRef={'/indi/' + device.id} label={device.name} /></ActiveRoute>
+            )}
+        </Nav>
+        <Route path="/indi" exact={true} render={() => <INDISettingsPage hasLocalServer={hasLocalServer} />} />
+        <Route path="/indi/:deviceId" render={({match, location}) => <INDIDeviceContainer location={location} device={match.params.deviceId} />} />
     </div>
 )
 export default INDIServerPage;
-
-
