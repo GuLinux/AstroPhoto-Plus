@@ -6,10 +6,6 @@ import { createLogger } from 'redux-logger'
 import { Actions } from './actions'
 import thunkMiddleware from 'redux-thunk'
 
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
-import './bootstrap-theme/css/bootstrap.css'
-
 import 'semantic-ui-css/semantic.min.css';
 import 'semantic-ui-forest-themes/semantic.superhero.min.css';
 

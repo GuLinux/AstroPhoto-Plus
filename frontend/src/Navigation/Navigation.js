@@ -21,7 +21,7 @@ export const ActiveRoute = ({path, children, ...rest}) => {
 }
 
 const Navigation = ({disabled}) => (
-    <Menu>
+    <Menu stackable >
         <Menu.Item header>StarQuew</Menu.Item>
         <Menu.Item as={NavLink} to="/sequences" disabled={disabled}>Sequences</Menu.Item>
         <Menu.Item as={NavLink} to="/indi" disabled={disabled}>INDI Server</Menu.Item>

@@ -1,9 +1,8 @@
 import React from 'react'
-import { Modal } from 'react-bootstrap';
+import { Modal } from 'semantic-ui-react';
 
 export const ModalDialog = ({visible, children}) => (
-    <Modal show={visible} keyboard={true}>
+    <Modal open={visible}>
         {children}
     </Modal>
 )
-

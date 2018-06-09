@@ -39,9 +39,6 @@ ModalContainer.Button = {
     Toggle: connect(null, mapToggleModalDispatchToProps('onClick'), mergeToggleProps)(Button),
     Close: (props) => <ModalContainer.Button.Toggle action="close" {...props} />,
     Open: (props) => <ModalContainer.Button.Toggle action="visible" {...props} />,
-
 }
-
-
 
 export default ModalContainer;

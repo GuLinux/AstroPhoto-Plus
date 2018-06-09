@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from 'react-bootstrap'
+import { Modal } from 'semantic-ui-react'
 import ModalContainer from './ModalContainer'
 
 export const Dialog = ({name, title, children}) => (

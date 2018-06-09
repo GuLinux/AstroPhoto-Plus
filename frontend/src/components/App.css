@@ -41,15 +41,6 @@
     font-size: small;
 }
 
-.sequence-item-progress {
-    min-width: 150px;
-
-}
-
-.sequence-item-progress .progress-bar {
-    color: black;
-}
-
 .indi-server-details-container {
     margin-top: 10px;
 }
