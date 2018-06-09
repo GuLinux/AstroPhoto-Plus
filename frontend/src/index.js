@@ -7,7 +7,8 @@ import { Actions } from './actions'
 import thunkMiddleware from 'redux-thunk'
 
 import 'semantic-ui-css/semantic.min.css';
-import 'semantic-ui-forest-themes/semantic.superhero.min.css';
+// TODO: restore when it is working again
+// import 'forest-themes-css/dist/bootswatch/semantic.darkly.min.css';
 
 
 import indiLiteApp from './reducers'
