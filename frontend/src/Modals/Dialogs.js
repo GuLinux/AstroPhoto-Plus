@@ -11,8 +11,8 @@ export const Dialog = ({name, title, children}) => (
 Dialog.Description = Modal.Description;
 Dialog.Content = Modal.Content;
 Dialog.Actions = Modal.Actions;
-Dialog.Button = ModalContainer.Button
-Dialog.MenuItem = ModalContainer.MenuItem
+Dialog.Button = ModalContainer.Button;
+Dialog.MenuItem = ModalContainer.MenuItem;
 
 
 export const QuestionDialog = ({name, title, buttons, children}) => (

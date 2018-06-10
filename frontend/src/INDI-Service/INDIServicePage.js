@@ -1,14 +1,11 @@
 import React from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import { Modal, Button, Header, Label, Grid } from 'semantic-ui-react'
 
 const INDIServiceError = ({exitCode, stdout, stderr, onQuit}) => (
   <Modal.Dialog>
-    <Modal.Header>
-      <Modal.Title>INDI Service Error</Modal.Title>
-    </Modal.Header>
-
-    <Modal.Body className="indi-service-error-dialog">
-            <h4>INDI server process has closed with an error.</h4>
+    <Modal.Header>INDI Service Error</Modal.Header>
+    <Modal.Content>
+            <Header size='small'>INDI server process has closed with an error.</Header>
             <p>Exit code: <b>{exitCode}</b></p>
             {stdout ? (
                 <div>
@@ -22,11 +19,11 @@ const INDIServiceError = ({exitCode, stdout, stderr, onQuit}) => (
                     <pre>{stderr}</pre>
                 </div>
         ) : null}
-    </Modal.Body>
+    </Modal.Content>
 
-    <Modal.Footer>
-      <Button bsStyle="primary" onClick={onQuit}>Close</Button>
-    </Modal.Footer>
+    <Modal.Actions>
+      <Button primary onClick={onQuit}>Close</Button>
+    </Modal.Actions>
   </Modal.Dialog>
 )
 
@@ -34,23 +31,31 @@ const INDIServicePage = ({serverFound, serverRunning, onServerStopStart, startSt
     if(! serverFound)
         return null;
     const stateParams = {
-        labelClass: serverRunning ? 'success' : 'danger',
+        labelColor: serverRunning ? 'green' : 'red',
         label: serverRunning ? 'running' : 'not running',
-        buttonClass: serverRunning ? 'warning': 'success',
+        buttonColor: serverRunning ? 'orange': 'green',
         buttonLabel: serverRunning ? 'stop' : 'start',
     }
 
     return (
-        <div className="container-fluid">
-            <div className="row">
-                <div className="col-xs-2">Status</div>
-                <div className="col-xs-2"><span className={'label label-' + stateParams.labelClass}>{stateParams.label}</span></div>
-                <div className="col-xs-2"><Button bsSize="xsmall" bsStyle={stateParams.buttonClass} onClick={() => onServerStopStart()} disabled={startStopPending}>{stateParams.buttonLabel}</Button></div>
-            </div>
+        <Grid columns={3}>
+            <Grid.Row>
+                <Grid.Column>Status</Grid.Column>
+                <Grid.Column>
+                    <Label color={stateParams.labelColor} size='mini'>
+                        {stateParams.label}
+                    </Label>
+                </Grid.Column>
+                <Grid.Column>
+                    <Button size="tiny" compact color={stateParams.buttonColor} onClick={() => onServerStopStart()} disabled={startStopPending}>
+                        {stateParams.buttonLabel}
+                    </Button>
+                </Grid.Column>
+            </Grid.Row>
             {
                 lastError.exitCode !== undefined ? <INDIServiceError {...lastError} onQuit={dismissError} /> : null
             }
-        </div>
+        </Grid>
     )
 }
 

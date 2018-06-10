@@ -1,11 +1,11 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Grid , Divider, Label} from 'semantic-ui-react';
 
 const getConnectionView = (isConnected, connectAction, disconnectAction) => {
     return {
-        stateLabelClass: isConnected ? 'success' : 'danger',
+        stateLabelColor: isConnected ? 'green`' : 'red',
         stateLabel: isConnected ? 'Connected' : 'Disconnected',
-        connectionButtonClass: isConnected ? 'warning' : 'success',
+        connectionButtonColor: isConnected ? 'orange' : 'green',
         connectionButtonLabel: isConnected ? 'Disconnect' : 'Connect',
         connectionButtonAction: isConnected? disconnectAction : connectAction,
     }
@@ -15,18 +15,28 @@ const INDIServerDetailsPage = ({serverState, setServerConnection}) => {
     let connectionView = getConnectionView(serverState.connected);
     let connectionAction = () => setServerConnection(! serverState.connected);
     return (
-        <div className="indi-server-details-container container-fluid">
-            <div className="row">
-                <div className="col-xs-2">Address</div>
-                <div className="col-xs-6">{serverState.host}:{serverState.port}</div>
-            </div>
-            <hr />
-            <div className="row">
-                <div className="col-xs-2">Connection</div>
-                <div className="col-xs-2"><span className={'label label-' + connectionView.stateLabelClass}>{connectionView.stateLabel}</span></div>
-                <div className="col-xs-2"><Button bsSize="xsmall" bsStyle={connectionView.connectionButtonClass} onClick={connectionAction}>{connectionView.connectionButtonLabel}</Button></div>
-            </div>
-        </div>
+        <Grid columns={3}>
+            <Grid.Row>
+                <Grid.Column>Address</Grid.Column>
+                <Grid.Column size={2}>{serverState.host}:{serverState.port}</Grid.Column>
+            </Grid.Row>
+            <Divider />
+            <Grid.Row>
+                <Grid.Column>
+                    Connection
+                </Grid.Column>
+                <Grid.Column>
+                    <Label color={connectionView.stateLabelColor} size='mini'>
+                        {connectionView.stateLabel}
+                    </Label>
+                </Grid.Column>
+                <Grid.Column>
+                    <Button size="mini" color={connectionView.connectionButtonColor} onClick={connectionAction} compact>
+                        {connectionView.connectionButtonLabel}
+                    </Button>
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
 )}
 
 export default INDIServerDetailsPage

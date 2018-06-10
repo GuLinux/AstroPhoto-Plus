@@ -1,68 +1,101 @@
 import React from 'react'
-import { FormGroup, ControlLabel, FormControl, InputGroup, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Form, Menu, Container, Button, Icon, Label, Dropdown, Modal} from 'semantic-ui-react';
 import { Dialog } from '../Modals/Dialogs'
 
 
 class ProfileNameDialog extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { name: props.initialValue};
+        this.state = { name: props.initialValue, open: false};
     }
+
+    hasChanged = () => this.state.name === this.props.initialValue;
+    canSubmit = () => this.hasChanged && this.state.name !== '';
 
     componentDidUpdate(prevProps) {
         if(prevProps.initialValue !== this.props.initialValue)
             this.setState({...this.state, name: this.props.initialValue})
     }
 
-    render = () => (
-        <Dialog name={this.props.name} title={this.props.title}>
-            <Dialog.Body>
-                <FormGroup>
-                    <FormControl type="text" placeholder="Enter the profile name" value={this.state.name} onChange={ (e) => this.setState({...this.state, name: e.target.value})} />
-                </FormGroup>
-            </Dialog.Body>
-            <Dialog.Footer>
-                <Dialog.Button.Close modal={this.props.name}>Cancel</Dialog.Button.Close>
-                <Dialog.Button.Close disabled={this.state.name === '' || this.state.name === this.props.initialValue} afterToggle={() => this.props.onAccepted(this.state.name)} bsStyle="primary" modal={this.props.name}>{this.props.buttonText}</Dialog.Button.Close>
-            </Dialog.Footer>
-        </Dialog>
+    save = () => {
+        this.props.onSave(this.state.name)
+    }
+
+    modalContent = () => (
+        <Modal.Content>
+            <Form>
+                <Form.Input
+                    type='text'
+                    label='Profile name'
+                    placeholder="Enter the profile name"
+                    value={this.state.name}
+                    onChange={ (e) => this.setState({...this.state, name: e.target.value})}
+                />
+            </Form>
+        </Modal.Content>
     )
+
+    render = () => {
+        const { trigger, title } = this.props;
+        const actions = [
+            'Cancel',
+            { key: 'submit', content: this.props.buttonText, positive: true, disabled: !this.canSubmit(), onClick: () => this.save() }
+        ];
+        return (
+            <Modal trigger={trigger} content={this.modalContent()} header={title} actions={actions} />
+        )
+    }
 }
 
 
-const INDIServiceProfilesPage = ({
-    profiles,
-    selectedProfile,
-    selectProfile,
-    canAddProfile,
-    canRemoveProfile,
-    addProfile,
-    canRenameProfile,
-    removeProfile,
-    updateProfile,
-    selectedProfileDriversChanged,
-    renameProfile,
-    selectedProfileName
-}) => (
-    <form>
-        <FormGroup controlId="formControlsSelect">
-            <ControlLabel>Profiles</ControlLabel>
-            <InputGroup>
-                <FormControl componentClass="select" placeholder="select" value={selectedProfile} onChange={ e => selectProfile(e.target.value) }>
-                    <option value="select">select</option>
-                    { profiles.map(profile => <option key={profile.id} value={profile.id}>{profile.name}</option>)}
-                </FormControl>
-                <DropdownButton componentClass={InputGroup.Button} id="input-dropdown-addon" title="..." >
-                    <Dialog.MenuItem.Open key="newprofile" modal="newProfileDialog" disabled={!canAddProfile}>new</Dialog.MenuItem.Open>
-                    <Dialog.MenuItem.Open key="renameprofile" modal="renameProfileDialog" disabled={!canRenameProfile}>rename</Dialog.MenuItem.Open>
-                    <MenuItem key="updateProfile" disabled={!selectedProfileDriversChanged} onSelect={updateProfile}>update</MenuItem>
-                    <MenuItem key="removeProfile" disabled={!canRemoveProfile} onSelect={removeProfile}>remove</MenuItem>
-                </DropdownButton>
-            </InputGroup>
-        </FormGroup>
-        <ProfileNameDialog name="newProfileDialog" title="New profile" initialValue="" onAccepted={addProfile} buttonText="Create" />
-        <ProfileNameDialog name="renameProfileDialog" title="Rename profile" initialValue={selectedProfileName} onAccepted={renameProfile} buttonText="Rename" />
-    </form>
-);
+class INDIServiceProfilesPage extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            editProfile: '',
+        }
+    }
+
+    render() {
+        const {
+            profiles,
+            selectedDrivers,
+            loadProfile,
+            addProfile,
+            removeProfile,
+            updateProfile,
+            renameProfile,
+            driversAreSelected,
+        } = this.props;
+        return (
+            <Container>
+                <Menu size='mini' vertical secondary fluid>
+                    <Menu.Item header>
+                        Profiles
+                        <ProfileNameDialog initialValue='' title='New profile' buttonText='Create' trigger={
+                            driversAreSelected ?
+                            <Label size='mini' icon='plus' content='add' basic as='a' />
+                            : null
+                        } onSave={(name) => addProfile(name, selectedDrivers)} />
+
+                    </Menu.Item>
+                    { profiles.map(p => (
+                        <Dropdown item text={p.name} key={p.id}>
+                            <Dropdown.Menu direction='left'>
+                                <Dropdown.Item icon='check' text='load' onClick={() => loadProfile(p.id)} />
+
+                                <ProfileNameDialog initialValue={p.name} title='Rename profile' buttonText='Rename' trigger={
+                                    <Dropdown.Item icon='tag' text='rename'  />
+                                } onSave={(name) => renameProfile(p.id, name)} />
+                                <Dropdown.Item icon='save' disabled={!driversAreSelected} text='update' onClick={() => updateProfile(p.id)}/>
+                                <Dropdown.Item icon='delete' text='remove' onClick={() => removeProfile(p.id)} />
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    ))}
+                </Menu>
+            </Container>
+        )
+    }
+}
 
 export default INDIServiceProfilesPage;
