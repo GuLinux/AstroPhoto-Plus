@@ -1,11 +1,11 @@
 import React from 'react';
-import { FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { Form, Label, Divider } from 'semantic-ui-react';
 import SequenceItemButtonsContainer from './SequenceItemButtonsContainer'
 
 class CommandSequenceItem extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { sequenceItem: {command: '', ...props.sequenceItem }} 
+        this.state = { sequenceItem: {command: '', ...props.sequenceItem }}
     }
 
     isChanged() {
@@ -22,14 +22,19 @@ class CommandSequenceItem extends React.Component {
 
     render() {
         return (
-            <form className="container">
-                <FormGroup controlId="command">
-                    <ControlLabel>Command to run</ControlLabel>
-                    <FormControl type="text" value={this.state.sequenceItem.command} onChange={ e => this.onCommandChanged(e.target.value) } />
-                    <HelpBlock>Run the specified command as a shell expression</HelpBlock>
-                </FormGroup>
+            <Form>
+                <Form.Input
+                    type='text'
+                    label='Command to run'
+                    value={this.state.sequenceItem.command}
+                    onChange={e => this.onCommandChanged(e.target.value)}
+                    placeholder='command line'
+                />
+                <Label size='tiny'>Run the specified command as a shell expression</Label>
+
+                <Divider section />
                 <SequenceItemButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceItem={this.state.sequenceItem} />
-            </form>
+            </Form>
         )
     }
 }

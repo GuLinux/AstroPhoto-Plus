@@ -1,6 +1,6 @@
 import React from 'react'
 import SequenceItemButtonsContainer from './SequenceItemButtonsContainer'
-import { FormGroup, Radio } from 'react-bootstrap'
+import { Form, Divider, Radio } from 'semantic-ui-react'
 
 class FilterSequenceItem extends React.Component {
     constructor(props) {
@@ -14,23 +14,24 @@ class FilterSequenceItem extends React.Component {
 
     render() {
         return (
-            <div>
-                <h4>Set filter wheel position</h4>
-                <FormGroup>
-                    {this.props.filters.map(filter => (
-                  <Radio
-                        name="filterWheel"
+            <Form>
+                <Form.Field>Set filter wheel position</Form.Field>
+                {this.props.filters.map(filter => (
+                <Form.Field>
+                    <Radio
+                        toggle
+                        name='filterWheelValue'
+                        label={`${filter.name} (${filter.number})`}
                         key={filter.number}
                         checked={this.state.sequenceItem.filterNumber === filter.number}
                         onChange={ e => this.filterSelected(filter.number) }
-                        value={filter.number}>
-                            {filter.name} ({filter.number})
-                        </Radio>
+                        value={filter.number}
+                    />
+                </Form.Field>
                     ))}
-                </FormGroup>
-
+                <Divider section />
                 <SequenceItemButtonsContainer isValid={() => this.state.filterNumber > 0} isChanged={() => true} sequenceItem={this.state.sequenceItem} />
-            </div>
+            </Form>
         )
     }
 }
