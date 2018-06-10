@@ -20,7 +20,14 @@ export const QuestionDialog = ({name, title, buttons, children}) => (
         <Dialog.Content>{children}</Dialog.Content>
         <Dialog.Actions>
             { buttons.map( (button, index) => (
-                <ModalContainer.Button.Close key={index} modal={name} beforeToggle={button.beforeClose} afterToggle={button.afterClose} bsStyle={button.bsStyle} bsSize={button.bsSize}>{button.text}</ModalContainer.Button.Close>
+                <ModalContainer.Button.Close
+                    key={index}
+                    modal={name}
+                    beforeToggle={button.beforeClose}
+                    afterToggle={button.afterClose}
+                    primary={button.primary}
+                    size={button.size}
+                >{button.text}</ModalContainer.Button.Close>
             )
         )}
         </Dialog.Actions>

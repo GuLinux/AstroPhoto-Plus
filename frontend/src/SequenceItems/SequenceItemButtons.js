@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button } from 'semantic-ui-react';
 import { Dialog, QuestionDialog } from '../Modals/Dialogs.js';
 import { withRouter } from 'react-router';
 
@@ -26,9 +26,9 @@ const SequenceItemButtons = ({isValid, isChanged, onSave, sequenceItem, history 
 
     return (
     <div>
-        <Dialog.Button.Open bsStyle="default" beforeToggle={onBackClicked} modal="sequenceItemUnsavedChanges">Back</Dialog.Button.Open>
-        <Button bsStyle="primary" disabled={ ! canSave } onClick={onSaveClicked}>Save</Button>
-        <QuestionDialog name="sequenceItemUnsavedChanges" title="Unsaved Changes" buttons={ [{text: 'Continue editing', bsStyle: 'primary'}, {text: 'Close and go back', bsStyle: 'danger', afterClose: navigateBack}] }>
+        <Dialog.Button.Open beforeToggle={onBackClicked} modal="sequenceItemUnsavedChanges">Back</Dialog.Button.Open>
+        <Button primary disabled={ ! canSave } onClick={onSaveClicked}>Save</Button>
+        <QuestionDialog name="sequenceItemUnsavedChanges" title="Unsaved Changes" buttons={ [{text: 'Continue editing', primary: true}, {text: 'Close and go back' , afterClose: navigateBack}] }>
             <p>If you go back now, your changes will not be saved.</p>
             <p>Do you want to proceed?</p>
         </QuestionDialog>
