@@ -56,12 +56,10 @@ const FilterWheelDetailsPage = ({filterWheel, filterNumber, filterName}) => {
 }
 
 const AddSequenceItem = withRouter( ({history, onCreateSequenceItem, sequenceId}) => (
-    <ModalContainer name="newSequenceItem">
-        <AddSequenceItemModal modalName="newSequenceItem" onAddSequenceItem={(...args) => {
-            onCreateSequenceItem(...args);
-            history.push('/sequences/' + sequenceId + '/items/pending')
-        }} />
-    </ModalContainer>
+    <AddSequenceItemModal onAddSequenceItem={(...args) => {
+        onCreateSequenceItem(...args);
+        history.push('/sequences/' + sequenceId + '/items/pending')
+    }} />
 ))
 
 const Sequence = ({sequence, onCreateSequenceItem, startSequence, camera, filterWheel, canEdit}) => {
@@ -71,13 +69,13 @@ const Sequence = ({sequence, onCreateSequenceItem, startSequence, camera, filter
         <Container>
             <Grid columns={2} padded>
                 <Grid.Column verticalAlign="middle">
-                    <Header size="Large">{sequence.name}</Header>
+                    <Header size="large">{sequence.name}</Header>
                 </Grid.Column>
                 <Grid.Column textAlign="right">
                     <Button.Group>
                         <Button as={Link} size="mini" to="/sequences">back</Button>
                         <Button onClick={() => startSequence()} size="mini" positive disabled={!canStart(sequence)}>start</Button>
-                        <ModalContainer.Button.Open modal="newSequenceItem" color="teal" size="mini" className="pull-right" disabled={!canEdit}>new</ModalContainer.Button.Open>
+                        <ModalContainer.Button.Open modal={AddSequenceItemModal.NAME} color="teal" size="mini" className="pull-right" disabled={!canEdit}>new</ModalContainer.Button.Open>
                     </Button.Group>
                 </Grid.Column>
             </Grid>
@@ -85,7 +83,7 @@ const Sequence = ({sequence, onCreateSequenceItem, startSequence, camera, filter
 
             <SequenceItemsContainer canEdit={canEdit} sequenceId={sequence.id} />
 
-            <Header size="Medium">Devices</Header>
+            <Header size="medium">Devices</Header>
             <CameraDetailsPage camera={camera} />
             <FilterWheelDetailsPage filterWheel={filterWheel} />
         </Container>
