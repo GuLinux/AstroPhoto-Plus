@@ -169,7 +169,7 @@ class ExposureSequenceItem extends React.Component {
                 </Form.Field>
                 <Label size='tiny'>Total exposure time for this sequence</Label>
 
-                <Divider />
+                <Divider section />
                 <SequenceItemButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceItem={this.state.sequenceItem} />
             </Form>
         );
