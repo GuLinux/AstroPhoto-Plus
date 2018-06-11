@@ -93,7 +93,12 @@ const onNumericInputChange = (currentValue, newValue, onChange, parseValue) => {
 }
 
 const NumericInput = ({value, format, parse, min, max, step, onChange, ...args}) => (
-    <Input value={format(value)} onChange={onChange ? (undefined, data) => onNumericInputChange(value, data.value, onChange, parse) : null} type='text' {...args} />
+    <Input
+        className='indi-number'
+        value={format(value)}
+        onChange={onChange ? (undefined, data) => onNumericInputChange(value, data.value, onChange, parse) : null}
+        type='text' {...args}
+    />
 )
 
 const EditableInput = ({value, format, min, max, step, onChange, ...args}) => (
@@ -112,6 +117,7 @@ const EditableInput = ({value, format, min, max, step, onChange, ...args}) => (
 
 const CurrentValue = ({value, format, ...args}) => (
     <NumericInput
+
         value={value}
         size='small'
         readOnly={true}

@@ -4,6 +4,7 @@ import { Input } from 'semantic-ui-react'
 const EditableInput = ({value, onChange, ...args}) => (
     <Input
         type="text"
+        className='indi-text'
         value={value}
         onChange={e => onChange(e.target.value)}
         size='small'
@@ -14,6 +15,7 @@ const EditableInput = ({value, onChange, ...args}) => (
 const CurrentValue = ({value, ...args}) => (
     <Input
         type="text"
+        className='indi-text'
         value={value}
         readOnly={true}
         disabled={false}

@@ -27,3 +27,7 @@
 .indi-one-of-many-switch {
     margin-right: 1em;
 }
+
+.indi-number .label, .indi-text .label {
+    min-width: 16em;
+}
