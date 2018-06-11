@@ -8,15 +8,6 @@
     z-index: 999;
 }
 
-.indi-property {
-    border: #dddddd;
-    border-style: solid;
-    border-width: 1px;
-    border-top-width: 0px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-}
-
 .indi-property:first-child {
     margin-top: 10px;
     border-top-width: 1px;
@@ -29,31 +20,6 @@
 
 }
 
-.alert {
-    color: darkblue;
-}
-
 .notifications-container {
     z-index: 99;
-}
-
-.device-connection-status {
-    font-size: small;
-}
-
-.indi-server-details-container {
-    margin-top: 10px;
-}
-
-.driverGroupTitle {
-    font-size: 9pt
-}
-
-.driverGroupTitle a {
-    display: block;
-}
-
-.indi-service-error-dialog {
-    overflow-y: auto;
-    max-height: 400px;
 }
