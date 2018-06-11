@@ -71,7 +71,7 @@ class INDIServiceProfilesPage extends React.Component{
             <Container>
                 <Menu size='mini' vertical secondary fluid>
                     <Menu.Item header>
-                        Profiles
+                        {profiles.length === 0 ? 'No profiles' : 'Profiles'}
                         <ProfileNameDialog initialValue='' title='New profile' buttonText='Create' trigger={
                             driversAreSelected ?
                             <Label size='mini' icon='plus' content='add' basic as='a' />

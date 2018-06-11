@@ -1,17 +1,17 @@
 import React from 'react';
-import { Label } from 'react-bootstrap'
+import { Label } from 'semantic-ui-react'
 
 const states = {
-    IDLE: { style: 'default', text: 'idle' },
-    OK: { style: 'success', text: 'ok' },
-    BUSY: { style: 'warning', text: 'busy' },
-    CHANGED_BUSY: { style: 'primary', text: 'busy' },
-    ALERT: { style: 'danger', text: 'alert' },
+    IDLE: { color: 'grey', text: 'idle', icon: 'dot circle outline'},
+    OK: { color: 'green', text: 'ok', icon: 'check circle outline' },
+    BUSY: { color: 'orange', text: 'busy', icon: 'hourglass' },
+    CHANGED_BUSY: { color: 'brown', text: 'busy', icon: 'hourglass' },
+    ALERT: { color: 'red', text: 'alert', icon: 'exclamation' },
 }
 
 
 const INDILight = ({state, text}) => (
-            <Label bsStyle={states[state].style}>{text ? text : states[state].text}</Label>
+    <Label color={states[state].color} icon={states[state].icon} content={text ? text : states[state].text} />
 )
- 
+
 export default INDILight

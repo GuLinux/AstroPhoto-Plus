@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import { Menu, Form, Label, Divider, Container, Grid } from 'semantic-ui-react'
 import SequenceItemButtonsContainer from './SequenceItemButtonsContainer'
 
@@ -143,14 +142,14 @@ class INDIPropertySequenceItem extends React.Component {
                         </Menu.Item>
                     ) ) }
                 </Menu>
-                <Grid columns={7} stackable>
-                    <Grid.Column>
+                <Grid stackable>
+                    <Grid.Column width={2}>
                         { this.getGroupsForm() }
                     </Grid.Column>
-                    <Grid.Column>
+                    <Grid.Column width={2}>
                         { this.getPropertiesForm() }
                     </Grid.Column>
-                    <Grid.Column width={5}>
+                    <Grid.Column width={12}>
                         { this.getValuesForm() }
                     </Grid.Column>
                 </Grid>

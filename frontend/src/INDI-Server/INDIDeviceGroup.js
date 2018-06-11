@@ -1,28 +1,46 @@
 import React from 'react';
 import { INDITextPropertyContainer, INDINumberPropertyContainer, INDISwitchPropertyContainer, INDILightPropertyContainer } from './INDIPropertyContainer';
+import { Grid, Label} from 'semantic-ui-react'
+import INDILight from './INDILight';
 
 const getPropertyComponent = property => {
     switch(property.type) {
         case "text":
-            return ( <INDITextPropertyContainer property={property} /> );
+            return ( <INDITextPropertyContainer key={property.id} property={property} /> );
         case "number":
-            return ( <INDINumberPropertyContainer property={property} /> );
+            return ( <INDINumberPropertyContainer key={property.id} property={property} /> );
         case "switch":
-            return ( <INDISwitchPropertyContainer property={property} /> );
+            return ( <INDISwitchPropertyContainer key={property.id} property={property} /> );
         case "light":
-            return ( <INDILightPropertyContainer property={property} /> );
+            return ( <INDILightPropertyContainer key={property.id} property={property} /> );
         default:
             // TODO: render blob in some way?
-            return ( <span>Unsupported {property.type} property {property.name}</span> );
+            return ( <span key={property.id}>Unsupported {property.type} property {property.name}</span> );
     }
 }
 
-const INDIDeviceGroup = ({group, properties}) => (
-    <div className="container-fluid indi-device-group">
-        { properties.map(property => (
-            <div className="indi-property" key={property.id}>{getPropertyComponent(property)}</div>
-        ))}
-    </div>
+const INDIPropertyRow = ({property, children}) => (
+    <Grid.Row>
+        <Grid.Column verticalAlign="middle" width={2}><INDILight state={property.state} /></Grid.Column>
+        <Grid.Column verticalAlign="middle" width={2}><Label content={property.label} /></Grid.Column>
+        <Grid.Column verticalAlign="middle" width={12}>
+            {children}
+        </Grid.Column>
+    </Grid.Row>
 )
- 
+
+const INDIDeviceGroup = ({group, properties}) => (
+    <Grid container >
+        {
+            properties.map(
+                property => (
+                    <INDIPropertyRow key={property.id} property={property}>
+                        {getPropertyComponent(property)}
+                    </INDIPropertyRow>
+                )
+            )
+        }
+    </Grid>
+)
+
 export default INDIDeviceGroup

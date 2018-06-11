@@ -50,7 +50,7 @@ const SequenceItemsList = ({canEdit, sequenceItems, deleteSequenceItem, moveSequ
                         <Button.Group icon>
                             <Button as={Link} to={`/sequences/${sequenceItem.sequence}/items/${sequenceItem.id}`} title="Edit" size="small" disabled={!canEdit}><Icon name="edit" /></Button>
                             <Dialog.Button.Open title="Remove" modal={sequenceItem.id + 'confirmDeleteSequenceItem'} size="small"><Icon name="remove" /></Dialog.Button.Open>
-                            <QuestionDialog name={sequenceItem.id + 'confirmDeleteSequenceItem'} title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), primary: true} ]}>
+                            <QuestionDialog name={sequenceItem.id + 'confirmDeleteSequenceItem'} title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), color: 'red'} ]}>
                                 Do you really want to remove this element?
                             </QuestionDialog>
                             <Button title="Move up" size="small" disabled={index===0} onClick={() => moveSequenceItem(sequenceItem, 'up')}><Icon name="angle up" /></Button>

@@ -2,9 +2,9 @@ import React from 'react'
 import { Modal, Button, Header, Label, Grid } from 'semantic-ui-react'
 
 const INDIServiceError = ({exitCode, stdout, stderr, onQuit}) => (
-  <Modal.Dialog>
+  <Modal open>
     <Modal.Header>INDI Service Error</Modal.Header>
-    <Modal.Content>
+    <Modal.Content scrolling>
             <Header size='small'>INDI server process has closed with an error.</Header>
             <p>Exit code: <b>{exitCode}</b></p>
             {stdout ? (
@@ -24,7 +24,7 @@ const INDIServiceError = ({exitCode, stdout, stderr, onQuit}) => (
     <Modal.Actions>
       <Button primary onClick={onQuit}>Close</Button>
     </Modal.Actions>
-  </Modal.Dialog>
+  </Modal>
 )
 
 const INDIServicePage = ({serverFound, serverRunning, onServerStopStart, startStopPending, lastError, dismissError}) => {

@@ -23,3 +23,7 @@
 .notifications-container {
     z-index: 99;
 }
+
+.indi-one-of-many-switch {
+    margin-right: 1em;
+}

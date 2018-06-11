@@ -3,7 +3,7 @@ import { Button, Grid , Divider, Label} from 'semantic-ui-react';
 
 const getConnectionView = (isConnected, connectAction, disconnectAction) => {
     return {
-        stateLabelColor: isConnected ? 'green`' : 'red',
+        stateLabelColor: isConnected ? 'green' : 'red',
         stateLabel: isConnected ? 'Connected' : 'Disconnected',
         connectionButtonColor: isConnected ? 'orange' : 'green',
         connectionButtonLabel: isConnected ? 'Disconnect' : 'Connect',

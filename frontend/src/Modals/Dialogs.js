@@ -27,6 +27,7 @@ export const QuestionDialog = ({name, title, buttons, children}) => (
                     afterToggle={button.afterClose}
                     primary={button.primary}
                     size={button.size}
+                    color={button.color}
                 >{button.text}</ModalContainer.Button.Close>
             )
         )}

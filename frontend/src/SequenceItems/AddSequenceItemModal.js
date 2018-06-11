@@ -1,7 +1,6 @@
 import React from 'react'
 import { Modal, Menu, Header } from 'semantic-ui-react'
 import ModalContainer from '../Modals/ModalContainer'
-import CheckableItem from '../components/CheckableItem'
 
 // TODO: it might be better to move the redux code away from here
 import { connect } from 'react-redux'

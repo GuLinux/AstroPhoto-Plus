@@ -1,17 +1,20 @@
 import React from 'react';
 import CommitPendingValuesButton from './CommitPendingValuesButton'
-import INDILight from './INDILight'
-import INDIText from './INDIText'
+import INDILight from './INDILight';
+import INDIText from './INDIText';
+import { Grid } from 'semantic-ui-react'
 
 const INDITextProperty = ({property, isWriteable, pendingValues, displayValues, addPendingValues, commitPendingValues }) => (
-    <div className="row">
-        <div className="col-xs-1"><INDILight state={property.state} /></div> 
-        <div className="col-xs-2">{property.label}</div> 
-        <div className="col-xs-8">
-            {property.values.map( (value, index) => <INDIText key={index} value={value} isWriteable={isWriteable} displayValue={displayValues[value.name]} addPendingValues={addPendingValues} />)}
-        </div>
-        <div className="col-xs-1"><CommitPendingValuesButton bsStyle="primary" size="xsmall" isWriteable={isWriteable} commitPendingValues={commitPendingValues} /></div>
-    </div>
+    <Grid>
+        <Grid.Column width={14}>
+            {property.values.map( (value, index) =>
+                <INDIText key={index} value={value} isWriteable={isWriteable} displayValue={displayValues[value.name]} addPendingValues={addPendingValues} />
+            )}
+        </Grid.Column>
+        <Grid.Column width={2} verticalAlign='middle'>
+            <CommitPendingValuesButton primary size="mini" isWriteable={isWriteable} commitPendingValues={commitPendingValues} />
+        </Grid.Column>
+    </Grid>
 )
- 
+
 export default INDITextProperty

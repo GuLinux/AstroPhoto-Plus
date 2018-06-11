@@ -42,7 +42,7 @@ class INDIDriversGroup extends React.Component {
                 <Grid columns={3} stackable>
                     {
                         this.props.group.drivers.map((d, index) => (
-                            <Grid.Column>
+                            <Grid.Column key={index}>
                                 <INDIDriver
                                     driver={this.props.drivers[d]}
                                     toggleDriverSelection={this.props.toggleDriverSelection}

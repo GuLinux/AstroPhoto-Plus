@@ -55,7 +55,7 @@ const SequencesList = ({sequences, gear, onSequenceDelete, startSequence, duplic
                             <Button compact size="mini" title="Stop" disabled={true}><Icon name="stop" /></Button>
                             <Button compact size="mini" title="Duplicate" onClick={() => duplicateSequence(sequence)}><Icon name="copy" /></Button>
                         </Button.Group>
-                        <QuestionDialog name={sequence.id + 'confirmSequenceDelete'} title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', bsStyle: 'danger', afterClose: () => onSequenceDelete(sequence.id)}]}>
+                        <QuestionDialog name={sequence.id + 'confirmSequenceDelete'} title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', color: 'red', afterClose: () => onSequenceDelete(sequence.id)}]}>
                             Do you really want to remove this sequence?
                         </QuestionDialog>
                     </Table.Cell>
