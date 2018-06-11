@@ -39,7 +39,7 @@ class INDIDriversGroup extends React.Component {
                 </Grid>
             </Accordion.Title>
             <Accordion.Content active={this.state.expanded}>
-                <Grid columns={2} stackable>
+                <Grid columns={3} stackable>
                     {
                         this.props.group.drivers.map((d, index) => (
                             <Grid.Column>

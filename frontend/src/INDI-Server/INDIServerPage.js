@@ -17,22 +17,20 @@ const INDISettingsPage = ({hasLocalServer}) => {
             </Container>
     )
     return (
-        <Container>
-            <Grid columns={2}>
-                <Grid.Column>
-                    <INDIServiceProfilesContainer />
-                    <Header size='small'>Available devices</Header>
-                    <INDIServiceDevicesContainer />
-                </Grid.Column>
-                <Grid.Column>
-                    <Header size='small'>Server manager</Header>
-                    <INDIServiceContainer />
+        <Grid celled container>
+            <Grid.Column width={10}>
+                <INDIServiceProfilesContainer />
+                <Header size='small'>Available devices</Header>
+                <INDIServiceDevicesContainer />
+            </Grid.Column>
+            <Grid.Column width={6}>
+                <Header size='small'>Server manager</Header>
+                <INDIServiceContainer />
 
-                    <Header size='small'>Server connection</Header>
-                    <INDIServerDetailsContainer />
-                </Grid.Column>
-            </Grid>
-        </Container>
+                <Header size='small'>Server connection</Header>
+                <INDIServerDetailsContainer />
+            </Grid.Column>
+        </Grid>
     )
 }
 
