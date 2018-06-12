@@ -282,3 +282,13 @@ def delete_sequence_item(sequence_id, sequence_item_id):
         sequence_item.update({'status': 'deleted'})
         sequence.sequence_items = [x for x in sequence.sequence_items if x.id != sequence_item_id]
         return sequence_item
+
+#imaging module
+@app.route('/api/imaging', methods=['POST'])
+@json_input
+@json_api
+def shoot_image(json):
+    camera = [c for c in controller.indi_server.cameras() if c.id == json['camera']]
+    if not camera:
+        raise NotFoundError('Camera {} not found'.format(json['camera']))
+    return camera.shoot_image(json)

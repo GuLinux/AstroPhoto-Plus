@@ -30,3 +30,8 @@ class Camera:
 
     def indi_sequence_camera(self):
         return self.camera
+
+    def shoot_image(self, options):
+        exposure = options['exposure']
+        self.camera.set_upload_to('client')
+        self.camera.shoot(exposure)
