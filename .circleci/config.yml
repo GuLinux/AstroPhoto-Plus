@@ -18,7 +18,7 @@ jobs:
       - run: mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCONFDIR=/etc && make package && rm -rf packages/_CPack_Packages
       - store_artifacts:
           path: ~/repo/build/packages
-      - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null marco@gulinux.net -p 8122 ./starquew-publish $CIRCLE_BUILD_NUM
+      - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null marco@gulinux.net -p 8122 ./starquew-publish -b $CIRCLE_BUILD_NUM -d $CIRCLE_COMPARE_URL -r $CIRCLE_REPOSITORY_URL -c $CIRCLE_SHA1
       - save_cache:
           paths:
             - node_modules
