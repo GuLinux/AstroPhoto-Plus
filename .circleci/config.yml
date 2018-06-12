@@ -6,10 +6,11 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
+      - run: git submodule init && git submodule update
       - run: sudo apt-get update && sudo apt-get install -y cmake
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-{{ checksum "frontend/package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
@@ -22,4 +23,4 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "frontend/package.json" }}
