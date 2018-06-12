@@ -16,7 +16,7 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
       - run: mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCONFDIR=/etc && make package && rm -rf packages/_CPack_Packages
-      - run: ssh gulinux.net -p 8122 ./starquew-publish $CIRCLE_BUILD_NUM 
+      - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null gulinux.net -p 8122 ./starquew-publish $CIRCLE_BUILD_NUM 
       - store_artifacts:
           path: ~/repo/build/packages
       - save_cache:
