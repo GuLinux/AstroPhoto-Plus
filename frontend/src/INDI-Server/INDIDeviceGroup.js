@@ -30,7 +30,7 @@ const INDIPropertyRow = ({property, children}) => (
 )
 
 const INDIDeviceGroup = ({group, properties}) => (
-    <Grid container >
+    <Grid container stackable>
         {
             properties.map(
                 property => (

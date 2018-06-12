@@ -10,7 +10,7 @@ import { NavLink } from 'react-router-dom';
 
 const INDIDevicePage = ({device, groups, addPendingProperties, commitPendingProperties, messages}) => (
     <Container>
-        <Menu secondary>
+        <Menu secondary stackable>
             <Menu.Item header content='Groups' />
             { groups.map( group => <Menu.Item key={group} as={NavLink} to={`/indi/${device}/${group}`} content={group} /> )}
         </Menu>
