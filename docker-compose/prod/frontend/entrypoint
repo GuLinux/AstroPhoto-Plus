@@ -1,8 +1,0 @@
-#!/bin/sh
-npm run build
-if [ "$BUNDLE" == yes ]; then
-    uid_gid="$( stat -c %u:%g src )"
-    chown -R $uid_gid build
-    tar czf bundle-frontend.tar.gz . -C build
-    chown $uid_gid bundle-frontend.tar.gz
-fi

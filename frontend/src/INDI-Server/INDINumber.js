@@ -96,7 +96,7 @@ const NumericInput = ({value, format, parse, min, max, step, onChange, ...args})
     <Input
         className='indi-number'
         value={format(value)}
-        onChange={onChange ? (undefined, data) => onNumericInputChange(value, data.value, onChange, parse) : null}
+        onChange={onChange ? (e, data) => onNumericInputChange(value, data.value, onChange, parse) : null}
         type='text' {...args}
     />
 )

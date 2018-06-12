@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, Grid } from 'semantic-ui-react'
+import { Button, Checkbox } from 'semantic-ui-react'
 
 
 const onButtonClick = (property, value, displayValue, addPendingValues) => {
@@ -17,7 +17,6 @@ const onCheckbox = (property, value, displayValue, addPendingValues) => {
     addPendingValues({[value.name]: newState}, true)
 }
 
-const switchHTMLId = (property, value) => `${property.id}_${value.name}`
 
 const INDISwitch = ({property, value, displayValue, isWriteable, addPendingValues}) => {
     switch(property.rule) {

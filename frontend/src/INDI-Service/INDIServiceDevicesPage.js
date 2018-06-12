@@ -1,10 +1,10 @@
 import React from 'react';
-import { Accordion, Checkbox, Container, Label, Icon, Grid} from 'semantic-ui-react'
+import { Accordion, Checkbox, Container, Icon, Grid} from 'semantic-ui-react'
 
 const INDIDriver = ({driver, toggleDriverSelection, serverRunning }) => (
     <Checkbox
         label={driver.name}
-        onChange={(undefined, data) => toggleDriverSelection(driver.name, data.checked)}
+        onChange={(e, data) => toggleDriverSelection(driver.name, data.checked)}
         checked={driver.selected}
         disabled={serverRunning}
         //toggle

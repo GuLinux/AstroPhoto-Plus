@@ -1,6 +1,5 @@
 import React from 'react';
 import INDILight from './INDILight'
-import { Grid } from 'semantic-ui-react'
 
 const INDILightProperty = ({property}) => (
     <span>

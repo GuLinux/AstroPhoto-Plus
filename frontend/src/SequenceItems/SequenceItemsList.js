@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Table, Icon, Button, Progress, Container, Segment} from 'semantic-ui-react';
+import { Table, Button, Progress } from 'semantic-ui-react';
 import { Dialog, QuestionDialog } from '../Modals/Dialogs'
 import { Link } from 'react-router-dom';
 
@@ -48,14 +48,14 @@ const SequenceItemsList = ({canEdit, sequenceItems, deleteSequenceItem, moveSequ
                     <Table.Cell width={3}>{statusComponent(sequenceItem)}</Table.Cell>
                     <Table.Cell>
                         <Button.Group icon>
-                            <Button as={Link} to={`/sequences/${sequenceItem.sequence}/items/${sequenceItem.id}`} title="Edit" size="small" disabled={!canEdit}><Icon name="edit" /></Button>
-                            <Dialog.Button.Open title="Remove" modal={sequenceItem.id + 'confirmDeleteSequenceItem'} size="small"><Icon name="remove" /></Dialog.Button.Open>
+                            <Button as={Link} to={`/sequences/${sequenceItem.sequence}/items/${sequenceItem.id}`} icon='edit' title="Edit" size="small" disabled={!canEdit} />
+                            <Dialog.Button.Open title="Remove" modal={sequenceItem.id + 'confirmDeleteSequenceItem'} size="small" icon='remove' />
                             <QuestionDialog name={sequenceItem.id + 'confirmDeleteSequenceItem'} title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), color: 'red'} ]}>
                                 Do you really want to remove this element?
                             </QuestionDialog>
-                            <Button title="Move up" size="small" disabled={index===0} onClick={() => moveSequenceItem(sequenceItem, 'up')}><Icon name="angle up" /></Button>
-                            <Button title="Move down" size="small" disabled={index===sequenceItems.length-1} onClick={() => moveSequenceItem(sequenceItem, 'down')}><Icon name="angle down" /></Button>
-                            <Button title="Duplicate" size="small" onClick={() => duplicateSequenceItem(sequenceItem)}><Icon name="copy" /></Button>
+                            <Button title="Move up" size="small" disabled={index===0} onClick={() => moveSequenceItem(sequenceItem, 'up')} icon='angle up' />
+                            <Button title="Move down" size="small" disabled={index===sequenceItems.length-1} onClick={() => moveSequenceItem(sequenceItem, 'down')} icon='angle down' />
+                            <Button title="Duplicate" size="small" onClick={() => duplicateSequenceItem(sequenceItem)} icon='copy' />
                         </Button.Group>
                     </Table.Cell>
                 </Table.Row>

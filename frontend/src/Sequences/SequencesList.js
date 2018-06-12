@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Grid, Button, Table, Icon, Label } from 'semantic-ui-react'
+import { Container, Button, Table, Label } from 'semantic-ui-react'
 import AddSequenceModalContainer from './AddSequenceModalContainer';
 import ModalContainer from '../Modals/ModalContainer'
 import { Dialog, QuestionDialog } from '../Modals/Dialogs'
@@ -26,11 +26,11 @@ const SequencesList = ({sequences, gear, onSequenceDelete, startSequence, duplic
         <Table stackable selectable striped basic="very">
             <Table.Header>
                 <Table.Row>
-                    <Table.HeaderCell><Label>Name</Label></Table.HeaderCell>
-                    <Table.HeaderCell><Label>Gear</Label></Table.HeaderCell>
-                    <Table.HeaderCell><Label>Sequence Items</Label></Table.HeaderCell>
-                    <Table.HeaderCell><Label>State</Label></Table.HeaderCell>
-                    <Table.HeaderCell><Label>Action</Label></Table.HeaderCell>
+                    <Table.HeaderCell><Label content='Name' /></Table.HeaderCell>
+                    <Table.HeaderCell><Label content='Gear' /></Table.HeaderCell>
+                    <Table.HeaderCell><Label content='Sequence Items'/></Table.HeaderCell>
+                    <Table.HeaderCell><Label content='State'/></Table.HeaderCell>
+                    <Table.HeaderCell><Label content='Action' /></Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -46,14 +46,12 @@ const SequencesList = ({sequences, gear, onSequenceDelete, startSequence, duplic
                     <Table.Cell verticalAlign='middle'>{sequence.status}</Table.Cell>
                     <Table.Cell>
                         <Button.Group icon>
-                            <Button as={Link} to={uriFor(sequence)} title="Edit">
-                                <Icon name="edit" />
-                            </Button>
-                            <Dialog.Button.Open compact size="mini" title="Remove" modal={sequence.id + 'confirmSequenceDelete'}><Icon name="remove" /></Dialog.Button.Open>
-                            <Button compact size="mini" title="Start" disabled={!canStart(sequence)}  onClick={() => startSequence(sequence)}><Icon name="play" /></Button>
-                            <Button compact size="mini" title="Pause" disabled={true}><Icon name="pause" /></Button>
-                            <Button compact size="mini" title="Stop" disabled={true}><Icon name="stop" /></Button>
-                            <Button compact size="mini" title="Duplicate" onClick={() => duplicateSequence(sequence)}><Icon name="copy" /></Button>
+                            <Button as={Link} to={uriFor(sequence)} title="Edit" icon='edit' />
+                            <Dialog.Button.Open compact size="mini" title="Remove" modal={sequence.id + 'confirmSequenceDelete'} icon='remove' />
+                            <Button compact size="mini" title="Start" disabled={!canStart(sequence)}  onClick={() => startSequence(sequence)} icon='play' />
+                            <Button compact size="mini" title="Pause" disabled={true} icon='pause' />
+                            <Button compact size="mini" title="Stop" disabled={true} icon='stop'/>
+                            <Button compact size="mini" title="Duplicate" onClick={() => duplicateSequence(sequence)} icon='copy' />
                         </Button.Group>
                         <QuestionDialog name={sequence.id + 'confirmSequenceDelete'} title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', color: 'red', afterClose: () => onSequenceDelete(sequence.id)}]}>
                             Do you really want to remove this sequence?

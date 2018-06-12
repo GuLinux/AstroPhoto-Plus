@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Form, Label, Divider, Container, Grid } from 'semantic-ui-react'
+import { Menu, Divider, Container, Grid } from 'semantic-ui-react'
 import SequenceItemButtonsContainer from './SequenceItemButtonsContainer'
 
 import INDIText from '../INDI-Server/INDIText';

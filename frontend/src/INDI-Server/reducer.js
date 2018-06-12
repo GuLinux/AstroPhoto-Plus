@@ -44,7 +44,7 @@ const indiPropertyAdded = (state, property) => {
 
 const indiPropertyRemoved = (state, property) => {
     let properties = {...state.properties};
-    let values = {...state.values};
+//    let values = {...state.values};
     // TODO: remove also values?
     delete properties[property.id]
     return {...state, properties}

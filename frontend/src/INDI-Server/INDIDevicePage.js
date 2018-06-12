@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Menu, Container } from 'semantic-ui-react';
+import { Menu, Container } from 'semantic-ui-react';
 import INDIDeviceGroupContainer from './INDIDeviceGroupContainer';
 import INDIMessagesPanel from './INDIMessagesPanel';
 import INDIAutoloadConfiguration from './INDIAutoloadConfiguration';

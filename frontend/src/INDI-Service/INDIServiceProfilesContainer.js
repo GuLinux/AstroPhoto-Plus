@@ -1,10 +1,8 @@
 import { connect } from 'react-redux'
 import Actions from '../actions'
 import INDIServiceProfilesPage from './INDIServiceProfilesPage'
-import { unsortedListsEquals } from '../utils'
 
 const mapStateToProps = (state, ownProps) => {
-    const isProfileSelected = !!state.indiservice.profiles.find( profile => profile.id === state.indiservice.selectedProfile);
     const driversAreSelected = state.indiservice.selectedDrivers.length !== 0;
 
     return {

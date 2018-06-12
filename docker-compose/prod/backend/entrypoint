@@ -1,6 +1,0 @@
-#!/bin/bash
-set -e
-set -x
-pip3 install -r requirements.txt
-DEV_MODE=0 ./start-server
-

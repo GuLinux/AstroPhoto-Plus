@@ -1,6 +1,5 @@
 import React from 'react';
 import CommitPendingValuesButton from './CommitPendingValuesButton'
-import INDILight from './INDILight';
 import INDIText from './INDIText';
 import { Grid } from 'semantic-ui-react'
 

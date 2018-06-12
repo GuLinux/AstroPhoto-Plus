@@ -8,27 +8,10 @@ Right now it provides an INDI control panel, and a sequence management interface
 
 In the future I also plan to support telescope interfaces (GOTO/tracking), direct image preview, focus helpers, plate solving, and possibly autoguiding using PHD2 APIs.
 
-## Get the sources
+## Installation and docs
 
-Run the following command:
-```
-git clone --recurse-submodules https://github.com/GuLinux/StarQuew
-```
-Note: the `--recurse-submodules` is important since the repository contains a link to another repository.
-Similarly, when updating the repository you need to specify the parameter again:
+Please see the [wiki](wiki).
 
-```
-git pull --recurse-submodules
-```
-
-## Install
-
-Please refer to [docs/INSTALL.md](docs/INSTALL.md) for an installation walkthrough.
-
-
-## Deploy via Docker
-
-Refer to [docs/INSTALL-Docker.md](docs/INSTALL-Docker.md).
 
 ## Screenshots
 
@@ -43,7 +26,3 @@ Refer to [docs/INSTALL-Docker.md](docs/INSTALL-Docker.md).
 ## Credits
 
 Icon: [Space Exploration Set](https://www.iconfinder.com/icons/3088382/astronomy_galaxy_space_star_universe_icon#size=256)
-
-
-
-
