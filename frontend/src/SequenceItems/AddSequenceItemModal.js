@@ -1,51 +1,48 @@
 import React from 'react'
-import { Modal } from 'react-bootstrap'
+import { Modal, Menu, Header } from 'semantic-ui-react'
 import ModalContainer from '../Modals/ModalContainer'
-import CheckableItem from '../components/CheckableItem'
 
-const initialState = {
-    type: '',
-    typeValid: false
-}
+// TODO: it might be better to move the redux code away from here
+import { connect } from 'react-redux'
+import Actions from '../actions'
 
-class AddSequenceItemModal extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = initialState;
-        this.onTypeChanged= this.onTypeChanged.bind(this);
-        this.onAddClicked = this.onAddClicked.bind(this);
+const AddSequenceItemModal = ({onAddSequenceItem}) => (
+    <ModalContainer name={AddSequenceItemModal.NAME}>
+        <Modal.Header>Add new sequence element</Modal.Header>
+        <Modal.Content>
+            <Menu vertical fluid>
+                <Menu.Header>Sequence item type</Menu.Header>
+                <Menu.Item onClick={() => onAddSequenceItem('shots')}>
+                    <Header size='small'>Exposures sequence</Header>
+                    <p>Add a sequence of shots using the primary camera</p>
+                    </Menu.Item>
+                <Menu.Item onClick={() => onAddSequenceItem('filter')}>
+                    <Header size='small'>Filter wheel</Header>
+                    <p>Change the current filter on the filter wheel</p>
+                </Menu.Item>
+                <Menu.Item onClick={() => onAddSequenceItem('property')}>
+                    <Header size='small'>Change INDI property</Header>
+                    <p>You can use this for changing camera settings (gain, binning), telescope movements, any change to any INDI connected device</p>
+                </Menu.Item>
+                <Menu.Item onClick={() => onAddSequenceItem('command')}>
+                    <Header size='small'>Run command</Header>
+                    <p>Run arbitrary (shell) command on the server</p>
+                </Menu.Item>
+            </Menu>
+        </Modal.Content>
+        <Modal.Actions>
+            <ModalContainer.Button.Close modal={AddSequenceItemModal.NAME}>Close</ModalContainer.Button.Close>
+        </Modal.Actions>
+  </ModalContainer>
+)
+
+AddSequenceItemModal.NAME = 'AddSequenceItemModal_NAME'
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    onAddSequenceItem: (itemType) => {
+        dispatch(Actions.Modals.toggleModal(AddSequenceItemModal.NAME, false))
+        ownProps.onAddSequenceItem(itemType);
     }
+})
 
-    onTypeChanged(type) {
-        this.setState({...this.state, type, typeValid: type !== ''});
-    }
-
-    onAddClicked() {
-        this.props.onAddSequenceItem(this.state.type)
-        this.setState(initialState);
-    }
-
-    // TODO: refactor to use common modal class
-    render() {
-        return (
-            <div>
-            <Modal.Header>
-              <Modal.Title>Add new Sequence</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <span>Sequence item type</span>
-                    <p><CheckableItem bsSize="large" checked={this.state.type === 'shots'} onChange={(type) => this.onTypeChanged(type)} name="shots">Exposures sequence</CheckableItem></p>
-                    <p><CheckableItem bsSize="large" checked={this.state.type === 'filter'} onChange={(type) => this.onTypeChanged(type)} name="filter">Filter wheel</CheckableItem></p>
-                    <p><CheckableItem bsSize="large" checked={this.state.type === 'property'} onChange={(type) => this.onTypeChanged(type)} name="property">Change INDI property</CheckableItem></p>
-                    <p><CheckableItem bsSize="large" checked={this.state.type === 'command'} onChange={(type) => this.onTypeChanged(type)} name="command">Run command</CheckableItem></p>
-            </Modal.Body>
-            <Modal.Footer>
-                <ModalContainer.Button.Close modal={this.props.modalName}>Close</ModalContainer.Button.Close>
-                <ModalContainer.Button.Close modal={this.props.modalName} bsStyle="primary" disabled={!this.state.typeValid} afterToggle={() => this.onAddClicked()}>Add</ModalContainer.Button.Close>
-            </Modal.Footer>
-          </div>
-        )
-    }
-}
-
-export default AddSequenceItemModal;
+export default connect(null, mapDispatchToProps)(AddSequenceItemModal);

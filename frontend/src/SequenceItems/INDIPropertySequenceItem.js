@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Menu, Form, Label, Divider, Container, Grid } from 'semantic-ui-react'
 import SequenceItemButtonsContainer from './SequenceItemButtonsContainer'
 
 import INDIText from '../INDI-Server/INDIText';
@@ -9,7 +9,7 @@ import INDISwitch from '../INDI-Server/INDISwitch';
 class INDIPropertySequenceItem extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { group: '', sequenceItem: {device: '', property: '', ...props.sequenceItem }} 
+        this.state = { group: '', sequenceItem: {device: '', property: '', ...props.sequenceItem }}
 
         if(props.sequenceItem.device && props.sequenceItem.property) {
             this.state.group = this.getProperties()[props.sequenceItem.property].group
@@ -26,6 +26,7 @@ class INDIPropertySequenceItem extends React.Component {
     }
 
     onDeviceChanged(device) {
+        console.log(device)
         this.setState({...this.state, group: '', sequenceItem: {...this.state.sequenceItem, device, property: ''} })
     }
 
@@ -80,15 +81,18 @@ class INDIPropertySequenceItem extends React.Component {
         if(groups.length === 0)
             return null;
         return (
-            <FormGroup controlId="group">
-                <ControlLabel>group</ControlLabel>
-                <FormControl componentClass="select" value={this.state.group} onChange={ e => this.onGroupChanged(e.target.value) }>
-                    <option value="">--- select group</option>
-                    { groups.map(g => (
-                        <option value={g} key={g}>{g}</option>
-                    ))}
-                </FormControl>
-            </FormGroup>
+            <Menu pointing size='mini' vertical>
+                <Menu.Item header>Group</Menu.Item>
+                { groups.map(g => (
+                        <Menu.Item
+                            active={this.state.group === g}
+                            key={g}
+                            onClick={() => this.onGroupChanged(g)}
+                        >
+                        {g}
+                        </Menu.Item>
+                ))}
+            </Menu>
         )
     }
 
@@ -106,15 +110,18 @@ class INDIPropertySequenceItem extends React.Component {
         if(properties.length === 0)
             return null;
         return (
-            <FormGroup controlId="property">
-                <ControlLabel>property</ControlLabel>
-                <FormControl componentClass="select" value={this.state.sequenceItem.property} onChange={ e => this.onPropertyChanged(e.target.value) }>
-                    <option value="">--- select property</option>
-                    { properties.map(p => (
-                        <option value={p.name} key={p.id}>{p.label}</option>
-                    ))}
-                </FormControl>
-            </FormGroup>
+            <Menu size='mini' pointing vertical>
+                <Menu.Item header>Property</Menu.Item>
+                { properties.map(p => (
+                    <Menu.Item
+                        active={this.state.sequenceItem.property === p.name}
+                        key={p.id}
+                        onClick={() => this.onPropertyChanged(p.name)}
+                    >
+                        {p.label}
+                    </Menu.Item>
+                ))}
+            </Menu>
         )
     }
 
@@ -122,21 +129,33 @@ class INDIPropertySequenceItem extends React.Component {
 
     render() {
         return (
-            <form className="container">
-                <FormGroup controlId="device">
-                    <ControlLabel>Device</ControlLabel>
-                    <FormControl componentClass="select" value={this.state.sequenceItem.device} onChange={ e => this.onDeviceChanged(e.target.value) }>
-                        <option value="">--- select device</option>
-                        { this.props.devices.map(d => (
-                            <option value={d.name} key={d.id}>{d.name}</option>
-                        ))}
-                    </FormControl>
-                </FormGroup>
-                { this.getGroupsForm() }
-                { this.getPropertiesForm() }
-                { this.getValuesForm() }
+            <Container>
+                <Menu stackable pointing>
+                    <Menu.Item header>Device</Menu.Item>
+                    { this.props.devices.map(d => (
+                        <Menu.Item
+                            active={this.state.sequenceItem.device === d.name}
+                            key={d.id}
+                            onClick={() => this.onDeviceChanged(d.name)}
+                        >
+                            {d.name}
+                        </Menu.Item>
+                    ) ) }
+                </Menu>
+                <Grid stackable>
+                    <Grid.Column width={2}>
+                        { this.getGroupsForm() }
+                    </Grid.Column>
+                    <Grid.Column width={2}>
+                        { this.getPropertiesForm() }
+                    </Grid.Column>
+                    <Grid.Column width={12}>
+                        { this.getValuesForm() }
+                    </Grid.Column>
+                </Grid>
+                <Divider section />
                 <SequenceItemButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceItem={this.state.sequenceItem} />
-            </form>
+            </Container>
         )
     }
 }

@@ -13,6 +13,7 @@ services:
     build: frontend
     volumes:
         - ../../frontend:/app
+        - node_modules:/app/node_modules
     expose:
         - "3000"
   backend:
@@ -25,4 +26,5 @@ services:
         - INDI_SERVER_HOST
         - INDI_SERVER_PORT
         - WEB_THREADS
-
+volumes:
+    node_modules:

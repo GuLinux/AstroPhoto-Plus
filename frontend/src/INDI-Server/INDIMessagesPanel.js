@@ -1,16 +1,8 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import { Message } from 'semantic-ui-react';
 
 const INDIMessagesPanel = ({messages}) => (
-    <Table striped bordered condensed>
-        <tbody>
-            { [...messages].reverse().map( (m, index) => (
-                <tr key={index}>
-                    <td>{m.message}</td>
-                </tr>
-            ))}
-        </tbody>
-    </Table>
+    <Message header='Messages' list={messages.reverse().map(m => m.message)} />
 );
 
 export default INDIMessagesPanel;

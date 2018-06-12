@@ -1,37 +1,43 @@
 import React from 'react';
+import { Input } from 'semantic-ui-react'
 
-const editableInput = (name, value, onChange, fullWidth) => (
-    <div className={ fullWidth ? 'col-xs-10' : 'col-xs-5'}>
-        <input
-            type="text"
-            className="col-xs-12"
-            name={name}
-            value={value}
-            onChange={e => onChange(e.target.value)}
-            />
-    </div>
-
+const EditableInput = ({value, onChange, ...args}) => (
+    <Input
+        type="text"
+        className='indi-text'
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        size='small'
+        {...args}
+    />
 )
 
-const INDIText = ({value, isWriteable, displayValue, addPendingValues, hideCurrent}) => (
-    <div className="row" key={value.name} >
-        <div className="col-xs-2"><p>{value.label}</p></div>
-        { hideCurrent ? null : (
-             <div className={isWriteable ? 'col-xs-5' : 'col-xs-10'}>
-                    <input
-                        type="text"
-                        className="col-xs-12"
-                        name={'display_' + value.name} 
-                        value={value.value}
-                        readOnly={true}
-                        disabled={true}
-                        />
-            </div>
-        )}
-        { isWriteable ? editableInput(value.name, displayValue, text => addPendingValues({ [value.name]: text}), hideCurrent) : null }
-    </div> 
+const CurrentValue = ({value, ...args}) => (
+    <Input
+        type="text"
+        className='indi-text'
+        value={value}
+        readOnly={true}
+        disabled={false}
+        size='small'
+        {...args}
+    />
 )
+
+const INDIText = ({value, isWriteable, displayValue, addPendingValues, hideCurrent}) => {
+    const onChange = text => addPendingValues({ [value.name]: text})
+    if(hideCurrent)
+        return <EditableInput label={value.label} value={displayValue} onChange={onChange} fluid />
+    if(!isWriteable)
+        return <CurrentValue label={value.label} value={value.value} fluid />
+    return <EditableInput
+        value={displayValue}
+        fluid
+        onChange={onChange}
+        action={<CurrentValue value={value.value} label={value.label} />}
+        actionPosition='left'
+        />
+}
 
 
 export default INDIText
-

@@ -1,8 +1,6 @@
 import React from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { Route} from 'react-router';
-
+import { NavLink, Link, Route } from 'react-router-dom';
+import { Menu } from 'semantic-ui-react'
 
 export const NavLinkItem = ({linkRef, label, active, disabled}) => {
     return disabled ? null : (
@@ -23,20 +21,11 @@ export const ActiveRoute = ({path, children, ...rest}) => {
 }
 
 const Navigation = ({disabled}) => (
-<Navbar inverse collapseOnSelect>
-  <Navbar.Header>
-    <Navbar.Brand>
-      <a href="#home">StarQuew</a>
-    </Navbar.Brand>
-  <Navbar.Toggle />
-  </Navbar.Header>
-  <Navbar.Collapse>
-    <Nav>
-        <ActiveRoute path="/sequences"><NavLinkItem linkRef="/sequences" label="Sequences" disabled={disabled} /></ActiveRoute>
-        <ActiveRoute path="/indi"><NavLinkItem linkRef="/indi" label="INDI Server" disabled={disabled} /></ActiveRoute>
-    </Nav>
-  </Navbar.Collapse>
-</Navbar>
+    <Menu stackable >
+        <Menu.Item header>StarQuew</Menu.Item>
+        <Menu.Item as={NavLink} to="/sequences" disabled={disabled}>Sequences</Menu.Item>
+        <Menu.Item as={NavLink} to="/indi" disabled={disabled}>INDI Server</Menu.Item>
+    </Menu>
 )
 
 export default Navigation;

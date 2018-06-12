@@ -1,12 +1,13 @@
 import React from 'react';
-import { Alert, Modal, Button} from 'react-bootstrap';
+import { Message, Icon} from 'semantic-ui-react';
 
-const notificationStyles = {
-    error: 'danger',
-    info: 'info',
-    warning: 'warning',
-    success: 'success',
+const icons = {
+    error: 'times circle',
+    info: 'info circle',
+    warning: 'warning circle',
+    success: 'check circle',
 };
+
 
 const setAutoclose = (notification, onClosed) => {
     if(notification.timeout) {
@@ -15,33 +16,21 @@ const setAutoclose = (notification, onClosed) => {
 }
 
 const AlertNotification = ({notification, onDismiss}) => (
-    <Alert bsStyle={notificationStyles[notification.type]} onDismiss={() => onDismiss() }>
-        <h4>{notification.title}</h4>
-        {notification.text}
-    </Alert>
-)
-
-const ModalNotification = ({notification, onDismiss}) => (
-  <Modal.Dialog>
-    <Modal.Header>
-      <Modal.Title>{notification.title}</Modal.Title>
-    </Modal.Header>
-
-    <Modal.Body>{notification.text}</Modal.Body>
-
-    <Modal.Footer>
-      <Button bsStyle="primary" onClick={onDismiss}>Close</Button>
-    </Modal.Footer>
-  </Modal.Dialog>
+    <Message icon {...{[notification.type]: true}} onDismiss={() => onDismiss() }>
+        <Icon name={icons[notification.type]} />
+        <Message.Content>
+            <Message.Header>{notification.title}</Message.Header>
+            <p>{notification.text}</p>
+        </Message.Content>
+    </Message>
 )
 
 
 const Notificatons = ({notifications, onClosed}) => (
     <div className="notifications-container">
         {notifications.map( (notification, index) => {
-            const NotificationTag = notification.isModal ? ModalNotification : AlertNotification
             setAutoclose(notification, onClosed);
-            return <NotificationTag key={index} notification={notification} onDismiss={() => onClosed(notification)} />
+            return <AlertNotification key={index} notification={notification} onDismiss={() => onClosed(notification)} />
         }
         )}
     </div>

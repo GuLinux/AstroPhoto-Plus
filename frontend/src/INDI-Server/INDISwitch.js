@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-bootstrap'
+import { Button, Checkbox, Grid } from 'semantic-ui-react'
 
 
 const onButtonClick = (property, value, displayValue, addPendingValues) => {
@@ -24,24 +24,24 @@ const INDISwitch = ({property, value, displayValue, isWriteable, addPendingValue
         case "ONE_OF_MANY":
         case "AT_MOST_ONE":
             return ( <Button
+                        size='mini'
                         key={value.name}
                         active={displayValue}
                         onClick={e => onButtonClick(property, value, displayValue, addPendingValues)}
                         disabled={!isWriteable}
-                        bsSize="xsmall">{value.label}</Button> )
+                        content={value.label} />
+                    )
         case "ANY":
             return (
-                <span key={value.name} className="col-xs-2">
-                    <input
-                        type="checkbox"
-                        checked={displayValue}
-                        name={value.name}
-                        id={switchHTMLId(property, value)}
-                        readOnly={!isWriteable}
-                        onChange={e => onCheckbox(property, value, displayValue, addPendingValues)}
-                    />
-                    <label htmlFor={switchHTMLId(property, value)}>{value.label}</label>
-                </span> )
+                <Checkbox
+                    className='indi-one-of-many-switch'
+                    slider
+                    checked={displayValue}
+                    label={value.label}
+                    readOnly={!isWriteable}
+                    onChange={e => onCheckbox(property, value, displayValue, addPendingValues)}
+                />
+            )
         default:
             return (<span>Property {value.label} not supported</span>)
     }

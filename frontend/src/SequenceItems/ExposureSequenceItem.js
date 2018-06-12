@@ -1,12 +1,12 @@
 import React from 'react';
-import { FormGroup, FormControl, ControlLabel, HelpBlock, InputGroup } from 'react-bootstrap';
+import { Form, Label, Input, Divider } from 'semantic-ui-react';
 import { sanitizePath, secs2time } from '../utils'
 import SequenceItemButtonsContainer from './SequenceItemButtonsContainer'
 
 class ExposureSequenceItem extends React.Component {
     constructor(props) {
         super(props)
-        this.initialSequenceItem = 
+        this.initialSequenceItem =
         this.state = {
             sequenceItem: this.initialValues(),
             shootingParamsChangesSequence: ['count', 'exposure'],
@@ -50,7 +50,7 @@ class ExposureSequenceItem extends React.Component {
             return
         this.updateShootingParams('exposure', parseFloat(exposure))
     }
-    
+
     onGlobalExposureChanged(globalExposure) {
         if(isNaN(globalExposure))
             return
@@ -88,7 +88,7 @@ class ExposureSequenceItem extends React.Component {
         return this.state.validation.filename &&
                 this.state.validation.exposure
     }
-    
+
     renderTime(time) {
         if(!time || time === '')
             return ''
@@ -97,50 +97,81 @@ class ExposureSequenceItem extends React.Component {
 
     render() {
         return (
-            <form>
-                <FormGroup controlId="filename">
-                    <ControlLabel>Filename</ControlLabel>
-                    <FormControl type="text" value={this.state.sequenceItem.filename} onChange={ e => this.onFilenameChanged(e.target.value) } />
-                    <HelpBlock>Filename template for each shot. This will be formatted using <a rel="noopener noreferrer" href="https://docs.python.org/3.4/library/string.html#format-specification-mini-language" target="_BLANK">python string formatting rules</a>, you can use the following keywords:
-                        <ul>
-                            <li>exposure</li>
-                            <li>number</li>
-                            <li>timestamp</li>
-                            <li>datetime</li>
-                            <li>filter</li>
-                            <li>filter_index</li>
-                        </ul> 
-                        Example: luminance_{'{exposure}_{number:04}.fits'}
-                    </HelpBlock>
-                </FormGroup>
-                <FormGroup controlId="directory">
-                    <ControlLabel>Directory</ControlLabel>
-                    <FormControl type="text" value={this.state.sequenceItem.directory} onChange={ e => this.onDirectoryChanged(e.target.value) } />
-                    <HelpBlock>Directory for this sequence</HelpBlock>
-                </FormGroup>
-                <FormGroup controlId="count">
-                    <ControlLabel>Count</ControlLabel>
-                    <FormControl type="number" value={this.state.sequenceItem.count} min={1} step={1} onChange={e => this.onCountChanged(e.target.value)} />
-                    <HelpBlock>Number of shots in this sequence item</HelpBlock>
-                </FormGroup>
-                <FormGroup controlId="exposure">
-                    <ControlLabel>Exposure</ControlLabel>
-                    <InputGroup>
-                        <FormControl type="number" value={this.state.sequenceItem.exposure} min={0} onChange={e => this.onExposureChanged(e.target.value)} />
-                        <InputGroup.Addon>{this.renderTime(this.state.sequenceItem.exposure)}</InputGroup.Addon>
-                    </InputGroup>
-                    <HelpBlock>Exposure for each shot in seconds</HelpBlock>
-                </FormGroup>
-                <FormGroup controlId="total-exposure">
-                    <ControlLabel>Total Exposure</ControlLabel>
-                    <InputGroup>
-                        <FormControl type="number" value={this.state.sequenceItem.globalExposure} min={0} onChange={e => this.onGlobalExposureChanged(e.target.value)} />
-                        <InputGroup.Addon>{this.renderTime(this.state.sequenceItem.globalExposure)}</InputGroup.Addon>
-                    </InputGroup>
-                    <HelpBlock>Total exposure time for this sequence</HelpBlock>
-                </FormGroup>
+            <Form>
+                <Form.Input
+                    type='text'
+                    value={this.state.sequenceItem.filename}
+                    onChange={e => this.onFilenameChanged(e.target.value)}
+                    placeholder='filename'
+                    label='Filename' />
+                <Label size='tiny'>
+                Filename template for each shot. This will be formatted using <a rel="noopener noreferrer" href="https://docs.python.org/3.4/library/string.html#format-specification-mini-language" target="_BLANK">python string formatting rules</a>, you can use the following keywords:
+                    <ul>
+                        <li>exposure</li>
+                        <li>number</li>
+                        <li>timestamp</li>
+                        <li>datetime</li>
+                        <li>filter</li>
+                        <li>filter_index</li>
+                    </ul>
+                    Example: luminance_{'{exposure}_{number:04}.fits'}
+                </Label>
+                <Divider hidden />
+
+                <Form.Input
+                    type='text'
+                    label='Directory'
+                    placeholder='directory'
+                    value={this.state.sequenceItem.directory}
+                    onChange={ e => this.onDirectoryChanged(e.target.value)}
+                />
+                <Label size='tiny'>Directory for this sequence</Label>
+                <Divider hidden />
+
+                <Form.Input
+                    type='number'
+                    label='Count'
+                    placeholder='count'
+                    value={this.state.sequenceItem.count}
+                    min={1}
+                    step={1}
+                    onChange={e => this.onCountChanged(e.target.value)}
+                />
+                <Label size='tiny'>Number of shots in this sequence item</Label>
+                <Divider hidden />
+
+
+                <Form.Field>
+                    <label>Exposure</label>
+                    <Input
+                        type='number'
+                        label={{basic: true, content: this.renderTime(this.state.sequenceItem.exposure)}}
+                        placeholder='exposure'
+                        value={this.state.sequenceItem.exposure}
+                        min={0}
+                        onChange={e => this.onExposureChanged(e.target.value)}
+                    />
+                </Form.Field>
+                <Label size='tiny'>Exposure for each shot in seconds</Label>
+                <Divider hidden />
+
+
+                <Form.Field>
+                    <label>Total Exposure</label>
+                    <Input
+                        type='number'
+                        label={{basic: true, content: this.renderTime(this.state.sequenceItem.globalExposure)}}
+                        placeholder='exposure'
+                        value={this.state.sequenceItem.globalExposure}
+                        min={0}
+                        onChange={e => this.onGlobalExposureChanged(e.target.value)}
+                    />
+                </Form.Field>
+                <Label size='tiny'>Total exposure time for this sequence</Label>
+
+                <Divider section />
                 <SequenceItemButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceItem={this.state.sequenceItem} />
-            </form>
+            </Form>
         );
     }
 }

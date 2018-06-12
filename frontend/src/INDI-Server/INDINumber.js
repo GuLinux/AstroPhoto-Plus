@@ -1,5 +1,6 @@
 import React from 'react';
-import NumericInput from 'react-numeric-input';
+//import NumericInput from 'react-numeric-input';
+import { Input } from 'semantic-ui-react'
 import PRINTJ from 'printj'
 
 // copied from INDI github repo: https://github.com/indilib/indi/blob/bda9177ef25c6a219ac3879994c6efcae3b2d1c6/libindi/libs/indicom.c#L117
@@ -84,39 +85,66 @@ const formatValue = (displayValue, format) => {
     return formatted;
 }
 
-const INDINumber = ({value, displayValue, addPendingValues, isWriteable, hideCurrent}) => (
-    <div className="row" key={value.name} >
-        <div className="col-xs-2"><p>{value.label}</p></div>
-        { hideCurrent ? null : (
-            <div className={isWriteable ? 'col-xs-5' : 'col-xs-10'}>
-                <NumericInput
-                    name={'display_' + value.name}
-                    className="col-xs-12"
-                    value={value.value}
-                    readOnly={true}
-                    disabled={true}
-                    format={v => formatValue(v, value.format)}
-                    parse={s => parseStringValue(s, value.format)}
-                    />
-            </div>
-        )}
-        { isWriteable ? (
-        <div className={ hideCurrent ? 'col-xs-10' : 'col-xs-5' }>
-            <NumericInput
-                className="col-xs-12"
-                min={value.min}
-                max={value.max}
-                step={value.step}
-                name={value.name}
-                value={displayValue}
-                onChange={(numValue, stringValue) => addPendingValues({ [value.name]: numValue })}
-                readOnly={!isWriteable}
-                format={v => formatValue(v, value.format)}
-                parse={s => parseStringValue(s, value.format)}
-                />
-        </div>
-        ) : null }
-    </div> 
+// TODO: revisit when https://github.com/vlad-ignatov/react-numeric-input/pull/80 gets merged
+
+const onNumericInputChange = (currentValue, newValue, onChange, parseValue) => {
+    const parsed = parseValue(newValue);
+     onChange(parsed);
+}
+
+const NumericInput = ({value, format, parse, min, max, step, onChange, ...args}) => (
+    <Input
+        className='indi-number'
+        value={format(value)}
+        onChange={onChange ? (undefined, data) => onNumericInputChange(value, data.value, onChange, parse) : null}
+        type='text' {...args}
+    />
 )
+
+const EditableInput = ({value, format, min, max, step, onChange, ...args}) => (
+    <NumericInput
+        value={value}
+        onChange={onChange}
+        size='small'
+        format={v => formatValue(v, format)}
+        parse={s => parseStringValue(s, format)}
+        min={value.min}
+        max={value.max}
+        step={value.step}
+        {...args}
+    />
+)
+
+const CurrentValue = ({value, format, ...args}) => (
+    <NumericInput
+
+        value={value}
+        size='small'
+        readOnly={true}
+        format={v => formatValue(v, format)}
+        parse={s => parseStringValue(s, format)}
+        {...args}
+    />
+)
+
+const INDINumber = ({value, isWriteable, displayValue, addPendingValues, hideCurrent}) => {
+    const onChange= (numValue, stringValue) => addPendingValues({ [value.name]: numValue })
+
+    if(hideCurrent)
+        return <EditableInput label={value.label} format={value.format} min={value.min} max={value.max} step={value.step} value={displayValue} onChange={onChange} fluid />
+    if(!isWriteable)
+        return <CurrentValue format={value.format} label={value.label} value={value.value} fluid />
+    return (
+        <EditableInput
+            min={value.min} max={value.max} step={value.step}
+            format={value.format}
+            value={displayValue}
+            fluid
+            onChange={onChange}
+            action={<CurrentValue value={value.value} label={value.label} format={value.format} />}
+            actionPosition='left'
+        />
+    )
+}
 
 export default INDINumber

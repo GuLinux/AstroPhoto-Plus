@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import Actions from '../actions'
 import { ModalDialog } from './ModalDialog'
-import { Button, MenuItem } from 'react-bootstrap'
 import React from 'react'
 
 const mapStateToProps = (state, ownProps) => ({
@@ -9,7 +8,6 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    close: () => dispatch(Actions.Modals.toggleModal(ownProps.name, false)),
 })
 
 const ModalContainer = connect(mapStateToProps, mapDispatchToProps)(ModalDialog)
@@ -29,19 +27,22 @@ const mergeToggleProps = (stateProps, dispatchProps, ownProps) => {
     return {...stateProps, ...rest, ...dispatchProps};
 }
 
+const toggleProps = (props) => {
+    let newProps = {...props};
+    delete newProps.action;
+    return newProps;
+}
+
 ModalContainer.MenuItem = {
-    Toggle: connect(null, mapToggleModalDispatchToProps('onSelect'), mergeToggleProps)(MenuItem),
-    Close: (props) => <ModalContainer.MenuItem.Toggle action="close" {...props} />,
-    Open: (props) => <ModalContainer.MenuItem.Toggle action="visible" {...props} />,
+    Toggle: connect(null, mapToggleModalDispatchToProps('onSelect'), mergeToggleProps)(ModalDialog.MenuItem),
+    Close: (props) => <ModalContainer.MenuItem.Toggle action="close" {...toggleProps(props)} />,
+    Open: (props) => <ModalContainer.MenuItem.Toggle action="visible" {...toggleProps(props)} />,
 }
 
 ModalContainer.Button = {
-    Toggle: connect(null, mapToggleModalDispatchToProps('onClick'), mergeToggleProps)(Button),
-    Close: (props) => <ModalContainer.Button.Toggle action="close" {...props} />,
-    Open: (props) => <ModalContainer.Button.Toggle action="visible" {...props} />,
-
+    Toggle: connect(null, mapToggleModalDispatchToProps('onClick'), mergeToggleProps)(ModalDialog.Button),
+    Close: (props) => <ModalContainer.Button.Toggle action="close" {...toggleProps(props)} />,
+    Open: (props) => <ModalContainer.Button.Toggle action="visible" {...toggleProps(props)} />,
 }
-
-
 
 export default ModalContainer;

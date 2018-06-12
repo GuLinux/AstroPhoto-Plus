@@ -6,9 +6,9 @@ import { createLogger } from 'redux-logger'
 import { Actions } from './actions'
 import thunkMiddleware from 'redux-thunk'
 
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
-import './bootstrap-theme/css/bootstrap.css'
+import 'semantic-ui-css/semantic.min.css';
+// TODO: restore when it is working again
+// import 'forest-themes-css/dist/bootswatch/semantic.darkly.min.css';
 
 
 import indiLiteApp from './reducers'
