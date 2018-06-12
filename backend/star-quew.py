@@ -291,4 +291,4 @@ def shoot_image(json):
     camera = [c for c in controller.indi_server.cameras() if c.id == json['camera']]
     if not camera:
         raise NotFoundError('Camera {} not found'.format(json['camera']))
-    return camera.shoot_image(json)
+    return camera[0].shoot_image(json)

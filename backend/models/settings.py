@@ -34,6 +34,10 @@ class Settings:
         return map_object
 
     @property
+    def camera_tempdir(self):
+        return self.__build_path('.tmp', 'camera', isdir=True)
+
+    @property
     def sequences_dir(self):
         return self.json_map.get('sequences_path', os.path.join(self.default_datadir, 'Sequences'))
 

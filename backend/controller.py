@@ -91,7 +91,7 @@ class Controller:
 
     def __create_indi_server(self):
         self.__disconnect_indi_server()
-        self.indi_server = Server(app.logger, self.event_listener, self.settings.indi_host, self.settings.indi_port)
+        self.indi_server = Server(app.logger, self.settings, self.event_listener )
         self.event_listener.on_indi_server_reloaded()
             
     def __create_indi_service(self):

@@ -10,19 +10,18 @@ from .exceptions import NotFoundError
 class Server:
     DEFAULT_PORT = INDIClient.DEFAULT_PORT
 
-    def __init__(self, logger, event_listener, host, port=INDIClient.DEFAULT_PORT):
-        self.host = host
-        self.port = port
+    def __init__(self, logger, settings, event_listener):
+        self.logger = logger
+        self.settings = settings
         self.client = None
         self.__disconnect_requested = 0
-        self.logger = logger
         self.event_listener = event_listener
 
     def to_map(self):
-        return {'host': self.host, 'port': self.port, 'connected': self.is_connected() }
+        return {'host': self.settings.indi_host, 'port': self.settings.indi_port, 'connected': self.is_connected() }
 
     def connect(self):
-        self.client = INDIClient(address=self.host, port=self.port)
+        self.client = INDIClient(address=self.settings.indi_host, port=self.settings.indi_port)
         self.client.callbacks['on_server_disconnected'] = self.__on_disconnected
         self.client.callbacks['on_new_device'] = self.__on_device_added
         self.client.callbacks['on_device_removed'] = self.__on_device_removed
@@ -54,7 +53,7 @@ class Server:
         return Property(self.client, self.logger, *args, **kwargs)
 
     def cameras(self):
-        return [Camera(self.client, self.logger, camera=c) for c in self.client.cameras()]
+        return [Camera(self.settings, self.client, self.logger, camera=c) for c in self.client.cameras()]
 
     def filter_wheels(self):
         return [FilterWheel(self.client, self.logger, filter_wheel=f) for f in self.client.filter_wheels()]
