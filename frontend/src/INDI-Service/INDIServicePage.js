@@ -42,14 +42,10 @@ const INDIServicePage = ({serverFound, serverRunning, onServerStopStart, startSt
             <Grid.Row>
                 <Grid.Column>Status</Grid.Column>
                 <Grid.Column>
-                    <Label color={stateParams.labelColor} size='mini'>
-                        {stateParams.label}
-                    </Label>
+                    <Label color={stateParams.labelColor} size='mini' content={stateParams.label} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Button size="tiny" compact color={stateParams.buttonColor} onClick={() => onServerStopStart()} disabled={startStopPending}>
-                        {stateParams.buttonLabel}
-                    </Button>
+                    <Button size="tiny" compact color={stateParams.buttonColor} onClick={() => onServerStopStart()} disabled={startStopPending} content={stateParams.buttonLabel} />
                 </Grid.Column>
             </Grid.Row>
             {

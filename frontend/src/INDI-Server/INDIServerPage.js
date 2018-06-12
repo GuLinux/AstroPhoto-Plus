@@ -20,7 +20,6 @@ const INDISettingsPage = ({hasLocalServer}) => {
         <Grid celled container>
             <Grid.Column width={10}>
                 <INDIServiceProfilesContainer />
-                <Header size='small'>Available devices</Header>
                 <INDIServiceDevicesContainer />
             </Grid.Column>
             <Grid.Column width={6}>

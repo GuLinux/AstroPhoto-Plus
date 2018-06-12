@@ -1,5 +1,5 @@
 import React from 'react';
-import { Accordion, Checkbox, Container, Icon, Grid} from 'semantic-ui-react'
+import { Accordion, Checkbox, Container, Icon, Grid, Menu, Input} from 'semantic-ui-react'
 
 const INDIDriver = ({driver, toggleDriverSelection, serverRunning }) => (
     <Checkbox
@@ -57,19 +57,63 @@ class INDIDriversGroup extends React.Component {
     );
 }
 
+const FullDriversList = ({groups, drivers, toggleDriverSelection, serverRunning}) => (
+    <Accordion exclusive={false} fluid styled>
+        { Object.keys(groups).map( group =>
+            <INDIDriversGroup key={group} group={groups[group]} drivers={drivers} toggleDriverSelection={toggleDriverSelection} serverRunning={serverRunning} />
+        )}
+    </Accordion>
+)
 
-const INDIServiceDevicesPage = ({groups, drivers, serverFound, serverRunning, toggleDriverSelection}) => {
-    if(! serverFound)
-        return null;
+const SearchDriversList = ({drivers, toggleDriverSelection, serverRunning, searchString}) => {
+    const matchesNoCase = (searchIn, searchString) => searchIn.toLowerCase().includes(searchString.toLowerCase());
+    const matches = ({label, name}, searchString) => matchesNoCase(label, searchString) || matchesNoCase(name, searchString);
     return (
-        <Container>
-            <Accordion exclusive={false} fluid styled>
-                { Object.keys(groups).map( group =>
-                    <INDIDriversGroup key={group} group={groups[group]} drivers={drivers} toggleDriverSelection={toggleDriverSelection} serverRunning={serverRunning} />
+        <Grid columns={3} stackable>
+            { Object.keys(drivers).filter(driver => matches(drivers[driver], searchString))
+                .map( driver =>
+                    <Grid.Column key={driver}>
+                    <INDIDriver
+                        driver={drivers[driver]}
+                        toggleDriverSelection={toggleDriverSelection}
+                        serverRunning={serverRunning}
+                        />
+                    </Grid.Column >
                 )}
-            </Accordion>
-        </Container>
-    )
+            </Grid>
+        )
+    }
+
+
+class INDIServiceDevicesPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { searchString: '', };
+    }
+
+    onSearch = (searchString) => this.setState({...this.state, searchString})
+
+    render = () => {
+        const {groups, drivers, serverFound, serverRunning, toggleDriverSelection} = this.props;
+        if(! serverFound)
+            return null;
+        return (
+            <Container>
+                <Menu secondary fluid size='large' borderless>
+                    <Menu.Item fitted header content='Available devices' />
+                    <Menu.Menu position='right'>
+                        <Input icon='search' placeholder='Search devices' value={this.state.searchString} onChange={(e, data) => this.onSearch(data.value)}/>
+                    </Menu.Menu>
+                </Menu>
+                {
+                    this.state.searchString !== '' ?
+                        <SearchDriversList drivers={drivers} toggleDriverSelection={toggleDriverSelection} serverRunning={serverRunning} searchString={this.state.searchString} />:
+                        <FullDriversList groups={groups} drivers={drivers} toggleDriverSelection={toggleDriverSelection} serverRunning={serverRunning} />
+                }
+
+            </Container>
+        )
+    }
 }
 
 export default INDIServiceDevicesPage
