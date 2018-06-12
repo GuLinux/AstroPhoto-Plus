@@ -10,7 +10,7 @@ In the future I also plan to support telescope interfaces (GOTO/tracking), direc
 
 ## Installation and docs
 
-Please see the [wiki](wiki).
+Please see the [wiki](https://github.com/GuLinux/StarQuew/wiki).
 
 ## Last build status
 [![CircleCI](https://circleci.com/gh/GuLinux/StarQuew.svg?style=svg)](https://circleci.com/gh/GuLinux/StarQuew)
