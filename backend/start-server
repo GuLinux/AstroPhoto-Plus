@@ -1,9 +1,23 @@
 #!/bin/bash
+RUN_AS_ROOT=no
 RELOAD_PARAM=""
 case "$( tr A-Z a-z <<<"$DEV_MODE" )" in
     y|yes|1)
         RELOAD_PARAM=--reload
+        RUN_AS_ROOT=yes
         ;;
 esac
+
+if [ "$RUN_AS_ROOT" == no ] && [ "$EUID" == 0 ]; then
+    cat >&2 <<EOF
+Error: running StarQuew as root is not recommended.
+Please start StarQuew as normal user (see docs on https://github.com/GuLinux/StarQuew).
+EOF
+    exit 1
+fi
+if [ "$1" == --check-user ]; then
+    exit 0
+fi
+
 export PYTHONPATH="$PWD/indi-lite-tools/:$PYTHONPATH"
 gunicorn --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t 30 -k gthread -b 0.0.0.0:5000 star-quew:app "$@"

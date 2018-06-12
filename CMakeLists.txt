@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.0)
+project(StarQuew LANGUAGES NONE VERSION 0.0.1)
+
+set(STARQUEW_HOME lib/${CMAKE_PROJECT_NAME})
+set(STARQUEW_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${STARQUEW_HOME})
+set(CONFDIR ${CMAKE_INSTALL_PREFIX}/etc CACHE STRING "Directory for system wide configuration files")
+set(STARQUEW_CONF_FILE ${CONFDIR}/StarQuew.conf)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/debian/postinst scripts/debian/postinst)
+
+add_subdirectory(frontend)
+add_subdirectory(backend)
+
+install(FILES ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION .)
+install(FILES ${CMAKE_SOURCE_DIR}/README.md DESTINATION .)
+
+SET(CPACK_GENERATOR "TGZ;DEB")
+SET(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+SET(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+SET(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+SET(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE)
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Marco Gulino <marco.gulino@gmail.com>")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "python3, python3-pip, nginx, libindi-dev, swig, build-essential, zlib1g-dev, libnova-dev, libcfitsio-dev")
+#set(CPACK_DEBIAN_PACKAGE_DEPENDS "python3, python3-pip, nginx | apache2")
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/scripts/debian/postinst")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE all)
+include(CPack)

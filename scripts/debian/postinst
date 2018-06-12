@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "[BACKEND] Installing python requirements"
+pip3 install -r "${STARQUEW_INSTALL_PREFIX}/backend/requirements.txt"
+echo "[FRONTEND] Installing nginx configuration file"
+cp -av "${STARQUEW_INSTALL_PREFIX}/frontend/webserver-conf/nginx/starquew.conf" /etc/nginx/sites-available/
+rm -f /etc/nginx/sites-enabled/*
+ln -s /etc/nginx/sites-available/starquew.conf /etc/nginx/sites-enabled
+systemctl restart nginx
