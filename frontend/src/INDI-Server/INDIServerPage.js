@@ -17,7 +17,7 @@ const INDISettingsPage = ({hasLocalServer}) => {
             </Container>
     )
     return (
-        <Grid celled container>
+        <Grid celled container stackable>
             <Grid.Column width={10}>
                 <INDIServiceProfilesContainer />
                 <INDIServiceDevicesContainer />
@@ -35,7 +35,7 @@ const INDISettingsPage = ({hasLocalServer}) => {
 
 const INDIServerPage = ({devices, hasLocalServer}) => (
     <Container>
-        <Menu>
+        <Menu stackable>
             <Menu.Item as={NavLink} exact={true} to="/indi">INDI Server</Menu.Item>
             { devices.map( device =>
                 <Menu.Item

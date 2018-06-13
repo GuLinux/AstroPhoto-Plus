@@ -4,7 +4,7 @@ import { getVisibleGroups } from './selectors';
 
 
 const mapStateToProps = (state, ownProps) => {
-    let device = ownProps.device;
+    let device = ownProps.device in state.indiserver.deviceEntities ? ownProps.device : null;
     let groups = getVisibleGroups(state, ownProps);
     return {
         device,

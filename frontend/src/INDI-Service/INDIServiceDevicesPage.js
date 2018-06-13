@@ -99,10 +99,10 @@ class INDIServiceDevicesPage extends React.Component {
             return null;
         return (
             <Container>
-                <Menu secondary fluid size='large' borderless>
+                <Menu secondary fluid size='small' borderless>
                     <Menu.Item fitted header content='Available devices' />
                     <Menu.Menu position='right'>
-                        <Input icon='search' placeholder='Search devices' value={this.state.searchString} onChange={(e, data) => this.onSearch(data.value)}/>
+                        <Input icon='search' placeholder='Search devices' value={this.state.searchString} onChange={(e, data) => this.onSearch(data.value)} />
                     </Menu.Menu>
                 </Menu>
                 {
