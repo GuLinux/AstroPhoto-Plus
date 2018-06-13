@@ -6,8 +6,9 @@ from .exceptions import BadRequestError, NotFoundError
 import math
 import numpy
 
-
-
+# TODO:
+# - force 8bit conversion when saving (having warning now)
+# - use fits loader (plugin)
 
 class Image:
 
@@ -28,12 +29,14 @@ class Image:
             }
         }
 
-    def __init__(self, id, directory, filename, timestamp):
+    def __init__(self, id, directory, filename, timestamp, cached_conversions=None):
         self.id = id
         self.directory = directory
         self.filename = filename
         self.timestamp = timestamp
         self.cached_conversions = {}
+        if cached_conversions:
+            self.cached_conversions.update(cached_conversions)
 
     @property
     def path(self):
@@ -43,14 +46,17 @@ class Image:
     def from_map(item):
         return Image(item['id'], item['directory'], item['filename'], item['timestamp'])
 
-    def to_map(self):
-        return {
+    def to_map(self, for_saving=True):
+        json_map = {
             'id': self.id,
             'directory': self.directory,
             'filename': self.filename,
             'path': self.path,
             'timestamp': self.timestamp,
         }
+        if for_saving:
+            json_map.update({'cached_conversions': self.cached_conversions})
+        return json_map
 
     def convert(self, args):
         key = '&'.join(['{}={}'.format(key, value) for key, value in args.items()])
@@ -86,3 +92,8 @@ class Image:
         new_max = math.pow(2, bpp)
 
         return (image - image_min) * ((new_max)/(image_max-image_min))
+
+    def remove_files(self):
+        os.remove(self.path)
+        for file in [x for x in os.listdir(self.directory) if x.startswith(self.id)]:
+            os.remove(os.path.join(self.directory, file))

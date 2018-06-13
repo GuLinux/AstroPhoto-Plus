@@ -10,6 +10,8 @@ import time
 
 
 class Camera:
+    IMAGES_LIST_SIZE = 3
+
     def __init__(self, settings, client, logger, device=None, camera=None):
         self.settings = settings
         self.client = client
@@ -51,5 +53,9 @@ class Camera:
         filename = [x for x in os.listdir(self.settings.camera_tempdir) if x.startswith(id)][0]
         image = Image(id, self.settings.camera_tempdir, filename, time.time())
         self.images_list.append(image)
+        if len(self.images_list) > Camera.IMAGES_LIST_SIZE:
+            to_remove = self.images_list[0:len(self.images_list) - Camera.IMAGES_LIST_SIZE]
+            for image in to_remove:
+                self.images_list.remove(image).remove_files()
 
-        return image.to_map()
+        return image.to_map(for_saving=False)
