@@ -1,4 +1,4 @@
-from flask import jsonify, Response, send_file, request
+from flask import jsonify, Response, send_from_directory, request
 from api_decorators import *
 from api_utils import *
 from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device, INDIProfile
@@ -309,8 +309,10 @@ def shoot_image(camera, json):
 def retrieve_image(camera, image):
     image = lookup_camera(camera).images_list.lookup(image)
     image_info = image.convert(request.args)
-    return send_file(
-        image_info['path'],
+    return send_from_directory(
+        image_info['directory'],
+        image_info['filename'],
         mimetype=image_info['content_type'],
-        as_attachment=False
+        as_attachment=False,
+        attachment_filename=image_info['filename'],
     )

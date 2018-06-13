@@ -7,21 +7,20 @@ import math
 import numpy
 
 # TODO:
-# - force 8bit conversion when saving (having warning now)
 # - use fits loader (plugin)
 
 class Image:
 
     FORMATS = {
             'jpeg': {
-                'content_type': 'application/jpeg',
+                'content_type': 'image/jpeg',
                 'extension': 'jpg',
                 'imwrite_options': {
                 },
                 'imageio_format': 'JPEG-PIL',
             },
             'png': {
-                'content_type': 'application/png',
+                'content_type': 'image/png',
                 'extension': 'png',
                 'imwrite_options': {
                 },
@@ -71,6 +70,7 @@ class Image:
             self.__convert(args, filepath, format)
             self.cached_conversions[key] = {
                 'filename': filename,
+                'directory': self.directory,
                 'format': format_name,
                 'content_type': format['content_type'],
                 'path': filepath,
@@ -83,6 +83,8 @@ class Image:
             image_data = fits_file[0].data
             if stretch:
                 image_data = Image.normalize(image_data, image_data.dtype.itemsize * 8)
+            if image_data.dtype.itemsize == 2:
+                image_data = (image_data / 256).astype(numpy.uint8)
             imageio.imwrite(filepath, image_data, format=format['imageio_format'], **format['imwrite_options'])
 
     @staticmethod
