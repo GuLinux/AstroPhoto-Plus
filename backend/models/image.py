@@ -5,6 +5,7 @@ from astropy.io import fits
 from .exceptions import BadRequestError, NotFoundError
 import math
 import numpy
+import PIL.Image
 
 # TODO:
 # - use fits loader (plugin)
@@ -15,16 +16,15 @@ class Image:
             'jpeg': {
                 'content_type': 'image/jpeg',
                 'extension': 'jpg',
-                'imwrite_options': {
+                'save_options': {
+                    'quality': 90,
                 },
-                'imageio_format': 'JPEG-PIL',
             },
             'png': {
                 'content_type': 'image/png',
                 'extension': 'png',
-                'imwrite_options': {
+                'save_options': {
                 },
-                'imageio_format': 'PNG-PIL',
             }
         }
 
@@ -81,11 +81,20 @@ class Image:
         stretch = args.get('stretch', '0') == '1'
         with fits.open(self.path) as fits_file:
             image_data = fits_file[0].data
+
             if stretch:
                 image_data = Image.normalize(image_data, image_data.dtype.itemsize * 8)
             if image_data.dtype.itemsize == 2:
-                image_data = (image_data / 256).astype(numpy.uint8)
-            imageio.imwrite(filepath, image_data, format=format['imageio_format'], **format['imwrite_options'])
+                image_data = (image_data / 256)
+            maxwidth = int(args.get('maxwidth', '0'))
+
+            image = PIL.Image.fromarray(image_data.astype(numpy.uint8))
+
+            maxwidth = int(args.get('maxwidth', '0'))
+            if maxwidth > 0:
+                maxheight = image.height / (image.width / maxwidth)
+                image.thumbnail((maxwidth,maxheight))
+            image.save(filepath, **format['save_options'])
 
     @staticmethod
     def normalize(image, bpp):
