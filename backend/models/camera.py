@@ -2,34 +2,12 @@ from .device import Device
 from .exceptions import NotFoundError
 from .saved_list import SavedList
 from .model import random_id
+from .image import Image
+from astropy.io import fits
 import os
 import time
 
 
-
-class Image:
-    def __init__(self, id, directory, filename, timestamp):
-        self.id = id
-        self.directory = directory
-        self.filename = filename
-        self.timestamp = timestamp
-
-    @property
-    def path(self):
-        return os.path.join(self.directory, self.filename)
-
-    @staticmethod
-    def from_map(item):
-        return Image(item['id'], item['directory'], item['filename'], item['timestamp'])
-
-    def to_map(self):
-        return {
-            'id': self.id,
-            'directory': self.directory,
-            'filename': self.filename,
-            'path': self.path,
-            'timestamp': self.timestamp,
-        }
 
 class Camera:
     def __init__(self, settings, client, logger, device=None, camera=None):

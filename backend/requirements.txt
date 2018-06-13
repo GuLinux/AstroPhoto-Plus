@@ -5,4 +5,5 @@ gunicorn
 gevent
 greenlet
 numpy
-
+pillow
+imageio

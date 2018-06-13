@@ -5,6 +5,18 @@ import time
 from controller import controller
 from models import BadRequestError, NotFoundError
 
+def managed_api(f):
+    @wraps(f)
+    def f_wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except NotFoundError as e:
+            return api_not_found_error(e.message)
+        except BadRequestError as e:
+            return api_bad_request_error(e.message)
+    return f_wrapper
+
+
 def json_api(f):
     @wraps(f)
     def f_wrapper(*args, **kwargs):
@@ -50,5 +62,3 @@ def timeout(seconds, interval=0.1):
             return False
         return f_wrapper
     return decorator
-
-
