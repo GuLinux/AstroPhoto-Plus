@@ -7,6 +7,7 @@ import gear from './Gear/reducer'
 import errors from './Errors/reducer'
 import indiservice from './INDI-Service/reducer'
 import modals from './Modals/reducer'
+import camera from './Camera/reducer'
 
 const network = (state = { fetching: false }, action) => {
     switch(action.type) {
@@ -50,6 +51,6 @@ const network = (state = { fetching: false }, action) => {
 
 
 
-const indiLiteApp = combineReducers({sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, modals });
+const indiLiteApp = combineReducers({sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, modals, camera });
 
 export default indiLiteApp

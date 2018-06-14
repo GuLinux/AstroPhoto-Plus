@@ -1,9 +1,11 @@
 import { connect } from 'react-redux'
 import Navigation from './Navigation'
 import Actions from '../actions'
+import { hasConnectedCameras } from '../Gear/selectors'
 
 const mapStateToProps = state => ({
     disabled: state.errors.isError,
+    hasConnectedCameras: hasConnectedCameras(state),
 })
 
 const mapDispatchToProps = dispatch => {
@@ -18,6 +20,4 @@ const NavbarContainer = connect(
   mapDispatchToProps
 )(Navigation)
 
-export default NavbarContainer 
-
-
+export default NavbarContainer
