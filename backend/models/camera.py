@@ -52,10 +52,12 @@ class Camera:
         self.camera.shoot(exposure)
         filename = [x for x in os.listdir(self.settings.camera_tempdir) if x.startswith(id)][0]
         image = Image(id, self.settings.camera_tempdir, filename, time.time())
+
+        if len(self.images_list) >= Camera.IMAGES_LIST_SIZE:
+            to_remove = sorted(self.images_list, key=lambda i: i.timestamp)[0:len(self.images_list) - Camera.IMAGES_LIST_SIZE]
+            for older_image in to_remove:
+                self.images_list.remove(older_image).remove_files()
+
         self.images_list.append(image)
-        if len(self.images_list) > Camera.IMAGES_LIST_SIZE:
-            to_remove = self.images_list[0:len(self.images_list) - Camera.IMAGES_LIST_SIZE]
-            for image in to_remove:
-                self.images_list.remove(image).remove_files()
 
         return image.to_map(for_saving=False)
