@@ -3,7 +3,7 @@ from api_utils import *
 from functools import wraps
 import time
 from controller import controller
-from models import BadRequestError, NotFoundError
+from models import BadRequestError, NotFoundError, FailedMethodError
 
 def managed_api(f):
     @wraps(f)
@@ -14,6 +14,8 @@ def managed_api(f):
             return api_not_found_error(e.message)
         except BadRequestError as e:
             return api_bad_request_error(e.message)
+        except FailedMethodError as e:
+            return api_failed_method_error(e.message)
     return f_wrapper
 
 
@@ -26,6 +28,8 @@ def json_api(f):
             return api_not_found_error(e.message)
         except BadRequestError as e:
             return api_bad_request_error(e.message)
+        except FailedMethodError as e:
+            return api_failed_method_error(e.message)
     return f_wrapper
 
 
