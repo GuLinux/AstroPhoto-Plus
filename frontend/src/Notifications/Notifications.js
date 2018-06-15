@@ -21,7 +21,7 @@ const AlertNotification = ({notification, onDismiss}) => (
         <Message.Content>
             <Message.Header>{notification.title}</Message.Header>
             {
-                Array.isArray(notification.text) ? notification.text.map((t, i) => <p key={i}>{t}</p>) : <p>notification.text</p>
+                Array.isArray(notification.text) ? notification.text.map((t, i) => <p key={i}>{t}</p>) : <p>{notification.text}</p>
             }
         </Message.Content>
     </Message>
