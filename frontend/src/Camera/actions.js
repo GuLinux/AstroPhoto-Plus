@@ -5,6 +5,10 @@ import Actions from '../actions';
 const Camera = {
     setCamera: (camera) => ({ type: 'SET_CURRENT_CAMERA', camera }),
     setExposure: (exposure) => ({ type: 'SET_EXPOSURE', exposure }),
+    setStretch: (stretch) => ({ type: 'CAMERA_SET_STRETCH', stretch }),
+    setFormat: (format) => ({ type: 'CAMERA_SET_FORMAT', format}),
+    setFitToScreen: (fitToScreen) => ({ type: 'CAMERA_IMG_FIT_SCREEN', fitToScreen}),
+
     shoot: (parameters) => (dispatch) => {
         dispatch({ type: 'CAMERA_SHOOT', parameters });
         return cameraShootAPI(dispatch, parameters.camera.id, parameters, (data) => dispatch(Camera.shotFinished(data)), (err) => {
