@@ -8,4 +8,7 @@ class NotFoundError(Exception):
         Exception.__init__(self, message)
         self.message = message
 
-
+class FailedMethodError(Exception):
+    def __init__(self, message=None):
+        Exception.__init__(self, message)
+        self.message = message

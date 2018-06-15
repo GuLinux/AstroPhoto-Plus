@@ -35,3 +35,11 @@ body {
 .indi-number .label, .indi-text .label {
     min-width: 16em;
 }
+
+.image-viewer {
+    overflow: auto;
+}
+
+.image-viewer img {
+    max-width: none;
+}

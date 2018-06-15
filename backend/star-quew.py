@@ -1,4 +1,4 @@
-from flask import jsonify, Response
+from flask import jsonify, Response, send_from_directory, request
 from api_decorators import *
 from api_utils import *
 from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device, INDIProfile
@@ -6,6 +6,7 @@ import os
 from controller import controller
 from app import app
 import logging
+import io
 
 default_settings = {}
 
@@ -158,12 +159,6 @@ def update_indi_property(device, property_name, json):
     return { 'action': 'set_property', 'device': device, 'property': property_name, 'values': json, 'result': indi_property.set_values(json) }
 
 
-@app.route('/api/cameras', methods=['GET'])
-@json_api
-@indi_connected
-def get_cameras():
-    return [x.to_map() for x in controller.indi_server.cameras()]
-
 
 @app.route('/api/filter_wheels', methods=['GET'])
 @json_api
@@ -282,3 +277,42 @@ def delete_sequence_item(sequence_id, sequence_item_id):
         sequence_item.update({'status': 'deleted'})
         sequence.sequence_items = [x for x in sequence.sequence_items if x.id != sequence_item_id]
         return sequence_item
+
+#imaging module
+
+
+@app.route('/api/cameras', methods=['GET'])
+@json_api
+@indi_connected
+def get_cameras():
+    return [x.to_map() for x in controller.indi_server.cameras()]
+
+
+def lookup_camera(id):
+    camera = [c for c in controller.indi_server.cameras() if c.id == id]
+    if not camera:
+        raise NotFoundError('Camera {} not found'.format(json['camera']))
+    return camera[0]
+
+
+@app.route('/api/cameras/<camera>/image', methods=['POST'])
+@json_input
+@json_api
+@indi_connected
+def shoot_image(camera, json):
+    return lookup_camera(camera).shoot_image(json)
+
+
+@app.route('/api/cameras/<camera>/image/<image>', methods=['GET'])
+@managed_api
+@indi_connected
+def retrieve_image(camera, image):
+    image = lookup_camera(camera).images_list.lookup(image)
+    image_info = image.convert(request.args)
+    return send_from_directory(
+        image_info['directory'],
+        image_info['filename'],
+        mimetype=image_info['content_type'],
+        as_attachment=False,
+        attachment_filename=image_info['filename'],
+    )

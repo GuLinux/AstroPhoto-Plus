@@ -20,6 +20,7 @@ class SavedList:
     def remove(self, item):
         self.items = [x for x in self.items if x.id != item.id]
         os.remove(self.__path_for(item))
+        return item
 
     def lookup(self, item_id):
         item = [x for x in self.items if x.id == item_id]

@@ -3,7 +3,21 @@ from api_utils import *
 from functools import wraps
 import time
 from controller import controller
-from models import BadRequestError, NotFoundError
+from models import BadRequestError, NotFoundError, FailedMethodError
+
+def managed_api(f):
+    @wraps(f)
+    def f_wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except NotFoundError as e:
+            return api_not_found_error(e.message)
+        except BadRequestError as e:
+            return api_bad_request_error(e.message)
+        except FailedMethodError as e:
+            return api_failed_method_error(e.message)
+    return f_wrapper
+
 
 def json_api(f):
     @wraps(f)
@@ -14,6 +28,8 @@ def json_api(f):
             return api_not_found_error(e.message)
         except BadRequestError as e:
             return api_bad_request_error(e.message)
+        except FailedMethodError as e:
+            return api_failed_method_error(e.message)
     return f_wrapper
 
 
@@ -50,5 +66,3 @@ def timeout(seconds, interval=0.1):
             return False
         return f_wrapper
     return decorator
-
-

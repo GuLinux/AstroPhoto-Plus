@@ -20,7 +20,9 @@ const AlertNotification = ({notification, onDismiss}) => (
         <Icon name={icons[notification.type]} />
         <Message.Content>
             <Message.Header>{notification.title}</Message.Header>
-            <p>{notification.text}</p>
+            {
+                Array.isArray(notification.text) ? notification.text.map((t, i) => <p key={i}>{t}</p>) : <p>notification.text</p>
+            }
         </Message.Content>
     </Message>
 )
