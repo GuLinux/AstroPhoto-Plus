@@ -148,3 +148,11 @@ export const updateINDIProfileAPI = (dispatch, data, onSuccess) => fetchJSON(dis
         'Content-Type': 'application/json',
     }
 }, json => onSuccess(json));
+
+export const cameraShootAPI = (dispatch, cameraId, data, onSuccess, onError) => fetchJSON(dispatch, `/api/cameras/${cameraId}/image`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+        'Content-Type': 'application/json',
+    },
+}, onSuccess, onError);
