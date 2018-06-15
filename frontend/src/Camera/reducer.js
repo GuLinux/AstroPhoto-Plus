@@ -5,11 +5,20 @@ const defaultState = {
 const onCameraShotFinished = (state, action) => ({
     ...state, isShooting: false,
     currentImage: action.payload,
+    shouldAutostart: state.continuous,
 });
 
 const onCameraShotError = (state, action) => ({
-    ...state, isShooting: false,
+    ...state,
+    isShooting: false,
+    shouldAutostart: false,
 });
+
+const onCameraShoot = (state, action) => ({
+    ...state,
+    isShooting: true,
+    shouldAutostart: false,
+})
 
 const camera = (state = defaultState, action) => {
     switch(action.type) {
@@ -24,11 +33,13 @@ const camera = (state = defaultState, action) => {
         case 'CAMERA_IMG_FIT_SCREEN':
             return {...state, fitToScreen: action.fitToScreen};
         case 'CAMERA_SHOOT':
-            return {...state, isShooting: true};
+            return onCameraShoot(state, action);
         case 'CAMERA_SHOT_FINISHED':
             return onCameraShotFinished(state, action);
         case 'CAMERA_SHOT_ERROR':
             return onCameraShotError(state, action);
+        case 'CAMERA_SET_CONTINUOUS':
+            return {...state, continuous: action.continuous}
         default:
             return state;
     }

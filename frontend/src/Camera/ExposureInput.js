@@ -18,8 +18,8 @@ const ExposureInput = ({shotParameters, onExposureChanged, onShoot, disabled}) =
             link: !disabled && exposureValid(shotParameters.exposure),
             disabled: disabled || ! exposureValid(shotParameters.exposure),
             onClick: () => onShoot(shotParameters),
-        }} />
-
+        }}
+    />
 );
 
 export default ExposureInput;

@@ -8,11 +8,12 @@ const Camera = {
     setStretch: (stretch) => ({ type: 'CAMERA_SET_STRETCH', stretch }),
     setFormat: (format) => ({ type: 'CAMERA_SET_FORMAT', format}),
     setFitToScreen: (fitToScreen) => ({ type: 'CAMERA_IMG_FIT_SCREEN', fitToScreen}),
+    setContinuous: (continuous) => ({ type: 'CAMERA_SET_CONTINUOUS', continuous}),
 
     shoot: (parameters) => (dispatch) => {
         dispatch({ type: 'CAMERA_SHOOT', parameters });
-        return cameraShootAPI(dispatch, parameters.camera.id, parameters, (data) => dispatch(Camera.shotFinished(data)), (err) => {
-            if(err.headers.get('Content-Type') == 'application/json') {
+        return cameraShootAPI(dispatch, parameters.camera.id, parameters, (data) => dispatch(Camera.shotFinished(data, parameters.continuous)), (err) => {
+            if(err.headers.get('Content-Type') === 'application/json') {
                 err.json().then( (errorData) => dispatch(Camera.shotError(errorData)) );
                 return true;
             }
@@ -20,9 +21,10 @@ const Camera = {
         });
     },
 
-    shotFinished: (payload) => dispatch => {
-        dispatch({ type: 'CAMERA_SHOT_FINISHED', payload })
-        dispatch(Actions.Notifications.add('Image acquired', 'Image was successfully acquired.', 'success', 5000));
+    shotFinished: (payload, continuous) => dispatch => {
+        dispatch({ type: 'CAMERA_SHOT_FINISHED', payload });
+        if(!continuous)
+            dispatch(Actions.Notifications.add('Image acquired', 'Image was successfully acquired.', 'success', 5000));
     },
 
     shotError: (error) => dispatch => {

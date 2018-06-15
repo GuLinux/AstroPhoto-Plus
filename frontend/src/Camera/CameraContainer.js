@@ -11,6 +11,7 @@ const mapStateToProps = (state, ownProps) => ({
     format: state.camera.format,
     stretch: state.camera.stretch,
     fitToScreen: state.camera.fitToScreen,
+    continuous: state.camera.continuous,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -18,6 +19,7 @@ const mapDispatchToProps = dispatch => ({
     setFormat: (format) => dispatch(Actions.Camera.setFormat(format)),
     setStretch: (stretch) => dispatch(Actions.Camera.setStretch(stretch)),
     setFitToScreen: (fitToScreen) => dispatch(Actions.Camera.setFitToScreen(fitToScreen)),
+    setContinuous: (continuous) => dispatch(Actions.Camera.setContinuous(continuous)),
 })
 
 const CameraContainer = connect(

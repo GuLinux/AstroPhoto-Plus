@@ -1,14 +1,11 @@
 import { connect } from 'react-redux';
 import Actions from '../actions';
 import ExposureInput from './ExposureInput';
-import { getCurrentCamera } from './selectors';
+import { getShotParameters } from './selectors';
 
 
 const mapStateToProps = (state) => ({
-    shotParameters: {
-        camera: getCurrentCamera(state),
-        exposure: state.camera.exposure,
-    },
+    shotParameters: getShotParameters(state),
 });
 
 
@@ -24,4 +21,3 @@ const ExposureInputContainer = connect(
 )(ExposureInput);
 
 export default ExposureInputContainer;
-     

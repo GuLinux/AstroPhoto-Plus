@@ -3,14 +3,30 @@ import { Container, Grid, Menu, Checkbox, Select } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import ExposureInputContainer from './ExposureInputContainer';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
+import AutoExposureContainer from './AutoExposureContainer';
 
-
-const Camera = ({ cameras, currentCamera, exposure, setCurrentCamera, setExposure, isShooting, format, stretch, setFormat, setStretch, fitToScreen, setFitToScreen}) => {
+const Camera = ({
+        cameras,
+        currentCamera,
+        exposure,
+        setCurrentCamera,
+        setExposure,
+        isShooting,
+        format,
+        stretch,
+        setFormat,
+        setStretch,
+        fitToScreen,
+        setFitToScreen,
+        continuous,
+        setContinuous,
+    }) => {
     if(cameras.length === 0)
         return <Redirect to='/' />;
     return (
         <Container fluid>
-            <Grid columns={16}>
+            <AutoExposureContainer />
+            <Grid columns={16} stackable>
                 <Grid.Column width={3}>
                     <Menu vertical borderless fluid size='tiny'>
                         <Menu.Item header content='Camera' />
@@ -22,7 +38,9 @@ const Camera = ({ cameras, currentCamera, exposure, setCurrentCamera, setExposur
                         />) }
                         <Menu.Item header content='Exposure' disabled={!currentCamera || isShooting} />
                         <Menu.Item><ExposureInputContainer disabled={!currentCamera || isShooting} /></Menu.Item>
-                        <Menu.Item><Checkbox label='Stretch image' slider size='tiny' checked={stretch} onChange={(e, data) => setStretch(data.checked)} /></Menu.Item>
+                        <Menu.Item><Checkbox label='Continuous' disabled={!currentCamera} slider size='tiny' checked={continuous} onChange={(e, data) => setContinuous(data.checked)} /></Menu.Item>
+                        <Menu.Item header content='View Options' />
+                        <Menu.Item><Checkbox label='Stretch histogram' slider size='tiny' checked={stretch} onChange={(e, data) => setStretch(data.checked)} /></Menu.Item>
                         <Menu.Item><Select label='Format' size='tiny' fluid value={format} options={[
                             { text: 'PNG', value: 'png'},
                             { text: 'JPEG', value: 'jpeg' },
