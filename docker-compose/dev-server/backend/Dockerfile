@@ -3,7 +3,7 @@ VOLUME /app
 
 ENV PYINDI_CLIENT_VERSION=0.2.2
 
-RUN apt-get update && apt-get install -y swig build-essential libnova-dev  python3 python3-pip dirmngr swig build-essential libnova-dev libcfitsio-dev zlib1g-dev curl
+RUN apt-get update && apt-get install -y swig build-essential libnova-dev  python3 python3-pip python3-venv dirmngr swig build-essential libnova-dev libcfitsio-dev zlib1g-dev curl
 COPY indi-ppa.list /etc/apt/sources.list.d/
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3F33A288 && apt-get update && apt-get install -y libindi-dev
 RUN curl -o pyindi-client-$PYINDI_CLIENT_VERSION.tar.gz "https://files.pythonhosted.org/packages/3d/2c/66e96ab58e2cb5137986c53d8747edc8fb3001340120c62a4dab998f0a2b/pyindi-client-${PYINDI_CLIENT_VERSION}.tar.gz" && tar xzf pyindi-client-$PYINDI_CLIENT_VERSION.tar.gz && cd pyindi-client-$PYINDI_CLIENT_VERSION && python3 setup.py install && cd / && rm -rf pyindi-client-$PYINDI_CLIENT_VERSION

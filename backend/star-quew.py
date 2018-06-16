@@ -13,7 +13,8 @@ default_settings = {}
 gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers = gunicorn_logger.handlers
 
-app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG'))
+is_debug_mode = int(os.environ.get('DEV_MODE', '0')) == 1
+app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG' if is_debug_mode else 'INFO' ))
 
 
 @app.route('/api/events')

@@ -9,6 +9,7 @@ file(
 
 set(FRONTEND_ROOTDIR ${STARQUEW_INSTALL_PREFIX}/frontend)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/webserver-conf/nginx/starquew.conf ${CMAKE_CURRENT_BINARY_DIR}/webserver-conf/nginx/starquew.conf)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/webserver-conf/apache2/starquew.conf ${CMAKE_CURRENT_BINARY_DIR}/webserver-conf/apache2/starquew.conf)
 
 add_custom_target(
     npm-dependencies

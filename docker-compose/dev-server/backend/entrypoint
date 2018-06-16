@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 set -x
-requirements_checksum="$( md5sum requirements.txt | cut -d' ' -f1 )"
-last_requirements_checksum_file="/usr/local/lib/python3.6/dist-packages/last_requirements_checksum"
-if [ "$requirements_checksum" != "$( cat "$last_requirements_checksum_file" 2>/dev/null )" ]; then
-    pip3 install -r requirements.txt
-fi
-echo "$requirements_checksum" > "$last_requirements_checksum_file"
+# Old stuff, it should be obsolete by now with the new start-server
+# requirements_checksum="$( md5sum requirements.txt | cut -d' ' -f1 )"
+# last_requirements_checksum_file="/usr/local/lib/python3.6/dist-packages/last_requirements_checksum"
+# if [ "$requirements_checksum" != "$( cat "$last_requirements_checksum_file" 2>/dev/null )" ]; then
+#     pip3 install -r requirements.txt
+# fi
+# echo "$requirements_checksum" > "$last_requirements_checksum_file"
 
 DEV_MODE=1 ./start-server --log-level debug
-
