@@ -5,7 +5,7 @@ const parseExposure = (exposure) => parseInt(exposure, 10);
 const exposureValid = (exposure) => parseExposure(exposure) > 0;
 
 const ExposureShootIcon = ({disabled, onClick}) => (
-    <Button compact content='Shoot' icon='camera' disabled={disabled} size='tiny' onClick={onClick} />
+    <Button as='a' content='Shoot' icon='camera' disabled={disabled} size='tiny' onClick={onClick} />
 )
 
 const ExposureInput = ({shotParameters, onExposureChanged, onShoot, disabled}) => (
@@ -19,7 +19,7 @@ const ExposureInput = ({shotParameters, onExposureChanged, onShoot, disabled}) =
         label={
             <ExposureShootIcon disabled={disabled || ! exposureValid(shotParameters.exposure)} onClick={() => onShoot(shotParameters)} />
         }
-        labelPosition='left'
+        labelPosition='right'
     />
 );
 
