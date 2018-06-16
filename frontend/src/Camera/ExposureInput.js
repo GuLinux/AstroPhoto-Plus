@@ -1,8 +1,12 @@
 import React from 'react';
-import { Input } from 'semantic-ui-react';
+import { Input, Button } from 'semantic-ui-react';
 
 const parseExposure = (exposure) => parseInt(exposure, 10);
 const exposureValid = (exposure) => parseExposure(exposure) > 0;
+
+const ExposureShootIcon = ({disabled, onClick}) => (
+    <Button compact content='Shoot' icon='camera' disabled={disabled} size='tiny' onClick={onClick} />
+)
 
 const ExposureInput = ({shotParameters, onExposureChanged, onShoot, disabled}) => (
     <Input
@@ -12,13 +16,10 @@ const ExposureInput = ({shotParameters, onExposureChanged, onShoot, disabled}) =
         onChange={(e, data) => onExposureChanged(parseExposure(data.value))}
         disabled={disabled}
         value={exposureValid(shotParameters.exposure) ? parseExposure(shotParameters.exposure) : ''}
-        icon={{
-            name: 'camera',
-            circular: true,
-            link: !disabled && exposureValid(shotParameters.exposure),
-            disabled: disabled || ! exposureValid(shotParameters.exposure),
-            onClick: () => onShoot(shotParameters),
-        }}
+        label={
+            <ExposureShootIcon disabled={disabled || ! exposureValid(shotParameters.exposure)} onClick={() => onShoot(shotParameters)} />
+        }
+        labelPosition='left'
     />
 );
 

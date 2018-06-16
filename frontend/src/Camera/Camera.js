@@ -27,7 +27,7 @@ const Camera = ({
         <Container fluid>
             <AutoExposureContainer />
             <Grid columns={16} stackable>
-                <Grid.Column width={3}>
+                <Grid.Column width={4}>
                     <Menu vertical borderless fluid size='tiny'>
                         <Menu.Item header content='Camera' />
                         { cameras.map(c => <Menu.Item
@@ -41,7 +41,7 @@ const Camera = ({
                         <Menu.Item><Checkbox label='Continuous' disabled={!currentCamera} slider size='tiny' checked={continuous} onChange={(e, data) => setContinuous(data.checked)} /></Menu.Item>
                         <Menu.Item header content='View Options' />
                         <Menu.Item><Checkbox label='Stretch histogram' slider size='tiny' checked={stretch} onChange={(e, data) => setStretch(data.checked)} /></Menu.Item>
-                        <Menu.Item><Select label='Format' size='tiny' fluid value={format} options={[
+                        <Menu.Item><Select text='Display format' size='tiny' fluid value={format} options={[
                             { text: 'PNG', value: 'png'},
                             { text: 'JPEG', value: 'jpeg' },
                         ]} onChange={(e, data) => setFormat(data.value)}/></Menu.Item>
