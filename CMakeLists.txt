@@ -5,7 +5,7 @@ set(STARQUEW_HOME lib/${CMAKE_PROJECT_NAME})
 set(STARQUEW_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${STARQUEW_HOME})
 set(CONFDIR ${CMAKE_INSTALL_PREFIX}/etc CACHE STRING "Directory for system wide configuration files")
 set(STARQUEW_CONF_FILE ${CONFDIR}/StarQuew.conf)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/StarQuew-ctl scripts @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/scripts/StarQuew-ctl ${CMAKE_BINARY_DIR}/scripts @ONLY)
 
 add_subdirectory(frontend)
 add_subdirectory(backend)
