@@ -49,7 +49,7 @@ const Camera = ({
                         <Menu.Item><Checkbox label='Fit image to screen' slider size='tiny' checked={fitToScreen} onChange={(e, data) => setFitToScreen(data.checked)} /></Menu.Item>
                     </Menu>
                 </Grid.Column>
-                <Grid.Column width={13}>
+                <Grid.Column width={12}>
                     <CurrentImageViewerContainer fitScreen={fitToScreen} />
                 </Grid.Column>
             </Grid>
