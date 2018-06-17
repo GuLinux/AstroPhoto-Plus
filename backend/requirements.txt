@@ -6,5 +6,4 @@ gevent
 greenlet
 numpy
 pillow
-imageio
 six
