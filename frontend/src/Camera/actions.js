@@ -4,11 +4,7 @@ import Actions from '../actions';
 
 const Camera = {
     setCamera: (camera) => ({ type: 'SET_CURRENT_CAMERA', camera }),
-    setExposure: (exposure) => ({ type: 'SET_EXPOSURE', exposure }),
-    setStretch: (stretch) => ({ type: 'CAMERA_SET_STRETCH', stretch }),
-    setFormat: (format) => ({ type: 'CAMERA_SET_FORMAT', format}),
-    setFitToScreen: (fitToScreen) => ({ type: 'CAMERA_IMG_FIT_SCREEN', fitToScreen}),
-    setContinuous: (continuous) => ({ type: 'CAMERA_SET_CONTINUOUS', continuous}),
+    setOption: (option) => ({ type: 'CAMERA_SET_OPTION', option }),
 
     shoot: (parameters) => (dispatch) => {
         dispatch({ type: 'CAMERA_SHOOT', parameters });

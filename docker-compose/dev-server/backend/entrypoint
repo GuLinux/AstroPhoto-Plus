@@ -9,4 +9,4 @@ set -x
 # fi
 # echo "$requirements_checksum" > "$last_requirements_checksum_file"
 
-DEV_MODE=1 ./start-server --log-level debug
+DEV_MODE=1 SAMPLE_FITS_PATH="$PWD/dev_sample_fits" ./start-server --log-level debug

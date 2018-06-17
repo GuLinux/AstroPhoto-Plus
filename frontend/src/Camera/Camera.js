@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Grid, Menu, Checkbox, Select } from 'semantic-ui-react';
+import { Container, Grid, Menu, Checkbox, Select, Input, Label, Form } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import ExposureInputContainer from './ExposureInputContainer';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
@@ -8,18 +8,10 @@ import AutoExposureContainer from './AutoExposureContainer';
 const Camera = ({
         cameras,
         currentCamera,
-        exposure,
+        options,
+        setOption,
         setCurrentCamera,
-        setExposure,
         isShooting,
-        format,
-        stretch,
-        setFormat,
-        setStretch,
-        fitToScreen,
-        setFitToScreen,
-        continuous,
-        setContinuous,
     }) => {
     if(cameras.length === 0)
         return <Redirect to='/' />;
@@ -38,19 +30,46 @@ const Camera = ({
                         />) }
                         <Menu.Item header content='Exposure' disabled={!currentCamera || isShooting} />
                         <Menu.Item><ExposureInputContainer disabled={!currentCamera || isShooting} /></Menu.Item>
-                        <Menu.Item><Checkbox label='Continuous' disabled={!currentCamera} slider size='tiny' checked={continuous} onChange={(e, data) => setContinuous(data.checked)} /></Menu.Item>
+                        <Menu.Item><Checkbox label='Continuous' disabled={!currentCamera} slider size='tiny' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} /></Menu.Item>
                         <Menu.Item header content='View Options' />
-                        <Menu.Item><Checkbox label='Stretch histogram' slider size='tiny' checked={stretch} onChange={(e, data) => setStretch(data.checked)} /></Menu.Item>
-                        <Menu.Item><Select text='Display format' size='tiny' fluid value={format} options={[
+                        <Menu.Item><Checkbox label='Stretch histogram' slider size='tiny' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} /></Menu.Item>
+                        <Menu.Item>
+                            <Input
+                                type='number'
+                                min={0}
+                                max={100}
+                                step={0.1}
+                                value={options.clipLow}
+                                onChange={(e, data) => setOption({clipLow: data.value})}
+                                label='Clip shadows'
+                            />
+                        </Menu.Item>
+
+                        <Menu.Item>
+                            <Input
+                                type='number'
+                                min={0}
+                                max={100}
+                                step={0.1}
+                                value={options.clipHigh}
+                                onChange={(e, data) => {
+                                    console.log(e)
+                                    console.log(data)
+                                    return setOption({clipHigh: data.value})
+                                }
+                                }
+                                label='Clip highlights'
+                            />
+                        </Menu.Item>
+                        <Menu.Item><Select text='Display format' size='tiny' fluid value={options.format} options={[
                             { text: 'PNG', value: 'png'},
                             { text: 'JPEG', value: 'jpeg' },
-                        ]} onChange={(e, data) => setFormat(data.value)}/></Menu.Item>
-
-                        <Menu.Item><Checkbox label='Fit image to screen' slider size='tiny' checked={fitToScreen} onChange={(e, data) => setFitToScreen(data.checked)} /></Menu.Item>
+                        ]} onChange={(e, data) => setOption({stretch: data.value})}/></Menu.Item>
+                        <Menu.Item><Checkbox label='Fit image to screen' slider size='tiny' checked={options.fitToScreen} onChange={(e, data) => setOption({fitToScreen: data.checked})} /></Menu.Item>
                     </Menu>
                 </Grid.Column>
                 <Grid.Column width={12}>
-                    <CurrentImageViewerContainer fitScreen={fitToScreen} />
+                    <CurrentImageViewerContainer fitScreen={options.fitToScreen} />
                 </Grid.Column>
             </Grid>
         </Container>

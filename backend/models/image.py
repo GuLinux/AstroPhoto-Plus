@@ -6,6 +6,7 @@ import math
 import numpy
 import PIL.Image
 
+import sys
 # TODO:
 # - use fits loader (plugin)
 
@@ -81,9 +82,17 @@ class Image:
         with fits.open(self.path) as fits_file:
             image_data = fits_file[0].data
 
+            if 'clip_low' in args or 'clip_high' in args:
+                image_data = Image.clip(
+                    image_data,
+                    float(args.get('clip_low', 0)) / 100.,
+                    float(args.get('clip_high', 100)) / 100.
+                )
+
             if stretch:
-                image_data = Image.normalize(image_data, image_data.dtype.itemsize * 8)
-            if image_data.dtype.itemsize == 2:
+                image_data = Image.normalize(image_data)
+
+            if Image.bpp(image_data) == 16:
                 image_data = (image_data / 256)
             maxwidth = int(args.get('maxwidth', '0'))
 
@@ -95,13 +104,43 @@ class Image:
                 image.thumbnail((maxwidth,maxheight))
             image.save(filepath, **format['save_options'])
 
+
     @staticmethod
-    def normalize(image, bpp):
+    def bpp(image):
+        return image.dtype.itemsize * 8
+
+    @staticmethod
+    def max_bpp(image):
+        return int(math.pow(2, Image.bpp(image))) - 1
+
+    @staticmethod
+    def clip(image, clip_low, clip_high):
+        max_bpp = Image.max_bpp(image)
+
+        clip_low = max_bpp * clip_low
+        clip_high = max_bpp * clip_high
+
+        sys.stderr.write('image: min={}, max={}, max_bpp={}; clipping image: {} - {}\n'.format(image.min(), image.max(), max_bpp, clip_low, clip_high))
+        clipped = numpy.clip(image, clip_low, clip_high).astype(image.dtype)
+        sys.stderr.write('new image: min={}, max={}, max_bpp={}\n'.format(clipped.min(), clipped.max(), Image.max_bpp(clipped)))
+        sys.stderr.flush()
+        return clipped
+
+
+    @staticmethod
+    def normalize(image):
+        max_bpp = Image.max_bpp(image)
+
         image_min = image.min()
         image_max = image.max()
-        new_max = math.pow(2, bpp)
 
-        return (image - image_min) * ((new_max)/(image_max-image_min))
+        sys.stderr.write('image: min={}, max={}, max_bpp={}; normalizing image\n'.format(image_min,image_max, max_bpp))
+
+        normalized = (image - image_min) * ((max_bpp)/(image_max-image_min)).astype(image.dtype)
+        sys.stderr.write('new image: min={}, max={}, max_bpp={}\n'.format(normalized.min(), normalized.max(), Image.max_bpp(normalized)))
+        sys.stderr.flush()
+        return normalized
+
 
     def remove_files(self):
         os.remove(self.path)

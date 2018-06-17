@@ -10,7 +10,7 @@ const mapStateToProps = (state) => ({
 
 
 const mapDispatchToProps = dispatch => ({
-    onExposureChanged: (exposure) => dispatch(Actions.Camera.setExposure(exposure)),
+    onExposureChanged: (exposure) => dispatch(Actions.Camera.setOption({exposure})),
     onShoot: (shotParameters) => dispatch(Actions.Camera.shoot(shotParameters)),
 });
 

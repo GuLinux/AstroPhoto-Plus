@@ -8,10 +8,10 @@ const mapStateToProps = (state, ownProps) => {
     const currentImage = state.camera.currentImage;
 
     if(! currentCamera || ! currentImage) {
-        return {}
+        return { }
     }
     return {
-        uri: imageUrlBuilder(currentCamera.id, currentImage.id, state.camera.format, 0, state.camera.stretch),
+        uri: imageUrlBuilder(currentCamera.id, currentImage.id, state.camera.options),
     }
 }
 

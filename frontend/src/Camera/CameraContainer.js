@@ -7,19 +7,13 @@ import Actions from '../actions';
 const mapStateToProps = (state, ownProps) => ({
     cameras: getConnectedCameraEntities(state),
     currentCamera: getCurrentCamera(state),
+    options: state.camera.options,
     isShooting: state.camera.isShooting,
-    format: state.camera.format,
-    stretch: state.camera.stretch,
-    fitToScreen: state.camera.fitToScreen,
-    continuous: state.camera.continuous,
 })
 
 const mapDispatchToProps = dispatch => ({
     setCurrentCamera: (camera) => dispatch(Actions.Camera.setCamera(camera)),
-    setFormat: (format) => dispatch(Actions.Camera.setFormat(format)),
-    setStretch: (stretch) => dispatch(Actions.Camera.setStretch(stretch)),
-    setFitToScreen: (fitToScreen) => dispatch(Actions.Camera.setFitToScreen(fitToScreen)),
-    setContinuous: (continuous) => dispatch(Actions.Camera.setContinuous(continuous)),
+    setOption: (option) => dispatch(Actions.Camera.setOption(option)),
 })
 
 const CameraContainer = connect(

@@ -4,6 +4,7 @@ from .saved_list import SavedList
 from .model import random_id
 from .image import Image
 from astropy.io import fits
+import shutil
 import os
 import time
 
@@ -44,16 +45,45 @@ class Camera:
         return self.camera
 
     def shoot_image(self, options):
+        id = random_id(None)
+
+        if self.__has_dev_fits():
+            return self.__dev_fits(options, id)
         exposure = options['exposure']
         self.camera.set_upload_to('local')
-        id = random_id(None)
+
         self.camera.set_upload_path(self.settings.camera_tempdir, prefix=id)
         try:
             self.camera.shoot(exposure)
         except RuntimeError as e:
             raise FailedMethodError(str(e))
 
-        filename = [x for x in os.listdir(self.settings.camera_tempdir) if x.startswith(id)][0]
+        filename = [x for x in os.listdir(self.settings.camera_tempdir) if x.startswith(id)]
+        if not filename:
+            raise FailedMethodError("Image file not found")
+        return self.__image_from_fits(filename[0], id)
+
+
+    def __has_dev_fits(self):
+        return os.environ.get('DEV_MODE', '0') == '1' \
+            and 'SAMPLE_FITS_PATH' in os.environ \
+            and os.environ['SAMPLE_FITS_PATH'] \
+            and os.path.isdir(os.environ['SAMPLE_FITS_PATH']) \
+            and [x for x in os.listdir(os.environ['SAMPLE_FITS_PATH']) if x.lower().endswith('.fits')]
+
+    def __dev_fits(self, options, id):
+        time.sleep(options['exposure'])
+        sample_fits = [x for x in os.listdir(os.environ['SAMPLE_FITS_PATH']) if x.lower().endswith('.fits')]
+        file_index = int(time.time() * 1000) % len(sample_fits)
+        dest_filename = '{}.fits'.format(id)
+        shutil.copyfile(
+            os.path.join(os.environ['SAMPLE_FITS_PATH'], sample_fits[file_index]),
+            os.path.join(self.settings.camera_tempdir, dest_filename),
+            follow_symlinks=True)
+
+        return self.__image_from_fits(dest_filename, id)
+
+    def __image_from_fits(self, filename, id):
         image = Image(id, self.settings.camera_tempdir, filename, time.time())
 
         if len(self.images_list) >= Camera.IMAGES_LIST_SIZE:
