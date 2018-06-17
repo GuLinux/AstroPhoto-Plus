@@ -32,35 +32,43 @@ const Camera = ({
                         <Menu.Item><ExposureInputContainer disabled={!currentCamera || isShooting} /></Menu.Item>
                         <Menu.Item><Checkbox label='Continuous' disabled={!currentCamera} slider size='tiny' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} /></Menu.Item>
                         <Menu.Item header content='View Options' />
-                        <Menu.Item><Checkbox label='Stretch histogram' slider size='tiny' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} /></Menu.Item>
-                        <Menu.Item>
-                            <Input
-                                type='number'
-                                min={0}
-                                max={100}
-                                step={0.1}
-                                value={options.clipLow}
-                                onChange={(e, data) => setOption({clipLow: data.value})}
-                                label='Clip shadows'
-                            />
-                        </Menu.Item>
-
-                        <Menu.Item>
-                            <Input
-                                type='number'
-                                min={0}
-                                max={100}
-                                step={0.1}
-                                value={options.clipHigh}
-                                onChange={(e, data) => {
-                                    console.log(e)
-                                    console.log(data)
-                                    return setOption({clipHigh: data.value})
-                                }
-                                }
-                                label='Clip highlights'
-                            />
-                        </Menu.Item>
+                        <Menu.Item><Checkbox label='Auto histogram stretch' slider size='mini' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} /></Menu.Item>
+                        {
+                            options.stretch ? null : (
+                                <Menu.Item>
+                                    Manual histogram stretch
+                                    <Menu.Menu>
+                                        <Menu.Item>
+                                            <Input
+                                                type='number'
+                                                min={0}
+                                                max={100}
+                                                step={0.1}
+                                                value={options.clipLow}
+                                                onChange={(e, data) => setOption({clipLow: data.value})}
+                                                label='Clip shadows'
+                                            />
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <Input
+                                                type='number'
+                                                min={0}
+                                                max={100}
+                                                step={0.1}
+                                                value={options.clipHigh}
+                                                onChange={(e, data) => {
+                                                    console.log(e)
+                                                    console.log(data)
+                                                    return setOption({clipHigh: data.value})
+                                                }
+                                                }
+                                                label='Clip highlights'
+                                            />
+                                        </Menu.Item>
+                                    </Menu.Menu>
+                                </Menu.Item>
+                            )
+                        }
                         <Menu.Item><Select text='Display format' size='tiny' fluid value={options.format} options={[
                             { text: 'PNG', value: 'png'},
                             { text: 'JPEG', value: 'jpeg' },

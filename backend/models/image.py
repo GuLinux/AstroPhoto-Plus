@@ -78,20 +78,20 @@ class Image:
         return self.cached_conversions[key]
 
     def __convert(self, args, filepath, format):
-        stretch = args.get('stretch', '0') == '1'
         with fits.open(self.path) as fits_file:
             image_data = fits_file[0].data
 
-            if 'clip_low' in args or 'clip_high' in args:
-                image_data = Image.clip(
-                    image_data,
-                    float(args.get('clip_low', 0)) / 100.,
-                    float(args.get('clip_high', 100)) / 100.
-                )
+            if args.get('stretch', '0') == '1':
+                image_data = Image.stretch(image_data)
+            else:
+                if 'clip_low' in args or 'clip_high' in args:
+                    image_data = Image.clip(
+                        image_data,
+                        clip_low_fraction=float(args.get('clip_low', 0)) / 100.,
+                        clip_high_fraction=float(args.get('clip_high', 100)) / 100.
+                    )
 
-            if stretch:
-                image_data = Image.normalize(image_data)
-
+            image_data = Image.normalize(image_data)
             if Image.bpp(image_data) == 16:
                 image_data = (image_data / 256)
             maxwidth = int(args.get('maxwidth', '0'))
@@ -114,16 +114,38 @@ class Image:
         return int(math.pow(2, Image.bpp(image))) - 1
 
     @staticmethod
-    def clip(image, clip_low, clip_high):
+    def stretch(image):
+        hist, bins = numpy.histogram(image, bins=50)
+        clip_fraction = 0.07
+
+        clip_opts = [{
+            'num': val,
+            'low': bins[index],
+            'high': bins[index+1],
+        } for index, val in enumerate(hist)]
+
+        low_c, high_c = 0, 0
+        for index, opt in enumerate(clip_opts):
+            high_index = len(clip_opts) - index - 1
+            low_c += opt['num']
+            high_c += clip_opts[high_index]['num']
+            opt['low_cumulative'] = low_c
+            clip_opts[high_index]['high_cumulative'] = high_c
+
+        clip_low = [x for x in clip_opts if x['low_cumulative'] >= image.size * clip_fraction][0]['low']
+        clip_high = [x for x in clip_opts if x['high_cumulative'] >= image.size * clip_fraction][-1]['high']
+        return Image.clip(image, clip_low=clip_low, clip_high=clip_high)
+
+    @staticmethod
+    def clip(image, clip_low_fraction=0, clip_high_fraction=1, clip_low=None, clip_high=None):
         max_bpp = Image.max_bpp(image)
 
-        clip_low = max_bpp * clip_low
-        clip_high = max_bpp * clip_high
+        if clip_low is None:
+            clip_low = max_bpp * clip_low_fraction
+        if clip_high is None:
+            clip_high = max_bpp * clip_high_fraction
 
-        sys.stderr.write('image: min={}, max={}, max_bpp={}; clipping image: {} - {}\n'.format(image.min(), image.max(), max_bpp, clip_low, clip_high))
         clipped = numpy.clip(image, clip_low, clip_high).astype(image.dtype)
-        sys.stderr.write('new image: min={}, max={}, max_bpp={}\n'.format(clipped.min(), clipped.max(), Image.max_bpp(clipped)))
-        sys.stderr.flush()
         return clipped
 
 
