@@ -1,5 +1,4 @@
 import os
-import imageio
 import hashlib
 from astropy.io import fits
 from .exceptions import BadRequestError, NotFoundError
