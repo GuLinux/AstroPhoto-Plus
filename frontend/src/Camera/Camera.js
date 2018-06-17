@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Grid, Menu, Checkbox, Select, Input, Label, Form } from 'semantic-ui-react';
+import { Container, Grid, Menu, Checkbox, Select, Input, Label, Form, Loader, Dimmer } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import ExposureInputContainer from './ExposureInputContainer';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
@@ -12,6 +12,7 @@ const Camera = ({
         setOption,
         setCurrentCamera,
         isShooting,
+        imageLoading,
     }) => {
     if(cameras.length === 0)
         return <Redirect to='/' />;
@@ -20,8 +21,12 @@ const Camera = ({
             <AutoExposureContainer />
             <Grid columns={16} stackable>
                 <Grid.Column width={4}>
+
                     <Menu vertical borderless fluid size='tiny'>
-                        <Menu.Item header content='Camera' />
+                        <Menu.Item header>
+                            Camera
+                            <Loader inline active={isShooting} size='mini'/>
+                        </Menu.Item>
                         { cameras.map(c => <Menu.Item
                             as='a'
                             active={currentCamera && currentCamera.id === c.id}
@@ -77,6 +82,7 @@ const Camera = ({
                     </Menu>
                 </Grid.Column>
                 <Grid.Column width={12}>
+                    <Loader active={imageLoading} inverted />
                     <CurrentImageViewerContainer fitScreen={options.fitToScreen} />
                 </Grid.Column>
             </Grid>

@@ -17,8 +17,14 @@ const setOption = (state, option) => ({
 const onCameraShotFinished = (state, action) => ({
     ...state, isShooting: false,
     currentImage: action.payload,
-    shouldAutostart: state.options.continuous,
+    shouldAutostart: !state.imageLoading && state.options.continuous,
 });
+
+const onImageLoadingFinished = (state) => ({
+    ...state,
+    imageLoading: false,
+    shouldAutostart: state.options.continuous,
+})
 
 const onCameraShotError = (state, action) => ({
     ...state,
@@ -44,6 +50,10 @@ const camera = (state = defaultState, action) => {
             return onCameraShotFinished(state, action);
         case 'CAMERA_SHOT_ERROR':
             return onCameraShotError(state, action);
+        case 'CAMERA_IMAGE_LOADING':
+            return {...state, imageLoading: true};
+        case 'CAMERA_IMAGE_LOADED':
+            return onImageLoadingFinished(state);
         default:
             return state;
     }

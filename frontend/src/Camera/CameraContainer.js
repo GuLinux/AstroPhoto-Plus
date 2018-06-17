@@ -9,6 +9,7 @@ const mapStateToProps = (state, ownProps) => ({
     currentCamera: getCurrentCamera(state),
     options: state.camera.options,
     isShooting: state.camera.isShooting,
+    imageLoading: state.camera.imageLoading,
 })
 
 const mapDispatchToProps = dispatch => ({

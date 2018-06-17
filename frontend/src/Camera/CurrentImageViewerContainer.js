@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import ImageViewer from './ImageViewer';
 import { imageUrlBuilder } from './ImageUrlBuilder';
 import { getCurrentCamera } from './selectors';
+import Actions from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
     const currentCamera = getCurrentCamera(state);
@@ -16,6 +17,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = dispatch => ({
+    onImageLoading: () => dispatch(Actions.Camera.imageLoading()),
+    onImageLoaded: () => dispatch(Actions.Camera.imageLoaded()),
 })
 
 const CurrentImageViewerContainer = connect(

@@ -5,6 +5,8 @@ import Actions from '../actions';
 const Camera = {
     setCamera: (camera) => ({ type: 'SET_CURRENT_CAMERA', camera }),
     setOption: (option) => ({ type: 'CAMERA_SET_OPTION', option }),
+    imageLoading: () => ({ type: 'CAMERA_IMAGE_LOADING' }),
+    imageLoaded: () => ({ type: 'CAMERA_IMAGE_LOADED' }),
 
     shoot: (parameters) => (dispatch) => {
         dispatch({ type: 'CAMERA_SHOOT', parameters });
