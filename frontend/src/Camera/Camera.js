@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Grid, Menu, Checkbox, Select, Input, Label, Form, Loader, Dimmer } from 'semantic-ui-react';
+import { Container, Grid, Menu, Checkbox, Select, Input, Loader } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import ExposureInputContainer from './ExposureInputContainer';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
