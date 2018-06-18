@@ -3,6 +3,8 @@ const defaultState = {
         format: 'png',
         clipLow: 0,
         clipHigh: 100,
+        stretch: true,
+        fitToScreen: true,
     }
 };
 

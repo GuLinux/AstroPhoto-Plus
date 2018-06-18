@@ -6,6 +6,7 @@ import { getShotParameters } from './selectors';
 
 const mapStateToProps = (state) => ({
     shotParameters: getShotParameters(state),
+    isShooting: state.camera.isShooting,
 });
 
 

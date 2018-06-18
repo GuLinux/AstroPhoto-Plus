@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Grid, Menu, Checkbox, Select, Input, Loader } from 'semantic-ui-react';
+import { Container, Grid, Menu, Checkbox, Input, Loader, Form } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import ExposureInputContainer from './ExposureInputContainer';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
@@ -23,10 +23,7 @@ const Camera = ({
                 <Grid.Column width={4}>
 
                     <Menu vertical borderless fluid size='tiny'>
-                        <Menu.Item header>
-                            Camera
-                            <Loader inline active={isShooting} size='mini'/>
-                        </Menu.Item>
+                        <Menu.Item header content='Camera' />
                         { cameras.map(c => <Menu.Item
                             as='a'
                             active={currentCamera && currentCamera.id === c.id}
@@ -74,10 +71,14 @@ const Camera = ({
                                 </Menu.Item>
                             )
                         }
-                        <Menu.Item><Select text='Display format' size='tiny' fluid value={options.format} options={[
-                            { text: 'PNG', value: 'png'},
-                            { text: 'JPEG', value: 'jpeg' },
-                        ]} onChange={(e, data) => setOption({stretch: data.value})}/></Menu.Item>
+                        <Menu.Item>
+                            <Form size='tiny'>
+                                <Form.Select inline label='Display format' size='tiny' value={options.format} options={[
+                                    { text: 'PNG', value: 'png'},
+                                    { text: 'JPEG', value: 'jpeg' },
+                                ]} onChange={(e, data) => setOption({stretch: data.value})}/>
+                            </Form>
+                        </Menu.Item>
                         <Menu.Item><Checkbox label='Fit image to screen' slider size='tiny' checked={options.fitToScreen} onChange={(e, data) => setOption({fitToScreen: data.checked})} /></Menu.Item>
                     </Menu>
                 </Grid.Column>
