@@ -6,11 +6,6 @@ import math
 import numpy
 import PIL.Image
 
-import sys
-def syserrlog(s):
-    sys.stderr.write('{}\n'.format(s))
-    sys.stderr.flush()
-
 # TODO:
 # - use fits loader (plugin)
 
