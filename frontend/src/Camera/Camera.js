@@ -4,6 +4,7 @@ import { Redirect } from 'react-router';
 import ExposureInputContainer from './ExposureInputContainer';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
 import AutoExposureContainer from './AutoExposureContainer';
+import HistogramContainer from './HistogramContainer'
 
 const Camera = ({
         cameras,
@@ -34,11 +35,11 @@ const Camera = ({
                         <Menu.Item><ExposureInputContainer disabled={!currentCamera || isShooting} /></Menu.Item>
                         <Menu.Item><Checkbox label='Continuous' disabled={!currentCamera} slider size='tiny' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} /></Menu.Item>
                         <Menu.Item header content='View Options' />
-                        <Menu.Item><Checkbox label='Auto histogram stretch' slider size='mini' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} /></Menu.Item>
+                        <Menu.Item><Checkbox label='Auto showHistogram stretch' slider size='mini' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} /></Menu.Item>
                         {
                             options.stretch ? null : (
                                 <Menu.Item>
-                                    Manual histogram stretch
+                                    Manual showHistogram stretch
                                     <Menu.Menu>
                                         <Menu.Item>
                                             <Input
@@ -79,11 +80,18 @@ const Camera = ({
                                 ]} onChange={(e, data) => setOption({stretch: data.value})}/>
                             </Form>
                         </Menu.Item>
-                        <Menu.Item><Checkbox label='Fit image to screen' slider size='tiny' checked={options.fitToScreen} onChange={(e, data) => setOption({fitToScreen: data.checked})} /></Menu.Item>
+                        <Menu.Item>
+                            <Checkbox label='Fit image to screen' slider size='tiny' checked={options.fitToScreen} onChange={(e, data) => setOption({fitToScreen: data.checked})} />
+                        </Menu.Item>
+
+                        <Menu.Item header>
+                            <Checkbox label='Histogram' slider size='tiny' checked={options.showHistogram} onChange={(e, data) => setOption({showHistogram: data.checked})} />
+                        </Menu.Item>
                     </Menu>
                 </Grid.Column>
                 <Grid.Column width={12}>
                     <Loader active={imageLoading} inverted />
+                    <HistogramContainer />
                     <CurrentImageViewerContainer fitScreen={options.fitToScreen} />
                 </Grid.Column>
             </Grid>

@@ -324,4 +324,7 @@ def retrieve_image(camera, image):
 @indi_connected
 def retrieve_image_histogram(camera, image):
     image = lookup_camera(camera).images_list.lookup(image)
-    return image.histogram(**request.args)
+    args = {}
+    if 'bins' in request.args:
+        args['bins'] = request.args['bins']
+    return image.histogram(**args)
