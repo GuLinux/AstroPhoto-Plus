@@ -1,12 +1,15 @@
 import React from 'react';
+import { Loader } from 'semantic-ui-react';
 
 class Histogram extends React.Component {
     render = () => {
         const { histogramEnabled, histogram } = this.props;
-        if(!histogramEnabled) {
+        if(!histogramEnabled || ! histogram) {
             return null;
         }
-        // TODO: view histogram
+
+        if(histogram.loading)
+            return <Loader inline />
         return null;
     }
 
