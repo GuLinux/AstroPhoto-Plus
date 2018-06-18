@@ -77,7 +77,6 @@ class Image:
         return self.cached_conversions[key]
 
     def histogram(self, bins=50):
-        syserrlog('bins: {}({})'.format(bins, type(bins)))
         with fits.open(self.path) as fits_file:
             image_data = fits_file[0].data
             values, bins_boundaries = numpy.histogram(image_data, bins=int(bins), range=(0, image_data.max()), density=False)
@@ -165,12 +164,7 @@ class Image:
 
         image_min = image.min()
         image_max = image.max()
-
-        sys.stderr.write('image: min={}, max={}, max_bpp={}; normalizing image\n'.format(image_min,image_max, max_bpp))
-
         normalized = (image - image_min) * ((max_bpp)/(image_max-image_min)).astype(image.dtype)
-        sys.stderr.write('new image: min={}, max={}, max_bpp={}\n'.format(normalized.min(), normalized.max(), Image.max_bpp(normalized)))
-        sys.stderr.flush()
         return normalized
 
 
