@@ -77,6 +77,16 @@ class Image:
             }
         return self.cached_conversions[key]
 
+    def histogram(self, bins=50):
+        with fits.open(self.path) as fits_file:
+            image_data = fits_file[0].data
+            values, bins = numpy.histogram(image_data, bins, range=(0, image_data.max()), density=False)
+            return {
+                'values': [int(x) for x in values],
+                'bins': [float(x) for x in bins],
+            }
+
+
     def __convert(self, args, filepath, format):
         with fits.open(self.path) as fits_file:
             image_data = fits_file[0].data

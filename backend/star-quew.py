@@ -317,3 +317,11 @@ def retrieve_image(camera, image):
         as_attachment=False,
         attachment_filename=image_info['filename'],
     )
+
+
+@app.route('/api/cameras/<camera>/image/<image>/histogram', methods=['GET'])
+@json_api
+@indi_connected
+def retrieve_image_histogram(camera, image):
+    image = lookup_camera(camera).images_list.lookup(image)
+    return image.histogram(**request.args)
