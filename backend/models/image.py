@@ -7,6 +7,10 @@ import numpy
 import PIL.Image
 
 import sys
+def syserrlog(s):
+    sys.stderr.write('{}\n'.format(s))
+    sys.stderr.flush()
+
 # TODO:
 # - use fits loader (plugin)
 
@@ -76,6 +80,17 @@ class Image:
                 'path': filepath,
             }
         return self.cached_conversions[key]
+
+    def histogram(self, bins=50):
+        syserrlog('bins: {}({})'.format(bins, type(bins)))
+        with fits.open(self.path) as fits_file:
+            image_data = fits_file[0].data
+            values, bins_boundaries = numpy.histogram(image_data, bins=int(bins), range=(0, image_data.max()), density=False)
+            return {
+                'values': [int(x) for x in values],
+                'bins': [float(x) for x in bins_boundaries],
+            }
+
 
     def __convert(self, args, filepath, format):
         with fits.open(self.path) as fits_file:

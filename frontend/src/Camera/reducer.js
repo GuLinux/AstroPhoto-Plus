@@ -3,6 +3,9 @@ const defaultState = {
         format: 'png',
         clipLow: 0,
         clipHigh: 100,
+        stretch: true,
+        fitToScreen: true,
+        histogramBins: 255,
     }
 };
 
@@ -36,12 +39,13 @@ const onCameraShoot = (state, action) => ({
     ...state,
     isShooting: true,
     shouldAutostart: false,
+    histogram: null,
 })
 
 const camera = (state = defaultState, action) => {
     switch(action.type) {
         case 'SET_CURRENT_CAMERA':
-            return {...state, currentCamera: action.camera };
+            return {...state, currentCamera: action.camera, histogram: null };
         case 'CAMERA_SET_OPTION':
             return setOption(state, action.option);
         case 'CAMERA_SHOOT':
@@ -54,6 +58,12 @@ const camera = (state = defaultState, action) => {
             return {...state, imageLoading: true};
         case 'CAMERA_IMAGE_LOADED':
             return onImageLoadingFinished(state);
+        case 'CAMERA_LOAD_HISTOGRAM':
+            return {...state, histogram: { loading: true }};
+        case 'CAMERA_HISTOGRAM_LOADED':
+            return {...state, histogram: action.histogram }
+        case 'CAMERA_HISTOGRAM_ERROR':
+            return {...state, histogram: { error: action.error }};
         default:
             return state;
     }
