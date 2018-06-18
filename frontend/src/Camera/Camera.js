@@ -87,6 +87,21 @@ const Camera = ({
                         <Menu.Item header>
                             <Checkbox label='Histogram' slider size='tiny' checked={options.showHistogram} onChange={(e, data) => setOption({showHistogram: data.checked})} />
                         </Menu.Item>
+                        {
+                                options.showHistogram ? (
+                                    <Menu.Item>
+                                        <Checkbox label='logarithmic' slider size='tiny' checked={options.histogramLogarithmic} onChange={(e, data) => setOption({histogramLogarithmic: data.checked})} />
+                                    </Menu.Item>
+                                ) : null
+                        }
+
+                        {
+                                options.showHistogram ? (
+                                    <Menu.Item>
+                                        <Input type='number' label='bins' size='tiny' min={0} max={255} value={options.histogramBins} onChange={(e, data) => setOption({histogramBins: data.value})} />
+                                    </Menu.Item>
+                                ) : null
+                        }
                     </Menu>
                 </Grid.Column>
                 <Grid.Column width={12}>

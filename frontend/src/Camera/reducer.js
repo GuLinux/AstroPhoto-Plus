@@ -5,6 +5,7 @@ const defaultState = {
         clipHigh: 100,
         stretch: true,
         fitToScreen: true,
+        histogramBins: 255,
     }
 };
 

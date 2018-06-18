@@ -14,6 +14,8 @@ const mapStateToProps = (state, ownProps) => {
         camera: camera.id,
         image: currentImage.id,
         histogram: state.camera.histogram,
+        logarithmic: state.camera.options.histogramLogarithmic,
+        bins: state.camera.options.histogramBins,
     }
 }
 
