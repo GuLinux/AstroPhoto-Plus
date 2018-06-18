@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import FilterSequenceItem from './FilterSequenceItem' 
-import { getGears } from '../Gear/selectors'
+import { getSequencesGears } from '../Gear/selectors'
 
 const mapStateToProps = (state, ownProps) => {
-    let gear = getGears(state)[ownProps.sequenceItem.sequence];
+    let gear = getSequencesGears(state)[ownProps.sequenceItem.sequence];
     return { filters: gear.filterWheel.filters }
 }
 

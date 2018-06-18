@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import SequenceItemsList from './SequenceItemsList'
 import Actions from '../actions'
-import { getGears } from '../Gear/selectors'
+import { getSequencesGears } from '../Gear/selectors'
 
 const getTypeLabel = type => {
     switch(type) {
@@ -23,7 +23,7 @@ const getDescription = (state, sequenceItem) => {
         case 'shots':
             return `${sequenceItem.count} shots of ${sequenceItem.exposure} seconds, ${sequenceItem.count * sequenceItem.exposure} seconds total`;
         case 'filter':
-            let gear = getGears(state)[sequenceItem.sequence];
+            let gear = getSequencesGears(state)[sequenceItem.sequence];
             if(gear.filterWheel.connected)
                 return `Set filter wheel to filter ${gear.filterWheel.numbers2names[sequenceItem.filterNumber]} (${sequenceItem.filterNumber})`
             return `Set filter wheel to filter ${sequenceItem.filterNumber}`

@@ -4,16 +4,20 @@ import { Redirect } from 'react-router';
 import ExposureInputContainer from './ExposureInputContainer';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
 import AutoExposureContainer from './AutoExposureContainer';
-import HistogramContainer from './HistogramContainer'
+import HistogramContainer from './HistogramContainer';
+import SelectFilterContainer from './SelectFilterContainer';
 
 const Camera = ({
         cameras,
         currentCamera,
+        filterWheels,
         options,
         setOption,
         setCurrentCamera,
         isShooting,
         imageLoading,
+        currentFilterWheel,
+        setCurrentFilterWheel,
     }) => {
     if(cameras.length === 0)
         return <Redirect to='/' />;
@@ -33,6 +37,30 @@ const Camera = ({
                                 onClick={() => setCurrentCamera(c.id)}
                             />) }
                             </Button.Group>
+                            {
+                                filterWheels.length > 0 ? (
+                                    <p>
+                                        <Header size='tiny' content='FilterWheel' textAlign='center' />
+                                        <Button.Group vertical size='mini' fluid basic>
+                                        { filterWheels.map(c => <Button
+                                            toggle
+                                            active={currentFilterWheel && currentFilterWheel.id === c.id}
+                                            key={c.id} content={c.device.name}
+                                            onClick={() => setCurrentFilterWheel(c.id)}
+                                        />) }
+                                        </Button.Group>
+                                    </p>
+                                ) : null
+                            }
+                            { currentFilterWheel ? (
+                                <Form.Field inline>
+                                    <label>Filter</label>
+                                    <SelectFilterContainer />
+                                </Form.Field>
+                            ) : null
+                            }
+
+
                             <Header size='tiny' content='Exposure' textAlign='center' />
                             <Form.Field><ExposureInputContainer disabled={!currentCamera || isShooting} size='tiny' /></Form.Field>
                             <Form.Checkbox label='Continuous' disabled={!currentCamera} toggle size='mini' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} />

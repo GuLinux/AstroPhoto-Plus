@@ -42,10 +42,20 @@ const onCameraShoot = (state, action) => ({
     histogram: null,
 })
 
+const onINDIPropertyUpdated = (state, action) => {
+    console.log('state: ', state, ', action: ', action);
+    if(state.pendingFilter && action.property.id === state.pendingFilter.property && action.property.device === state.pendingFilter.device) {
+        return {...state, pendingFilter: null }
+    }
+    return state;
+}
+
 const camera = (state = defaultState, action) => {
     switch(action.type) {
         case 'SET_CURRENT_CAMERA':
             return {...state, currentCamera: action.camera, histogram: null };
+        case 'SET_CURRENT_FILTER_WHEEL':
+            return {...state, currentFilterWheel: action.filterWheel, pendingFilter: null };
         case 'CAMERA_SET_OPTION':
             return setOption(state, action.option);
         case 'CAMERA_SHOOT':
@@ -64,6 +74,10 @@ const camera = (state = defaultState, action) => {
             return {...state, histogram: action.histogram }
         case 'CAMERA_HISTOGRAM_ERROR':
             return {...state, histogram: { error: action.error }};
+        case 'CAMERA_CHANGE_FILTER':
+            return {...state, pendingFilter: { device: action.device, property: action.property }};
+        case 'INDI_PROPERTY_UPDATED':
+            return onINDIPropertyUpdated(state, action);
         default:
             return state;
     }

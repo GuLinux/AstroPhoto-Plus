@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import SequencesList from './SequencesList'
 import Actions from '../actions'
-import { getGears } from '../Gear/selectors'
+import { getSequencesGears } from '../Gear/selectors'
 
 const getSequences = (entities, ids) => {
   return ids.map(id => entities[id])
@@ -9,7 +9,7 @@ const getSequences = (entities, ids) => {
 
 const mapStateToProps = state => ({
     sequences: getSequences(state.sequences.entities, state.sequences.ids),
-    gear: getGears(state),
+    gear: getSequencesGears(state),
 })
 
 const mapDispatchToProps = dispatch => {

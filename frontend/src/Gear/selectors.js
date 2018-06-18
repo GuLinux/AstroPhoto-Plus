@@ -59,12 +59,21 @@ const buildGear = (deviceEntities, devicesProperties, sequence) => {
     return gear;
 }
 
-export const getGears = createSelector([getDeviceEntities, getDevicesProperties, getSequences, getDevicesConnectionState], (deviceEntities, devicesProperties, sequences, devicesConnectionState) => {
+export const getSequencesGears = createSelector([getDeviceEntities, getDevicesProperties, getSequences, getDevicesConnectionState], (deviceEntities, devicesProperties, sequences, devicesConnectionState) => {
     return sequences.ids.reduce( (gears, sequenceID) => ({...gears, [sequenceID]: buildGear(deviceEntities, devicesProperties, sequences.entities[sequenceID]) }), {});
 })
+
 
 
 export const getConnectedCameras = createSelector([getGear], (gear) => gear.cameras.filter(c => gear.cameraEntities[c].connected));
 export const getConnectedCameraEntities = createSelector([getConnectedCameras, getGear], (connectedCameras, gear) => connectedCameras.map(c => gear.cameraEntities[c]));
 
 export const hasConnectedCameras = createSelector([getConnectedCameras], (connectedCameras) => connectedCameras.length > 0)
+
+export const getConnectedFilterWheels = createSelector([getGear], (gear) => gear.filterWheels.filter(c => gear.filterWheelEntities[c].connected));
+export const getConnectedFilterWheelEntities = createSelector([getConnectedFilterWheels, getGear], (connectedFilterWheels, gear) => connectedFilterWheels.map(c => gear.filterWheelEntities[c]));
+export const getConnectedFilterWheelsObjects = createSelector([getConnectedFilterWheels, getGear, getDeviceEntities, getDevicesProperties],
+    (connectedFilterWheels, gear, deviceEntities, deviceProperties) => connectedFilterWheels.map(c => buildFilterWheel(deviceEntities, deviceProperties, c) ));
+
+export const hasConnectedFilterWheels = createSelector([getConnectedFilterWheels], (connectedFilterWheels) => connectedFilterWheels.length > 0)
+

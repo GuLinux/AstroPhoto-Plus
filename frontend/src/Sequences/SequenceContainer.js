@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Sequence from './Sequence'
 import Actions from '../actions'
-import { getGears } from '../Gear/selectors'
+import { getSequencesGears } from '../Gear/selectors'
 
 const mapStateToProps = (state, ownProps) => {
     let sequenceId = ownProps.sequenceId;
@@ -9,13 +9,13 @@ const mapStateToProps = (state, ownProps) => {
         return { sequence: null }
     }
     let sequence = state.sequences.entities[sequenceId];
-    let gear = getGears(state)[sequenceId];
+    let gear = getSequencesGears(state)[sequenceId];
     let properties = {sequence, camera: gear.camera, filterWheel: gear.filterWheel, canEdit: canEdit(state, sequence)};
     return properties;
 }
 
 const canEdit = (state, sequence) => {
-    let gear = getGears(state)[sequence.id];
+    let gear = getSequencesGears(state)[sequence.id];
     if(gear.camera && ! gear.camera.connected)
         return false;
     if(gear.filterWheel && ! gear.filterWheel.connected)

@@ -4,6 +4,7 @@ import Actions from '../actions';
 
 const Camera = {
     setCamera: (camera) => ({ type: 'SET_CURRENT_CAMERA', camera }),
+    setFilterWheel: (filterWheel) => ({ type: 'SET_CURRENT_FILTER_WHEEL', filterWheel}),
     setOption: (option) => ({ type: 'CAMERA_SET_OPTION', option }),
     imageLoading: () => ({ type: 'CAMERA_IMAGE_LOADING' }),
     imageLoaded: () => ({ type: 'CAMERA_IMAGE_LOADED' }),
@@ -61,7 +62,11 @@ const Camera = {
             errorMessage.push(error.error_message);
         }
         dispatch(Actions.Notifications.add('Image error', errorMessage , 'error'));
-    }
+    },
+    changeFilter: (wheelDevice, filterProperty, value) => dispatch => {
+        dispatch({ type: 'CAMERA_CHANGE_FILTER', device: wheelDevice.id, property: filterProperty.id, value });
+        dispatch(Actions.INDIServer.commitPendingValues(wheelDevice, filterProperty, value));
+    },
 };
 
 export default Camera;
