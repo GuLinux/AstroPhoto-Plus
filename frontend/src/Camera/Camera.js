@@ -35,7 +35,7 @@ const Camera = ({
                         <Menu.Item><ExposureInputContainer disabled={!currentCamera || isShooting} /></Menu.Item>
                         <Menu.Item><Checkbox label='Continuous' disabled={!currentCamera} slider size='tiny' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} /></Menu.Item>
                         <Menu.Item header content='View Options' />
-                        <Menu.Item><Checkbox label='Auto showHistogram stretch' slider size='mini' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} /></Menu.Item>
+                        <Menu.Item><Checkbox label='Auto histogram stretch' slider size='mini' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} /></Menu.Item>
                         {
                             options.stretch ? null : (
                                 <Menu.Item>
