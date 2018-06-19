@@ -26,7 +26,6 @@ class INDIPropertySequenceItem extends React.Component {
     }
 
     onDeviceChanged(device) {
-        console.log(device)
         this.setState({...this.state, group: '', sequenceItem: {...this.state.sequenceItem, device, property: ''} })
     }
 

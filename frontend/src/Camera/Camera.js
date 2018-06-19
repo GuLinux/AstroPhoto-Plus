@@ -7,6 +7,27 @@ import AutoExposureContainer from './AutoExposureContainer';
 import HistogramContainer from './HistogramContainer';
 import SelectFilterContainer from './SelectFilterContainer';
 
+const FilterWheelSection = ({filterWheels, currentFilterWheel, setCurrentFilterWheel}) => (
+    <React.Fragment>
+        <Header size='tiny' content='FilterWheel' textAlign='center' />
+        <Button.Group vertical size='mini' fluid basic>
+        { filterWheels.map(c => <Button
+            toggle
+            active={currentFilterWheel && currentFilterWheel.id === c.id}
+            key={c.id} content={c.device.name}
+            onClick={() => setCurrentFilterWheel(c.id)}
+        />) }
+        </Button.Group>
+        { currentFilterWheel &&
+            <Form.Field inline>
+                <label>Filter</label>
+                <SelectFilterContainer basic size='tiny' labeled floating />
+            </Form.Field>
+        }
+    </React.Fragment>
+)
+
+
 const Camera = ({
         cameras,
         currentCamera,
@@ -37,76 +58,52 @@ const Camera = ({
                                 onClick={() => setCurrentCamera(c.id)}
                             />) }
                             </Button.Group>
-                            {
-                                filterWheels.length > 0 ? (
-                                    <p>
-                                        <Header size='tiny' content='FilterWheel' textAlign='center' />
-                                        <Button.Group vertical size='mini' fluid basic>
-                                        { filterWheels.map(c => <Button
-                                            toggle
-                                            active={currentFilterWheel && currentFilterWheel.id === c.id}
-                                            key={c.id} content={c.device.name}
-                                            onClick={() => setCurrentFilterWheel(c.id)}
-                                        />) }
-                                        </Button.Group>
-                                    </p>
-                                ) : null
+                            { filterWheels.length > 0 &&
+                                <FilterWheelSection {...{filterWheels, currentFilterWheel, setCurrentFilterWheel}} />
                             }
-                            { currentFilterWheel ? (
-                                <Form.Field inline>
-                                    <label>Filter</label>
-                                    <SelectFilterContainer />
-                                </Form.Field>
-                            ) : null
-                            }
-
-
                             <Header size='tiny' content='Exposure' textAlign='center' />
                             <Form.Field><ExposureInputContainer disabled={!currentCamera || isShooting} size='tiny' /></Form.Field>
                             <Form.Checkbox label='Continuous' disabled={!currentCamera} toggle size='mini' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} />
                             <Header size='tiny' content='View Options' textAlign='center' />
                             <Form.Checkbox label='Auto histogram stretch' toggle size='mini' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} />
-
                             {
-                                options.stretch ? null : (
-                                    [
-                                        <Form.Field key='shadows'>
-                                            <Input
-                                                type='number'
-                                                size='tiny'
-                                                min={0}
-                                                max={100}
-                                                step={0.1}
-                                                value={options.clipLow}
-                                                onChange={(e, data) => setOption({clipLow: data.value})}
-                                                label='Clip shadows'
-                                            />
-                                        </Form.Field>,
-                                        <Form.Field key='highlights'>
-                                            <Input
-                                                type='number'
-                                                size='tiny'
-                                                min={0}
-                                                max={100}
-                                                step={0.1}
-                                                value={options.clipHigh}
-                                                onChange={(e, data) => setOption({clipHigh: data.value})}
-                                                label='Clip highlights'
-                                            />
-                                        </Form.Field>
-                                    ]
-                                )
+                                !options.stretch && (<React.Fragment>
+                                    <Form.Field key='shadows'>
+                                        <Input
+                                            type='number'
+                                            size='tiny'
+                                            min={0}
+                                            max={100}
+                                            step={0.1}
+                                            value={options.clipLow}
+                                            onChange={(e, data) => setOption({clipLow: data.value})}
+                                            label='Clip shadows'
+                                        />
+                                    </Form.Field>,
+                                    <Form.Field key='highlights'>
+                                        <Input
+                                            type='number'
+                                            size='tiny'
+                                            min={0}
+                                            max={100}
+                                            step={0.1}
+                                            value={options.clipHigh}
+                                            onChange={(e, data) => setOption({clipHigh: data.value})}
+                                            label='Clip highlights'
+                                        />
+                                    </Form.Field>
+                                </React.Fragment>)
                             }
 
-                            <Form.Select inline label='Display format' size='tiny' value={options.format} options={[
+                            <Form.Select basic labeled floating inline label='Display format' size='tiny' value={options.format} options={[
                                 { text: 'PNG', value: 'png'},
                                 { text: 'JPEG', value: 'jpeg' },
-                            ]} onChange={(e, data) => setOption({stretch: data.value})}/>
+                            ]} onChange={(e, data) => setOption({format: data.value})}/>
                             <Form.Checkbox label='Fit image to screen' toggle size='tiny' checked={options.fitToScreen} onChange={(e, data) => setOption({fitToScreen: data.checked})} />
                             <Header size='tiny' content='Histogram' textAlign='center' />
                             <Form.Checkbox label='Show histogram' toggle size='tiny' checked={options.showHistogram} onChange={(e, data) => setOption({showHistogram: data.checked})} />
                             {
-                                options.showHistogram ? ([
+                                options.showHistogram && (<React.Fragment>
                                     <Form.Checkbox
                                         key='log'
                                         label='logarithmic'
@@ -115,7 +112,7 @@ const Camera = ({
                                         checked={options.histogramLogarithmic}
                                         onChange={(e, data) => setOption({histogramLogarithmic: data.checked})}
                                         />,
-                                    (<Form.Field key='bins'>
+                                    <Form.Field key='bins'>
                                         <Input
                                             type='number'
                                             label='bins'
@@ -125,8 +122,8 @@ const Camera = ({
                                             value={options.histogramBins}
                                             onChange={(e, data) => setOption({histogramBins: data.value})}
                                         />
-                                    </Form.Field>)
-                                ]) : null
+                                    </Form.Field>
+                                </React.Fragment>)
                             }
                         </Form>
                     </Segment>

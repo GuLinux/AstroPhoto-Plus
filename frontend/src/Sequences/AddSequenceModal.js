@@ -28,7 +28,6 @@ class AddSequenceModal extends React.Component {
 
 
     onPrimaryCameraChanged(camera) {
-        console.log(camera);
         this.setState({...this.state, camera, cameraValid: camera !== 'none'});
     }
 

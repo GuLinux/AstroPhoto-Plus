@@ -43,7 +43,6 @@ const onCameraShoot = (state, action) => ({
 })
 
 const onINDIPropertyUpdated = (state, action) => {
-    console.log('state: ', state, ', action: ', action);
     if(state.pendingFilter && action.property.id === state.pendingFilter.property && action.property.device === state.pendingFilter.device) {
         return {...state, pendingFilter: null }
     }
