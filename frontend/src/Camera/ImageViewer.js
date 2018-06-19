@@ -3,12 +3,12 @@ import { Image, Icon } from 'semantic-ui-react';
 
 class ImageComponent extends React.Component {
     componentDidMount = () => this.props.onImageLoading && this.props.onImageLoading();
-    componentDidUpdate= () => this.props.onImageLoading && this.props.onImageLoading();
+    componentDidUpdate= (prevProps) => this.props.onImageLoading && prevProps.uri !== this.props.uri && this.props.onImageLoading();
 
     render = () => {
         const { uri, onImageLoaded, fitScreen } = this.props;
         let callbacks = onImageLoaded ? { onLoad: onImageLoaded, onError: onImageLoaded } : {};
-        return <Image alt='' ui={fitScreen} src={uri} fluid={!fitScreen} {...callbacks} />;
+        return <img alt='' src={uri} {...callbacks} className={fitScreen ? 'ui image' : 'fluid image'} />;
     }
 }
 

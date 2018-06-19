@@ -39,7 +39,3 @@ body {
 .image-viewer {
     overflow: auto;
 }
-
-.image-viewer img {
-    max-width: none;
-}
