@@ -2,84 +2,116 @@ import React from 'react';
 import { Image, Icon } from 'semantic-ui-react';
 
 class ImageComponent extends React.Component {
-    componentDidMount = () => {
-        this.props.onImageLoading && this.props.onImageLoading();
-    }
-    componentDidUpdate= (prevProps) => {
-        this.props.onImageLoading && prevProps.uri !== this.props.uri && this.props.onImageLoading();
-    }
-
-
+    componentDidUpdate = (prevProps) => this.props.uri !== prevProps.uri && this.props.onImageLoading && this.props.onImageLoading();
+    componentDidMount = () => this.props.onImageLoading && this.props.onImageLoading();
+    
     render = () => {
-        const { uri, onImageLoaded, fitScreen } = this.props;
-        let callbacks = onImageLoaded ? { onLoad: onImageLoaded, onError: onImageLoaded } : {};
+        const {uri, fitScreen, onImageLoading, onImageLoaded} = this.props;
+        let imgProps = onImageLoaded ? { onLoad: onImageLoaded, onError: onImageLoaded } : {};
         return <Image
             alt=''
             src={uri}
-            {...callbacks}
+            {...imgProps}
             fluid={!fitScreen}
             ui={fitScreen}
-            onMouseMove={(e) => this.props.onOver && this.props.onOver(e)}
-            onClick={e => this.props.onClick && this.props.onClick(e)}
         />;
     }
 }
 
-const ROIIndicator = ({enabled, topleft, x, y, position}) => {
-    if(!enabled)
-        return null;
-    return (
-        <div
-            className='roi-indicator'
-            style={{top: position.y, left: position.x, width: position.width, height: position.height}}
-        >
-            <div className={'roi-indicator ' + topleft ? 'roi-top' : 'roi-bottom' } />
-            <div className={'roi-indicator ' + topleft ? 'roi-left' : 'roi-right' } />
-        </div>
-    );
-}
 
-class ImageROI extends React.Component {
+class ImageROIContainer extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = { roi: this.initialROI() };
     }
 
-    componentDidUpdate = (prevProps) => {
-        if(! prevProps.crop && !! this.props.crop) {
-            this.setState({ cropStart: true });
-        } else if(!this.props.crop && !! prevProps.crop) {
-            this.setState({});
+    initialROI = () => ({ x: 0, y: 0, endX: 0, endY: 0, width: 0, height: 0 });
+
+    onImageLoaded = (e) => {
+        this.setState({
+            ...this.state,
+            imagePosition: {
+                x: e.target.x,
+                y: e.target.y,
+                width: e.target.width,
+                height: e.target.height,
+            }, roi: {
+                ...this.state.roi,
+                width: e.target.width,
+                height: e.target.height,
+                endX: e.target.width,
+                endY: e.target.height,
+            }
+        });
+        this.props.onImageLoaded && this.props.onImageLoaded();
+    }
+
+    getEventRelCoords = (e) => ({
+            x: e.clientX - e.target.offsetLeft,
+            y: e.clientY - e.target.offsetTop,
+    })
+
+    updateStartPosition = (relCoords) => this.setState({...this.state, roi: { x: relCoords.x, y: relCoords.y }}); 
+    updateEndPosition = (endPosition) => 
+            this.setState({...this.state, roi: {...this.state.roi, ...endPosition}});
+    endCropPosition = (relCoords) => ({
+        endX: relCoords.x,
+        endY: relCoords.y,
+        width: this.state.imagePosition.width - relCoords.x,
+        height: this.state.imagePosition.height - relCoords.y
+    }); 
+
+
+    onMove = (e) => {
+        if(!this.props.crop)
+            return;
+        const relCoords = this.getEventRelCoords(e);
+        if(this.props.crop.initial) {
+            this.updateStartPosition(relCoords);
+        } else if(this.props.crop.x && this.props.crop.y && ! this.props.crop.width) {
+            this.updateEndPosition(this.endCropPosition(relCoords));
         }
     }
 
-    onImageLoaded = (e) => {
-        this.setState({...this.state, position: {x: e.target.x, y: e.target.y, width: e.target.width, height: e.target.height}})
-        this.props.onImageLoaded();
+    onClick = (e) => {
+        if(!this.props.crop)
+            return;
+        const relCoords = this.getEventRelCoords(e);
+        if(this.props.crop.initial) {
+            this.updateStartPosition(relCoords);
+            this.props.setStartCrop(relCoords.x, relCoords.y);
+        } else if(this.props.crop.x && this.props.crop.y && ! this.props.crop.width) {
+            const endPosition = this.endCropPosition(relCoords);
+            this.updateEndPosition(endPosition);
+            this.props.setEndCrop(endPosition.width, endPosition.height);
+        } 
     }
 
     render = () => {
+        const { onImageLoading, fitScreen, uri, crop } = this.props; 
         return (
-            <div>
-                <ROIIndicator position={this.state.position} topleft enabled={this.state.cropStart} x={this.state.startX} y={this.state.startY} top={this.state.imageY} left={this.state.imageX} />
-                <ImageComponent {...{...this.props, onImageLoaded: this.onImageLoaded}} onOver={this.onOver} onClick={this.onClick} />
-            </div>
+            <React.Fragment>
+            { crop && (
+                <React.Fragment>
+                    <div className='roi-container roi-container-outer' style={{ ...this.state.imagePosition }} onMouseMove={e => this.onMove(e)} onClick={e => this.onClick(e)} />
+                    <div className='roi-container' style={{ ...this.state.imagePosition }}>
+                        <div className='roi-top roi-indicator' style={{ width: this.state.imagePosition.width, height: this.state.roi.y }} />
+                        <div className='roi-left roi-indicator' style={{ width: this.state.roi.x, height: this.state.imagePosition.height }} />
+                        <div className='roi-right roi-indicator' style={{ height: this.state.imagePosition.height, width: this.state.roi.width }} />
+                        <div className='roi-bottom roi-indicator' style={{ width: this.state.imagePosition.width, height: this.state.roi.height }} />
+                    </div>
+                </React.Fragment>
+            )}
+                <ImageComponent uri={uri} onImageLoaded={(e) => this.onImageLoaded(e)} {...{onImageLoading, fitScreen}} />
+            </React.Fragment>
         )
-    }
-
-    onOver = (e) => {
-        if(! this.state.cropStart)
-            return;
-        let x = e.clientX - e.target.x;
-        let y = e.clientY - e.target.y;
-        this.setState({...this.state, startX: x, startY: y, imageX: e.target.x, imageY: e.target.y})
     }
 }
 
-const ImageViewer = ({uri, fitScreen = false, onImageLoading, onImageLoaded, crop}) => {
+const ImageViewer = ({uri, fitScreen = false, onImageLoading, onImageLoaded, crop, setStartCrop, setEndCrop}) => {
     return uri ? (
         <div className='image-viewer'>
-            <ImageROI uri={uri} {...{onImageLoading, onImageLoaded, fitScreen, crop}} />
+            <ImageROIContainer uri={uri} {...{onImageLoading, onImageLoaded, fitScreen, crop, setStartCrop, setEndCrop}} />
         </div>
     ): <Icon name='image outline' size='massive' disabled />;
 }

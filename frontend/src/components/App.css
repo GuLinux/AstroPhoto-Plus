@@ -40,15 +40,28 @@ body {
     overflow: auto;
 }
 
+.roi-container {
+    position: fixed;
+    z-index: 991;
+}
+
+.roi-container-outer {
+    z-index: 999;
+    cursor: crosshair;
+}
+
 .roi-indicator {
     position: fixed;
-    z-index: 999;
-}
-.roi-top {
-    position: fixed;
-    width: 100%;
-    top: 0px;
-    left: 0px;
-    background-color: #aaaaaa70;
+    background-color: #222222Fa;
     z-index: 990;
+}
+
+.roi-right {
+    position: absolute;
+    right: 0px;
+}
+
+.roi-bottom {
+    position: absolute;
+    bottom: 0px;
 }

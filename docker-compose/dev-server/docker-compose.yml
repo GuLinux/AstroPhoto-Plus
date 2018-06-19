@@ -3,7 +3,7 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-        - "3000:80"
+        - "${EXTERNAL_WEB_PORT}:80"
     volumes:
         - ./nginx-conf.d:/etc/nginx/conf.d:ro
     depends_on:

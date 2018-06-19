@@ -20,6 +20,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => ({
     onImageLoading: () => dispatch(Actions.Camera.imageLoading()),
     onImageLoaded: () => dispatch(Actions.Camera.imageLoaded()),
+    setStartCrop: (x, y) => dispatch(Actions.Camera.setStartCrop(x, y)),
+    setEndCrop: (width, height) => dispatch(Actions.Camera.setEndCrop(width, height)),
 })
 
 const CurrentImageViewerContainer = connect(

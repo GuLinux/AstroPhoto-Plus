@@ -84,7 +84,7 @@ const camera = (state = defaultState, action) => {
             return {...state, crop: {x: action.x, y: action.y}};
         case 'CAMERA_SET_END_CROP':
             return {...state, crop: {...state.crop, width: action.width, height: action.height}};
-        case 'CAMERA_RESET_CROP:':
+        case 'CAMERA_RESET_CROP':
             return {...state, crop: false};
         default:
             return state;
