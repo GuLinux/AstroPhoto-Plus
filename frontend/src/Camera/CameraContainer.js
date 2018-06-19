@@ -12,12 +12,16 @@ const mapStateToProps = (state, ownProps) => ({
     options: state.camera.options,
     isShooting: state.camera.isShooting,
     imageLoading: state.camera.imageLoading,
+    canCrop: !state.camera.isShooting && !state.camera.imageLoading && state.camera.currentImage,
+    crop: state.camera.crop,
 })
 
 const mapDispatchToProps = dispatch => ({
     setCurrentCamera: (camera) => dispatch(Actions.Camera.setCamera(camera)),
     setCurrentFilterWheel: (filterWheel) => dispatch(Actions.Camera.setFilterWheel(filterWheel)),
     setOption: (option) => dispatch(Actions.Camera.setOption(option)),
+    startCrop: () => dispatch(Actions.Camera.startCrop()),
+    resetCrop: () => dispatch(Actions.Camera.resetCrop()),
 })
 
 const CameraContainer = connect(

@@ -39,3 +39,16 @@ body {
 .image-viewer {
     overflow: auto;
 }
+
+.roi-indicator {
+    position: fixed;
+    z-index: 999;
+}
+.roi-top {
+    position: fixed;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    background-color: #aaaaaa70;
+    z-index: 990;
+}
