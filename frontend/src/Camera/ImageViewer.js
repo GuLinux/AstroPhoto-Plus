@@ -42,7 +42,7 @@ class ImageCrop extends React.Component {
 const ImageViewer = ({uri, fitScreen = false, onImageLoading, onImageLoaded, crop, setCrop, imageInfo}) => {
     return uri ? (
         <div className='image-viewer'>
-            { !!crop ?
+            { crop && (crop.initial || crop.relative) ?
                 <ImageCrop src={uri} width={imageInfo.width} height={imageInfo.height} crop={crop} setCrop={setCrop} /> :
                 <ImageComponent uri={uri} {...{onImageLoading, onImageLoaded, fitScreen}} />
             }

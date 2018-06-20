@@ -41,7 +41,7 @@ const onCameraShoot = (state, action) => ({
     isShooting: true,
     shouldAutostart: false,
     histogram: null,
-    crop: null,
+    crop: state.crop ? { pixel: state.crop.pixel } : false,
 })
 
 const onINDIPropertyUpdated = (state, action) => {
