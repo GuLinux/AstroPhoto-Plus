@@ -46,10 +46,13 @@ class ImageROIContainer extends React.Component {
         this.props.onImageLoaded && this.props.onImageLoaded();
     }
 
-    getEventRelCoords = (e) => ({
-            x: e.clientX - e.target.offsetLeft,
-            y: e.clientY - e.target.offsetTop,
-    })
+    getEventRelCoords = (e) => {
+        const divCoords = e.target.getBoundingClientRect();
+        return {
+            x: e.clientX - divCoords.x,
+            y: e.clientY - divCoords.y,
+        }
+    }
 
     updateStartPosition = (relCoords) => this.setState({...this.state, roi: { x: relCoords.x, y: relCoords.y }}); 
     updateEndPosition = (endPosition) => 
@@ -87,14 +90,19 @@ class ImageROIContainer extends React.Component {
         } 
     }
 
+    containerCoordinates = () => ({
+        width: this.state.imagePosition.width,
+        height: this.state.imagePosition.height,
+    })
+
     render = () => {
-        const { onImageLoading, fitScreen, uri, crop } = this.props; 
+        const { onImageLoading, fitScreen, uri, crop } = this.props;
         return (
             <React.Fragment>
             { crop && (
                 <React.Fragment>
-                    <div className='roi-container roi-container-outer' style={{ ...this.state.imagePosition }} onMouseMove={e => this.onMove(e)} onClick={e => this.onClick(e)} />
-                    <div className='roi-container' style={{ ...this.state.imagePosition }}>
+                    <div className='roi-container roi-container-outer' style={this.containerCoordinates()} onMouseMove={e => this.onMove(e)} onClick={e => this.onClick(e)} />
+                    <div className='roi-container' style={this.containerCoordinates()}>
                         <div className='roi-top roi-indicator' style={{ width: this.state.imagePosition.width, height: this.state.roi.y }} />
                         <div className='roi-left roi-indicator' style={{ width: this.state.roi.x, height: this.state.imagePosition.height }} />
                         <div className='roi-right roi-indicator' style={{ height: this.state.imagePosition.height, width: this.state.roi.width }} />

@@ -41,27 +41,35 @@ body {
 }
 
 .roi-container {
-    position: fixed;
+    position: absolute;
     z-index: 991;
+    overflow: auto;
 }
 
 .roi-container-outer {
     z-index: 999;
     cursor: crosshair;
+    overflow: auto;
 }
 
 .roi-indicator {
-    position: fixed;
-    background-color: #222222Fa;
+    position: absolute;
+    background-color: #222222AA;
     z-index: 990;
 }
 
+.roi-left {
+    left: 0px;
+}
+
+.roi-top {
+    top: 0px;
+}
+
 .roi-right {
-    position: absolute;
     right: 0px;
 }
 
 .roi-bottom {
-    position: absolute;
     bottom: 0px;
 }
