@@ -131,7 +131,7 @@ const Camera = ({
                             }
                             <Header size='tiny' content='ROI' textAlign='center' />
                             <Button content='select ROI' size='tiny' fluid basic disabled={!canCrop || !!crop} onClick={startCrop}/>
-                            <Button content='clear ROI' size='tiny' fluid basic disabled={!canCrop || !(!!crop && crop.width && crop.height)} onClick={resetCrop}/>
+                            <Button content='clear ROI' size='tiny' fluid basic disabled={!canCrop || !(!!crop && crop.pixel )} onClick={resetCrop}/>
                         </Form>
                     </Segment>
 

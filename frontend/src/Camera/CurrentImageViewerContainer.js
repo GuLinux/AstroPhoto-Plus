@@ -13,6 +13,7 @@ const mapStateToProps = (state, ownProps) => {
     }
     return {
         uri: imageUrlBuilder(currentCamera.id, currentImage.id, state.camera.options),
+        imageInfo: currentImage.image_info,
         crop: state.camera.crop,
     }
 }
@@ -20,9 +21,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => ({
     onImageLoading: () => dispatch(Actions.Camera.imageLoading()),
     onImageLoaded: () => dispatch(Actions.Camera.imageLoaded()),
-    setStartCrop: (x, y) => dispatch(Actions.Camera.setStartCrop(x, y)),
-    setEndCrop: (width, height) => dispatch(Actions.Camera.setEndCrop(width, height)),
-    resetCrop: () => dispatch(Actions.Camera.resetCrop()),
+    setCrop: (crop) => dispatch(Actions.Camera.setCrop(crop)),
 })
 
 const CurrentImageViewerContainer = connect(

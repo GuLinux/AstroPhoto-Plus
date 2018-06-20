@@ -9,21 +9,14 @@ const defaultState = {
     }
 };
 
-const setOption = (state, option) => {
-    let crop = state.crop;
-    if('fitToScreen' in option) {
-        crop = false;
-    }
-        return {
-        ...state,
-        options: {
-            ...state.options,
-            ...option,
+const setOption = (state, option) => ({
+    ...state,
+    options: {
+        ...state.options,
+        ...option,
 
-        },
-        crop,
-    }
-}
+    },
+})
 
 const onCameraShotFinished = (state, action) => ({
     ...state, isShooting: false,
@@ -88,10 +81,8 @@ const camera = (state = defaultState, action) => {
             return onINDIPropertyUpdated(state, action);
         case 'CAMERA_START_CROP':
             return {...state, crop: { initial: true } };
-        case 'CAMERA_SET_START_CROP':
-            return {...state, crop: {x: action.x, y: action.y}};
-        case 'CAMERA_SET_END_CROP':
-            return {...state, crop: {...state.crop, width: action.width, height: action.height}};
+        case 'CAMERA_SET_CROP':
+            return {...state, crop: action.crop};
         case 'CAMERA_RESET_CROP':
             return {...state, crop: false};
         default:

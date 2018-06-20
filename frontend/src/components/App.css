@@ -40,36 +40,7 @@ body {
     overflow: auto;
 }
 
-.roi-container {
-    position: absolute;
-    z-index: 991;
-    overflow: auto;
+.image-viewer .ReactCrop {
+    max-width: inherit;
 }
 
-.roi-container-outer {
-    z-index: 999;
-    cursor: crosshair;
-    overflow: auto;
-}
-
-.roi-indicator {
-    position: absolute;
-    background-color: #222222AA;
-    z-index: 990;
-}
-
-.roi-left {
-    left: 0px;
-}
-
-.roi-top {
-    top: 0px;
-}
-
-.roi-right {
-    right: 0px;
-}
-
-.roi-bottom {
-    bottom: 0px;
-}
