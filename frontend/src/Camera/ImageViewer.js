@@ -1,21 +1,51 @@
 import React from 'react';
 import { Image, Icon } from 'semantic-ui-react';
+import ReactCrop from 'react-image-crop';
+
 
 class ImageComponent extends React.Component {
+    componentDidUpdate = (prevProps) => this.props.uri !== prevProps.uri && this.props.onImageLoading && this.props.onImageLoading();
     componentDidMount = () => this.props.onImageLoading && this.props.onImageLoading();
-    componentDidUpdate= () => this.props.onImageLoading && this.props.onImageLoading();
-
+    
     render = () => {
-        const { uri, onImageLoaded, fitScreen } = this.props;
-        let callbacks = onImageLoaded ? { onLoad: onImageLoaded, onError: onImageLoaded } : {};
-        return <Image alt='' ui={fitScreen} src={uri} fluid={!fitScreen} {...callbacks} />;
+        const {uri, fitScreen, onImageLoading, onImageLoaded} = this.props;
+        let imgProps = onImageLoaded ? { onLoad: onImageLoaded, onError: onImageLoaded } : {};
+        return <Image
+            alt=''
+            src={uri}
+            {...imgProps}
+            fluid={!fitScreen}
+            ui={fitScreen}
+        />;
     }
 }
 
-const ImageViewer = ({uri, fitScreen = false, onImageLoading, onImageLoaded}) => {
+class ImageCrop extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = props.crop && props.crop.relative ? { crop: props.crop.relative } : {};
+    }
+
+    setCrop = (crop) => this.setState({...this.state, crop});
+
+    onComplete = (crop, pixelCrop) => this.props.setCrop({ relative: crop, pixel: pixelCrop });
+
+    render = () => {
+        const { src, width, height } = this.props;
+        const imageStyle = { width: width+10, height: height+10 };
+        return (
+            <ReactCrop src={src} crop={this.state.crop} onChange={this.setCrop} onComplete={this.onComplete} style={imageStyle} imageStyle={imageStyle} />
+        )
+    }
+}
+
+const ImageViewer = ({uri, fitScreen = false, onImageLoading, onImageLoaded, crop, setCrop, imageInfo}) => {
     return uri ? (
         <div className='image-viewer'>
-            <ImageComponent uri={uri} onImageLoading={onImageLoading} onImageLoaded={onImageLoaded} fitScreen={fitScreen} />
+            { crop && (crop.initial || crop.relative) ?
+                <ImageCrop src={uri} width={imageInfo.width} height={imageInfo.height} crop={crop} setCrop={setCrop} /> :
+                <ImageComponent uri={uri} {...{onImageLoading, onImageLoaded, fitScreen}} />
+            }
         </div>
     ): <Icon name='image outline' size='massive' disabled />;
 }

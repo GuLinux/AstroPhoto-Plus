@@ -39,6 +39,10 @@ const Camera = ({
         imageLoading,
         currentFilterWheel,
         setCurrentFilterWheel,
+        canCrop,
+        crop,
+        startCrop,
+        resetCrop,
     }) => {
     if(cameras.length === 0)
         return <Redirect to='/' />;
@@ -125,6 +129,9 @@ const Camera = ({
                                     </Form.Field>
                                 </React.Fragment>)
                             }
+                            <Header size='tiny' content='ROI' textAlign='center' />
+                            <Button content='select ROI' size='tiny' fluid basic disabled={!canCrop || !!crop} onClick={startCrop}/>
+                            <Button content='clear ROI' size='tiny' fluid basic disabled={!canCrop || !(!!crop && crop.pixel )} onClick={resetCrop}/>
                         </Form>
                     </Segment>
 

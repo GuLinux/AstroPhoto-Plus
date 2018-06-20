@@ -8,6 +8,9 @@ const Camera = {
     setOption: (option) => ({ type: 'CAMERA_SET_OPTION', option }),
     imageLoading: () => ({ type: 'CAMERA_IMAGE_LOADING' }),
     imageLoaded: () => ({ type: 'CAMERA_IMAGE_LOADED' }),
+    startCrop: () => ({ type: 'CAMERA_START_CROP' }),
+    resetCrop: () => ({ type: 'CAMERA_RESET_CROP' }),
+    setCrop: (crop) => ({ type: 'CAMERA_SET_CROP', crop }),
 
     histogramLoaded: (histogram) => ({ type: 'CAMERA_HISTOGRAM_LOADED', histogram}),
     histogramError: (dispatch, error) => {

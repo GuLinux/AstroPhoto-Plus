@@ -14,7 +14,8 @@ const setOption = (state, option) => ({
     options: {
         ...state.options,
         ...option,
-    }
+
+    },
 })
 
 const onCameraShotFinished = (state, action) => ({
@@ -40,6 +41,7 @@ const onCameraShoot = (state, action) => ({
     isShooting: true,
     shouldAutostart: false,
     histogram: null,
+    crop: state.crop ? { pixel: state.crop.pixel } : false,
 })
 
 const onINDIPropertyUpdated = (state, action) => {
@@ -77,6 +79,12 @@ const camera = (state = defaultState, action) => {
             return {...state, pendingFilter: { device: action.device, property: action.property }};
         case 'INDI_PROPERTY_UPDATED':
             return onINDIPropertyUpdated(state, action);
+        case 'CAMERA_START_CROP':
+            return {...state, crop: { initial: true } };
+        case 'CAMERA_SET_CROP':
+            return {...state, crop: action.crop};
+        case 'CAMERA_RESET_CROP':
+            return {...state, crop: false};
         default:
             return state;
     }
