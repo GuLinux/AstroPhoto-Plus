@@ -59,6 +59,8 @@ class Camera:
                 'WIDTH': options['roi']['width'],
                 'HEIGHT': options['roi']['height'],
             }) 
+        else:
+            self.camera.clear_roi()
 
         self.camera.set_upload_path(self.settings.camera_tempdir, prefix=id)
         try:
