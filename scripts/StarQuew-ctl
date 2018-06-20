@@ -14,6 +14,7 @@ Commands:
  - setup-nginx                 Prepares nginx to serve StarQuew.
  - start                       Starts StarQuew daemon.
  - autostart                   Starts StarQuew daemon, and enables autostart on system boot.
+ - restart                     Restarts StarQuew daemon after an upgrade.
  - status                      Checks daemon status
  - logs                        Show daemon logs
 
@@ -89,6 +90,11 @@ autostart() {
     start
 }
 
+restart() {
+    systemctl daemon-reload
+    systemctl restart StarQuew
+}
+
 status() {
     systemctl status StarQuew
 }
@@ -109,7 +115,7 @@ check_root() {
 command="$1"; shift
 
 case "$command" in
-    autosetup|setup-apache2|setup-nginx|start|autostart|setup-backend)
+    autosetup|setup-apache2|setup-nginx|start|autostart|setup-backend|restart)
         check_root
         "$command" "$@"
         ;;
