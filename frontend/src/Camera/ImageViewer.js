@@ -25,6 +25,8 @@ class ImageROIContainer extends React.Component {
         this.state = { roi: this.initialROI() };
     }
 
+componentWillUnmount = () => this.props.resetCrop && this.props.resetCrop();
+
     initialROI = () => ({ x: 0, y: 0, endX: 0, endY: 0, width: 0, height: 0 });
 
     onImageLoaded = (e) => {
@@ -116,10 +118,10 @@ class ImageROIContainer extends React.Component {
     }
 }
 
-const ImageViewer = ({uri, fitScreen = false, onImageLoading, onImageLoaded, crop, setStartCrop, setEndCrop}) => {
+const ImageViewer = ({uri, fitScreen = false, onImageLoading, onImageLoaded, crop, setStartCrop, setEndCrop, resetCrop}) => {
     return uri ? (
         <div className='image-viewer'>
-            <ImageROIContainer uri={uri} {...{onImageLoading, onImageLoaded, fitScreen, crop, setStartCrop, setEndCrop}} />
+            <ImageROIContainer uri={uri} {...{onImageLoading, onImageLoaded, fitScreen, crop, setStartCrop, setEndCrop, resetCrop}} />
         </div>
     ): <Icon name='image outline' size='massive' disabled />;
 }

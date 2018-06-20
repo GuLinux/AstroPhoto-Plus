@@ -9,13 +9,21 @@ const defaultState = {
     }
 };
 
-const setOption = (state, option) => ({
-    ...state,
-    options: {
-        ...state.options,
-        ...option,
+const setOption = (state, option) => {
+    let crop = state.crop;
+    if('fitToScreen' in option) {
+        crop = false;
     }
-})
+        return {
+        ...state,
+        options: {
+            ...state.options,
+            ...option,
+
+        },
+        crop,
+    }
+}
 
 const onCameraShotFinished = (state, action) => ({
     ...state, isShooting: false,
