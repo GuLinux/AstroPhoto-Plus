@@ -42,7 +42,7 @@ class Image:
 
     @staticmethod
     def from_map(item):
-        return Image(item['id'], item['directory'], item['filename'], item['timestamp'])
+        return Image(item['id'], item['directory'], item['filename'], item['timestamp'], item.get('cached_conversions'))
 
     def to_map(self, for_saving=True):
         json_map = {

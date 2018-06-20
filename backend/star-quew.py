@@ -308,15 +308,15 @@ def shoot_image(camera, json):
 @managed_api
 @indi_connected
 def retrieve_image(camera, image):
-    image = lookup_camera(camera).images_list.lookup(image)
-    image_info = image.convert(request.args)
-    return send_from_directory(
-        image_info['directory'],
-        image_info['filename'],
-        mimetype=image_info['content_type'],
-        as_attachment=False,
-        attachment_filename=image_info['filename'],
-    )
+    with lookup_camera(camera).images_list.lookup_edit(image) as image:
+        image_info = image.convert(request.args)
+        return send_from_directory(
+            image_info['directory'],
+            image_info['filename'],
+            mimetype=image_info['content_type'],
+            as_attachment=False,
+            attachment_filename=image_info['filename'],
+        )
 
 
 @app.route('/api/cameras/<camera>/image/<image>/histogram', methods=['GET'])
