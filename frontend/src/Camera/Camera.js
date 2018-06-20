@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Grid, Input, Loader, Form, Header, Segment, Button } from 'semantic-ui-react';
+import { Container, Grid, Input, Loader, Form, Header, Segment, Button, Message } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import ExposureInputContainer from './ExposureInputContainer';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
@@ -132,6 +132,8 @@ const Camera = ({
                             <Header size='tiny' content='ROI' textAlign='center' />
                             <Button content='select ROI' size='tiny' fluid basic disabled={!canCrop || !!crop} onClick={startCrop}/>
                             <Button content='clear ROI' size='tiny' fluid basic disabled={!canCrop || !(!!crop && crop.pixel )} onClick={resetCrop}/>
+                            { crop && crop.pixel && ! crop.applied && <Message size='tiny' content='You need to shoot another image to see the new ROI applied' />}
+                            { crop && ! crop.pixel && crop.canceled && <Message size='tiny' content='You need to shoot another image to reset the ROI to full size' />}
                         </Form>
                     </Segment>
 

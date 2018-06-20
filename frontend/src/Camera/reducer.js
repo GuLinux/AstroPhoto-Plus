@@ -41,8 +41,16 @@ const onCameraShoot = (state, action) => ({
     isShooting: true,
     shouldAutostart: false,
     histogram: null,
-    crop: state.crop ? { pixel: state.crop.pixel } : false,
+    crop: state.crop && state.crop.pixel ? { pixel: state.crop.pixel, applied: true } : false,
 })
+
+const cameraStartCrop = (state) => ({...state, crop: { initial: true } });
+
+const cameraSetCrop = (state, action) => ({...state, crop: {...action.crop, applied: false}});
+const cameraResetCrop = (state, action) => { 
+    const crop = state.crop && state.crop.applied ? { canceled: true} : false
+    return {...state, crop };
+}
 
 const onINDIPropertyUpdated = (state, action) => {
     if(state.pendingFilter && action.property.id === state.pendingFilter.property && action.property.device === state.pendingFilter.device) {
@@ -80,11 +88,12 @@ const camera = (state = defaultState, action) => {
         case 'INDI_PROPERTY_UPDATED':
             return onINDIPropertyUpdated(state, action);
         case 'CAMERA_START_CROP':
-            return {...state, crop: { initial: true } };
+            return cameraStartCrop(state);
         case 'CAMERA_SET_CROP':
-            return {...state, crop: action.crop};
+            return cameraSetCrop(state, action);
         case 'CAMERA_RESET_CROP':
-            return {...state, crop: false};
+            return cameraResetCrop(state, action);
+
         default:
             return state;
     }

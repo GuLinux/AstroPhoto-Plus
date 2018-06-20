@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Icon, Button } from 'semantic-ui-react';
+import { Image, Icon, Button, Popup } from 'semantic-ui-react';
 import ReactCrop from 'react-image-crop';
 
 
@@ -30,12 +30,16 @@ class ImageCrop extends React.Component {
 
     onComplete = (crop, pixelCrop) => this.props.setCrop({ relative: crop, pixel: pixelCrop });
 
+    toggleMove = () => this.setState({...this.state, move: !this.state.move})
+
     render = () => {
         const { src, width, height } = this.props;
         const imageStyle = { width: width+10, height: height+10 };
         return (
             <React.Fragment>
-                <Button icon='move' className='crop-move-button' compact toggle active={this.state.move} onClick={() => this.setState({...this.state, move: !this.state.move})} />
+                <Popup content='Toggle region selection in order to allow moving around with touch devices' position='top right' trigger={
+                    <Button icon='move' className='crop-move-button' circular size='large' compact toggle active={this.state.move} onClick={() => this.toggleMove() } />
+                } />
                 <ReactCrop src={src} crop={this.state.crop} onChange={this.setCrop} onComplete={this.onComplete} style={imageStyle} imageStyle={imageStyle} disabled={this.state.move} />
             </React.Fragment>
         )
