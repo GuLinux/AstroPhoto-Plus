@@ -52,6 +52,14 @@ class Camera:
         exposure = options['exposure']
         self.camera.set_upload_to('local')
 
+        if 'roi' in options and options['roi']:
+            self.camera.set_roi({
+                'X': options['roi']['x'],
+                'Y': options['roi']['y'],
+                'WIDTH': options['roi']['width'],
+                'HEIGHT': options['roi']['height'],
+            }) 
+
         self.camera.set_upload_path(self.settings.camera_tempdir, prefix=id)
         try:
             self.camera.shoot(exposure)
