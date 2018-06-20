@@ -8,7 +8,7 @@ class ImageComponent extends React.Component {
     componentDidMount = () => this.props.onImageLoading && this.props.onImageLoading();
     
     render = () => {
-        const {uri, fitScreen, onImageLoading, onImageLoaded} = this.props;
+        const {uri, fitScreen, onImageLoaded} = this.props;
         let imgProps = onImageLoaded ? { onLoad: onImageLoaded, onError: onImageLoaded } : {};
         return <Image
             alt=''

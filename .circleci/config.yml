@@ -15,7 +15,7 @@ jobs:
           - v1-dependencies-{{ checksum "frontend/package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-      - run: mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCONFDIR=/etc -DVERSION_SUFFIX=-b${CIRCLE_BUILD_NUM} && make package && rm -rf packages/_CPack_Packages
+      - run: mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCONFDIR=/etc -DVERSION_SUFFIX=-b${CIRCLE_BUILD_NUM} && CI=false make package && rm -rf packages/_CPack_Packages
       - store_artifacts:
           path: ~/repo/build/packages
       - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null marco@gulinux.net -p 8122 ./starquew-publish -n $CIRCLE_BUILD_NUM -d $CIRCLE_COMPARE_URL -r $CIRCLE_REPOSITORY_URL -c $CIRCLE_SHA1
