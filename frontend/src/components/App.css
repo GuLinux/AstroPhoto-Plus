@@ -44,3 +44,9 @@ body {
     max-width: inherit;
 }
 
+.crop-move-button {
+    z-index: 999;
+    position: fixed;
+    bottom: 10px;
+    right: 30px;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Icon } from 'semantic-ui-react';
+import { Image, Icon, Button } from 'semantic-ui-react';
 import ReactCrop from 'react-image-crop';
 
 
@@ -34,7 +34,10 @@ class ImageCrop extends React.Component {
         const { src, width, height } = this.props;
         const imageStyle = { width: width+10, height: height+10 };
         return (
-            <ReactCrop src={src} crop={this.state.crop} onChange={this.setCrop} onComplete={this.onComplete} style={imageStyle} imageStyle={imageStyle} />
+            <React.Fragment>
+                <Button icon='move' className='crop-move-button' compact toggle active={this.state.move} onClick={() => this.setState({...this.state, move: !this.state.move})} />
+                <ReactCrop src={src} crop={this.state.crop} onChange={this.setCrop} onComplete={this.onComplete} style={imageStyle} imageStyle={imageStyle} disabled={this.state.move} />
+            </React.Fragment>
         )
     }
 }
