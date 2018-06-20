@@ -27,11 +27,16 @@ class Image:
             }
         }
 
-    def __init__(self, id, directory, filename, timestamp, cached_conversions=None):
+    def __init__(self, id, directory, filename, timestamp, image_info=None, cached_conversions=None):
         self.id = id
         self.directory = directory
         self.filename = filename
         self.timestamp = timestamp
+        self.image_info = image_info
+        if not image_info:
+            with fits.open(self.path) as hdulist:
+                shape = hdulist[0].shape
+                self.image_info = { 'width': shape[1], 'height': shape[0]}
         self.cached_conversions = {}
         if cached_conversions:
             self.cached_conversions.update(cached_conversions)
@@ -42,7 +47,7 @@ class Image:
 
     @staticmethod
     def from_map(item):
-        return Image(item['id'], item['directory'], item['filename'], item['timestamp'], item.get('cached_conversions'))
+        return Image(item['id'], item['directory'], item['filename'], item['timestamp'], item.get('image_info'), item.get('cached_conversions'))
 
     def to_map(self, for_saving=True):
         json_map = {
@@ -50,6 +55,7 @@ class Image:
             'directory': self.directory,
             'filename': self.filename,
             'path': self.path,
+            'image_info': self.image_info,
             'timestamp': self.timestamp,
         }
         if for_saving:
