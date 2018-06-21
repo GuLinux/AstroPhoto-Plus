@@ -66,7 +66,10 @@ const Camera = ({
                                 <FilterWheelSection {...{filterWheels, currentFilterWheel, setCurrentFilterWheel}} />
                             }
                             <Header size='tiny' content='Exposure' textAlign='center' />
-                            <Form.Field><ExposureInputContainer disabled={!currentCamera || isShooting} size='tiny' /></Form.Field>
+                            <Form.Field>
+                                <ExposureInputContainer disabled={!currentCamera || isShooting} size='tiny' />
+                                { !currentCamera && <Message content='Please select a camera first' size='tiny'/> }
+                            </Form.Field>
                             <Form.Checkbox label='Continuous' disabled={!currentCamera} toggle size='mini' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} />
                             <Header size='tiny' content='View Options' textAlign='center' />
                             <Form.Checkbox label='Auto histogram stretch' toggle size='mini' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} />
