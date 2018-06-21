@@ -10,6 +10,7 @@ const Navigation = ({disabled, hasConnectedCameras}) => (
         <NavItem content='Sequences' to="/sequences" disabled={disabled} />
         <NavItem content='INDI Server' to="/indi" disabled={disabled} />
         <NavItem content='Camera' to="/camera" disabled={disabled || ! hasConnectedCameras} />
+        <NavItem content='Settings' to="/settings" disabled={disabled} />
     </Menu>
 )
 

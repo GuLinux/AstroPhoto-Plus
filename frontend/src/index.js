@@ -41,6 +41,7 @@ store.dispatch(Actions.Sequences.fetch())
 store.dispatch(Actions.INDIServer.fetchServerState(true))
 store.dispatch(Actions.INDIService.fetchService())
 store.dispatch(Actions.INDIService.fetchProfiles())
+store.dispatch(Actions.Settings.fetch())
 listenToEvents(store.dispatch)
 
 render(

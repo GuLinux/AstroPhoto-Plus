@@ -164,3 +164,12 @@ export const cameraFetchHistogramApi = (dispatch, cameraId, imageId, bins, onSuc
         uri += `?bins=${bins}`;
     fetchJSON(dispatch, uri, {}, onSuccess, onError);
 }
+
+export const getSettingsApi = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/settings', {}, onSuccess);
+export const updateSettingsApi = (dispatch, settings, onSuccess) => fetchJSON(dispatch, '/api/settings', {
+        method: 'PUT',
+        body: JSON.stringify(settings),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+}, onSuccess);

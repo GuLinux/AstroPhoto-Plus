@@ -1,13 +1,14 @@
-import { combineReducers } from 'redux'
-import sequenceItems from './SequenceItems/reducer'
-import sequences from './Sequences/reducer'
-import indiserver from './INDI-Server/reducer'
-import notifications from './Notifications/reducer'
-import gear from './Gear/reducer'
-import errors from './Errors/reducer'
-import indiservice from './INDI-Service/reducer'
-import modals from './Modals/reducer'
-import camera from './Camera/reducer'
+import { combineReducers } from 'redux';
+import sequenceItems from './SequenceItems/reducer';
+import sequences from './Sequences/reducer';
+import indiserver from './INDI-Server/reducer';
+import notifications from './Notifications/reducer';
+import gear from './Gear/reducer';
+import errors from './Errors/reducer';
+import indiservice from './INDI-Service/reducer';
+import modals from './Modals/reducer';
+import camera from './Camera/reducer';
+import settings from './Settings/reducer';
 
 const network = (state = { fetching: false }, action) => {
     switch(action.type) {
@@ -51,6 +52,6 @@ const network = (state = { fetching: false }, action) => {
 
 
 
-const indiLiteApp = combineReducers({sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, modals, camera });
+const indiLiteApp = combineReducers({sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, modals, camera, settings });
 
 export default indiLiteApp

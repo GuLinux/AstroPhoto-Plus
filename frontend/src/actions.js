@@ -6,6 +6,7 @@ import Gear from './Gear/actions';
 import INDIService from './INDI-Service/actions';
 import Modals from './Modals/actions';
 import Camera from './Camera/actions';
+import Settings from './Settings/actions';
 
 export const Actions = {
     Sequences,
@@ -17,6 +18,7 @@ export const Actions = {
     INDIService,
     Modals,
     Camera,
+    Settings,
 }
 
 export default Actions
