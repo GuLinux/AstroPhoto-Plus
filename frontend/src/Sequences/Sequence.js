@@ -2,56 +2,79 @@ import React from 'react';
 import ModalContainer from '../Modals/ModalContainer';
 import AddSequenceItemModal from '../SequenceItems/AddSequenceItemModal'
 import SequenceItemsContainer from '../SequenceItems/SequenceItemsContainer';
-import { Button, Label, Container, Header, Grid, Segment } from 'semantic-ui-react';
+import { Button, Label, Container, Header, Grid, Card, Icon } from 'semantic-ui-react';
 import { canStart } from './model';
-import { INDINumberPropertyContainer, INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
+import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
+import INDILight from '../INDI-Server/INDILight';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
+import PRINTJ from 'printj'
 
 
 // TODO: refactor Gear pages out of this
 
-const DeviceHeader = ({device}) => {
+const DeviceCardHeader = ({device}) => {
     let labelStyle = device.connected ? 'green' : 'orange'
+    let icon = device.connected ? 'check' : 'close';
     let connection = device.connected ? 'connected' : 'not connected';
     return (
-        <Segment basic>
-            <Header size="medium">{device.name}</Header>
-            <Label size='tiny' attached='bottom left' color={labelStyle}>{connection}</Label>
-        </Segment>
+        <React.Fragment>
+            <Icon name={icon} color={labelStyle} circular style={{float: 'right'}} />
+            <Card.Header size="medium">{device.name}</Card.Header>
+            <Card.Meta color={labelStyle}>{connection}</Card.Meta>
+        </React.Fragment>
     )
 
 }
 
+
+
 const CameraDetailsPage = ({camera}) => {
     if(!camera)
         return null;
-    let exposurePropertyComponent = null;
     let exposureAbortPropertyComponent = null;
-    if(camera.exposureProperty)
-        exposurePropertyComponent = <INDINumberPropertyContainer property={camera.exposureProperty} readOnly={true} />
     if(camera.abortExposureProperty)
         exposureAbortPropertyComponent = <INDISwitchPropertyContainer property={camera.abortExposureProperty} />
     return (
-        <Container>
-            <DeviceHeader device={camera} />
-            {exposurePropertyComponent}
-            {exposureAbortPropertyComponent}
-        </Container>
+        <Card>
+            <Card.Content>
+                   <DeviceCardHeader device={camera} />
+                    <Card.Description>
+                        <Label.Group>
+                            { camera.exposureProperty && (
+                            <React.Fragment>
+                                <Label content='Current exposure: ' basic/>
+                                <Label content={PRINTJ.sprintf(camera.exposureProperty.values[0].format, camera.exposureProperty.values[0].value)} />
+                                <INDILight state={camera.exposureProperty.state } />
+                            </React.Fragment>
+                            )}
+                        </Label.Group>
+                    </Card.Description>
+            </Card.Content>
+            <Card.Content extra> 
+                {exposureAbortPropertyComponent}
+            </Card.Content>
+        </Card>
     )
 }
 
 const FilterWheelDetailsPage = ({filterWheel, filterNumber, filterName}) => {
     if(!filterWheel)
         return null;
-    let currentFilter = null
-    if(filterWheel.connected)
-        currentFilter = <p>Filter: {filterWheel.currentFilter.name} ({filterWheel.currentFilter.number})</p>
     return (
-        <Container>
-            <DeviceHeader device={filterWheel} />
-            {currentFilter}
-        </Container>
+        <Card>
+            <Card.Content>
+                   <DeviceCardHeader device={filterWheel} />
+                    <Card.Description>
+                        {filterWheel.connected && (
+                            <Label.Group>
+                                <Label basic content='Current filter: '/>
+                                <Label content={`${filterWheel.currentFilter.name} (${filterWheel.currentFilter.number})`}/>
+                            </Label.Group>
+                        )}
+                    </Card.Description>
+            </Card.Content>
+        </Card>
     )
 }
 
@@ -72,10 +95,10 @@ const Sequence = ({sequence, onCreateSequenceItem, startSequence, camera, filter
                     <Header size="large">{sequence.name}</Header>
                 </Grid.Column>
                 <Grid.Column textAlign="right">
-                    <Button.Group>
-                        <Button as={Link} size="mini" to="/sequences">back</Button>
-                        <Button onClick={() => startSequence()} size="mini" positive disabled={!canStart(sequence)}>start</Button>
-                        <ModalContainer.Button.Open modal={AddSequenceItemModal.NAME} color="teal" size="mini" className="pull-right" disabled={!canEdit}>new</ModalContainer.Button.Open>
+                    <Button.Group size='mini'>
+                        <Button as={Link} to="/sequences">back</Button>
+                        <Button onClick={() => startSequence()} positive disabled={!canStart(sequence)}>start</Button>
+                        <ModalContainer.Button.Open modal={AddSequenceItemModal.NAME} color="teal" className="pull-right" disabled={!canEdit}>new</ModalContainer.Button.Open>
                     </Button.Group>
                 </Grid.Column>
             </Grid>
@@ -84,8 +107,10 @@ const Sequence = ({sequence, onCreateSequenceItem, startSequence, camera, filter
             <SequenceItemsContainer canEdit={canEdit} sequenceId={sequence.id} />
 
             <Header size="medium">Devices</Header>
-            <CameraDetailsPage camera={camera} />
-            <FilterWheelDetailsPage filterWheel={filterWheel} />
+            <Card.Group>
+                <CameraDetailsPage camera={camera} />
+                <FilterWheelDetailsPage filterWheel={filterWheel} />
+            </Card.Group>
         </Container>
 )}
 
