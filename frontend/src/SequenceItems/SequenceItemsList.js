@@ -19,12 +19,14 @@ const statusComponent = sequenceItem => {
             style={ success: true }; break;
         case 'error':
             style={ error: true }; break;
+        case 'running':
+            style={ active: true }; break;
         default:
-            style= {};
+            style= { disabled: true };
     }
     let progressLabel = progress > 0 ? `: ${progress}/${count}` : '';
     return (
-        <Progress {...style} total={count} size="small" value={progress}active={sequenceItem.status === 'running'}>
+        <Progress {...style} total={count} size="small" value={progress}>
             {sequenceItem.status + progressLabel}
         </Progress>
     )

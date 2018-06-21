@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Button, Table, Label } from 'semantic-ui-react'
+import { Container, Button, Table, Label, Grid } from 'semantic-ui-react'
 import AddSequenceModalContainer from './AddSequenceModalContainer';
 import ModalContainer from '../Modals/ModalContainer'
 import { Dialog, QuestionDialog } from '../Modals/Dialogs'
@@ -20,7 +20,11 @@ const uriFor = sequence => '/sequences/' + sequence.id;
 const SequencesList = ({sequences, gear, onSequenceDelete, startSequence, duplicateSequence}) =>
 (
     <Container>
-        <ModalContainer.Button.Open primary modal={AddSequenceModalContainer.NAME}>new sequence</ModalContainer.Button.Open>
+        <Grid columns={1}>
+            <Grid.Column textAlign="right">
+                <ModalContainer.Button.Open primary size='mini' modal={AddSequenceModalContainer.NAME}>new sequence</ModalContainer.Button.Open>
+            </Grid.Column>
+        </Grid>
         <AddSequenceModalContainer />
 
         <Table stackable selectable striped basic="very">
