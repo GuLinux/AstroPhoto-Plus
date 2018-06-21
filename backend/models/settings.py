@@ -1,15 +1,16 @@
 import os
 from .serializer import Serializer
 from .exceptions import BadRequestError
+import six
 
 
 class Settings:
     def __init__(self, on_update=None):
         self.default_datadir = os.environ.get('STARQUEW_DATADIR', os.path.join(os.environ['HOME'], 'StarQuew-Data'))
-        self.serializer = Serializer(self.__build_path('.config', 'settings.json', isdir=False), Settings)
-        self.sequences_list = self.__build_path('.config', 'sequences', isdir=True)
-        self.indi_profiles_list = self.__build_path('.config', 'indi_profiles', isdir=True)
-        self.indi_service_logs = self.__build_path('.logs', 'indi_service', isdir=True)
+        self.serializer = Serializer(self.__build_path(['.config', 'StarQuew', 'settings.json'], isdir=False), Settings)
+        self.sequences_list = self.__build_path(['.config', 'StarQuew', 'sequences'], isdir=True)
+        self.indi_profiles_list = self.__build_path(['.config', 'StarQuew', 'indi_profiles'], isdir=True)
+        self.indi_service_logs = self.__build_path(['.cache', 'StarQuew', 'logs', 'indi_service'], isdir=True)
 
         self.ro_props = ['default_datadir', 'sequences_list', 'indi_profiles_list', 'indi_service_logs']
         self.rw_props = ['sequences_dir', 'indi_prefix', 'indi_host', 'indi_port', 'indi_service']
@@ -35,7 +36,7 @@ class Settings:
 
     @property
     def camera_tempdir(self):
-        return self.__build_path('.tmp', 'camera', isdir=True)
+        return self.__build_path(['.cache', 'StarQuew', 'camera'], isdir=True)
 
     @property
     def sequences_dir(self):
@@ -78,7 +79,7 @@ class Settings:
             for new_item in on_update_args:
                 self.on_update(*new_item)
 
-    def __build_path(self, parent, name, root=None, isdir=False):
-        path = os.path.join(root if root else self.default_datadir, parent, name)
+    def __build_path(self, components, root=None, isdir=False):
+        path = os.path.join(root if root else os.environ['HOME'], *components)
         os.makedirs(path if isdir else os.path.dirname(path), exist_ok=True)
         return path
