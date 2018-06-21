@@ -40,7 +40,7 @@ class Settings:
 
     @property
     def sequences_dir(self):
-        return self.json_map.get('sequences_path', os.path.join(self.default_datadir, 'Sequences'))
+        return self.json_map.get('sequences_dir', os.path.join(self.default_datadir, 'Sequences'))
 
     @property
     def indi_prefix(self):

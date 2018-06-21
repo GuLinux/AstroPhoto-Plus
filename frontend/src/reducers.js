@@ -27,6 +27,7 @@ const network = (state = { fetching: false }, action) => {
         case 'REQUEST_SEQUENCE_ITEM_DUPLICATE':
         case 'REQUEST_SAVE_SEQUENCE_ITEM':
         case 'FETCH_INDI_SERVICE':
+        case 'UPDATE_SETTINGS':
 //        case 'COMMIT_PENDING_PROPERTIES':
             return {...state, fetching: true };
         case 'RECEIVE_SESSIONS':
@@ -43,6 +44,7 @@ const network = (state = { fetching: false }, action) => {
         case 'SEQUENCE_UPDATED':
         case 'REQUEST_SAVE_SEQUENCE_ITEM_ERROR':
         case 'RECEIVED_INDI_SERVICE':
+        case 'SETTINGS_UPDATED':
 //        case 'COMMITTED_PENDING_PROPERTIES':
             return {...state, fetching: false};
         default:

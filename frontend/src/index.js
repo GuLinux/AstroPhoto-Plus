@@ -14,7 +14,9 @@ import 'semantic-ui-css/semantic.min.css';
 
 import indiLiteApp from './reducers'
 import App from './components/App'
+
 import 'react-image-crop/dist/ReactCrop.css';
+
 import './index.css';
 
 import registerServiceWorker from './registerServiceWorker';
