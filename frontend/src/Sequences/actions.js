@@ -89,7 +89,6 @@ export const Sequences = {
             dispatch({type: 'REQUEST_DELETE_SEQUENCE'});
             return deleteSequenceAPI( dispatch, id, data => {
                 dispatch(Sequences.deleted(data.entities.sequences, data.result));
-                dispatch(Actions.Navigation.gc.toSequence('sequences'));
                 dispatch(Sequences.fetch());
             });
         }
