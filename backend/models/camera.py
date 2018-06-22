@@ -50,20 +50,21 @@ class Camera:
         if self.__has_dev_fits():
             return self.__dev_fits(options, id)
         exposure = options['exposure']
-        self.camera.set_upload_to('local')
-
-        if 'roi' in options and options['roi']:
-            self.camera.set_roi({
-                'X': options['roi']['x'],
-                'Y': options['roi']['y'],
-                'WIDTH': options['roi']['width'],
-                'HEIGHT': options['roi']['height'],
-            }) 
-        else:
-            self.camera.clear_roi()
-
-        self.camera.set_upload_path(self.settings.camera_tempdir, prefix=id)
         try:
+            self.camera.set_upload_to('local')
+
+            if 'roi' in options and options['roi']:
+                self.camera.set_roi({
+                    'X': options['roi']['x'],
+                    'Y': options['roi']['y'],
+                    'WIDTH': int(options['roi']['width']/8)*8,
+                    'HEIGHT': int(options['roi']['height']/2)*2,
+                }) 
+            else:
+                self.camera.clear_roi()
+
+            self.camera.set_upload_path(self.settings.camera_tempdir, prefix=id)
+
             self.camera.shoot(exposure)
         except RuntimeError as e:
             raise FailedMethodError(str(e))
