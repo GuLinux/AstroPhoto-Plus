@@ -29,7 +29,7 @@ const sequences = (state = { entities: {}, ids: [] }, action) => {
         case 'SEQUENCE_ITEM_CREATED':
             return addSequenceItem(state, action);
         case 'RECEIVE_SEQUENCES':
-            return {...state, ids: action.ids, entities: action.sequences};
+            return {...state, ids: action.ids, entities: action.sequences ? action.sequences : {} };
         case 'SEQUENCE_ITEM_DELETED':
             return deleteSequenceItem(state, action);
         case 'RECEIVED_START_SEQUENCE_REPLY':

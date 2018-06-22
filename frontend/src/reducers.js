@@ -1,13 +1,14 @@
-import { combineReducers } from 'redux'
-import sequenceItems from './SequenceItems/reducer'
-import sequences from './Sequences/reducer'
-import indiserver from './INDI-Server/reducer'
-import notifications from './Notifications/reducer'
-import gear from './Gear/reducer'
-import errors from './Errors/reducer'
-import indiservice from './INDI-Service/reducer'
-import modals from './Modals/reducer'
-import camera from './Camera/reducer'
+import { combineReducers } from 'redux';
+import sequenceItems from './SequenceItems/reducer';
+import sequences from './Sequences/reducer';
+import indiserver from './INDI-Server/reducer';
+import notifications from './Notifications/reducer';
+import gear from './Gear/reducer';
+import errors from './Errors/reducer';
+import indiservice from './INDI-Service/reducer';
+import modals from './Modals/reducer';
+import camera from './Camera/reducer';
+import settings from './Settings/reducer';
 
 const network = (state = { fetching: false }, action) => {
     switch(action.type) {
@@ -26,6 +27,7 @@ const network = (state = { fetching: false }, action) => {
         case 'REQUEST_SEQUENCE_ITEM_DUPLICATE':
         case 'REQUEST_SAVE_SEQUENCE_ITEM':
         case 'FETCH_INDI_SERVICE':
+        case 'UPDATE_SETTINGS':
 //        case 'COMMIT_PENDING_PROPERTIES':
             return {...state, fetching: true };
         case 'RECEIVE_SESSIONS':
@@ -42,6 +44,7 @@ const network = (state = { fetching: false }, action) => {
         case 'SEQUENCE_UPDATED':
         case 'REQUEST_SAVE_SEQUENCE_ITEM_ERROR':
         case 'RECEIVED_INDI_SERVICE':
+        case 'SETTINGS_UPDATED':
 //        case 'COMMITTED_PENDING_PROPERTIES':
             return {...state, fetching: false};
         default:
@@ -51,6 +54,6 @@ const network = (state = { fetching: false }, action) => {
 
 
 
-const indiLiteApp = combineReducers({sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, modals, camera });
+const indiLiteApp = combineReducers({sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, modals, camera, settings });
 
 export default indiLiteApp

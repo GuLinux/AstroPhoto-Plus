@@ -31,7 +31,8 @@ def get_settings():
 @json_api
 def update_settings(json):
     controller.settings.update(json)
-    return controller.settings.to_map()
+    updated_settings = controller.settings.to_map()
+    return dict([setting for setting in updated_settings.items() if setting[0] in json])
 
 # INDI Server management
 

@@ -14,7 +14,9 @@ import 'semantic-ui-css/semantic.min.css';
 
 import indiLiteApp from './reducers'
 import App from './components/App'
+
 import 'react-image-crop/dist/ReactCrop.css';
+
 import './index.css';
 
 import registerServiceWorker from './registerServiceWorker';
@@ -41,6 +43,7 @@ store.dispatch(Actions.Sequences.fetch())
 store.dispatch(Actions.INDIServer.fetchServerState(true))
 store.dispatch(Actions.INDIService.fetchService())
 store.dispatch(Actions.INDIService.fetchProfiles())
+store.dispatch(Actions.Settings.fetch())
 listenToEvents(store.dispatch)
 
 render(
