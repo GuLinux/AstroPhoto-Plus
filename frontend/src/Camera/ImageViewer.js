@@ -14,7 +14,7 @@ class ImageComponent extends React.Component {
             alt=''
             src={uri}
             {...imgProps}
-            fluid={!fitScreen}
+            fluid={fitScreen}
             ui={fitScreen}
         />;
     }
