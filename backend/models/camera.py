@@ -64,6 +64,7 @@ class Camera:
                 self.camera.clear_roi()
 
             self.camera.set_upload_path(self.settings.camera_tempdir, prefix=id)
+            self.logger.debug('Camera.shoot: id={}, parameters: {}'.format(id, options))
 
             self.camera.shoot(exposure)
         except RuntimeError as e:
@@ -71,7 +72,7 @@ class Camera:
 
         filename = [x for x in os.listdir(self.settings.camera_tempdir) if x.startswith(id)]
         if not filename:
-            raise FailedMethodError("Image file not found")
+            raise FailedMethodError('Image file with id {} not found'.format(id))
         return self.__image_from_fits(filename[0], id)
 
 

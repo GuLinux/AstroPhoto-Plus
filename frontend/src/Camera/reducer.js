@@ -21,7 +21,7 @@ const setOption = (state, option) => ({
 const onCameraShotFinished = (state, action) => ({
     ...state, isShooting: false,
     currentImage: action.payload,
-    shouldAutostart: !state.imageLoading && state.options.continuous,
+//    shouldAutostart: !state.imageLoading && state.options.continuous,
 });
 
 const onImageLoadingFinished = (state) => ({

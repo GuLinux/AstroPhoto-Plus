@@ -18,9 +18,10 @@ const mapDispatchToProps = dispatch => ({
 class AutoExposure extends React.Component {
     render = () => null;
      
-    componentDidUpdate = () => {
+    componentDidUpdate = (prevProps) => {
         const {shouldAutostart, shotParameters, shoot} = this.props;
-        if(shouldAutostart) {
+
+        if(shouldAutostart && ! prevProps.shouldAutostart) {
             shoot(shotParameters);
         }
     }
