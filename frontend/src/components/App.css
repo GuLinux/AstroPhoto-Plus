@@ -1,5 +1,5 @@
 body {
-    background-color: #f4f4f4;
+    /*background-color: #f4f4f4; */
 }
 
 .loadingOverlay {
@@ -49,4 +49,18 @@ body {
     position: fixed;
     bottom: 10px;
     right: 10px;
+}
+
+/* Bootswatch fixes */
+
+.ui.info.message {
+    background-color: #374950;
+}
+
+.ui.styled.accordion {
+    background-color: #3c3c3c;
+}
+
+.ui.styled.accordion .active.title {
+    color: #dedede;
 }
