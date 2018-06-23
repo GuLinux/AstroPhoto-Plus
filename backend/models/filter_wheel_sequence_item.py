@@ -7,7 +7,7 @@ class FilterWheelSequenceItem:
             'filterNumber': self.filter_number,
         }
 
-    def run(self, server, devices, root_path, logger, on_update):
+    def run(self, server, devices, root_path, logger, on_update, index):
         wheel = devices['filter_wheel']
         logger.debug('Changing filter to {} on filter wheel {}'.format(self.filter_number, wheel))
         wheel.indi_sequence_filter_wheel().set_filter_number(self.filter_number)

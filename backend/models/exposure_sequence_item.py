@@ -39,7 +39,7 @@ class ExposureSequenceItem:
             'last_message': self.last_message,
         }
 
-    def run(self, server, devices, root_path, logger, on_update):
+    def run(self, server, devices, root_path, logger, on_update, index):
         self.progress = 0
 
         filename_template_params = {

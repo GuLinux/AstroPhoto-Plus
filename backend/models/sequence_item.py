@@ -55,12 +55,12 @@ class SequenceItem:
         self.status = 'idle'
         self.job.reset()
 
-    def run(self, server, devices, root_path, logger, on_update):
+    def run(self, server, devices, root_path, logger, on_update, index):
         self.status = 'running'
         self.started_ts = time.time()
         on_update()
         try:
-            self.job.run(server, devices, root_path, logger, on_update)
+            self.job.run(server, devices, root_path, logger, on_update, index)
             self.status = 'finished'
             self.finished_ts = time.time()
             on_update()
