@@ -48,8 +48,7 @@ class ExposureSequenceItem:
             'filter': 'no-filter',
             'filter_index': -1,
         }
-        print(devices)
-        if 'filter_wheel' in devices:
+        if 'filter_wheel' in devices and devices['filter_wheel']:
             filename_template_params['filter_index'], filename_template_params['filter'] = devices['filter_wheel'].indi_sequence_filter_wheel().current_filter()
 
         upload_path = os.path.join(root_path, self.directory)
