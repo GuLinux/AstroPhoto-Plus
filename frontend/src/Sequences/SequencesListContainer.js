@@ -1,14 +1,11 @@
-import { connect } from 'react-redux'
-import SequencesList from './SequencesList'
-import Actions from '../actions'
-import { getSequencesGears } from '../Gear/selectors'
-
-const getSequences = (entities, ids) => {
-  return ids.map(id => entities[id])
-}
+import { connect } from 'react-redux';
+import SequencesList from './SequencesList';
+import Actions from '../actions';
+import { getSequencesGears } from '../Gear/selectors';
+import { getSequences } from './selectors';
 
 const mapStateToProps = state => ({
-    sequences: getSequences(state.sequences.entities, state.sequences.ids),
+    sequences: getSequences(state),
     gear: getSequencesGears(state),
 })
 

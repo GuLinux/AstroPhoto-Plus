@@ -1,7 +1,9 @@
 import os
+import time
 import hashlib
 from astropy.io import fits
 from .exceptions import BadRequestError, NotFoundError
+from .model import random_id 
 import math
 import numpy
 import PIL.Image
@@ -27,13 +29,22 @@ class Image:
             }
         }
 
-    def __init__(self, id, directory, filename, timestamp, image_info=None, cached_conversions=None):
+    def __init__(self, directory=None, filename=None, timestamp=None, image_info=None, cached_conversions=None, id=None, path=None, file_required=True):
         self.id = id
-        self.directory = directory
-        self.filename = filename
-        self.timestamp = timestamp
+        if directory and filename:
+            self.directory = directory
+            self.filename = filename
+        elif path:
+            self.directory, self.filename = os.path.split(path)
+        else:
+            raise RuntimeError('Constructed image without file/directory nor path')
+
+        if file_required and not os.path.isfile(self.path):
+            raise RuntimeError('File {} not found'.format(self.path))
+
+        self.timestamp = timestamp if timestamp else time.time()
         self.image_info = image_info
-        if not image_info:
+        if not image_info and os.path.isfile(self.path):
             with fits.open(self.path) as hdulist:
                 shape = hdulist[0].shape
                 self.image_info = { 'width': shape[1], 'height': shape[0]}
@@ -47,7 +58,14 @@ class Image:
 
     @staticmethod
     def from_map(item):
-        return Image(item['id'], item['directory'], item['filename'], item['timestamp'], item.get('image_info'), item.get('cached_conversions'))
+        return Image(
+            id=item['id'],
+            directory=item['directory'],
+            filename=item['filename'],
+            timestamp=item['timestamp'],
+            image_info=item.get('image_info'),
+            cached_conversions=item.get('cached_conversions')
+    )
 
     def to_map(self, for_saving=True):
         json_map = {
@@ -178,3 +196,8 @@ class Image:
         os.remove(self.path)
         for file in [x for x in os.listdir(self.directory) if x.startswith(self.id)]:
             os.remove(os.path.join(self.directory, file))
+
+    def __base_output(self):
+        if self.id:
+            return self.id
+        return self.filename + '_conv'

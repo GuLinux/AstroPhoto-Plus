@@ -96,7 +96,7 @@ class Camera:
         return self.__image_from_fits(dest_filename, id)
 
     def __image_from_fits(self, filename, id):
-        image = Image(id, self.settings.camera_tempdir, filename, time.time())
+        image = Image(self.settings.camera_tempdir, filename, time.time(), id=id)
 
         if len(self.images_list) >= Camera.IMAGES_LIST_SIZE:
             to_remove = sorted(self.images_list, key=lambda i: i.timestamp)[0:len(self.images_list) - Camera.IMAGES_LIST_SIZE]

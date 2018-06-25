@@ -1,3 +1,4 @@
+import { list2object } from '../utils';
 const defaultState = {
         state: {
         connected: false,
@@ -22,7 +23,6 @@ const receivedServerState = (state, action) => {
     return nextState;
 }
 
-const arrayToObjectById = array => array.reduce( (obj, element) => ({...obj, [element.id]: element}), {});
 
 const receivedDeviceProperties = (state, device, deviceProperties) => {
     let properties = {...state.properties}
@@ -78,7 +78,7 @@ const commitPendingValues = (state, property, pendingValues) => {
 
 const receivedINDIDevices = (state, devices) => ({
     ...state,
-    deviceEntities: arrayToObjectById(devices),
+    deviceEntities: list2object(devices, 'id'),
     devices: devices.map(d => d.id),
 })
 

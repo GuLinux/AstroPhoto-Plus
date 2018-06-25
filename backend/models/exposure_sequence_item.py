@@ -2,6 +2,8 @@ import os
 import time
 from .exceptions import BadRequestError
 from pyindi_sequence import Sequence
+from .image import Image
+import sys
 
 
 class ExposureSequenceItem:
@@ -12,6 +14,9 @@ class ExposureSequenceItem:
         self.directory= data['directory']
         self.progress = data.get('progress', 0)
         self.last_message = data.get('last_message', '')
+        sys.stderr.write('images: {}\n'.format(data.get('saved_images', [])))
+        sys.stderr.flush()
+        self.saved_images = [Image.from_map(d) for d in data.get('saved_images', [])]
         self.__validate(self.filename)
         
     def __validate(self, format_string):
@@ -37,6 +42,7 @@ class ExposureSequenceItem:
             'directory': self.directory,
             'progress': self.progress,
             'last_message': self.last_message,
+            'saved_images': [i.to_map() for i in self.saved_images],
         }
 
     def run(self, server, devices, root_path, logger, on_update, index):
@@ -64,6 +70,7 @@ class ExposureSequenceItem:
         def on_each_finished(sequence, index, filename):
             self.last_message = 'finished exposure {} out of {}, saved to {}'.format(index+1, sequence.count, filename)
             self.progress = sequence.finished
+            self.saved_images.append(Image(path=filename, file_required=False))
             on_update()
 
         def on_finished(sequence):
