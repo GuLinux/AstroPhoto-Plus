@@ -158,8 +158,8 @@ export const cameraShootAPI = (dispatch, cameraId, data, onSuccess, onError) => 
 }, onSuccess, onError);
 
 
-export const cameraFetchHistogramApi = (dispatch, cameraId, imageId, bins, onSuccess, onError) => {
-    let uri = `/api/cameras/${cameraId}/image/${imageId}/histogram`;
+export const fetchHistogramApi = (dispatch, type, imageId, bins, onSuccess, onError) => {
+    let uri = `/api/images/${type}/${imageId}/histogram`;
     if(bins)
         uri += `?bins=${bins}`;
     fetchJSON(dispatch, uri, {}, onSuccess, onError);

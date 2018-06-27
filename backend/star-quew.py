@@ -1,7 +1,7 @@
 from flask import jsonify, Response, send_from_directory, request
 from api_decorators import *
 from api_utils import *
-from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device, INDIProfile
+from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device, INDIProfile, ImagesDatabase, camera_images_db, main_images_db
 import os
 from controller import controller
 from app import app
@@ -182,6 +182,7 @@ def get_sequence(id):
     return controller.sequences.lookup(id).to_map()
 
 
+# TODO: cleanup all resources, such as sequence items and images
 @app.route('/api/sequences/<id>', methods=['DELETE'])
 @json_api
 def delete_sequence(id):
@@ -305,11 +306,22 @@ def shoot_image(camera, json):
     return lookup_camera(camera).shoot_image(json)
 
 
-@app.route('/api/cameras/<camera>/image/<image>', methods=['GET'])
+def get_image_database(type):
+    image_databases = {
+        'camera': camera_images_db,
+        'main': main_images_db,
+    }
+    if not type in image_databases:
+        raise BadRequestError('Image type {} not recognized'.format(type))
+    return image_databases[type]
+
+
+
+
+@app.route('/api/images/<type>/<image>', methods=['GET'])
 @managed_api
-@indi_connected
-def retrieve_image(camera, image):
-    with lookup_camera(camera).images_list.lookup_edit(image) as image:
+def retrieve_image(type, image):
+    with get_image_database(type).lookup_edit(image) as image:
         image_info = image.convert(request.args)
         return send_from_directory(
             image_info['directory'],
@@ -320,12 +332,13 @@ def retrieve_image(camera, image):
         )
 
 
-@app.route('/api/cameras/<camera>/image/<image>/histogram', methods=['GET'])
+@app.route('/api/images/<type>/<image>/histogram', methods=['GET'])
 @json_api
-@indi_connected
-def retrieve_image_histogram(camera, image):
-    image = lookup_camera(camera).images_list.lookup(image)
+def retrieve_image_histogram(type, image):
+    image = get_image_database(type).lookup(image)
     args = {}
     if 'bins' in request.args:
         args['bins'] = request.args['bins']
     return image.histogram(**args)
+
+

@@ -1,4 +1,4 @@
-import { cameraShootAPI, cameraFetchHistogramApi } from '../middleware/api';
+import { cameraShootAPI, fetchHistogramApi } from '../middleware/api';
 import Actions from '../actions';
 
 
@@ -24,9 +24,9 @@ const Camera = {
         dispatch(Actions.Notifications.add('Histogram error', errorMessage , 'error'));
     },
 
-    loadHistogram: (camera, image, bins) => (dispatch) => {
+    loadHistogram: (image, bins) => (dispatch) => {
         dispatch({type: 'CAMERA_LOAD_HISTOGRAM'});
-        return cameraFetchHistogramApi(dispatch, camera, image, bins,
+        return fetchHistogramApi(dispatch, 'camera', image, bins,
                 (data) => dispatch(Camera.histogramLoaded(data)),
                 (err) => {
                     if(err.headers.get('Content-Type') === 'application/json') {

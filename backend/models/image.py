@@ -30,7 +30,7 @@ class Image:
         }
 
     def __init__(self, directory=None, filename=None, timestamp=None, image_info=None, cached_conversions=None, id=None, path=None, file_required=True):
-        self.id = id
+        self.id = random_id(id)
         if directory and filename:
             self.directory = directory
             self.filename = filename
@@ -192,9 +192,10 @@ class Image:
         return normalized
 
 
-    def remove_files(self):
-        os.remove(self.path)
-        for file in [x for x in os.listdir(self.directory) if x.startswith(self.id)]:
+    def remove_files(self, remove_fits=False):
+        if remove_fits:
+            os.remove(self.path)
+        for file in [x for x in os.listdir(self.directory) if x.startswith(self.id) and x != self.filename]:
             os.remove(os.path.join(self.directory, file))
 
     def __base_output(self):
