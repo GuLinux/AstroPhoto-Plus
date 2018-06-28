@@ -7,6 +7,8 @@ import NotificationsContainer from '../Notifications/NotificationsContainer';
 import ErrorPageContainer from '../Errors/ErrorPageContainer';
 import CameraContainer from '../Camera/CameraContainer';
 import SettingsContainer from '../Settings/SettingsContainer';
+import ImageContainer from '../Image/ImageContainer';
+
 import './App.css';
 import { Route, Redirect } from "react-router-dom";
 
@@ -20,6 +22,7 @@ const App = ({location}) => (
         <Route path="/indi" component={INDIServerContainer} />
         <Route path="/camera" component={CameraContainer} />
         <Route path="/settings" component={SettingsContainer} />
+        <Route path="/image/:type/:id" render={({match, location}) => <ImageContainer id={match.params.id} type={match.params.type} />} />
     </ErrorPageContainer>
     <LoadingContainer />
   </div>

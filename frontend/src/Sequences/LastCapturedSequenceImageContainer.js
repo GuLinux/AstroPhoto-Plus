@@ -15,15 +15,16 @@ const mapStateToProps = (state, ownProps) => {
         .map(i => ({ sequenceItem: i.id, savedImages: i.saved_images}) )
         .reduce( (acc, cur) => [...acc, ...cur.savedImages], []);
 
-    const lastImage = images.length > 0 ? imageUrlBuilder(images.slice(-1)[0], {
+    const lastImageId = images.slice(-1)[0];
+    const lastImage = images.length > 0 ? imageUrlBuilder(lastImageId, {
         type: 'main',
-        maxWidth: 500,
+        maxWidth: 723,
         stretch: true,
         clipLow: 0,
-        clipHigh: 100,
+        clipHigh: 0,
     }) : null;
 
-    return { lastImage };
+    return { lastImage, lastImageId };
 }
 
 
