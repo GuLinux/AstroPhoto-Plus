@@ -30,6 +30,7 @@ class SequenceItem:
         data = self.to_map()
         data.pop('id')
         data.pop('status')
+        data.pop('saved_images') # TODO: move from here?
         return SequenceItem(data)
 
     @staticmethod

@@ -1,20 +1,29 @@
 import { connect } from 'react-redux';
 import LastCapturedSequenceImage from './LastCapturedSequenceImage';
 import { getSequenceEntitiesWithItems } from './selectors';
+import { imageUrlBuilder } from '../utils';
 
 const mapStateToProps = (state, ownProps) => {
-    console.log(getSequenceEntitiesWithItems(state)[ownProps.sequence]);
     const sequenceEntity = getSequenceEntitiesWithItems(state)[ownProps.sequence];
 
     if(! sequenceEntity) {
-        return { sequenceEntity };
+        return {};
     }
     const images = sequenceEntity.sequenceItems
         .map(i => sequenceEntity.sequenceItemEntities[i])
-        .filter(i => i.type === 'shots' && i.last_captured)
-        .map(i => ({ sequenceItem: i.id, lastImage: i.last_captured}) );
+        .filter(i => i.type === 'shots' && i.saved_images)
+        .map(i => ({ sequenceItem: i.id, savedImages: i.saved_images}) )
+        .reduce( (acc, cur) => [...acc, ...cur.savedImages], []);
 
-    return { images };
+    const lastImage = images.length > 0 ? imageUrlBuilder(images.slice(-1)[0], {
+        type: 'main',
+        maxWidth: 500,
+        stretch: true,
+        clipLow: 0,
+        clipHigh: 100,
+    }) : null;
+
+    return { lastImage };
 }
 
 
