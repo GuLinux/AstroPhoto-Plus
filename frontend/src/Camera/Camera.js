@@ -6,6 +6,8 @@ import CurrentImageViewerContainer from './CurrentImageViewerContainer';
 import AutoExposureContainer from './AutoExposureContainer';
 import HistogramContainer from './HistogramContainer';
 import SelectFilterContainer from './SelectFilterContainer';
+import ImageViewOptions from '../Image/ImageViewOptions';
+
 
 const FilterWheelSection = ({filterWheels, currentFilterWheel, setCurrentFilterWheel}) => (
     <React.Fragment>
@@ -72,41 +74,7 @@ const Camera = ({
                             </Form.Field>
                             <Form.Checkbox label='Continuous' disabled={!currentCamera} toggle size='mini' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} />
                             <Header size='tiny' content='View Options' textAlign='center' />
-                            <Form.Checkbox label='Auto histogram stretch' toggle size='mini' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} />
-                            {
-                                !options.stretch && (<React.Fragment>
-                                    <Form.Field key='shadows'>
-                                        <Input
-                                            type='number'
-                                            size='tiny'
-                                            min={0}
-                                            max={100}
-                                            step={0.1}
-                                            value={options.clipLow}
-                                            onChange={(e, data) => setOption({clipLow: data.value})}
-                                            label='Clip shadows'
-                                        />
-                                    </Form.Field>,
-                                    <Form.Field key='highlights'>
-                                        <Input
-                                            type='number'
-                                            size='tiny'
-                                            min={0}
-                                            max={100}
-                                            step={0.1}
-                                            value={options.clipHigh}
-                                            onChange={(e, data) => setOption({clipHigh: data.value})}
-                                            label='Clip highlights'
-                                        />
-                                    </Form.Field>
-                                </React.Fragment>)
-                            }
-
-                            <Form.Select basic labeled floating inline label='Display format' size='tiny' value={options.format} options={[
-                                { text: 'PNG', value: 'png'},
-                                { text: 'JPEG', value: 'jpeg' },
-                            ]} onChange={(e, data) => setOption({format: data.value})}/>
-                            <Form.Checkbox label='Fit image to screen' toggle size='tiny' checked={options.fitToScreen} onChange={(e, data) => setOption({fitToScreen: data.checked})} />
+                            <ImageViewOptions options={options} setOption={setOption} />
                             <Header size='tiny' content='Histogram' textAlign='center' />
                             <Form.Checkbox label='Show histogram' toggle size='tiny' checked={options.showHistogram} onChange={(e, data) => setOption({showHistogram: data.checked})} />
                             {

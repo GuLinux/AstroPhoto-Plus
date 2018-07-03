@@ -2,6 +2,7 @@ import Image from './Image';
 import { connect } from 'react-redux';
 import { imageUrlBuilder } from '../utils';
 import Actions from '../actions';
+import { withRouter } from 'react-router';
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -28,19 +29,14 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, props) => {
     const setOption = (option) => dispatch(Actions.Image.setOption(option));
-    const setNumericOption = (name, value, min, max) => {
-        if(value < min || value > max)
-            return;
-        setOption({[name]: value});
-    } 
-    return { setOption, setNumericOption };
+    return { setOption };
 };
 
 
 const ImageContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-)(Image);
+)(withRouter(Image));
 
 
 export default ImageContainer;

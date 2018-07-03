@@ -1,27 +1,25 @@
 import React from 'react';
-import { Image as SemanticImage, Menu, Checkbox, Input } from 'semantic-ui-react';
+import { Image as SemanticImage, Segment, Form, Container, Grid, Header, Button } from 'semantic-ui-react';
+import ImageViewOptions from '../Image/ImageViewOptions';
 
 
-const Image = ({url, options, setOption, setNumericOption }) => url ? (
-    <React.Fragment>
-        <Menu fluid>
-            <Menu.Item header>Controls</Menu.Item>
-            <Menu.Item>
-                <Checkbox label='Auto stretch' toggle size='mini' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} />
-            </Menu.Item>
-            { options.stretch ? null : (
-                <React.Fragment>
-                    <Menu.Item>
-                        <Input type='number' label='Clip low' value={options.clipLow} onChange={(e, data) => setNumericOption('clipLow', parseInt(data.value), 0, 100)} size='mini' />
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Input type='number' label='Clip high' value={options.clipHigh} onChange={(e, data) => setNumericOption('clipHigh', parseInt(data.value), 0, 100)} size='mini' />
-                    </Menu.Item>
-                </React.Fragment>
-            )}
-        </Menu>
-        <SemanticImage src={url} fluid/>
-    </React.Fragment>
+const Image = ({url, options, setOption, history }) => url ? (
+    <Container fluid>
+        <Grid stackable columns={16}>
+            <Grid.Column width={4}>
+                <Segment>
+                    <Form>
+                        <Button fluid content='back' primary size='tiny' onClick={() => history.goBack() } />
+                        <Header size='tiny' content='View Options' textAlign='center' />
+                        <ImageViewOptions options={options} setOption={setOption} />
+                    </Form>
+                </Segment>
+            </Grid.Column>
+            <Grid.Column width={12}>
+                <SemanticImage src={url} fluid/>
+            </Grid.Column>
+        </Grid>
+    </Container>
 ) : null;
 
 export default Image;
