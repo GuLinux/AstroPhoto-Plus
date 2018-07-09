@@ -1,24 +1,8 @@
 import React from 'react';
-import { Image, Icon, Button, Popup } from 'semantic-ui-react';
+import { Icon, Button, Popup } from 'semantic-ui-react';
 import ReactCrop from 'react-image-crop';
+import { ImageLoader } from '../Image/Image';
 
-
-class ImageComponent extends React.Component {
-    componentDidUpdate = (prevProps) => this.props.uri !== prevProps.uri && this.props.onImageLoading && this.props.onImageLoading();
-    componentDidMount = () => this.props.onImageLoading && this.props.onImageLoading();
-    
-    render = () => {
-        const {uri, fitScreen, onImageLoaded} = this.props;
-        let imgProps = onImageLoaded ? { onLoad: onImageLoaded, onError: onImageLoaded } : {};
-        return <Image
-            alt=''
-            src={uri}
-            {...imgProps}
-            fluid={fitScreen}
-            ui={fitScreen}
-        />;
-    }
-}
 
 class ImageCrop extends React.Component {
     constructor(props) {
@@ -51,7 +35,7 @@ const ImageViewer = ({uri, fitScreen = false, onImageLoading, onImageLoaded, cro
         <div className='image-viewer'>
             { crop && (crop.initial || crop.relative) ?
                 <ImageCrop src={uri} width={imageInfo.width} height={imageInfo.height} crop={crop} setCrop={setCrop} /> :
-                <ImageComponent uri={uri} {...{onImageLoading, onImageLoaded, fitScreen}} />
+                <ImageLoader uri={uri} {...{onImageLoading, onImageLoaded, fitScreen}} />
             }
         </div>
     ): <Icon name='image outline' size='massive' disabled />;

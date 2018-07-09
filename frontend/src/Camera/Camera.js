@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Grid, Input, Loader, Form, Header, Segment, Button, Message } from 'semantic-ui-react';
+import { Container, Grid, Input, Form, Header, Segment, Button, Message } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import ExposureInputContainer from './ExposureInputContainer';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
@@ -111,7 +111,6 @@ const Camera = ({
                 </Grid.Column>
                 <Grid.Column width={12}>
                     <HistogramContainer />
-                    <Loader active={imageLoading} inverted />
                     <CurrentImageViewerContainer fitScreen={options.fitToScreen} />
                 </Grid.Column>
             </Grid>

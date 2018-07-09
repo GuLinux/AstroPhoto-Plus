@@ -1,4 +1,4 @@
-import Image from './Image';
+import ImagePage from './Image';
 import { connect } from 'react-redux';
 import { imageUrlBuilder } from '../utils';
 import Actions from '../actions';
@@ -36,7 +36,7 @@ const mapDispatchToProps = (dispatch, props) => {
 const ImageContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-)(withRouter(Image));
+)(withRouter(ImagePage));
 
 
 export default ImageContainer;

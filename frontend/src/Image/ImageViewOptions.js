@@ -21,7 +21,7 @@ class NumberInput extends React.Component {
     }
 
     render = () => {
-        const { name, min, max, step, label } = this.props;
+        const { min, max, step, label } = this.props;
         return (
             <Input
                 type='number'
@@ -31,7 +31,7 @@ class NumberInput extends React.Component {
                 step={step}
                 value={this.state.value}
                 onChange={(e, d) => this.onChange(e, d)}
-                label={this.label}
+                label={label}
             />
         )
     }
