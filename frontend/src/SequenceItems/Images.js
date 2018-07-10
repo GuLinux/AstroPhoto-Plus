@@ -1,7 +1,7 @@
 import React from 'react';
-import { Table, Button, Container, Grid, Image } from 'semantic-ui-react';
+import { Table, Button, Container, Grid, Image, Header } from 'semantic-ui-react';
 import Filesize from '../components/Filesize';
-import Timestamp from '../components/Timestamp';
+import DateTime from '../components/DateTime';
 import { Link, withRouter } from 'react-router-dom';
 
 const ImageRow = ({index, imageData, previews}) => imageData ? (
@@ -15,7 +15,7 @@ const ImageRow = ({index, imageData, previews}) => imageData ? (
         <Table.Cell><Link to={`/image/main/${imageData.id}`}>{imageData.filename}</Link></Table.Cell>
         <Table.Cell>{imageData.image_info.width}x{imageData.image_info.height}</Table.Cell>
         <Table.Cell><Filesize bytes={imageData.image_info.size} /></Table.Cell>
-        <Table.Cell><Timestamp ts={imageData.timestamp} /></Table.Cell>
+        <Table.Cell><DateTime timestamp={imageData.timestamp} /></Table.Cell>
         <Table.Cell>
             <Button.Group size='mini'>
                 <Button icon='download' content='download' as='a' href={`/api/images/main/${imageData.id}?format=original&download=true`} />
@@ -62,6 +62,7 @@ class Images extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
+                        <Header>{images.length} images, <Filesize bytes={images.map(i => this.state.imagesData[i]).reduce( (acc, cur) => cur && acc + cur.image_info.size, 0) } /></Header>
                         <Table stackable striped basic="very" selectable>
                             <Table.Header>
                                 <Table.Row>
