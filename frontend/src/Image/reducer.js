@@ -4,6 +4,7 @@ const defaultState = {
     clipLow: 0,
     clipHigh: 100,
     format: 'png',
+    fitToScreen: true,
 };
 
 const image = (state = defaultState, action) => {
