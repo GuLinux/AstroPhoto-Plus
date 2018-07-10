@@ -173,3 +173,7 @@ export const updateSettingsApi = (dispatch, settings, onSuccess) => fetchJSON(di
             'Content-Type': 'application/json'
         }
 }, onSuccess);
+
+
+export const getImages = (dispatch, type, onSuccess) => fetchJSON(dispatch, `/api/images/${type}`, {}, onSuccess);
+

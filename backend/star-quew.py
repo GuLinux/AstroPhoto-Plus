@@ -317,6 +317,10 @@ def get_image_database(type):
 
 
 
+@app.route('/api/images/<type>', methods=['GET'])
+@json_api
+def retrieve_images(type):
+    return get_image_database(type).to_map()
 
 @app.route('/api/images/<type>/<image>', methods=['GET'])
 @managed_api
@@ -327,7 +331,7 @@ def retrieve_image(type, image):
             image_info['directory'],
             image_info['filename'],
             mimetype=image_info['content_type'],
-            as_attachment=False,
+            as_attachment=request.args.get('download') == 'true',
             attachment_filename=image_info['filename'],
         )
 

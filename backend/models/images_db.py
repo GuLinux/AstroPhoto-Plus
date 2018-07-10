@@ -26,6 +26,12 @@ class ImagesDatabase:
             raise NotFoundError('Image with id {} not found in {} database'.format(id, self.name))
         return Image.from_map(self.images[id])
 
+    def to_map(self):
+        images = {}
+        for id in self.images:
+            images[id] = self.lookup(id).to_map(for_saving=False)
+        return images
+
     @contextmanager
     def lookup_edit(self, image_id):
         image = self.lookup(image_id)

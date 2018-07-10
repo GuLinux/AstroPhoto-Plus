@@ -47,7 +47,7 @@ class Image:
         if not image_info and os.path.isfile(self.path):
             with fits.open(self.path) as hdulist:
                 shape = hdulist[0].shape
-                self.image_info = { 'width': shape[1], 'height': shape[0]}
+                self.image_info = { 'width': shape[1], 'height': shape[0], 'size': os.stat(self.path).st_size }
         self.cached_conversions = {}
         if cached_conversions:
             self.cached_conversions.update(cached_conversions)
@@ -83,21 +83,19 @@ class Image:
     def convert(self, args):
         key = '&'.join(['{}={}'.format(key, value) for key, value in args.items()])
         key = hashlib.md5(key.encode()).hexdigest()
+        format_name = args.get('format', 'jpeg')
+
+        if format_name == 'original':
+            return self.__file_info(self.path, format_name)
+
         if key not in self.cached_conversions:
-            format_name = args.get('format', 'jpeg')
             if format_name not in Image.FORMATS:
                 raise BadRequestError('Unrecognized format: {}'.format(format_name))
             format = Image.FORMATS[format_name]
             filename = '{}_{}.{}'.format(self.id, key, format['extension'])
             filepath = os.path.join(self.directory, filename)
             self.__convert(args, filepath, format)
-            self.cached_conversions[key] = {
-                'filename': filename,
-                'directory': self.directory,
-                'format': format_name,
-                'content_type': format['content_type'],
-                'path': filepath,
-            }
+            self.cached_conversions[key] = self.__file_info(filepath, format_name, format['content_type'])
         return self.cached_conversions[key]
 
     def histogram(self, bins=50):
@@ -109,6 +107,16 @@ class Image:
                 'bins': [float(x) for x in bins_boundaries],
             }
 
+    def __file_info(self, path, format_name, content_type=None):
+        directory, filename = os.path.split(path)
+        # TODO: autodetect content type if none
+        return {
+            'filename': filename,
+            'directory': directory,
+            'format': format_name,
+            'content_type': content_type,
+            'path': path,
+        }
 
     def __convert(self, args, filepath, format):
         with fits.open(self.path) as fits_file:
