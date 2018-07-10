@@ -139,7 +139,6 @@ class Image:
 
             image = PIL.Image.fromarray(image_data.astype(numpy.uint8))
 
-            maxwidth = int(args.get('maxwidth', '0'))
             if maxwidth > 0:
                 maxheight = image.height / (image.width / maxwidth)
                 image.thumbnail((maxwidth,maxheight))

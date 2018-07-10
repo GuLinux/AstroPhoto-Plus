@@ -1,17 +1,26 @@
 import React from 'react';
-import { Table, Button, Container, Grid } from 'semantic-ui-react';
+import { Table, Button, Container, Grid, Image } from 'semantic-ui-react';
 import Filesize from '../components/Filesize';
 import Timestamp from '../components/Timestamp';
 import { Link, withRouter } from 'react-router-dom';
 
-const ImageRow = ({index, imageData}) => imageData ? (
+const ImageRow = ({index, imageData, previews}) => imageData ? (
     <Table.Row>
         <Table.Cell>{index+1}</Table.Cell>
+        {previews && (
+            <Table.Cell>
+                <Image src={`/api/images/main/${imageData.id}?format=jpeg&maxwidth=128`} />
+            </Table.Cell>
+        )}
         <Table.Cell><Link to={`/image/main/${imageData.id}`}>{imageData.filename}</Link></Table.Cell>
         <Table.Cell>{imageData.image_info.width}x{imageData.image_info.height}</Table.Cell>
         <Table.Cell><Filesize bytes={imageData.image_info.size} /></Table.Cell>
         <Table.Cell><Timestamp ts={imageData.timestamp} /></Table.Cell>
-        <Table.Cell><a href={`/api/images/main/${imageData.id}?format=original&download=true`}>Download</a></Table.Cell>
+        <Table.Cell>
+            <Button.Group size='mini'>
+                <Button icon='download' content='download' as='a' href={`/api/images/main/${imageData.id}?format=original&download=true`} />
+            </Button.Group>
+        </Table.Cell>
     </Table.Row>
 ) : null;
 
@@ -35,6 +44,8 @@ class Images extends React.Component {
         this.props.fetchImages( (imagesData) => this.setState({...this.state, imagesData}));
     }
 
+    togglePreviews = () => this.setState({...this.state, previews: !this.state.previews});
+
     render = () => {
         const { images } = this.props;
         if(!images)
@@ -45,7 +56,8 @@ class Images extends React.Component {
                     <Grid.Row>
                         <Grid.Column width={16} textAlign='right'>
                             <Button.Group size='mini'>
-                                <Button content='back' onClick={() => this.props.history.goBack() } />
+                                <Button content='previews' icon='image' toggle active={this.state.previews} onClick={() => this.togglePreviews()}/>
+                                <Button content='back' icon='arrow left' onClick={() => this.props.history.goBack() } />
                             </Button.Group>
                         </Grid.Column>
                     </Grid.Row>
@@ -54,15 +66,16 @@ class Images extends React.Component {
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell />
+                                    {this.state.previews && <Table.HeaderCell>Preview</Table.HeaderCell> }
                                     <Table.HeaderCell>Filename</Table.HeaderCell>
                                     <Table.HeaderCell>Resolution</Table.HeaderCell>
                                     <Table.HeaderCell>Size</Table.HeaderCell>
                                     <Table.HeaderCell>Date</Table.HeaderCell>
-                                    <Table.HeaderCell>Download</Table.HeaderCell>
+                                    <Table.HeaderCell>Actions</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
                             <Table.Body>
-                                { images.map( (image, index) => <ImageRow index={index} imageData={this.state.imagesData[image]} key={image} />)}
+                                { images.map( (image, index) => <ImageRow index={index} imageData={this.state.imagesData[image]} previews={this.state.previews} key={image} />)}
                             </Table.Body>
                         </Table>
                     </Grid.Row>
