@@ -18,6 +18,7 @@ const ImageRow = ({index, imageData, previews}) => imageData ? (
         <Table.Cell><DateTime timestamp={imageData.timestamp} /></Table.Cell>
         <Table.Cell>
             <Button.Group size='mini'>
+                <Button icon='image' content='view' as={Link} to={`/image/main/${imageData.id}`} />
                 <Button icon='download' content='download' as='a' href={`/api/images/main/${imageData.id}?format=original&download=true`} />
             </Button.Group>
         </Table.Cell>

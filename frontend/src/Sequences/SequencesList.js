@@ -50,7 +50,7 @@ const SequencesList = ({sequences, gear, onSequenceDelete, startSequence, duplic
                     <Table.Cell verticalAlign='middle'>{sequence.status}</Table.Cell>
                     <Table.Cell>
                         <Button.Group icon>
-                            <Button as={Link} to={uriFor(sequence)} title="Edit" icon='edit' />
+                            <Button as={Link} to={uriFor(sequence)} title="Open" icon='folder open' />
                             <Dialog.Button.Open compact size="mini" title="Remove" modal={sequence.id + 'confirmSequenceDelete'} icon='remove' />
                             <Button compact size="mini" title="Start" disabled={!canStart(sequence)}  onClick={() => startSequence(sequence)} icon='play' />
                             <Button compact size="mini" title="Pause" disabled={true} icon='pause' />
