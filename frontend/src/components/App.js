@@ -14,17 +14,18 @@ import { Route, Redirect } from "react-router-dom";
 
 const App = ({location}) => (
   <div className="App">
-    <NavbarContainer location={location} />
-    <NotificationsContainer />
-    <ErrorPageContainer>
-        <Route exact path="/" render={() => <Redirect to="/sequences"/> }/>
-        <Route path="/sequences" component={SequencesPage} />
-        <Route path="/indi" component={INDIServerContainer} />
-        <Route path="/camera" component={CameraContainer} />
-        <Route path="/settings" component={SettingsContainer} />
-        <Route path="/image/:type/:id" render={({match, location}) => <ImageContainer id={match.params.id} type={match.params.type} />} />
-    </ErrorPageContainer>
-    <LoadingContainer />
+    <NavbarContainer location={location}>
+        <NotificationsContainer />
+        <ErrorPageContainer>
+            <Route exact path="/" render={() => <Redirect to="/sequences"/> }/>
+            <Route path="/sequences" component={SequencesPage} />
+            <Route path="/indi" component={INDIServerContainer} />
+            <Route path="/camera" component={CameraContainer} />
+            <Route path="/settings" component={SettingsContainer} />
+            <Route path="/image/:type/:id" render={({match, location}) => <ImageContainer id={match.params.id} type={match.params.type} />} />
+        </ErrorPageContainer>
+        <LoadingContainer />
+    </NavbarContainer>
   </div>
 );
 
