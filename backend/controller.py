@@ -1,11 +1,12 @@
 from functools import wraps
 import os
-from models import Server, Device, Property, SavedList, INDIService, Sequence, INDIProfile, Settings
+from models import Server, Device, Property, SavedList, INDIService, Sequence, INDIProfile, settings
 from server_sent_events import SSE
 from app import app
 import time
 from sequences_runner import SequencesRunner
 import threading
+
 
 
 class EventListener:
@@ -63,7 +64,8 @@ class EventListener:
 class Controller:
     def __init__(self):
         self.sse = SSE(app.logger)
-        self.settings = Settings(on_update=self.__on_settings_update)
+        self.settings = settings
+        settings.on_update = self.__on_settings_update
         self.indi_profiles = SavedList(self.settings.indi_profiles_list, INDIProfile)
         self.event_listener = EventListener(self.sse)
         self.sequences_runner = SequencesRunner(app.logger, self)
@@ -114,3 +116,4 @@ class Controller:
 
 
 controller = Controller()
+

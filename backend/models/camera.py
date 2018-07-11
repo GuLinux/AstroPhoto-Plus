@@ -3,10 +3,13 @@ from .exceptions import NotFoundError, FailedMethodError
 from .saved_list import SavedList
 from .model import random_id
 from .image import Image
+from .images_db import camera_images_db
 from astropy.io import fits
 import shutil
 import os
 import time
+from .settings import settings
+
 
 
 class Camera:
@@ -16,7 +19,7 @@ class Camera:
         self.settings = settings
         self.client = client
         self.logger = logger
-        self.images_list = SavedList(settings.camera_tempdir, Image)
+        self.images_db = camera_images_db
 
         if device:
             self.device = device
@@ -73,7 +76,8 @@ class Camera:
         filename = [x for x in os.listdir(self.settings.camera_tempdir) if x.startswith(id)]
         if not filename:
             raise FailedMethodError('Image file with id {} not found'.format(id))
-        return self.__image_from_fits(filename[0], id)
+        image = self.__new_image_to_list(filename[0], id)
+        return image.to_map(for_saving=False)
 
 
     def __has_dev_fits(self):
@@ -92,17 +96,20 @@ class Camera:
             os.path.join(os.environ['SAMPLE_FITS_PATH'], sample_fits[file_index]),
             os.path.join(self.settings.camera_tempdir, dest_filename),
             follow_symlinks=True)
-
-        return self.__image_from_fits(dest_filename, id)
-
-    def __image_from_fits(self, filename, id):
-        image = Image(id, self.settings.camera_tempdir, filename, time.time())
-
-        if len(self.images_list) >= Camera.IMAGES_LIST_SIZE:
-            to_remove = sorted(self.images_list, key=lambda i: i.timestamp)[0:len(self.images_list) - Camera.IMAGES_LIST_SIZE]
-            for older_image in to_remove:
-                self.images_list.remove(older_image).remove_files()
-
-        self.images_list.append(image)
-
+        image = self.__new_image_to_list(dest_filename, id)
         return image.to_map(for_saving=False)
+
+
+    def __new_image_to_list(self, filename, id):
+        image = Image(self.settings.camera_tempdir, filename, time.time(), id=id)
+
+        current_images = self.images_db.values()
+
+        if len(current_images) >= Camera.IMAGES_LIST_SIZE:
+            to_remove = sorted(current_images, key=lambda i: i.timestamp)[0:len(current_images) - Camera.IMAGES_LIST_SIZE]
+            for older_image in to_remove:
+                self.images_db.remove(older_image.id, remove_fits=True)
+
+        self.images_db.add(image)
+        return image
+

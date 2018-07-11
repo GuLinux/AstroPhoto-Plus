@@ -2,6 +2,7 @@ import React from 'react';
 import { Table, Button, Progress } from 'semantic-ui-react';
 import { Dialog, QuestionDialog } from '../Modals/Dialogs'
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 
 const descriptionComponent = sequenceItem => <span>{sequenceItem.description}</span>
 
@@ -32,6 +33,12 @@ const statusComponent = sequenceItem => {
     )
 }
 
+const SequenceItemImagesButton = withRouter( ({history, sequenceItem}) => (
+    <Button title="Images" size="small" onClick={() => history.push(`/sequences/${sequenceItem.sequence}/items/${sequenceItem.id}/images`) } icon='image' />
+))
+
+
+
 const SequenceItemsList = ({canEdit, sequenceItems, deleteSequenceItem, moveSequenceItem, duplicateSequenceItem}) => (
     <Table stackable striped basic="very" selectable>
         <Table.Header>
@@ -58,6 +65,7 @@ const SequenceItemsList = ({canEdit, sequenceItems, deleteSequenceItem, moveSequ
                             <Button title="Move up" size="small" disabled={index===0} onClick={() => moveSequenceItem(sequenceItem, 'up')} icon='angle up' />
                             <Button title="Move down" size="small" disabled={index===sequenceItems.length-1} onClick={() => moveSequenceItem(sequenceItem, 'down')} icon='angle down' />
                             <Button title="Duplicate" size="small" onClick={() => duplicateSequenceItem(sequenceItem)} icon='copy' />
+                            { sequenceItem.saved_images && sequenceItem.saved_images.length > 0 && <SequenceItemImagesButton sequenceItem={sequenceItem} /> }
                         </Button.Group>
                     </Table.Cell>
                 </Table.Row>

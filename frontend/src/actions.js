@@ -7,6 +7,7 @@ import INDIService from './INDI-Service/actions';
 import Modals from './Modals/actions';
 import Camera from './Camera/actions';
 import Settings from './Settings/actions';
+import Image from './Image/actions';
 
 export const Actions = {
     Sequences,
@@ -19,6 +20,7 @@ export const Actions = {
     Modals,
     Camera,
     Settings,
+    Image,
 }
 
 export default Actions

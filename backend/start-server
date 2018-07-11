@@ -20,8 +20,9 @@ if [ "$1" == --check-user ]; then
     exit 0
 fi
 
-export VENV_HOME="$HOME/.local/StarQuew/python-venv"
+export VENV_HOME="$HOME/.local/share/StarQuew/python-venv"
 if [ ! -d "$VENV_HOME" ]; then
+    mkdir -p "$( dirname "$VENV_HOME" )"
     python3 -m venv "$VENV_HOME"
 fi
 
@@ -38,5 +39,5 @@ if [ "$1" == --only-deps ]; then
     exit 0
 fi
 
-export PYTHONPATH="$PWD/indi-lite-tools/:$PYTHONPATH"
+export PYTHONPATH="$PWD/indi-lite-tools/:$PWD:$PYTHONPATH"
 gunicorn --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t 30 -k gthread -b 0.0.0.0:5000 star-quew:app "$@"

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ImageViewer from './ImageViewer';
-import { imageUrlBuilder } from './ImageUrlBuilder';
+import { imageUrlBuilder } from '../utils';
 import { getCurrentCamera } from './selectors';
 import Actions from '../actions';
 
@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => {
         return { }
     }
     return {
-        uri: imageUrlBuilder(currentCamera.id, currentImage.id, state.camera.options),
+        uri: imageUrlBuilder(currentImage.id, {...state.camera.options, type: 'camera' }),
         imageInfo: currentImage.image_info,
         crop: state.camera.crop,
     }

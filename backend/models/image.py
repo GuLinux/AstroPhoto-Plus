@@ -1,7 +1,9 @@
 import os
+import time
 import hashlib
 from astropy.io import fits
 from .exceptions import BadRequestError, NotFoundError
+from .model import random_id 
 import math
 import numpy
 import PIL.Image
@@ -27,16 +29,25 @@ class Image:
             }
         }
 
-    def __init__(self, id, directory, filename, timestamp, image_info=None, cached_conversions=None):
-        self.id = id
-        self.directory = directory
-        self.filename = filename
-        self.timestamp = timestamp
+    def __init__(self, directory=None, filename=None, timestamp=None, image_info=None, cached_conversions=None, id=None, path=None, file_required=True):
+        self.id = random_id(id)
+        if directory and filename:
+            self.directory = directory
+            self.filename = filename
+        elif path:
+            self.directory, self.filename = os.path.split(path)
+        else:
+            raise RuntimeError('Constructed image without file/directory nor path')
+
+        if file_required and not os.path.isfile(self.path):
+            raise RuntimeError('File {} not found'.format(self.path))
+
+        self.timestamp = timestamp if timestamp else time.time()
         self.image_info = image_info
-        if not image_info:
+        if not image_info and os.path.isfile(self.path):
             with fits.open(self.path) as hdulist:
                 shape = hdulist[0].shape
-                self.image_info = { 'width': shape[1], 'height': shape[0]}
+                self.image_info = { 'width': shape[1], 'height': shape[0], 'size': os.stat(self.path).st_size }
         self.cached_conversions = {}
         if cached_conversions:
             self.cached_conversions.update(cached_conversions)
@@ -47,7 +58,14 @@ class Image:
 
     @staticmethod
     def from_map(item):
-        return Image(item['id'], item['directory'], item['filename'], item['timestamp'], item.get('image_info'), item.get('cached_conversions'))
+        return Image(
+            id=item['id'],
+            directory=item['directory'],
+            filename=item['filename'],
+            timestamp=item['timestamp'],
+            image_info=item.get('image_info'),
+            cached_conversions=item.get('cached_conversions')
+    )
 
     def to_map(self, for_saving=True):
         json_map = {
@@ -65,21 +83,19 @@ class Image:
     def convert(self, args):
         key = '&'.join(['{}={}'.format(key, value) for key, value in args.items()])
         key = hashlib.md5(key.encode()).hexdigest()
+        format_name = args.get('format', 'jpeg')
+
+        if format_name == 'original':
+            return self.__file_info(self.path, format_name)
+
         if key not in self.cached_conversions:
-            format_name = args.get('format', 'jpeg')
             if format_name not in Image.FORMATS:
                 raise BadRequestError('Unrecognized format: {}'.format(format_name))
             format = Image.FORMATS[format_name]
             filename = '{}_{}.{}'.format(self.id, key, format['extension'])
             filepath = os.path.join(self.directory, filename)
             self.__convert(args, filepath, format)
-            self.cached_conversions[key] = {
-                'filename': filename,
-                'directory': self.directory,
-                'format': format_name,
-                'content_type': format['content_type'],
-                'path': filepath,
-            }
+            self.cached_conversions[key] = self.__file_info(filepath, format_name, format['content_type'])
         return self.cached_conversions[key]
 
     def histogram(self, bins=50):
@@ -91,6 +107,16 @@ class Image:
                 'bins': [float(x) for x in bins_boundaries],
             }
 
+    def __file_info(self, path, format_name, content_type=None):
+        directory, filename = os.path.split(path)
+        # TODO: autodetect content type if none
+        return {
+            'filename': filename,
+            'directory': directory,
+            'format': format_name,
+            'content_type': content_type,
+            'path': path,
+        }
 
     def __convert(self, args, filepath, format):
         with fits.open(self.path) as fits_file:
@@ -113,7 +139,6 @@ class Image:
 
             image = PIL.Image.fromarray(image_data.astype(numpy.uint8))
 
-            maxwidth = int(args.get('maxwidth', '0'))
             if maxwidth > 0:
                 maxheight = image.height / (image.width / maxwidth)
                 image.thumbnail((maxwidth,maxheight))
@@ -174,7 +199,13 @@ class Image:
         return normalized
 
 
-    def remove_files(self):
-        os.remove(self.path)
-        for file in [x for x in os.listdir(self.directory) if x.startswith(self.id)]:
+    def remove_files(self, remove_fits=False):
+        if remove_fits:
+            os.remove(self.path)
+        for file in [x for x in os.listdir(self.directory) if x.startswith(self.id) and x != self.filename]:
             os.remove(os.path.join(self.directory, file))
+
+    def __base_output(self):
+        if self.id:
+            return self.id
+        return self.filename + '_conv'

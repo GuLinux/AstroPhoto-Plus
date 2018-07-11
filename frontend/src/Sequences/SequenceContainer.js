@@ -1,7 +1,7 @@
-import { connect } from 'react-redux'
-import Sequence from './Sequence'
-import Actions from '../actions'
-import { getSequencesGears } from '../Gear/selectors'
+import { connect } from 'react-redux';
+import Sequence from './Sequence';
+import Actions from '../actions';
+import { getSequencesGears } from '../Gear/selectors';
 
 const mapStateToProps = (state, ownProps) => {
     let sequenceId = ownProps.sequenceId;

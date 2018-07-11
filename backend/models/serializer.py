@@ -14,5 +14,10 @@ class Serializer:
         return self.item_class.from_map(self.get_map())
 
     def save(self, item):
-        with open(self.filename, 'w') as json_file:
-            json.dump(item.to_map(), json_file)
+        self.save_map(item.to_map())
+
+    def save_map(self, map_obj):
+         with open(self.filename, 'w') as json_file:
+            json.dump(map_obj, json_file)
+
+       

@@ -1,5 +1,4 @@
 import { getSettingsApi, updateSettingsApi } from '../middleware/api'
-import Actions from '../actions'
 
 const Settings = {
     setPending: (key, value) => ({ type: 'SETTINGS_SET_PENDING', key, value }),

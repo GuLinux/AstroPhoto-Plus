@@ -9,6 +9,7 @@ import INDILight from '../INDI-Server/INDILight';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import PRINTJ from 'printj'
+import LastCapturedSequenceImageContainer from './LastCapturedSequenceImageContainer';
 
 
 // TODO: refactor Gear pages out of this
@@ -111,6 +112,8 @@ const Sequence = ({sequence, onCreateSequenceItem, startSequence, camera, filter
                 <CameraDetailsPage camera={camera} />
                 <FilterWheelDetailsPage filterWheel={filterWheel} />
             </Card.Group>
+
+            <LastCapturedSequenceImageContainer sequence={sequence.id} />
         </Container>
 )}
 
