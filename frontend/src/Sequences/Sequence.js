@@ -2,7 +2,7 @@ import React from 'react';
 import ModalContainer from '../Modals/ModalContainer';
 import AddSequenceItemModal from '../SequenceItems/AddSequenceItemModal'
 import SequenceItemsContainer from '../SequenceItems/SequenceItemsContainer';
-import { Button, Label, Container, Header, Grid, Card, Icon } from 'semantic-ui-react';
+import { Button, Label, Container, Header, Grid, Card, Icon, Menu } from 'semantic-ui-react';
 import { canStart } from './model';
 import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
 import INDILight from '../INDI-Server/INDILight';
@@ -86,23 +86,34 @@ const AddSequenceItem = withRouter( ({history, onCreateSequenceItem, sequenceId}
     }} />
 ))
 
-const Sequence = ({sequence, onCreateSequenceItem, startSequence, camera, filterWheel, canEdit}) => {
-    if(sequence === null)
-        return null;
-    return (
+class Sequence extends React.Component {
+
+    updateMenu = () => {
+        const { startSequence, sequence, canEdit, onMount } = this.props;
+        if(sequence === null)
+            return;
+        onMount(
+            <React.Fragment>
+                <Menu.Item header content='Sequence Items' />
+                <Menu.Item icon='play' onClick={() => startSequence()} disabled={!canStart(sequence)} content='start' />
+                <ModalContainer.MenuItem.Open icon='add' modal={AddSequenceItemModal.NAME} disabled={!canEdit} content='new' />
+                <Menu.Item icon='arrow left' as={Link} to="/sequences" content='back to sequences' />
+            </React.Fragment>
+        );
+    }
+
+    componentDidMount = () => this.updateMenu();
+    componentDidUpdate = () => this.updateMenu();
+    componentWillUnmount = () => this.props.onUnmount();
+
+
+    render = () => {
+        const {sequence, onCreateSequenceItem, startSequence, camera, filterWheel, canEdit} = this.props;
+        if(sequence === null)
+            return null;
+        return (
         <Container>
-            <Grid columns={2} padded>
-                <Grid.Column verticalAlign="middle">
-                    <Header size="large">{sequence.name}</Header>
-                </Grid.Column>
-                <Grid.Column textAlign="right">
-                    <Button.Group size='mini'>
-                        <Button as={Link} to="/sequences">back</Button>
-                        <Button onClick={() => startSequence()} positive disabled={!canStart(sequence)}>start</Button>
-                        <ModalContainer.Button.Open modal={AddSequenceItemModal.NAME} color="teal" className="pull-right" disabled={!canEdit}>new</ModalContainer.Button.Open>
-                    </Button.Group>
-                </Grid.Column>
-            </Grid>
+            <Header size="medium">{sequence.name}</Header>
             <AddSequenceItem onCreateSequenceItem={onCreateSequenceItem} sequenceId={sequence.id} />
 
             <SequenceItemsContainer canEdit={canEdit} sequenceId={sequence.id} />
@@ -115,7 +126,9 @@ const Sequence = ({sequence, onCreateSequenceItem, startSequence, camera, filter
 
             <LastCapturedSequenceImageContainer sequence={sequence.id} />
         </Container>
-)}
+    )}
+}
 
+    
 
 export default Sequence

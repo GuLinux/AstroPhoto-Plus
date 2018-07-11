@@ -8,6 +8,7 @@ import Modals from './Modals/actions';
 import Camera from './Camera/actions';
 import Settings from './Settings/actions';
 import Image from './Image/actions';
+import Navigation from './Navigation/actions';
 
 export const Actions = {
     Sequences,
@@ -21,6 +22,7 @@ export const Actions = {
     Camera,
     Settings,
     Image,
+    Navigation,
 }
 
 export default Actions

@@ -4,12 +4,17 @@ import { Menu, Sidebar, Responsive } from 'semantic-ui-react'
 
 const NavItem = ({disabled, ...args}) => <Menu.Item disabled={disabled} as={disabled ? 'a' : NavLink} {...args} />
 
-const NavbarMenuItems = ({disabled, hasConnectedCameras, onClick = () => true}) => (
+const NavbarMenuItems = ({disabled, hasConnectedCameras, rightMenu, onClick = () => true}) => (
     <React.Fragment>
-        <NavItem content='Sequences' to="/sequences" disabled={disabled} onClick={onClick} />
-        <NavItem content='INDI Server' to="/indi" disabled={disabled} onClick={onClick} />
-        <NavItem content='Camera' to="/camera" disabled={disabled || ! hasConnectedCameras} onClick={onClick}/>
-        <NavItem content='Settings' to="/settings" disabled={disabled} onClick={onClick} />
+        <NavItem icon='list' content='Sequences' to="/sequences" disabled={disabled} onClick={onClick} />
+        <NavItem icon='computer' content='INDI Server' to="/indi" disabled={disabled} onClick={onClick} />
+        <NavItem icon='camera' content='Camera' to="/camera" disabled={disabled || ! hasConnectedCameras} onClick={onClick}/>
+        <NavItem icon='settings' content='Settings' to="/settings" disabled={disabled} onClick={onClick} />
+        { rightMenu && (
+            <Menu.Menu position='right'>
+                {rightMenu}
+            </Menu.Menu>
+        )}
     </React.Fragment>
 )
 
@@ -47,7 +52,7 @@ class ResponsiveNavbar extends React.Component {
                     </Menu.Menu>
                 </Menu>
                 <Sidebar.Pushable>
-                    <Sidebar as={NavbarMenu} animation='push' direction='top' {...props} visible={this.state.visible}>
+                    <Sidebar as={NavbarMenu} animation='push' direction='top' visible={this.state.visible}>
                         <NavbarMenuItems {...props} onClick={() => this.setVisible(false)} />
                     </Sidebar>
                     <Sidebar.Pusher>
