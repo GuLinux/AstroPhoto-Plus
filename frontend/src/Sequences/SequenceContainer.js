@@ -28,7 +28,9 @@ const mapDispatchToProps = (dispatch, props) => ({
     startSequence: (sequence) => dispatch(Actions.Sequences.start(sequence)),
     onCreateSequenceItem: (type, sequenceId) => {
         dispatch(Actions.SequenceItems.newPending(type, sequenceId));
-    }
+    },
+    onMount: (items) => dispatch(Actions.Navigation.setRightMenu(items)),
+    onUnmount: () => dispatch(Actions.Navigation.resetRightMenu()),
 })
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => ({

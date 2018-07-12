@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Container, Grid, Image, Header } from 'semantic-ui-react';
+import { Menu, Table, Button, Container, Grid, Image, Header } from 'semantic-ui-react';
 import Filesize from '../components/Filesize';
 import DateTime from '../components/DateTime';
 import { Link, withRouter } from 'react-router-dom';
@@ -31,13 +31,27 @@ class Images extends React.Component {
         this.state = { imagesData: {}, previews: false };
     }
 
-    componentWillMount = () => this.getImages();
+    updateMenu = () => this.props.onMount(
+        <React.Fragment>
+            <Menu.Item header content='Images' />
+            <Menu.Item content='previews' icon='image' active={this.state.previews} onClick={() => this.togglePreviews()}/>
+            <Menu.Item content='back' icon='arrow left' onClick={() => this.props.history.goBack() } />
+        </React.Fragment>
+    );
+
+
+    componentDidMount = () => {
+        this.getImages();
+        this.updateMenu();
+    }
 
     componentDidUpdate = (prevProps) => {
         if(prevProps.images !== this.props.images)
             this.getImages();
+        this.updateMenu();
     }
 
+    componentWillUnmount = () => this.props.onUnmount();
 
     getImages = () => {
         if(!this.props.images)
@@ -53,35 +67,23 @@ class Images extends React.Component {
             return null;
         return (
             <Container>
-                <Grid columns={16}>
-                    <Grid.Row>
-                        <Grid.Column width={16} textAlign='right'>
-                            <Button.Group size='mini'>
-                                <Button content='previews' icon='image' toggle active={this.state.previews} onClick={() => this.togglePreviews()}/>
-                                <Button content='back' icon='arrow left' onClick={() => this.props.history.goBack() } />
-                            </Button.Group>
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                        <Header>{images.length} images, <Filesize bytes={images.map(i => this.state.imagesData[i]).reduce( (acc, cur) => cur && acc + cur.image_info.size, 0) } /></Header>
-                        <Table stackable striped basic="very" selectable>
-                            <Table.Header>
-                                <Table.Row>
-                                    <Table.HeaderCell />
-                                    {this.state.previews && <Table.HeaderCell>Preview</Table.HeaderCell> }
-                                    <Table.HeaderCell>Filename</Table.HeaderCell>
-                                    <Table.HeaderCell>Resolution</Table.HeaderCell>
-                                    <Table.HeaderCell>Size</Table.HeaderCell>
-                                    <Table.HeaderCell>Date</Table.HeaderCell>
-                                    <Table.HeaderCell>Actions</Table.HeaderCell>
-                                </Table.Row>
-                            </Table.Header>
-                            <Table.Body>
-                                { images.map( (image, index) => <ImageRow index={index} imageData={this.state.imagesData[image]} previews={this.state.previews} key={image} />)}
-                            </Table.Body>
-                        </Table>
-                    </Grid.Row>
-                </Grid>
+                <Header>{images.length} images, <Filesize bytes={images.map(i => this.state.imagesData[i]).reduce( (acc, cur) => cur && acc + cur.image_info.size, 0) } /></Header>
+                <Table stackable striped basic="very" selectable>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell />
+                            {this.state.previews && <Table.HeaderCell>Preview</Table.HeaderCell> }
+                            <Table.HeaderCell>Filename</Table.HeaderCell>
+                            <Table.HeaderCell>Resolution</Table.HeaderCell>
+                            <Table.HeaderCell>Size</Table.HeaderCell>
+                            <Table.HeaderCell>Date</Table.HeaderCell>
+                            <Table.HeaderCell>Actions</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        { images.map( (image, index) => <ImageRow index={index} imageData={this.state.imagesData[image]} previews={this.state.previews} key={image} />)}
+                    </Table.Body>
+                </Table>
             </Container>
         )
     }

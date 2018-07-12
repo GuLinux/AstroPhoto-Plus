@@ -1,23 +1,19 @@
 import { connect } from 'react-redux'
-import Navigation from './Navigation'
-import Actions from '../actions'
+import Navbar from './Navbar'
 import { hasConnectedCameras } from '../Gear/selectors'
 
 const mapStateToProps = state => ({
     disabled: state.errors.isError,
     hasConnectedCameras: hasConnectedCameras(state),
+    rightMenu: state.navigation.rightMenu,
 })
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onSelected: section => dispatch(Actions.Navigation.toSection(section))
-  }
-}
+const mapDispatchToProps = dispatch => ({})
 
 
 const NavbarContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Navigation)
+)(Navbar)
 
 export default NavbarContainer

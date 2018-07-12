@@ -33,8 +33,9 @@ const toggleProps = (props) => {
     return newProps;
 }
 
+// TODO: the binded action was 'onToggle' first. This should go away anyway when we refactor Modals.
 ModalContainer.MenuItem = {
-    Toggle: connect(null, mapToggleModalDispatchToProps('onSelect'), mergeToggleProps)(ModalDialog.MenuItem),
+    Toggle: connect(null, mapToggleModalDispatchToProps('onClick'), mergeToggleProps)(ModalDialog.MenuItem),
     Close: (props) => <ModalContainer.MenuItem.Toggle action="close" {...toggleProps(props)} />,
     Open: (props) => <ModalContainer.MenuItem.Toggle action="visible" {...toggleProps(props)} />,
 }
