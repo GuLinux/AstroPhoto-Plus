@@ -11,7 +11,7 @@ import thunkMiddleware from 'redux-thunk'
 // import 'forest-themes-css/dist/bootswatch/semantic.darkly.min.css';
 //import './semantic-ui-themes/bootswatch/semantic.solar.min.css'
 //import './themes/semantic-ui/semantic.material.min.css'
-import './themes/bootswatch/semantic.cyborg.min.css'
+import './themes/bootswatch/semantic.slate.min.css'
 
 import indiLiteApp from './reducers'
 import App from './components/App'
