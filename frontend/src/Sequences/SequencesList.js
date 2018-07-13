@@ -1,8 +1,7 @@
 import React from 'react';
-import { Container, Button, Table, Label, Grid, Menu} from 'semantic-ui-react'
+import { Container, Button, Table, Label, Menu} from 'semantic-ui-react'
 import AddSequenceModalContainer from './AddSequenceModalContainer';
-import ModalContainer from '../Modals/ModalContainer'
-import { Dialog, QuestionDialog } from '../Modals/Dialogs'
+import { ConfirmDialog } from '../Modals/ModalDialog';
 import { canStart } from './model'
 import { Link } from 'react-router-dom';
 
@@ -21,7 +20,7 @@ class SequencesList extends React.Component {
     componentDidMount = () => this.props.onMount(
         <React.Fragment>
             <Menu.Item header content='Sequences' />
-            <ModalContainer.MenuItem.Open modal={AddSequenceModalContainer.NAME} icon='add' content='new sequence' />
+            <AddSequenceModalContainer trigger={<Menu.Item icon='add' content='new sequence' />} />
         </React.Fragment>
     );
     componentWillUnmount = () => this.props.onUnmount();
@@ -30,7 +29,6 @@ class SequencesList extends React.Component {
         const {sequences, gear, onSequenceDelete, startSequence, duplicateSequence} = this.props;
         return (
             <Container>
-                <AddSequenceModalContainer />
 
                 <Table stackable selectable striped basic="very">
                     <Table.Header>
@@ -56,15 +54,22 @@ class SequencesList extends React.Component {
                             <Table.Cell>
                                 <Button.Group icon>
                                     <Button as={Link} to={uriFor(sequence)} title="Open" icon='folder open' />
-                                    <Dialog.Button.Open compact size="mini" title="Remove" modal={sequence.id + 'confirmSequenceDelete'} icon='remove' />
+                                    <ConfirmDialog
+                                        trigger={
+                                            // TODO: disable when running 
+                                            <Button compact size="mini" title="Remove" icon='remove' />
+                                        }
+                                        content='Do you really want to remove this sequence?'
+                                        header='Confirm sequence removal'
+                                        cancelButton='No'
+                                        confirmButton='Yes'
+                                        onConfirm={() => onSequenceDelete(sequence.id)}
+                                    />
                                     <Button compact size="mini" title="Start" disabled={!canStart(sequence)}  onClick={() => startSequence(sequence)} icon='play' />
                                     <Button compact size="mini" title="Pause" disabled={true} icon='pause' />
                                     <Button compact size="mini" title="Stop" disabled={true} icon='stop'/>
                                     <Button compact size="mini" title="Duplicate" onClick={() => duplicateSequence(sequence)} icon='copy' />
                                 </Button.Group>
-                                <QuestionDialog name={sequence.id + 'confirmSequenceDelete'} title="Confirm sequence removal" buttons={[{text: 'No'}, {text: 'Yes', color: 'red', afterClose: () => onSequenceDelete(sequence.id)}]}>
-                                    Do you really want to remove this sequence?
-                                </QuestionDialog>
                             </Table.Cell>
                         </Table.Row>
                     ))}

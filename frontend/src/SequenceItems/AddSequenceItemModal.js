@@ -1,13 +1,9 @@
 import React from 'react'
 import { Modal, Menu, Header } from 'semantic-ui-react'
-import ModalContainer from '../Modals/ModalContainer'
+import { ModalDialog } from '../Modals/ModalDialog'
 
-// TODO: it might be better to move the redux code away from here
-import { connect } from 'react-redux'
-import Actions from '../actions'
-
-const AddSequenceItemModal = ({onAddSequenceItem}) => (
-    <ModalContainer name={AddSequenceItemModal.NAME}>
+const AddSequenceItemModal = ({onAddSequenceItem, trigger}) => (
+    <ModalDialog trigger={trigger}>
         <Modal.Header>Add new sequence element</Modal.Header>
         <Modal.Content>
             <Menu vertical fluid>
@@ -30,19 +26,11 @@ const AddSequenceItemModal = ({onAddSequenceItem}) => (
                 </Menu.Item>
             </Menu>
         </Modal.Content>
-        <Modal.Actions>
-            <ModalContainer.Button.Close modal={AddSequenceItemModal.NAME}>Close</ModalContainer.Button.Close>
-        </Modal.Actions>
-  </ModalContainer>
+        <ModalDialog.Actions>
+            <ModalDialog.Actions.CloseButton content='Close' />
+        </ModalDialog.Actions>
+  </ModalDialog>
 )
 
-AddSequenceItemModal.NAME = 'AddSequenceItemModal_NAME'
+export default AddSequenceItemModal;
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    onAddSequenceItem: (itemType) => {
-        dispatch(Actions.Modals.toggleModal(AddSequenceItemModal.NAME, false))
-        ownProps.onAddSequenceItem(itemType);
-    }
-})
-
-export default connect(null, mapDispatchToProps)(AddSequenceItemModal);

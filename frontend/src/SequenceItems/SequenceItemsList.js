@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, Button, Progress } from 'semantic-ui-react';
-import { Dialog, QuestionDialog } from '../Modals/Dialogs'
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
+import { ConfirmDialog } from '../Modals/ModalDialog';
 
 const descriptionComponent = sequenceItem => <span>{sequenceItem.description}</span>
 
@@ -58,10 +58,14 @@ const SequenceItemsList = ({canEdit, sequenceItems, deleteSequenceItem, moveSequ
                     <Table.Cell>
                         <Button.Group icon>
                             <Button as={Link} to={`/sequences/${sequenceItem.sequence}/items/${sequenceItem.id}`} icon='edit' title="Edit" size="small" disabled={!canEdit} />
-                            <Dialog.Button.Open title="Remove" modal={sequenceItem.id + 'confirmDeleteSequenceItem'} size="small" icon='remove' />
-                            <QuestionDialog name={sequenceItem.id + 'confirmDeleteSequenceItem'} title="Confirm removal" buttons={[ {text: 'no'}, {text: 'yes', afterClose: () => deleteSequenceItem(sequenceItem), color: 'red'} ]}>
-                                Do you really want to remove this element?
-                            </QuestionDialog>
+                            <ConfirmDialog
+                                trigger={<Button title="Remove" size="small" icon='remove' />}
+                                header='Confirm removal'
+                                cancelButton='no'
+                                confirmButton='yes'
+                                onConfirm={() => deleteSequenceItem(sequenceItem)}
+                                content='Do you really want to remove this element?'
+                            />
                             <Button title="Move up" size="small" disabled={index===0} onClick={() => moveSequenceItem(sequenceItem, 'up')} icon='angle up' />
                             <Button title="Move down" size="small" disabled={index===sequenceItems.length-1} onClick={() => moveSequenceItem(sequenceItem, 'down')} icon='angle down' />
                             <Button title="Duplicate" size="small" onClick={() => duplicateSequenceItem(sequenceItem)} icon='copy' />
