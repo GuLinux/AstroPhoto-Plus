@@ -1,7 +1,7 @@
-import React from 'react'
-import { Modal, Form, Message } from 'semantic-ui-react'
-import { sanitizePath } from '../utils'
-import ModalContainer from '../Modals/ModalContainer'
+import React from 'react';
+import { Modal, Form, Message } from 'semantic-ui-react';
+import { sanitizePath } from '../utils';
+import { ModalDialog } from '../Modals/ModalDialog';
 
 const initialState = {
     name: '',
@@ -44,10 +44,9 @@ class AddSequenceModal extends React.Component {
         return this.state.nameValid && this.state.directoryValid && this.state.cameraValid
     }
 
-    // TODO: refactor to use common modal class
     render() {
         return (
-            <ModalContainer centered={true} size='large' name={AddSequenceModal.NAME}>
+            <ModalDialog trigger={this.props.trigger} centered={true} size='large'>
                 <Modal.Header>Add new Sequence</Modal.Header>
                 <Modal.Content>
                     <Form>
@@ -103,15 +102,14 @@ class AddSequenceModal extends React.Component {
                         </Message>
                     </Form>
             </Modal.Content>
-            <Modal.Actions>
-                <ModalContainer.Button.Close modal={AddSequenceModal.NAME}>Close</ModalContainer.Button.Close>
-                <ModalContainer.Button.Close primary action='close' modal={AddSequenceModal.NAME} disabled={!this.isValid()} afterToggle={() => this.onAddClicked()}>Add</ModalContainer.Button.Close>
-            </Modal.Actions>
-          </ModalContainer>
+            <ModalDialog.Actions>
+                <ModalDialog.Actions.CloseButton content='Close' />
+                <ModalDialog.Actions.CloseButton content='Add' primary disabled={!this.isValid()} onClose={() => this.onAddClicked()} />
+            </ModalDialog.Actions>
+          </ModalDialog>
         )
     }
 }
 
-AddSequenceModal.NAME = 'ADD_SEQUENCE_MODAL';
 
 export default AddSequenceModal;

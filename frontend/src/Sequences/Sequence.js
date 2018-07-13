@@ -1,8 +1,7 @@
 import React from 'react';
-import ModalContainer from '../Modals/ModalContainer';
 import AddSequenceItemModal from '../SequenceItems/AddSequenceItemModal'
 import SequenceItemsContainer from '../SequenceItems/SequenceItemsContainer';
-import { Button, Label, Container, Header, Grid, Card, Icon, Menu } from 'semantic-ui-react';
+import { Label, Container, Header, Card, Icon, Menu } from 'semantic-ui-react';
 import { canStart } from './model';
 import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
 import INDILight from '../INDI-Server/INDILight';
@@ -79,8 +78,8 @@ const FilterWheelDetailsPage = ({filterWheel, filterNumber, filterName}) => {
     )
 }
 
-const AddSequenceItem = withRouter( ({history, onCreateSequenceItem, sequenceId}) => (
-    <AddSequenceItemModal onAddSequenceItem={(...args) => {
+const AddSequenceItem = withRouter( ({history, onCreateSequenceItem, sequenceId, trigger}) => (
+    <AddSequenceItemModal trigger={trigger} onAddSequenceItem={(...args) => {
         onCreateSequenceItem(...args);
         history.push('/sequences/' + sequenceId + '/items/pending')
     }} />
@@ -96,7 +95,9 @@ class Sequence extends React.Component {
             <React.Fragment>
                 <Menu.Item header content='Sequence Items' />
                 <Menu.Item icon='play' onClick={() => startSequence()} disabled={!canStart(sequence)} content='start' />
-                <ModalContainer.MenuItem.Open icon='add' modal={AddSequenceItemModal.NAME} disabled={!canEdit} content='new' />
+                <AddSequenceItem onCreateSequenceItem={this.props.onCreateSequenceItem} sequenceId={sequence.id} trigger={
+                    <Menu.Item icon='add' disabled={!canEdit} content='new' />
+                } />
                 <Menu.Item icon='arrow left' as={Link} to="/sequences" content='back to sequences' />
             </React.Fragment>
         );
@@ -108,13 +109,13 @@ class Sequence extends React.Component {
 
 
     render = () => {
-        const {sequence, onCreateSequenceItem, startSequence, camera, filterWheel, canEdit} = this.props;
+        const {sequence, camera, filterWheel, canEdit} = this.props;
         if(sequence === null)
             return null;
         return (
         <Container>
             <Header size="medium">{sequence.name}</Header>
-            <AddSequenceItem onCreateSequenceItem={onCreateSequenceItem} sequenceId={sequence.id} />
+
 
             <SequenceItemsContainer canEdit={canEdit} sequenceId={sequence.id} />
 
