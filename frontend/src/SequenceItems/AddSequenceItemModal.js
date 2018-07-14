@@ -3,7 +3,7 @@ import { Modal, Menu, Header } from 'semantic-ui-react'
 import { ModalDialog } from '../Modals/ModalDialog'
 
 const AddSequenceItemModal = ({onAddSequenceItem, trigger}) => (
-    <ModalDialog trigger={trigger}>
+    <ModalDialog trigger={trigger} basic size='small' centered={false}>
         <Modal.Header>Add new sequence element</Modal.Header>
         <Modal.Content>
             <Menu vertical fluid>

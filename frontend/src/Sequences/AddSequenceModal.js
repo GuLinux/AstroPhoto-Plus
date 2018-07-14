@@ -46,7 +46,7 @@ class AddSequenceModal extends React.Component {
 
     render() {
         return (
-            <ModalDialog trigger={this.props.trigger} centered={true} size='large'>
+            <ModalDialog trigger={this.props.trigger} centered={false} basic size='small'>
                 <Modal.Header>Add new Sequence</Modal.Header>
                 <Modal.Content>
                     <Form>

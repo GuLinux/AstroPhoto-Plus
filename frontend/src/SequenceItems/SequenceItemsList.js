@@ -65,6 +65,10 @@ const SequenceItemsList = ({canEdit, sequenceItems, deleteSequenceItem, moveSequ
                                 confirmButton='yes'
                                 onConfirm={() => deleteSequenceItem(sequenceItem)}
                                 content='Do you really want to remove this element?'
+                                size='mini'
+                                basic
+                                centered={false}
+
                             />
                             <Button title="Move up" size="small" disabled={index===0} onClick={() => moveSequenceItem(sequenceItem, 'up')} icon='angle up' />
                             <Button title="Move down" size="small" disabled={index===sequenceItems.length-1} onClick={() => moveSequenceItem(sequenceItem, 'down')} icon='angle down' />

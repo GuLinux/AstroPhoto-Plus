@@ -25,6 +25,9 @@ const SequenceItemButtons = ({isValid, isChanged, onSave, sequenceItem, history 
                 cancelButton='Continue editing'
                 confirmButton='Close and go back'
                 onConfirm={navigateBack}
+                size='small'
+                basic
+                centered={false}
                 content={(
                     <React.Fragment>
                         <p>If you go back now, your changes will not be saved.</p>

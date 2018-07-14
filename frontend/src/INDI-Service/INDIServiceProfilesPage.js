@@ -29,6 +29,7 @@ class ProfileNameDialog extends React.Component {
                     placeholder="Enter the profile name"
                     value={this.state.name}
                     onChange={ (e) => this.setState({...this.state, name: e.target.value})}
+                    autoFocus
                 />
             </Form>
         </Modal.Content>
@@ -41,7 +42,7 @@ class ProfileNameDialog extends React.Component {
             { key: 'submit', content: this.props.buttonText, positive: true, disabled: !this.canSubmit(), onClick: () => this.save() }
         ];
         return (
-            <Modal trigger={trigger} content={this.modalContent()} header={title} actions={actions} />
+            <Modal trigger={trigger} centered={false} size='mini' basic content={this.modalContent()} header={title} actions={actions} />
         )
     }
 }

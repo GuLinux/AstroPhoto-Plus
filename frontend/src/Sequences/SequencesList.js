@@ -64,6 +64,9 @@ class SequencesList extends React.Component {
                                         cancelButton='No'
                                         confirmButton='Yes'
                                         onConfirm={() => onSequenceDelete(sequence.id)}
+                                        size='mini'
+                                        basic
+                                        centered={false}
                                     />
                                     <Button compact size="mini" title="Start" disabled={!canStart(sequence)}  onClick={() => startSequence(sequence)} icon='play' />
                                     <Button compact size="mini" title="Pause" disabled={true} icon='pause' />
