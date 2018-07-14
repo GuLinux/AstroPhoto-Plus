@@ -29,8 +29,10 @@ class SequenceItem:
     def duplicate(self):
         data = self.to_map()
         data.pop('id')
-        data.pop('status')
-        data.pop('saved_images') # TODO: move from here?
+        if 'status' in data:
+            data.pop('status')
+        if 'saved_images' in data:
+            data.pop('saved_images') # TODO: move from here?
         return SequenceItem(data)
 
     @staticmethod
