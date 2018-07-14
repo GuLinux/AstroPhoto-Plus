@@ -26,9 +26,9 @@ const AddSequenceItemModal = ({onAddSequenceItem, trigger}) => (
                 </Menu.Item>
             </Menu>
         </Modal.Content>
-        <ModalDialog.Actions>
-            <ModalDialog.Actions.CloseButton content='Close' />
-        </ModalDialog.Actions>
+        <Modal.Actions>
+            <ModalDialog.CloseButton content='Close' />
+        </Modal.Actions>
   </ModalDialog>
 )
 

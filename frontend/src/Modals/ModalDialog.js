@@ -1,26 +1,19 @@
 import React from 'react'
-import { Modal, Button, Menu, Confirm } from 'semantic-ui-react';
+import { Modal, Button, Confirm } from 'semantic-ui-react';
 
-const ModalDialogCloseButton = (props) => <Button {...props} />
+const ModalDialogContext = React.createContext();
 
-const ModalDialogActions = ({close, children, ...rest}) => {
-    children = React.Children.map(children, c => {
-        return c && c.type && c.type.name === 'ModalDialogCloseButton' ? React.cloneElement(c, {
-            onClick: () => {
+const ModalDialogCloseButton = (props) => (
+    <ModalDialogContext.Consumer>{
+        ({close}) => {
+            const onClick = () => {
                 close();
-                c.props.onClose && c.props.onClose();
+                props.onClose && props.onClose();
             }
-        }) : c;
-    });
-    
-    return (
-        <Modal.Actions {...rest}>
-            {children}
-        </Modal.Actions>
-    );
-}
-
-ModalDialogActions.CloseButton = ModalDialogCloseButton;
+            return <Button {...props} onClick={onClick} />
+        }
+    }</ModalDialogContext.Consumer>
+)
 
 export class ModalDialog extends React.Component {
     constructor(props) {
@@ -35,23 +28,22 @@ export class ModalDialog extends React.Component {
 
 
     render = () => {
-        let {open: _, trigger, triggerAction = 'onClick', children, ...rest} = this.props;
-        children = React.Children.map(children, c => {
-            return c && c.type && c.type.name === 'ModalDialogActions' ? React.cloneElement(c, { close: this.close }) : c;
-        });
-
+        const {open: _, trigger, triggerAction = 'onClick', children, ...rest} = this.props;
         return (
             <React.Fragment>
                 { React.cloneElement(trigger, { [triggerAction]: this.open }) }
-                <Modal open={this.state.open} {...rest}>
-                    {children}
-                </Modal>
+                    <Modal open={this.state.open} {...rest}>
+                        <ModalDialogContext.Provider value={{close: this.close}}>
+                            {children}
+                        </ModalDialogContext.Provider>
+                    </Modal>
+
             </React.Fragment>
         )
     }
 }
 
-ModalDialog.Actions = ModalDialogActions;
+ModalDialog.CloseButton = ModalDialogCloseButton;
 
 export class ConfirmDialog extends React.Component {
     constructor(props) {
@@ -86,5 +78,5 @@ export class ConfirmDialog extends React.Component {
     }
 }
 
-ModalDialog.Button = Button;
-ModalDialog.MenuItem = Menu.Item;
+
+

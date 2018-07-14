@@ -102,10 +102,10 @@ class AddSequenceModal extends React.Component {
                         </Message>
                     </Form>
             </Modal.Content>
-            <ModalDialog.Actions>
-                <ModalDialog.Actions.CloseButton content='Close' />
-                <ModalDialog.Actions.CloseButton content='Add' primary disabled={!this.isValid()} onClose={() => this.onAddClicked()} />
-            </ModalDialog.Actions>
+            <Modal.Actions>
+                <ModalDialog.CloseButton content='Close' />
+                <ModalDialog.CloseButton content='Add' primary disabled={!this.isValid()} onClose={() => this.onAddClicked()} />
+            </Modal.Actions>
           </ModalDialog>
         )
     }
