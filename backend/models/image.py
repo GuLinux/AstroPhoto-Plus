@@ -29,7 +29,7 @@ class Image:
             }
         }
 
-    def __init__(self, directory=None, filename=None, timestamp=None, image_info=None, cached_conversions=None, id=None, path=None, file_required=True):
+    def __init__(self, directory=None, filename=None, timestamp=None, image_info=None, cached_conversions=None, id=None, path=None, file_required=False):
         self.id = random_id(id)
         if directory and filename:
             self.directory = directory
