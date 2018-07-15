@@ -315,6 +315,11 @@ def get_image_database(type):
         raise BadRequestError('Image type {} not recognized'.format(type))
     return image_databases[type]
 
+@app.route('/api/images/<type>/<image>/wait_until_ready', methods=['GET'])
+@json_api
+def image_is_ready(type, image):
+    get_image_database(type).lookup(image, file_required=False).wait_until_ready()
+    return { 'ready': True }
 
 
 @app.route('/api/images/<type>', methods=['GET'])

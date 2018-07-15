@@ -57,14 +57,15 @@ class Image:
         return os.path.join(self.directory, self.filename)
 
     @staticmethod
-    def from_map(item):
+    def from_map(item, **kwargs):
         return Image(
             id=item['id'],
             directory=item['directory'],
             filename=item['filename'],
             timestamp=item['timestamp'],
             image_info=item.get('image_info'),
-            cached_conversions=item.get('cached_conversions')
+            cached_conversions=item.get('cached_conversions'),
+            **kwargs
     )
 
     def to_map(self, for_saving=True):
@@ -79,6 +80,17 @@ class Image:
         if for_saving:
             json_map.update({'cached_conversions': self.cached_conversions})
         return json_map
+
+    def is_ready(self):
+        return os.path.isfile(self.path)
+
+    def wait_until_ready(self, timeout=30):
+        started = time.time()
+        while not self.is_ready():
+            if time.time() - started > timeout:
+                raise NotFoundError('File {} not found or not ready'.format(self.path))
+            time.sleep(0.5)
+
 
     def convert(self, args):
         key = '&'.join(['{}={}'.format(key, value) for key, value in args.items()])
