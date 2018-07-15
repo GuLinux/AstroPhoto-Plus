@@ -13,6 +13,8 @@ const mapStateToProps = (state, ownProps) => {
     }
     return {
         uri: imageUrlBuilder(currentImage.id, {...state.camera.options, type: 'camera' }),
+        id: currentImage.id,
+        type: 'camera',
         imageInfo: currentImage.image_info,
         crop: state.camera.crop,
     }

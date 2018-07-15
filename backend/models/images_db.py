@@ -21,10 +21,10 @@ class ImagesDatabase:
     def values(self):
         return [Image.from_map(v) for v in self.images.values()]
 
-    def lookup(self, id):
+    def lookup(self, id, **kwargs):
         if not id in self.images:
             raise NotFoundError('Image with id {} not found in {} database'.format(id, self.name))
-        return Image.from_map(self.images[id])
+        return Image.from_map(self.images[id], **kwargs)
 
     def to_map(self):
         images = {}
@@ -33,8 +33,8 @@ class ImagesDatabase:
         return images
 
     @contextmanager
-    def lookup_edit(self, image_id):
-        image = self.lookup(image_id)
+    def lookup_edit(self, image_id, **kwargs):
+        image = self.lookup(image_id, **kwargs)
         yield image
         self.images[image.id] = image.to_map(for_saving=True)
         self.save()

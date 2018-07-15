@@ -30,12 +30,12 @@ class ImageCrop extends React.Component {
     }
 }
 
-const ImageViewer = ({uri, fitScreen = false, onImageLoading, onImageLoaded, crop, setCrop, imageInfo}) => {
+const ImageViewer = ({uri, id, type, fitScreen = false, onImageLoading, onImageLoaded, crop, setCrop, imageInfo}) => {
     return uri ? (
         <div className='image-viewer'>
             { crop && (crop.initial || crop.relative) ?
                 <ImageCrop src={uri} width={imageInfo.width} height={imageInfo.height} crop={crop} setCrop={setCrop} /> :
-                <ImageLoader uri={uri} {...{onImageLoading, onImageLoaded, fitScreen}} />
+                <ImageLoader id={id} type={type} uri={uri} {...{onImageLoading, onImageLoaded, fitScreen}} />
             }
         </div>
     ): <Icon name='image outline' size='massive' disabled />;

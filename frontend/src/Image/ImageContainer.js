@@ -15,6 +15,7 @@ const mapStateToProps = (state, ownProps) => {
 
     return {
         id: ownProps.id,
+        type,
         url: imageUrlBuilder(ownProps.id, {
             type,
             maxWidth,

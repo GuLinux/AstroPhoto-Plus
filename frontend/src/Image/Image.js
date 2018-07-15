@@ -1,6 +1,7 @@
 import React from 'react';
-import { Image, Segment, Form, Container, Grid, Header, Button, Loader } from 'semantic-ui-react';
+import { Message, Image, Segment, Form, Container, Grid, Header, Button, Loader } from 'semantic-ui-react';
 import ImageViewOptions from '../Image/ImageViewOptions';
+import fetch from 'isomorphic-fetch'
 
 export class ImageComponent extends React.Component {
     componentDidUpdate = (prevProps) => this.props.uri !== prevProps.uri && this.props.onImageLoading && this.props.onImageLoading();
@@ -22,10 +23,11 @@ export class ImageComponent extends React.Component {
 export class ImageLoader extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { loading: false }
+        this.state = { loading: false, ready: false, error: false }
     }
 
     toggleLoading = (loading) => this.setState({...this.state, loading});
+    toggleReady = (ready) => this.setState({...this.state, ready});
 
     onImageLoading = () => {
         this.toggleLoading(true);
@@ -37,16 +39,35 @@ export class ImageLoader extends React.Component {
         this.props.onImageLoaded && this.props.onImageLoaded();
     }
 
+    shouldShowLoader = () => (this.state.loading || ! this.state.ready) && ! this.state.error 
+    shouldShowImage = () => this.state.ready && ! this.state.error 
+
+    componentDidMount = () => {
+        console.log('waiting for image to be ready');
+        fetch(`/api/images/${this.props.type}/${this.props.id}/wait_until_ready`).then( (response) => {
+            if(response.ok) {
+                return response.json();
+            }
+            return Promise.reject(response);
+        })
+            .then(json => {
+                this.toggleReady(true);
+            })
+            .catch(response => {
+                this.setState({...this.state, error: true});
+            })
+    }
 
     render = () => (
         <React.Fragment>
-            <Loader active={this.state.loading} inverted />
-            <ImageComponent {...this.props} onImageLoading={this.onImageLoading} onImageLoaded={this.onImageLoaded} />
+            <Loader active={this.shouldShowLoader()} inverted />
+            { this.state.error &&   <Message icon='image' header='Error loading image' content='An error occured while loading the image. Please retry, or check your server logs.' /> }
+            { this.shouldShowImage() && <ImageComponent {...this.props} onImageLoading={this.onImageLoading} onImageLoaded={this.onImageLoaded} /> }
         </React.Fragment>
     );
 }
 
-const ImagePage  = ({url, options, setOption, history, imageLoading, onImageLoaded}) => url ? (
+const ImagePage  = ({id, type, url, options, setOption, history, imageLoading, onImageLoaded}) => url ? (
     <Container fluid>
         <Grid stackable columns={16}>
             <Grid.Column width={4}>
@@ -59,7 +80,7 @@ const ImagePage  = ({url, options, setOption, history, imageLoading, onImageLoad
                 </Segment>
             </Grid.Column>
             <Grid.Column width={12}>
-                <ImageLoader uri={url} fitScreen={!!options.fitToScreen} />
+                <ImageLoader id={id} type={type} uri={url} fitScreen={!!options.fitToScreen} />
             </Grid.Column>
         </Grid>
     </Container>
