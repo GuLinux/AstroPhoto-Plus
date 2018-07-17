@@ -11,6 +11,7 @@ class SequenceItem:
     def __init__(self, data):
         self.id = random_id(data.get('id'))
         self.type = data['type']
+        data.update({'id': self.id})
         self.job = None
         if self.type == 'shots':
             self.job = ExposureSequenceItem(data)
@@ -58,12 +59,12 @@ class SequenceItem:
         self.status = 'idle'
         self.job.reset()
 
-    def run(self, server, devices, root_path, logger, on_update, index):
+    def run(self, server, devices, root_path, logger, event_listener, on_update, index):
         self.status = 'running'
         self.started_ts = time.time()
         on_update()
         try:
-            self.job.run(server, devices, root_path, logger, on_update, index)
+            self.job.run(server, devices, root_path, event_listener, logger, on_update, index)
             self.status = 'finished'
             self.finished_ts = time.time()
             on_update()

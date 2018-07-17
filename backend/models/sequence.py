@@ -49,7 +49,7 @@ class Sequence:
 
         return new_sequence
 
-    def run(self, server, root_directory, logger, on_update=None):
+    def run(self, server, root_directory, event_listener, logger, on_update=None):
         camera = [c for c in server.cameras() if c.id == self.camera]
         if not camera:
             raise NotFoundError('Camera with id {} not found'.format(self.camera))
@@ -76,7 +76,7 @@ class Sequence:
         on_update()
         try:
             for index, sequence_item in enumerate(self.sequence_items):
-                sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, on_update, index=index)
+                sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
             self.status = 'finished'
             on_update()
         except RuntimeError as e:

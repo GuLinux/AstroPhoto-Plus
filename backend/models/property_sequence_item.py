@@ -14,7 +14,7 @@ class PropertySequenceItem:
             'values': self.values,
         }
 
-    def run(self, server, devices, root_path, logger, on_update, index):
+    def run(self, server, devices, root_path, event_listener, logger, on_update, index):
         property = server.property(device=self.device, name=self.property)
         property.set_values(self.values)
 
