@@ -72,13 +72,14 @@ class ExposureSequenceItem:
             self.last_message = 'finished exposure {} out of {}, saved to {}'.format(index+1, sequence.count, filename)
             self.progress = sequence.finished
             image = Image(path=filename, file_required=False)
-            self.saved_images.append(image.id)
             images_by_filename[filename] = image
-            main_images_db.add(image)
             on_update()
 
         def on_each_saved(sequence, index, filename):
-            event_listener.on_sequence_image_saved(self.sequence_item_id, images_by_filename[filename].id, index, filename)
+            image = images_by_filename[filename]
+            self.saved_images.append(image.id)
+            main_images_db.add(image)
+            on_update()
 
         def on_finished(sequence):
             self.last_message = 'finished.'
