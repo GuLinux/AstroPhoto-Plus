@@ -13,7 +13,7 @@ class CommandSequenceItem:
             'command': self.command,
         }
 
-    def run(self, server, devices, root_path, logger, on_update, index):
+    def run(self, server, devices, root_path, event_listener, logger, on_update, index):
         os.makedirs(root_path, exist_ok=True)
 
         with open(os.path.join(root_path, self.__log_filename(index, 'stdout')), 'w') as out:

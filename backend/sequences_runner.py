@@ -18,7 +18,7 @@ class RunningSequence:
     def __run(self):
         self.logger.debug('Inside sequence thread')
         try:
-            self.sequence.run(self.controller.indi_server, self.controller.settings.sequences_dir, self.logger, on_update=self.__on_updated)
+            self.sequence.run(self.controller.indi_server, self.controller.settings.sequences_dir, self.controller.event_listener, self.logger, on_update=self.__on_updated)
         except RuntimeError as e:
             self.logger.exception('unhandled exception while running sequence')
             self.controller.event_listener.on_sequence_error(self.sequence, str(e))

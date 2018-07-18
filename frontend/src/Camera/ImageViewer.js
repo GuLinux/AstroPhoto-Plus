@@ -35,7 +35,7 @@ const ImageViewer = ({uri, id, type, fitScreen = false, onImageLoading, onImageL
         <div className='image-viewer'>
             { crop && (crop.initial || crop.relative) ?
                 <ImageCrop src={uri} width={imageInfo.width} height={imageInfo.height} crop={crop} setCrop={setCrop} /> :
-                <ImageLoader id={id} type={type} uri={uri} {...{onImageLoading, onImageLoaded, fitScreen}} />
+                <ImageLoader key={id} id={id} type={type} uri={uri} {...{onImageLoading, onImageLoaded, fitScreen}} />
             }
         </div>
     ): <Icon name='image outline' size='massive' disabled />;

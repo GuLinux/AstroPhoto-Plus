@@ -49,6 +49,8 @@ class EventListener:
     def on_indi_server_reloaded(self):
         self.sse.publish({'event': 'reloaded', 'payload': {}, 'is_error': False}, type='indi_server')
 
+    def on_sequence_image_saved(self, sequence_item_id, image_id, number, filename):
+        self.sse.publish({'event': 'image_saved', 'payload': { 'sequence_item': sequence_item_id, 'image_id': image_id, 'number': number, 'filename': filename }, 'is_error': False}, type='sequences')
 
 
     def on_indi_service_exit(self, service):
@@ -116,4 +118,4 @@ class Controller:
 
 
 controller = Controller()
-
+event_listener = controller.event_listener

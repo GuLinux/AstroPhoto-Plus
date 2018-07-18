@@ -8,7 +8,7 @@ const LastCapturedSequenceImage = ({type, lastImageId, lastImage}) => lastImage 
     <Container>
         <Header content='Last captured image' />
         <Link to={`/image/main/${lastImageId}`}>
-            <ImageLoader id={lastImageId} type={type} uri={lastImage} fitScreen={true} />
+            <ImageLoader key={lastImageId} id={lastImageId} type={type} uri={lastImage} fitScreen={true} />
         </Link>
     </Container>
 ) : null;

@@ -7,9 +7,9 @@ from .images_db import main_images_db
 
 from app import logger
 
-
 class ExposureSequenceItem:
     def __init__(self, data):
+        self.sequence_item_id = data['id']
         self.filename = data['filename']
         self.count = data['count']
         self.exposure = data['exposure']
@@ -45,7 +45,7 @@ class ExposureSequenceItem:
             'saved_images': self.saved_images,
         }
 
-    def run(self, server, devices, root_path, logger, on_update, index):
+    def run(self, server, devices, root_path, event_listener, logger, on_update, index):
         self.progress = 0
 
         filename_template_params = {
@@ -59,6 +59,7 @@ class ExposureSequenceItem:
 
         upload_path = os.path.join(root_path, self.directory)
         sequence = Sequence(devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, filename_template=self.filename, filename_template_params=filename_template_params)
+        images_by_filename = {}
 
         def on_started(sequence):
             pass
@@ -71,6 +72,11 @@ class ExposureSequenceItem:
             self.last_message = 'finished exposure {} out of {}, saved to {}'.format(index+1, sequence.count, filename)
             self.progress = sequence.finished
             image = Image(path=filename, file_required=False)
+            images_by_filename[filename] = image
+            on_update()
+
+        def on_each_saved(sequence, index, filename):
+            image = images_by_filename[filename]
             self.saved_images.append(image.id)
             main_images_db.add(image)
             on_update()
@@ -83,6 +89,7 @@ class ExposureSequenceItem:
         sequence.callbacks.add('on_started', on_started)
         sequence.callbacks.add('on_each_started', on_each_started)
         sequence.callbacks.add('on_each_finished', on_each_finished)
+        sequence.callbacks.add('on_each_saved', on_each_saved)
         sequence.callbacks.add('on_finished', on_finished)
         sequence.run()
 

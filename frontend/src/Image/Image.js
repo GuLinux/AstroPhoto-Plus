@@ -23,7 +23,7 @@ export class ImageComponent extends React.Component {
 export class ImageLoader extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { loading: false, ready: false, error: false }
+        this.state = { loading: false, ready: false, error: false, exiting: false }
     }
 
     toggleLoading = (loading) => this.setState({...this.state, loading});
@@ -43,7 +43,6 @@ export class ImageLoader extends React.Component {
     shouldShowImage = () => this.state.ready && ! this.state.error 
 
     componentDidMount = () => {
-        console.log('waiting for image to be ready');
         fetch(`/api/images/${this.props.type}/${this.props.id}/wait_until_ready`).then( (response) => {
             if(response.ok) {
                 return response.json();
@@ -51,20 +50,23 @@ export class ImageLoader extends React.Component {
             return Promise.reject(response);
         })
             .then(json => {
-                this.toggleReady(true);
+                this.state.exiting || this.toggleReady(true);
             })
             .catch(response => {
-                this.setState({...this.state, error: true});
+                this.state.exiting || this.setState({...this.state, error: true});
             })
     }
 
-    render = () => (
+    render = () => this.state.exiting ? null : (
         <React.Fragment>
             <Loader active={this.shouldShowLoader()} inverted />
             { this.state.error &&   <Message icon='image' header='Error loading image' content='An error occured while loading the image. Please retry, or check your server logs.' /> }
             { this.shouldShowImage() && <ImageComponent {...this.props} onImageLoading={this.onImageLoading} onImageLoaded={this.onImageLoaded} /> }
         </React.Fragment>
     );
+
+    componentWillUnmount = () => {
+    }
 }
 
 const ImagePage  = ({id, type, url, options, setOption, history, imageLoading, onImageLoaded}) => url ? (
