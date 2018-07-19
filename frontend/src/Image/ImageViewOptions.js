@@ -45,7 +45,7 @@ const ImageViewOptions = ({options, setOption}) => (
             !options.stretch && (<React.Fragment>
                 <Form.Field key='shadows'>
                     <NumberInput name='clipLow' options={options} label='Clip shadows' min={0} max={100} step={0.1} onChange={ clipLow => setOption({clipLow}) } />
-                </Form.Field>,
+                </Form.Field>
                 <Form.Field key='highlights'>
                     <NumberInput name='clipHigh' options={options} label='Clip highlights' min={0} max={100} step={0.1} onChange={ clipHigh => setOption({clipHigh}) } />
                 </Form.Field>
