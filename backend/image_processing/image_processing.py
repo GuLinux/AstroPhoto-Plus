@@ -116,6 +116,18 @@ class ImageProcessing(_object):
 
     def autostretch(self):
         return _image_processing.ImageProcessing_autostretch(self)
+
+    def clip(self, min, max):
+        return _image_processing.ImageProcessing_clip(self, min, max)
+
+    def resize(self, width, height, interpolation):
+        return _image_processing.ImageProcessing_resize(self, width, height, interpolation)
+
+    def width(self):
+        return _image_processing.ImageProcessing_width(self)
+
+    def height(self):
+        return _image_processing.ImageProcessing_height(self)
 ImageProcessing_swigregister = _image_processing.ImageProcessing_swigregister
 ImageProcessing_swigregister(ImageProcessing)
 

@@ -7,6 +7,8 @@ from .model import random_id
 import math
 import numpy
 import PIL.Image
+from image_processing.image_processing import ImageProcessing
+from utils.benchmark_log import benchlogger
 
 # TODO:
 # - use fits loader (plugin)
@@ -131,31 +133,20 @@ class Image:
         }
 
     def __convert(self, args, filepath, format):
-        with fits.open(self.path) as fits_file:
-            image_data = fits_file[0].data
+        imp = ImageProcessing(self.path)
+        if args.get('stretch', '0') == '1':
+            imp.autostretch()
+        else:
+            if 'clip_low' in args or 'clip_high' in args:
+                clip_low = int(256 * float(args.get('clip_low', 0)) / 100.)
+                clip_high = int(256 * float(args.get('clip_high', 100)) / 100.)
+                imp.clip(clip_low, clip_high)
 
-            if args.get('stretch', '0') == '1':
-                image_data = Image.stretch(image_data)
-            else:
-                if 'clip_low' in args or 'clip_high' in args:
-                    image_data = Image.clip(
-                        image_data,
-                        clip_low_fraction=float(args.get('clip_low', 0)) / 100.,
-                        clip_high_fraction=float(args.get('clip_high', 100)) / 100.
-                    )
-
-            image_data = Image.normalize(image_data)
-            if Image.bpp(image_data) == 16:
-                image_data = (image_data / 256)
-            maxwidth = int(args.get('maxwidth', '0'))
-
-            image = PIL.Image.fromarray(image_data.astype(numpy.uint8))
-
-            if maxwidth > 0:
-                maxheight = image.height / (image.width / maxwidth)
-                image.thumbnail((maxwidth,maxheight))
-            image.save(filepath, **format['save_options'])
-
+        maxwidth = int(args.get('maxwidth', '0'))
+        if maxwidth > 0:
+            maxheight = int(imp.height() / (imp.width() / maxwidth))
+            imp.resize(maxwidth, maxheight, 'LINEAR')
+        imp.save(filepath)
 
     @staticmethod
     def bpp(image):

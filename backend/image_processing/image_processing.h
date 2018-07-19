@@ -3,6 +3,9 @@
 
 #include <string>
 #include <memory>
+#include <opencv2/opencv.hpp>
+
+#include "image_processing.h"
 
 class ImageProcessing {
 public:
@@ -10,9 +13,12 @@ public:
     ~ImageProcessing();
     void save(const std::string &filename);
     void autostretch();
+    void clip(int min, int max);
+    void resize(int width, int height, const std::string &interpolation);
+    int width() const;
+    int height() const;
 private:
-    class Private;
-    std::unique_ptr<Private> d;
+    cv::Mat image;
 };
 
 #endif
