@@ -9,7 +9,7 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import PRINTJ from 'printj'
 import LastCapturedSequenceImageContainer from './LastCapturedSequenceImageContainer';
-
+import NotFoundPage from '../components/NotFoundPage';
 
 // TODO: refactor Gear pages out of this
 
@@ -111,7 +111,12 @@ class Sequence extends React.Component {
     render = () => {
         const {sequence, camera, filterWheel, canEdit} = this.props;
         if(sequence === null)
-            return null;
+            return <NotFoundPage
+                        title='Sequence not found'
+                        message='The requested sequence was not found on the server. It might have been deleted, or it might not be synchronized yet.'
+                        backButtonText='Back to sequences list'
+                        backToUrl='/sequences'
+                    />;
         return (
         <Container>
             <Header size="medium">{sequence.name}</Header>
