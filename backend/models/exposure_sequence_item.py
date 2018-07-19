@@ -1,5 +1,7 @@
 import os
 import time
+from queue import Queue
+
 from .exceptions import BadRequestError
 from pyindi_sequence import Sequence
 from .image import Image
@@ -48,6 +50,8 @@ class ExposureSequenceItem:
     def run(self, server, devices, root_path, event_listener, logger, on_update, index):
         self.progress = 0
 
+        images_queue = Queue()
+
         filename_template_params = {
             'timestamp': lambda _: time.time(),
             'datetime': lambda _: time.strftime('%Y-%m-%dT%H:%M:%S-%Z'),
@@ -59,7 +63,6 @@ class ExposureSequenceItem:
 
         upload_path = os.path.join(root_path, self.directory)
         sequence = Sequence(devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, filename_template=self.filename, filename_template_params=filename_template_params)
-        images_by_filename = {}
 
         def on_started(sequence):
             pass
@@ -69,14 +72,19 @@ class ExposureSequenceItem:
             on_update()
 
         def on_each_finished(sequence, index, filename):
+            images_queue.put(Image(path=filename, file_required=False))
             self.last_message = 'finished exposure {} out of {}, saved to {}'.format(index+1, sequence.count, filename)
             self.progress = sequence.finished
-            image = Image(path=filename, file_required=False)
-            images_by_filename[filename] = image
             on_update()
 
         def on_each_saved(sequence, index, filename):
-            image = images_by_filename[filename]
+            image = None
+
+            while not image or not image.path == filename:
+                if image:
+                    images_queue.put(image)
+                image = images_queue.get()
+
             self.saved_images.append(image.id)
             main_images_db.add(image)
             on_update()

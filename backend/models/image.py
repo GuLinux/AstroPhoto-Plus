@@ -6,7 +6,6 @@ from .exceptions import BadRequestError, NotFoundError
 from .model import random_id 
 import math
 import numpy
-import PIL.Image
 from image_processing.image_processing import ImageProcessing
 from utils.benchmark_log import benchlogger
 
@@ -113,13 +112,15 @@ class Image:
         return self.cached_conversions[key]
 
     def histogram(self, bins=50):
+        # Histogram looks fast enough to be kept in python code. Still worth having a look in the future to see if it's too slow on an older/slower machine, and if the performance gain in C++ would be sensible.
         with fits.open(self.path) as fits_file:
             image_data = fits_file[0].data
             values, bins_boundaries = numpy.histogram(image_data, bins=int(bins), range=(0, image_data.max()), density=False)
-            return {
+            histogram = {
                 'values': [int(x) for x in values],
                 'bins': [float(x) for x in bins_boundaries],
             }
+            return histogram
 
     def __file_info(self, path, format_name, content_type=None):
         directory, filename = os.path.split(path)

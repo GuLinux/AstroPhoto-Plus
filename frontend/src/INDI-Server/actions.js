@@ -1,6 +1,12 @@
 import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoloadConfigurationAPI } from '../middleware/api'
 import Actions from '../actions'
 
+const fetchGear = dispatch => setTimeout( () => {
+    dispatch(Actions.Gear.fetchCameras())
+    dispatch(Actions.Gear.fetchFilterWheels())
+}, 2000);
+
+
 export const INDIServer = {
 
     serverConnectionNotify: (state, dispatch) => {
@@ -36,8 +42,7 @@ export const INDIServer = {
     },
 
     receivedDevices: (devices, dispatch) => {
-        dispatch(Actions.Gear.fetchCameras())
-        dispatch(Actions.Gear.fetchFilterWheels())
+        fetchGear(dispatch);
         devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device)));
         return {
             type: 'RECEIVED_INDI_DEVICES',
@@ -119,8 +124,7 @@ export const INDIServer = {
     deviceAdded: device => {
         return dispatch => {
             dispatch({ type: 'INDI_DEVICE_ADDED', device })
-            dispatch(Actions.Gear.fetchCameras())
-            dispatch(Actions.Gear.fetchFilterWheels())
+            fetchGear(dispatch);
         }
     },
     
