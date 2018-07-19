@@ -139,8 +139,8 @@ class Image:
             imp.autostretch()
         else:
             if 'clip_low' in args or 'clip_high' in args:
-                clip_low = int(256 * float(args.get('clip_low', 0)) / 100.)
-                clip_high = int(256 * float(args.get('clip_high', 100)) / 100.)
+                clip_low = float(args.get('clip_low', 0)) / 100.
+                clip_high = float(args.get('clip_high', 100)) / 100.
                 imp.clip(clip_low, clip_high)
 
         maxwidth = int(args.get('maxwidth', '0'))

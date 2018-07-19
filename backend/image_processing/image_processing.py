@@ -131,6 +131,9 @@ class ImageProcessing(_object):
 
     def height(self):
         return _image_processing.ImageProcessing_height(self)
+
+    def bpp(self):
+        return _image_processing.ImageProcessing_bpp(self)
 ImageProcessing_swigregister = _image_processing.ImageProcessing_swigregister
 ImageProcessing_swigregister(ImageProcessing)
 

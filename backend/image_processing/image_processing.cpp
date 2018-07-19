@@ -16,7 +16,7 @@ ImageProcessing::ImageProcessing(const string &fitsfile) {
     static vector<uint16_t> data(contents.size());
     move(begin(contents), end(contents), data.begin());
     // TODO: datatype check
-    cv::Mat(fits_image.axis(1), fits_image.axis(0), CV_16UC1, data.data()).convertTo(this->image, CV_8UC1, 0.00390625);
+    this->image = cv::Mat(fits_image.axis(1), fits_image.axis(0), CV_16UC1, data.data());
 }
 
 ImageProcessing::~ImageProcessing() {
@@ -26,23 +26,42 @@ void ImageProcessing::save(const std::string &filename) {
     cv::imwrite(filename, this->image);
 }
 
-void ImageProcessing::autostretch() {
-    auto image = this->image;
-    cv::equalizeHist(image, this->image);
+cv::Mat to8Bit(const cv::Mat &source) {
+    cv::Mat dest;
+    source.convertTo(dest, CV_8UC1, 0.00390625);
+    return dest;
 }
 
 
-void ImageProcessing::clip(int min, int max) {
+void ImageProcessing::autostretch() {
+    cv::Mat normedImage;
+    cv::normalize(this->image, normedImage, 0, (1 << this->bpp()), cv::NORM_MINMAX);
+    cv::equalizeHist(to8Bit(normedImage), this->image);
+}
+
+#include <iostream>
+
+void ImageProcessing::clip(float min, float max) {
+    int maxBPPValue = (1 << this->bpp());
+
+
+    cerr << "ImageProcessing::clip(" << min << ", " << max << ")\n";
+    const int thresholdMin = static_cast<int>(min * maxBPPValue);
+    const int thresholdMax = static_cast<int>(max * maxBPPValue);
+    cerr << "maxBPPValue=" << maxBPPValue << ", thresholdMin=" << thresholdMin << ", thresholdMax=" << thresholdMax << endl;
     if(min > 0) {
-        this->image -= min;
+        this->image -= thresholdMin;
     }
-    if(max < 255) {
-        cv::threshold(this->image, this->image, max, 0, cv::THRESH_TRUNC);
+    if(max < 1) {
+        cv::Mat source;
+        this->image.convertTo(source, CV_32FC1);
+        cv::threshold(source, this->image, thresholdMax, 0, cv::THRESH_TRUNC);
     }
 
     double minVal, maxVal;
     cv::minMaxLoc(image, &minVal, &maxVal);
-    image = (image - minVal) * (255 / (maxVal - minVal));
+    auto clipped = (image - minVal) * ( (maxBPPValue - 1)/ (maxVal - minVal));
+    this->image = to8Bit(clipped);
 }
 
 
@@ -66,4 +85,17 @@ int ImageProcessing::width() const {
 
 int ImageProcessing::height() const {
     return this->image.rows;
+}
+
+int ImageProcessing::bpp() const {
+    switch(this->image.depth()) {
+        case CV_8U:
+        case CV_8S:
+            return 8;
+        case CV_16U:
+        case CV_16S:
+            return 16;
+        default:
+            return 32; // This really shouldn't be happening though..
+    }
 }

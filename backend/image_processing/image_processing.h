@@ -13,10 +13,11 @@ public:
     ~ImageProcessing();
     void save(const std::string &filename);
     void autostretch();
-    void clip(int min, int max);
+    void clip(float min, float max);
     void resize(int width, int height, const std::string &interpolation);
     int width() const;
     int height() const;
+    int bpp() const;
 private:
     cv::Mat image;
 };
