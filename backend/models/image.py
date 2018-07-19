@@ -148,59 +148,6 @@ class Image:
             imp.resize(maxwidth, maxheight, 'LINEAR')
         imp.save(filepath)
 
-    @staticmethod
-    def bpp(image):
-        return image.dtype.itemsize * 8
-
-    @staticmethod
-    def max_bpp(image):
-        return int(math.pow(2, Image.bpp(image))) - 1
-
-    @staticmethod
-    def stretch(image):
-        hist, bins = numpy.histogram(image, bins=50)
-        clip_fraction = 0.07
-
-        clip_opts = [{
-            'num': val,
-            'low': bins[index],
-            'high': bins[index+1],
-        } for index, val in enumerate(hist)]
-
-        low_c, high_c = 0, 0
-        for index, opt in enumerate(clip_opts):
-            high_index = len(clip_opts) - index - 1
-            low_c += opt['num']
-            high_c += clip_opts[high_index]['num']
-            opt['low_cumulative'] = low_c
-            clip_opts[high_index]['high_cumulative'] = high_c
-
-        clip_low = [x for x in clip_opts if x['low_cumulative'] >= image.size * clip_fraction][0]['low']
-        clip_high = [x for x in clip_opts if x['high_cumulative'] >= image.size * clip_fraction][-1]['high']
-        return Image.clip(image, clip_low=clip_low, clip_high=clip_high)
-
-    @staticmethod
-    def clip(image, clip_low_fraction=0, clip_high_fraction=1, clip_low=None, clip_high=None):
-        max_bpp = Image.max_bpp(image)
-
-        if clip_low is None:
-            clip_low = max_bpp * clip_low_fraction
-        if clip_high is None:
-            clip_high = max_bpp * clip_high_fraction
-
-        clipped = numpy.clip(image, clip_low, clip_high).astype(image.dtype)
-        return clipped
-
-
-    @staticmethod
-    def normalize(image):
-        max_bpp = Image.max_bpp(image)
-
-        image_min = image.min()
-        image_max = image.max()
-        normalized = (image - image_min) * ((max_bpp)/(image_max-image_min)).astype(image.dtype)
-        return normalized
-
 
     def remove_files(self, remove_fits=False):
         if remove_fits:
