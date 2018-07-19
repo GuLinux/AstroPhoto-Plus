@@ -1,0 +1,6 @@
+test.*
+build
+*.so
+*wrap*.c*
+
+
