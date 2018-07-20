@@ -23,7 +23,8 @@ export class ImageComponent extends React.Component {
 export class ImageLoader extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { loading: false, ready: false, error: false, exiting: false }
+        this.state = { loading: false, ready: false, error: false }
+        this.exiting = false;
     }
 
     toggleLoading = (loading) => this.setState({...this.state, loading});
@@ -50,14 +51,14 @@ export class ImageLoader extends React.Component {
             return Promise.reject(response);
         })
             .then(json => {
-                this.state.exiting || this.toggleReady(true);
+                this.exiting || this.toggleReady(true);
             })
             .catch(response => {
-                this.state.exiting || this.setState({...this.state, error: true});
+                this.exiting || this.setState({...this.state, error: true});
             })
     }
 
-    render = () => this.state.exiting ? null : (
+    render = () => this.exiting ? null : (
         <React.Fragment>
             <Loader active={this.shouldShowLoader()} inverted />
             { this.state.error &&   <Message icon='image' header='Error loading image' content='An error occured while loading the image. Please retry, or check your server logs.' /> }
@@ -65,8 +66,7 @@ export class ImageLoader extends React.Component {
         </React.Fragment>
     );
 
-    componentWillUnmount = () => {
-    }
+    componentWillUnmount = () => this.exiting = true;
 }
 
 const ImagePage  = ({id, type, url, options, setOption, history, imageLoading, onImageLoaded}) => url ? (
