@@ -8,8 +8,9 @@ Usage: $0 <command> [options]
 
 Commands:
 
- - autosetup                  Prepares everything automatically, asking confirmation about choices where necessary.
+ - autosetup                   Prepares everything automatically, asking confirmation about choices where necessary.
  - setup-backend username      Setup the backend to run as the specified user.
+ - start-redis                 Starts the required Redis server, and enables autostart at boot
  - setup-apache2               Prepares apache2 to serve StarQuew.
  - setup-nginx                 Prepares nginx to serve StarQuew.
  - start                       Starts StarQuew daemon.
@@ -38,11 +39,17 @@ autosetup() {
     fi
 
     read -p "Please enter the username for your StarQuew backend server: " -i "${SUDO_USER:-$USER}" -e STARQUEW_USER
+    start-redis
     setup-backend "$STARQUEW_USER"
     autostart
     echo "Automatic setup complete. You can open your browser at http://localhost to start using your StarQuew installation."
     echo "If this is the first time installing StarQuew, the server might not be ready yet and display an error page."
     echo "If this is the case, run $0 logs to see if it's still installing packages, or if there is a problem with your setup."
+}
+
+start-redis() {
+    systemctl enable redis
+    systemctl start redis
 }
 
 setup-apache2() {
@@ -115,7 +122,7 @@ check_root() {
 command="$1"; shift
 
 case "$command" in
-    autosetup|setup-apache2|setup-nginx|start|autostart|setup-backend|restart)
+    autosetup|setup-apache2|setup-nginx|start|autostart|setup-backend|restart|start-redis)
         check_root
         "$command" "$@"
         ;;

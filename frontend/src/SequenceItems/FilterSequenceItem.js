@@ -17,7 +17,7 @@ class FilterSequenceItem extends React.Component {
             <Form>
                 <Form.Field>Set filter wheel position</Form.Field>
                 {this.props.filters.map(filter => (
-                <Form.Field>
+                <Form.Field key={filter.number}>
                     <Radio
                         toggle
                         name='filterWheelValue'

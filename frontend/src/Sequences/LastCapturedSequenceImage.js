@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header, Container } from 'semantic-ui-react'
+import { Header, Container, Radio } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { ImageLoader } from '../Image/Image'
 
@@ -72,7 +72,9 @@ class LastCapturedSequenceImage extends React.Component {
         const {type, lastImageId, lastImage} = this.state.shownImage;
         return lastImage ? (
             <Container>
-                <Header content='Last captured image' />
+                <Header>
+                    <Radio toggle label='Last captured image' />
+                </Header>
                 <Link to={`/image/main/${lastImageId}`}>
                     <ImageLoader key={lastImageId} id={lastImageId} type={type} uri={lastImage} fitScreen={true} onImageLoaded={this.onImageLoaded} />
                 </Link>
