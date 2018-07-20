@@ -9,7 +9,7 @@ const ImageRow = ({index, imageData, previews}) => imageData ? (
         <Table.Cell>{index+1}</Table.Cell>
         {previews && (
             <Table.Cell>
-                <Image src={`/api/images/main/${imageData.id}?format=jpeg&maxwidth=128`} />
+                <Image src={`/api/images/main/${imageData.id}?format=jpeg&maxwidth=128&stretch=1`} />
             </Table.Cell>
         )}
         <Table.Cell><Link to={`/image/main/${imageData.id}`}>{imageData.filename}</Link></Table.Cell>
