@@ -209,7 +209,7 @@ def new_sequence(json):
 @json_api
 def start_sequence(id):
     controller.sequences_runner.run(id)
-    return { 'id': id, 'status': 'starting' }
+    return controller.sequences.lookup(id).to_map()
 
 
 @app.route('/api/sequences/<id>/duplicate', methods=['POST'])

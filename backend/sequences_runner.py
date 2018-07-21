@@ -1,6 +1,6 @@
 from models import BadRequestError
 import threading
-import sys
+import time
 
 class RunningSequence:
     def __init__(self, sequence, controller, logger):
@@ -16,10 +16,13 @@ class RunningSequence:
         self.controller.sequences.save(self.sequence)
 
     def __run(self):
+        # TODO: not ideal, find a better solution
+        # Let the HTTP thread return a response, then start the thread
+        time.sleep(1)
         self.logger.debug('Inside sequence thread')
         try:
             self.sequence.run(self.controller.indi_server, self.controller.settings.sequences_dir, self.controller.event_listener, self.logger, on_update=self.__on_updated)
-        except RuntimeError as e:
+        except Exception as e:
             self.logger.exception('unhandled exception while running sequence')
             self.controller.event_listener.on_sequence_error(self.sequence, str(e))
 

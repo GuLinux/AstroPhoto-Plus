@@ -63,23 +63,25 @@ class Sequence:
             filter_wheel = filter_wheel[0]
 
         sequence_root_path = os.path.join(root_directory, self.upload_path)
-        os.makedirs(sequence_root_path, exist_ok=True)
+
  
         logger.debug('Starting sequence with camera: {}={} and filter_wheel: {}={}'.format(self.camera, camera.device.name, self.filter_wheel, filter_wheel.device.name if filter_wheel else 'N/A'))
 
+        self.status = 'starting'
         for sequence_item in self.sequence_items:
             logger.debug('resetting sequence item {}'.format(sequence_item))
             sequence_item.reset()
 
-        self.status = 'running'
-
         on_update()
         try:
+            os.makedirs(sequence_root_path, exist_ok=True)
+
+            self.status = 'running'
             for index, sequence_item in enumerate(self.sequence_items):
                 sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
             self.status = 'finished'
             on_update()
-        except RuntimeError as e:
+        except Exception as e:
             logger.exception('error running sequence')
             self.status = 'error'
             on_update()
