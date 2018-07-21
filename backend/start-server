@@ -37,7 +37,7 @@ echo "$requirements_checksum" > "$VENV_HOME/requirements_checksum"
 
 native_image_processor_checksum="$( md5sum image_processing/image_processing.{h,cpp} | cut -d' ' -f1 | tr '\n' '-' )"
 if [ "$native_image_processor_checksum" != "$( cat "$VENV_HOME/native_image_processor_checksum" 2>/dev/null )" ]; then
-    ./image_processing/compile || exit $?
+    bash ./image_processing/compile || exit $?
 fi
 echo "$native_image_processor_checksum" > "$VENV_HOME/native_image_processor_checksum"
 
