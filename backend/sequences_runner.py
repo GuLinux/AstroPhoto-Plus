@@ -11,7 +11,7 @@ class RunningSequence:
         self.thread.start()
 
     def __on_updated(self):
-        self.logger.debug('sequence updated: {}'.format(self.sequence.to_map()))
+        #self.logger.debug('sequence updated: {}'.format(self.sequence.to_map()))
         self.controller.event_listener.on_sequence_update(self.sequence)
         self.controller.sequences.save(self.sequence)
 

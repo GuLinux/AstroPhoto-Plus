@@ -78,6 +78,7 @@ class ExposureSequenceItem:
             on_update()
 
         def on_each_saved(sequence, index, filename):
+            logger.debug('received file for index {}: {}'.format(index, filename))
             image = None
 
             while not image or not image.path == filename:
