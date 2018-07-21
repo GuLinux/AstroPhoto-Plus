@@ -112,7 +112,6 @@ class Controller:
     def __ping_clients(self):
         while True:
             time.sleep(5)
-            app.logger.debug('pinging clients on SSE interface')
             self.sse.publish({'event': 'ping'}, type='main')
 
 
