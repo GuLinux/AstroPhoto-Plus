@@ -1,0 +1,5 @@
+#!/bin/bash
+cd "$( dirname "$0")"
+
+swig -c++ -python image_processing.i
+

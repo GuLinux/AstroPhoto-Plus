@@ -1,9 +1,7 @@
 #!/bin/bash
 cd "$( dirname "$0")"
 
-swig -c++ -python image_processing.i
-
-python3 setup.py build_ext --inplace
+python3 setup.py build_ext -b "$HOME/.local/share/StarQuew/native_modules" -t /tmp/starquew-native-build
 
 
 

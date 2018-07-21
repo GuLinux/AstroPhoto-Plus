@@ -31,14 +31,13 @@ fi
 requirements_checksum="$( md5sum requirements.txt | cut -d' ' -f1 )"
 if [ "$requirements_checksum" != "$( cat "$VENV_HOME/requirements_checksum" 2>/dev/null )" ]; then
     pip install wheel # prerequisite for installing other packages
-    pip install -r requirements.txt
+    pip install -r requirements.txt || exit $?
 fi
 echo "$requirements_checksum" > "$VENV_HOME/requirements_checksum"
 
 native_image_processor_checksum="$( md5sum image_processing/image_processing.{h,cpp} | cut -d' ' -f1 | tr '\n' '-' )"
 if [ "$native_image_processor_checksum" != "$( cat "$VENV_HOME/native_image_processor_checksum" 2>/dev/null )" ]; then
-    ./image_processing/clean
-    ./image_processing/compile
+    ./image_processing/compile || exit $?
 fi
 echo "$native_image_processor_checksum" > "$VENV_HOME/native_image_processor_checksum"
 
@@ -46,5 +45,5 @@ if [ "$1" == --only-deps ]; then
     exit 0
 fi
 
-export PYTHONPATH="$PWD/indi-lite-tools/:$PWD:$PYTHONPATH"
+export PYTHONPATH="$PWD/indi-lite-tools/:$PWD:$HOME/.local/share/StarQuew/native_modules:$PYTHONPATH"
 gunicorn --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t 30 -k gthread -b 0.0.0.0:5000 star-quew:app "$@"

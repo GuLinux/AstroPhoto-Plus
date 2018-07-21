@@ -1,7 +1,0 @@
-test.*
-build
-*.so
-*wrap*.c*
-image_processing.py
-
-
