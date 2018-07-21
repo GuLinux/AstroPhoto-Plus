@@ -70,10 +70,10 @@ class ResponsiveNavbar extends React.Component {
 
 const Navbar = ({location, ...props}) => (
     <React.Fragment>
-        <Responsive maxWidth={768}>
+        <Responsive maxWidth={1129}>
             <ResponsiveNavbar {...props} />
         </Responsive>
-        <Responsive minWidth={769}>
+        <Responsive minWidth={1130}>
             <NavbarDesktop {...props} />
         </Responsive>
     </React.Fragment>
