@@ -10,8 +10,10 @@ class RedisClient:
 
     def append(self, object_dict, list_name, list_type=None):
         list_full_id, object_full_id = self.__calc_ids(object_dict['id'], list_name, list_type)
-        self.client.lpush(list_full_id, object_full_id)
-        self.client.set(object_full_id, json.dumps(object_dict))
+        pipe = self.client.pipeline()
+        pipe.lpush(list_full_id, object_full_id)
+        pipe.set(object_full_id, json.dumps(object_dict))
+        pipe.execute()
 
     def lookup(self, object_id, list_name, list_type=None):
         _, object_full_id = self.__calc_ids(object_id, list_name, list_type)
@@ -23,8 +25,10 @@ class RedisClient:
         
     def delete(self, object_id, list_name, list_type=None):
         list_full_id, object_full_id = self.__calc_ids(object_id, list_name, list_type)
-        self.client.delete(object_full_id)
-        self.client.lrem(list_full_id, 0, object_full_id)
+        pipe = self.client.pipeline()
+        pipe.delete(object_full_id)
+        pipe.lrem(list_full_id, 0, object_full_id)
+        pipe.execute()
 
     def list_keys(self, list_name, list_type):
         list_full_id = self.__calc_list_id(list_name, list_type)
