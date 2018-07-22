@@ -1,6 +1,5 @@
 from .device import Device
 from .exceptions import NotFoundError, FailedMethodError
-from .saved_list import SavedList
 from .model import random_id
 from .image import Image
 from .images_db import camera_images_db

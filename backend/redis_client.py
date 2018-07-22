@@ -30,12 +30,24 @@ class RedisClient:
         pipe.lrem(list_full_id, 0, object_full_id)
         pipe.execute()
 
-    def list_keys(self, list_name, list_type):
+    def list_length(self, list_name, list_type=None):
+        list_full_id = self.__calc_list_id(list_name, list_type)
+        return self.client.llen(list_full_id)
+
+    def item_exists(self, object_id, list_name, list_type=None):
+        _, object_full_id = self.__calc_ids(object_id, list_name, list_type)
+        return self.client.exists(object_full_id)
+        
+    def item_at(self, index, list_name, list_type=None):
+        list_full_id = self.__calc_list_id(list_name, list_type)
+        return redis_client.lindex(list_full_id, index)
+
+    def list_keys(self, list_name, list_type=None):
         list_full_id = self.__calc_list_id(list_name, list_type)
         full_ids = self.client.lrange(list_full_id, 0, -1)
         return [id[len(list_full_id)+1:] for id in full_ids]
         
-    def list_values(self, list_name, list_type):
+    def list_values(self, list_name, list_type=None):
         ids = self.list_keys(list_name, list_type)
         return [self.lookup(id, list_name, list_type) for id in ids]
 
