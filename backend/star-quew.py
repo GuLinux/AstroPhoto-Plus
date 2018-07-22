@@ -103,14 +103,11 @@ def new_indi_profile(json):
 @json_input
 @json_api
 def update_indi_profile(id, json):
-    try:
-        updated_profile = None
-        with controller.indi_profiles.lookup_edit(id) as profile:
-            profile.update(json)
-            updated_profile = profile.to_map()
-        return updated_profile
-    except KeyError:
-        raise BadRequestError('Invalid json')
+    updated_profile = None
+    with controller.indi_profiles.lookup_edit(id) as profile:
+        profile.update(json)
+        updated_profile = profile.to_map()
+    return updated_profile
 
 # INDI Methods
 
