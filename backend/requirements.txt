@@ -7,3 +7,4 @@ greenlet
 numpy
 pillow
 six
+pkgconfig
