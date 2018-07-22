@@ -25,6 +25,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     ...ownProps,
     addProfile: (name) => dispatchProps.addProfile(name, stateProps.selectedDrivers),
     renameProfile: (id, name) => dispatchProps.updateProfile(id, name, stateProps.profiles.find(p => p.id === id).devices),
+    updateProfile: (id) => dispatchProps.updateProfile(id, undefined, stateProps.selectedDrivers),
 })
 
 const INDIServiceProfilesContainer = connect(
