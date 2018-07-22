@@ -1,74 +1,47 @@
-from .serializer import Serializer
 from .exceptions import NotFoundError
 from .image import Image
 from contextlib import contextmanager
 import os
 from .settings import settings
+from redis_client import redis_client
 
 
 class ImagesDatabase:
     def __init__(self, settings, name='default'):
         self.settings = settings
         self.name = name
-        self.serializer = Serializer(os.path.join(settings.images_db_path, 'images_' + name + '.json'))
         self.images = {}
 
-        self.load()
-        
-    def keys(self):
-        return self.images.keys()
-
-    def values(self):
-        return [Image.from_map(v) for v in self.images.values()]
-
-    def lookup(self, id, **kwargs):
-        if not id in self.images:
-            raise NotFoundError('Image with id {} not found in {} database'.format(id, self.name))
-        return Image.from_map(self.images[id], **kwargs)
-
-    def to_map(self):
-        images = {}
-        for id in self.images:
-            images[id] = self.lookup(id).to_map(for_saving=False)
-        return images
+    def lookup(self, image_id, **kwargs):
+        image_map = redis_client.lookup(image_id, self.name, 'images')
+        if not image_map:
+            raise NotFoundError('Image with id {} not found in {} database'.format(image_id, self.name))
+        return Image.from_map(image_map, **kwargs)
 
     @contextmanager
     def lookup_edit(self, image_id, **kwargs):
         image = self.lookup(image_id, **kwargs)
         yield image
-        self.images[image.id] = image.to_map(for_saving=True)
-        self.save()
-
-    def load(self):
-        try:
-            self.images = self.serializer.get_map()
-        except FileNotFoundError:
-            self.images = {}
-
-    def save(self):
-        self.serializer.save_map(self.images)
-
+        redis_client.update(image_id, image.to_map(for_saving=True), self.name, 'images')
 
     def add(self, image):
-        self.images[image.id] = image.to_map(for_saving=True)
-        self.save()
+        redis_client.append(image.to_map(for_saving=True), self.name, 'images')
 
     def remove(self, image_id, remove_fits=False):
-        image = self.__remove(image_id, remove_fits)
-        self.save()
+        self.__remove(image_id, remove_fits)
 
     def remove_all(self, images_ids, remove_fits=False):
-        for id in images_ids:
-            self.__remove(id, remove_fits)
-        self.save()
+        for image_id in images_ids:
+            self.__remove(image_id, remove_fits)
+
+    def all(self):
+        return [Image.from_map(v) for v in redis_client.list_values(self.name, 'images')] 
         
 
     def __remove(self, image_id, remove_fits):
-        if not image_id in self.images:
-            raise NotFoundError('Image with id {} not found in {} database'.format(id, self.name))
-        image = Image.from_map(self.images.pop(image_id))
+        image = self.lookup(image_id)
         image.remove_files(remove_fits=remove_fits)
-        self.save()
+        redis_client.delete(image_id, self.name, 'images')
         return image
 
 
