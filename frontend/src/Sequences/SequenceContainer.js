@@ -10,7 +10,7 @@ const mapStateToProps = (state, ownProps) => {
     }
     let sequence = state.sequences.entities[sequenceId];
     let gear = getSequencesGears(state)[sequenceId];
-    let properties = {sequence, camera: gear.camera, filterWheel: gear.filterWheel, canEdit: canEdit(state, sequence)};
+    let properties = {sequence, camera: gear.camera, filterWheel: gear.filterWheel, canEdit: canEdit(state, sequence), gear};
     return properties;
 }
 
