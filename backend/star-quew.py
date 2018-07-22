@@ -366,7 +366,13 @@ def directory_browser():
     if not os.path.isdir(path):
         raise BadRequestError('Path {} is not a directory'.format(path))
 
-    return {
+    entries = sorted(os.listdir(path))
+
+    subdirectories = [dir for dir in entries if os.path.isdir(os.path.join(path, dir))]
+    response = {
         'path': path,
-        'subdirectories': sorted([dir for dir in os.listdir(path) if os.path.isdir(os.path.join(path, dir))]),
+        'subdirectories': subdirectories,
     }
+    if request.args.get('show_files', 'false') == 'true':
+        response['files'] = [dir for dir in entries if os.path.isfile(os.path.join(path, dir))]
+    return response
