@@ -68,7 +68,7 @@ class SequencesList extends React.Component {
                                         basic
                                         centered={false}
                                     />
-                                    <Button compact size="mini" title="Start" disabled={!canStart(sequence)}  onClick={() => startSequence(sequence)} icon='play' />
+                                    <Button compact size="mini" title="Start" disabled={!canStart(sequence, gear[sequence.id])}  onClick={() => startSequence(sequence)} icon='play' />
                                     <Button compact size="mini" title="Pause" disabled={true} icon='pause' />
                                     <Button compact size="mini" title="Stop" disabled={true} icon='stop'/>
                                     <Button compact size="mini" title="Duplicate" onClick={() => duplicateSequence(sequence)} icon='copy' />

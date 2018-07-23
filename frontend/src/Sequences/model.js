@@ -1,3 +1,14 @@
-export const canStart = sequence => ['idle', 'error'].includes(sequence.status) && sequence.sequenceItems.length > 0
+export const canStart = (sequence, gear) => {
+    if(! gear) {
+        return false;
+    }
+    if(! gear.camera || ! gear.camera.connected) {
+        return false;
+    }
+    if( gear.filterWheel && ! gear.filterWheel.connected) {
+        return false;
+    }
+    return ['idle', 'error'].includes(sequence.status) && sequence.sequenceItems.length > 0;
+}
 
 

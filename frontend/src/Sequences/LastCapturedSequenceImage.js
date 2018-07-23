@@ -14,6 +14,7 @@ class LastCapturedSequenceImage extends React.Component {
     changeImageShown = (initialSet) => {
         const newState = { shownImage: this.props };
         if(initialSet) {
+            // eslint-disable-next-line
             this.state = newState;
         } else {
             this.setState({...this.state, ...newState});
