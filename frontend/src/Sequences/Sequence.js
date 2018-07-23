@@ -88,13 +88,13 @@ const AddSequenceItem = withRouter( ({history, onCreateSequenceItem, sequenceId,
 class Sequence extends React.Component {
 
     updateMenu = () => {
-        const { startSequence, sequence, canEdit, onMount } = this.props;
+        const { startSequence, sequence, canEdit, onMount, gear } = this.props;
         if(sequence === null)
             return;
         onMount(
             <React.Fragment>
                 <Menu.Item header content='Sequence Items' />
-                <Menu.Item icon='play' onClick={() => startSequence()} disabled={!canStart(sequence)} content='start' />
+                <Menu.Item icon='play' onClick={() => startSequence()} disabled={!canStart(sequence, gear)} content='start' />
                 <AddSequenceItem onCreateSequenceItem={this.props.onCreateSequenceItem} sequenceId={sequence.id} trigger={
                     <Menu.Item icon='add' disabled={!canEdit} content='new' />
                 } />
