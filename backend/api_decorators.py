@@ -11,11 +11,11 @@ def managed_api(f):
         try:
             return f(*args, **kwargs)
         except NotFoundError as e:
-            return api_not_found_error(e.message)
+            return api_not_found_error(e.message, e.payload)
         except BadRequestError as e:
-            return api_bad_request_error(e.message)
+            return api_bad_request_error(e.message, e.payload)
         except FailedMethodError as e:
-            return api_failed_method_error(e.message)
+            return api_failed_method_error(e.message, e.payload)
     return f_wrapper
 
 
@@ -25,11 +25,11 @@ def json_api(f):
         try:
             return jsonify(f(*args, **kwargs))
         except NotFoundError as e:
-            return api_not_found_error(e.message)
+            return api_not_found_error(e.message, e.payload)
         except BadRequestError as e:
-            return api_bad_request_error(e.message)
+            return api_bad_request_error(e.message, e.payload)
         except FailedMethodError as e:
-            return api_failed_method_error(e.message)
+            return api_failed_method_error(e.message, e.payload)
     return f_wrapper
 
 
@@ -42,7 +42,7 @@ def json_input(f):
         try:
             return f(*args, **kwargs)
         except BadRequestError as e:
-            return api_bad_json_error(e.message)
+            return api_bad_json_error(e.message, e.payload)
     return f_wrapper
 
 def indi_connected(f):

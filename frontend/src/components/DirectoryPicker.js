@@ -6,7 +6,7 @@ import { Dimmer, List, Breadcrumb, Modal, Button, Loader, Message } from 'semant
 import fetch from 'isomorphic-fetch'
 
 const ErrorMessage = ({error}) => (
-    <Message />
+    <Message icon='warning' header={error.error} content={error.error_message} compact negative size='tiny' />
 );
 
 const DirectoryView = ({info, loading, onChanged}) => {
@@ -66,11 +66,14 @@ export class DirectoryPicker extends React.Component {
         let response = await fetch('/api/directory_browser?path=' + this.state.currentPath);
         if(response.ok) {
             let data = await response.json();
-            this.onDataReceived({payload: data});
+            this.onDataReceived({keepError: false, payload: data, error: this.state.keepError ? this.state.error : null});
         } else {
             if(response.status === 404) {
                 let errorMessage = await response.json();
                 this.onDataReceived({error: errorMessage});
+                if(errorMessage.payload && errorMessage.payload.redirect_to) {
+                    this.setState({...this.state, currentPath: errorMessage.payload.redirect_to, keepError: true});
+                }
             } else {
                 let errorText = await response.text();
                 console.log('Error fetching directory ' + this.state.currentPath + ': ', response, errorText);
@@ -85,10 +88,8 @@ export class DirectoryPicker extends React.Component {
         <ModalDialog trigger={this.props.trigger} centered={false} size='small'>
             <Modal.Header>Select directory</Modal.Header>
             <Modal.Content>
-            { this.state.error ?
-                <ErrorMessage error={this.state.error} /> :
-                <DirectoryView info={this.state.payload} loading={this.state.loading} onChanged={this.onDirectoryChanged} />
-            }
+            { this.state.error  && <ErrorMessage error={this.state.error} /> }
+            { this.state.payload && <DirectoryView info={this.state.payload} loading={this.state.loading} onChanged={this.onDirectoryChanged} /> }
             </Modal.Content>
             <Modal.Actions>
                 <ModalDialog.CloseButton content='Cancel' />

@@ -362,7 +362,11 @@ def retrieve_image_histogram(type, image):
 def directory_browser():
     path=request.args.get('path', '/')
     if not os.path.exists(path):
-        raise NotFoundError("Directory {} doesn't exists".format(path))
+        parent_dir = path
+        while not os.path.isdir(parent_dir):
+            parent_dir = os.path.dirname(parent_dir)
+        raise NotFoundError("Directory {} doesn't exists".format(path), payload={ 'requested_path': path, 'redirect_to': parent_dir })
+
     if not os.path.isdir(path):
         raise BadRequestError('Path {} is not a directory'.format(path))
 
