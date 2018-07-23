@@ -30,6 +30,7 @@ const Settings = ({settings, onChange, reset, update}) => {
 
     const InputIcon = ({settingsKey}) => isChanged(settings, settingsKey) ? <Icon name='edit' /> : null;
     const currentSequencesDir = displayTextValue(settings, 'sequences_dir', '');
+    const currentINDIPath = displayTextValue(settings, 'indi_prefix', '');
     return (
         <Container>
             <Form>
@@ -47,7 +48,7 @@ const Settings = ({settings, onChange, reset, update}) => {
                             <DirectoryPicker currentDirectory={currentSequencesDir} onSelected={
                                 (dir) => onChange('sequences_dir', dir)
                                 } trigger={
-                                <Button content='Select...' icon='folder' />
+                                <Button content='Browse...' icon='folder' />
                             } />
                         } />}
                     />
@@ -59,9 +60,15 @@ const Settings = ({settings, onChange, reset, update}) => {
                         type='text'
                         icon={<InputIcon settingsKey='indi_prefix' />}
                         iconPosition='left'
-                        value={displayTextValue(settings, 'indi_prefix', '')}
+                        value={currentINDIPath}
                         onChange={onInputChange('indi_prefix')}
-                        action={<InputButtons settingsKey='indi_prefix' />}
+                        action={<InputButtons settingsKey='indi_prefix' customButtons={
+                            <DirectoryPicker currentDirectory={currentINDIPath} onSelected={
+                                (dir) => onChange('indi_prefix', dir)
+                                } trigger={
+                                <Button content='Browse...' icon='folder' />
+                            } />
+                        } />}
                     />
                     <Message attached='top' content='Only change this setting if you installed INDI on a custom path.' info />
                 </Segment>
