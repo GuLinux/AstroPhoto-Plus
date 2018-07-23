@@ -68,7 +68,7 @@ class Controller:
         self.sse = SSE(app.logger)
         self.settings = settings
         settings.on_update = self.__on_settings_update
-        self.indi_profiles = SavedList(self.settings.indi_profiles_list, INDIProfile)
+        self.indi_profiles = SavedList(INDIProfile)
         self.event_listener = EventListener(self.sse)
         self.sequences_runner = SequencesRunner(app.logger, self)
         self.sequences = None
@@ -76,7 +76,7 @@ class Controller:
         self.ping_thread.start()
         self.__create_indi_service()
         self.__create_indi_server()
-        self.sequences = SavedList(self.settings.sequences_list, Sequence)
+        self.sequences = SavedList(Sequence)
 
     def notification(self, event_type, event_name, payload, is_error, error_code=None, error_message=None):
         self.sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)

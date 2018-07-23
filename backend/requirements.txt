@@ -7,4 +7,5 @@ greenlet
 numpy
 pillow
 six
+redis
 pkgconfig

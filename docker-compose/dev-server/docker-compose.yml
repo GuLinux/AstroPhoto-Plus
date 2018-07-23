@@ -26,5 +26,9 @@ services:
         - INDI_SERVER_HOST
         - INDI_SERVER_PORT
         - WEB_THREADS
+        - REDIS_SERVER=redis
+  redis:
+    image: redis:alpine
+    command: redis-server --appendonly yes
 volumes:
     node_modules:

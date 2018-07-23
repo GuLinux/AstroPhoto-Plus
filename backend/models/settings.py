@@ -1,19 +1,15 @@
 import os
-from .serializer import Serializer
 from .exceptions import BadRequestError
 import six
+from redis_client import redis_client
 
 
 class Settings:
     def __init__(self):
         self.default_datadir = os.environ.get('STARQUEW_DATADIR', os.path.join(os.environ['HOME'], 'StarQuew-Data'))
-        self.serializer = Serializer(self.__build_path(['.config', 'StarQuew', 'settings.json'], isdir=False), Settings)
-        self.sequences_list = self.__build_path(['.local', 'share', 'StarQuew', 'sequences'], isdir=True)
-        self.indi_profiles_list = self.__build_path(['.config', 'StarQuew', 'indi_profiles'], isdir=True)
         self.indi_service_logs = self.__build_path(['.cache', 'StarQuew', 'logs', 'indi_service'], isdir=True)
-        self.images_db_path = self.__build_path(['.local', 'share', 'StarQuew'], isdir=True)
 
-        self.ro_props = ['default_datadir', 'sequences_list', 'indi_profiles_list', 'indi_service_logs']
+        self.ro_props = ['default_datadir', 'indi_service_logs']
         self.rw_props = ['sequences_dir', 'indi_prefix', 'indi_host', 'indi_port', 'indi_service']
 
         self.on_update = None
@@ -22,7 +18,7 @@ class Settings:
     def reload(self):
         self.json_map = {}
         try:
-            self.json_map = self.serializer.get_map()
+            self.json_map = redis_client.dict_get('settings')
         except FileNotFoundError:
             pass
 
@@ -57,7 +53,7 @@ class Settings:
     def indi_port(self):
         if self.indi_service:
             return 7624
-        return self.json_map.get('indi_port', 7624)
+        return int(self.json_map.get('indi_port', 7624))
 
     @property
     def indi_service(self):
@@ -74,7 +70,7 @@ class Settings:
         on_update_args = [(x, getattr(self, x), new_data[x]) for x in new_data.keys()]
         
         self.json_map.update(new_data)
-        self.serializer.save(self)
+        redis_client.dict_set('settings', self.to_map())
 
         if self.on_update:
             for new_item in on_update_args:

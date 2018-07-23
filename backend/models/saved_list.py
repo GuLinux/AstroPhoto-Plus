@@ -1,35 +1,29 @@
 from .exceptions import NotFoundError
 from contextlib import contextmanager
 from .sequence import Sequence
-from .serializer import Serializer
 import json
 import os
+from redis_client import redis_client
 
 
 class SavedList:
-    def __init__(self, items_path, item_class):
-        self.items_path = items_path
+    def __init__(self, item_class):
         self.item_class = item_class
-        self.items = [Serializer(os.path.join(items_path, filename), self.item_class).load() for filename in os.listdir(items_path) if filename.endswith('.json') ]
-
+        self.name= item_class.__name__
 
     def append(self, item):
-        self.items.append(item)
-        self.__save_item(item)
+        redis_client.append(item.to_map(), self.name) 
 
     def remove(self, item):
-        self.items = [x for x in self.items if x.id != item.id]
-        os.remove(self.__path_for(item))
+        redis_client.delete(item.id, self.name)
         return item
 
     def lookup(self, item_id):
-        item = [x for x in self.items if x.id == item_id]
-        if not item:
-            raise NotFoundError('{} with id {} was not found'.format(self.item_class.__name__, item_id))
-        return item[0]
+        return self.item_class.from_map(redis_client.lookup(item_id, self.name))
+#            raise NotFoundError('{} with id {} was not found'.format(self.item_class.__name__, item_id))
 
     def save(self, item):
-        self.__save_item(item)
+        redis_client.update(item.id, item.to_map(), self.name)
 
     def duplicate(self, item_id):
         item = self.lookup(item_id).duplicate()
@@ -40,25 +34,24 @@ class SavedList:
     def lookup_edit(self, item_id):
         item = self.lookup(item_id)
         yield item
-        self.__save_item(item)
+        self.save(item)
 
     def __len__(self):
-        return len(self.items)
+        return redis_client.list_length(self.name)
 
     def __length_hint__(self):
         return self.__len__()
 
     def __getitem__(self, key):
-        return self.items[key]
+        return self.item_class.from_map(redis_client.item_at(key, self.name))
 
     def __setitem__(self, key, value):
-        self.items[key] = value
+        if redis_client.item_exists(key, self.name):
+            self.save(value)
+        else:
+            self.append(item)
 
     def __iter__(self):
-        return self.items.__iter__()
+        all_items = [self.item_class.from_map(item) for item in redis_client.list_values(self.name)]
+        return all_items.__iter__()
 
-    def __save_item(self, item):
-        Serializer(self.__path_for(item), self.item_class).save(item)
-
-    def __path_for(self, item):
-        return os.path.join(self.items_path, item.id + '.json')

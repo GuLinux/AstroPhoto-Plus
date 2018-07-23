@@ -1,6 +1,5 @@
 from .device import Device
 from .exceptions import NotFoundError, FailedMethodError
-from .saved_list import SavedList
 from .model import random_id
 from .image import Image
 from .images_db import camera_images_db
@@ -9,7 +8,7 @@ import shutil
 import os
 import time
 from .settings import settings
-
+from app import logger
 
 
 class Camera:
@@ -103,12 +102,15 @@ class Camera:
     def __new_image_to_list(self, filename, id):
         image = Image(self.settings.camera_tempdir, filename, time.time(), id=id)
 
-        current_images = self.images_db.values()
+        current_images = self.images_db.all()
 
         if len(current_images) >= Camera.IMAGES_LIST_SIZE:
             to_remove = sorted(current_images, key=lambda i: i.timestamp)[0:len(current_images) - Camera.IMAGES_LIST_SIZE]
             for older_image in to_remove:
-                self.images_db.remove(older_image.id, remove_fits=True)
+                try:
+                    self.images_db.remove(older_image.id, remove_fits=True)
+                except NotFoundError as e:
+                    logger.warning('image not found, ignoring', e)
 
         self.images_db.add(image)
         return image
