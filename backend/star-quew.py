@@ -356,3 +356,25 @@ def retrieve_image_histogram(type, image):
     return image.histogram(**args)
 
 
+# filesystem
+@app.route('/api/directory_browser', methods=['GET'])
+@json_api
+def directory_browser():
+    path=request.args.get('path', '/')
+    if not os.path.exists(path):
+        raise NotFoundError("Directory {} doesn't exists".format(path))
+    if not os.path.isdir(path):
+        raise BadRequestError('Path {} is not a directory'.format(path))
+
+    entries = sorted(os.listdir(path))
+
+    subdirectories = [dir for dir in entries if os.path.isdir(os.path.join(path, dir))]
+    parent = os.path.dirname(path)
+    response = {
+        'path': os.path.normpath(path),
+        'subdirectories': subdirectories,
+        'parent': os.path.normpath(parent) if parent != path else None,
+    }
+    if request.args.get('show_files', 'false') == 'true':
+        response['files'] = [dir for dir in entries if os.path.isfile(os.path.join(path, dir))]
+    return response
