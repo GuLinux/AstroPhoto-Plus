@@ -369,9 +369,11 @@ def directory_browser():
     entries = sorted(os.listdir(path))
 
     subdirectories = [dir for dir in entries if os.path.isdir(os.path.join(path, dir))]
+    parent = os.path.dirname(path)
     response = {
-        'path': path,
+        'path': os.path.normpath(path),
         'subdirectories': subdirectories,
+        'parent': os.path.normpath(parent) if parent != path else None,
     }
     if request.args.get('show_files', 'false') == 'true':
         response['files'] = [dir for dir in entries if os.path.isfile(os.path.join(path, dir))]

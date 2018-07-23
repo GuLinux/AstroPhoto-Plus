@@ -1,5 +1,7 @@
 import React from 'react';
 import { Form, Container, Button, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
+import { DirectoryPicker } from '../components/DirectoryPicker'; 
+import { ModalDialog } from '../Modals/ModalDialog'; 
 
 const valueOrDefault = (value, defaultValue) => value ? value : defaultValue;
 
@@ -16,8 +18,9 @@ const displayTextValue = (settings, key) => displayValue(settings, key, (v) => v
 
 const Settings = ({settings, onChange, reset, update}) => {
 
-    const InputButtons = ({settingsKey}) => (
+    const InputButtons = ({settingsKey, customButtons=null}) => (
         <Button.Group>
+            {customButtons}
             <Button content='update' primary disabled={!isChanged(settings, settingsKey)} onClick={() => update(settingsKey, settings.pending[settingsKey])} />
             <Button content='reset' onClick={() => reset(settingsKey)} disabled={!isChanged(settings, settingsKey)}/>
         </Button.Group>
@@ -26,6 +29,7 @@ const Settings = ({settings, onChange, reset, update}) => {
     const onInputChange = (key) => (e, data) => onChange(key, data.value);
 
     const InputIcon = ({settingsKey}) => isChanged(settings, settingsKey) ? <Icon name='edit' /> : null;
+    const currentSequencesDir = displayTextValue(settings, 'sequences_dir', '');
     return (
         <Container>
             <Form>
@@ -37,9 +41,15 @@ const Settings = ({settings, onChange, reset, update}) => {
                         type='text'
                         icon={<InputIcon settingsKey='sequences_dir' />}
                         iconPosition='left'
-                        value={displayTextValue(settings, 'sequences_dir', '')}
+                        value={currentSequencesDir}
                         onChange={onInputChange('sequences_dir')}
-                        action={<InputButtons settingsKey='sequences_dir' />}
+                        action={<InputButtons settingsKey='sequences_dir' customButtons={
+                            <DirectoryPicker currentDirectory={currentSequencesDir} onSelected={
+                                (dir) => onChange('sequences_dir', dir)
+                                } trigger={
+                                <Button content='Select...' icon='folder' />
+                            } />
+                        } />}
                     />
                     <Message attached='top' content='Sequences will save images inside this directory.' info />
                     <Divider hidden />
