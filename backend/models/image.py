@@ -152,9 +152,15 @@ class Image:
 
     def remove_files(self, remove_fits=False):
         if remove_fits:
-            os.remove(self.path)
+            try:
+                os.remove(self.path)
+            except FileNotFoundError:
+                pass
         for file in [x for x in os.listdir(self.directory) if x.startswith(self.id) and x != self.filename]:
-            os.remove(os.path.join(self.directory, file))
+            try:
+                os.remove(os.path.join(self.directory, file))
+            except FileNotFoundError:
+                pass
 
     def __base_output(self):
         if self.id:
