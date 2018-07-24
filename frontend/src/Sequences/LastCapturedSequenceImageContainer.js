@@ -2,12 +2,14 @@ import { connect } from 'react-redux';
 import LastCapturedSequenceImage from './LastCapturedSequenceImage';
 import { getSequenceEntitiesWithItems } from './selectors';
 import { imageUrlBuilder } from '../utils';
+import Actions from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
     const sequenceEntity = getSequenceEntitiesWithItems(state)[ownProps.sequence];
+    const showLastImage = state.sequences.showLastImage;
 
     if(! sequenceEntity) {
-        return {};
+        return { showLastImage };
     }
     const images = sequenceEntity.sequenceItems
         .map(i => sequenceEntity.sequenceItemEntities[i])
@@ -25,11 +27,12 @@ const mapStateToProps = (state, ownProps) => {
         clipHigh: 0,
     }) : null;
 
-    return { type, lastImage, lastImageId };
+    return { showLastImage, type, lastImage, lastImageId };
 }
 
 
 const mapDispatchToProps = (dispatch, props) => ({
+    toggleShowLastImage: (showLastImage) => dispatch(Actions.Sequences.toggleShowLastImage(showLastImage)),
 })
 
 

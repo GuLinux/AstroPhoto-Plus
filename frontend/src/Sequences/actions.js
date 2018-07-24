@@ -93,6 +93,9 @@ export const Sequences = {
             });
         }
     },
+
+    toggleShowLastImage: showLastImage => ({ type: 'SEQUENCE_TOGGLE_SHOW_LAST_IMAGE', showLastImage }),
+
 }
 
 export default Sequences

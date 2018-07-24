@@ -36,6 +36,8 @@ const sequences = (state = { entities: {}, ids: [] }, action) => {
             return updateSequence(state, action.sequence);
         case 'SEQUENCE_UPDATED':
             return updateSequence(state, action.data.entities.sequences[action.data.result]);
+        case 'SEQUENCE_TOGGLE_SHOW_LAST_IMAGE':
+            return {...state, showLastImage: action.showLastImage };
         default:
             return state;
     }

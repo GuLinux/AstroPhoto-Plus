@@ -1,10 +1,10 @@
 import React from 'react';
-import { Header, Container, Radio } from 'semantic-ui-react'
+import { Header, Container, Radio, Message} from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { ImageLoader } from '../Image/Image'
 
 
-class LastCapturedSequenceImage extends React.Component {
+class LastCapturedSequenceImageComponent extends React.Component {
 
     constructor(props) {
         super(props);
@@ -67,20 +67,17 @@ class LastCapturedSequenceImage extends React.Component {
         this.loading = false;
         this.setImageTimerOnLoad = false;
         this.lastShown = new Date();
-    } 
+    }
 
     render = () => {
         const {type, lastImageId, lastImage} = this.state.shownImage;
         return lastImage ? (
-            <Container>
-                <Header>
-                    <Radio toggle label='Last captured image' />
-                </Header>
-                <Link to={`/image/main/${lastImageId}`}>
-                    <ImageLoader key={lastImageId} id={lastImageId} type={type} uri={lastImage} fitScreen={true} onImageLoaded={this.onImageLoaded} />
-                </Link>
-            </Container>
-        ) : null;
+            <Link to={`/image/main/${lastImageId}`}>
+                <ImageLoader key={lastImageId} id={lastImageId} type={type} uri={lastImage} fitScreen={true} onImageLoaded={this.onImageLoaded} />
+            </Link>
+        ) : (
+            <Message content='No image was saved yet.' />
+        );
     }
 
     componentWillUnmount = () => {
@@ -88,7 +85,18 @@ class LastCapturedSequenceImage extends React.Component {
             clearTimeout(this.changeImageTimer);
         }
     }
+
 }
+
+
+const LastCapturedSequenceImage = ({showLastImage, toggleShowLastImage, ...props}) => (
+    <Container>
+        <Header>
+            <Radio toggle label='Last captured image' checked={showLastImage} onChange={() => toggleShowLastImage(!showLastImage)} />
+        </Header>
+        { showLastImage && <LastCapturedSequenceImageComponent {...props} /> }
+    </Container>
+);
 
 
 export default LastCapturedSequenceImage;
