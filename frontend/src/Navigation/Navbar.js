@@ -1,30 +1,27 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Menu, Sidebar, Responsive } from 'semantic-ui-react'
+import { Menu, Sidebar, Responsive, Dropdown } from 'semantic-ui-react'
 
 const NavItem = ({disabled, ...args}) => <Menu.Item disabled={disabled} as={disabled ? 'a' : NavLink} {...args} />
 
-const pageNavItem = (item, index) => {
+const pageNavItem = (item, index, Component) => {
     if(item.openModal) {
         const { openModal: ModalClass, modalProps = {}, ...props } = item;
-        return <ModalClass trigger={<Menu.Item {...props} />} {...modalProps} key={index}/>
+        return <ModalClass trigger={<Component {...props} />} {...modalProps} key={index}/>
     }
-    return <Menu.Item {...item} key={index} />
+    return <Component {...item} key={index} />
 }
 
-const pageMenuItems = (rightMenu) => {
+const pageMenuItems = (rightMenu, itemComponent) => {
     let children = [];
-    if(rightMenu.section) {
-        children.push(<Menu.Item header content={rightMenu.section} key='section' />);
-    }
     if(rightMenu.navItems) {
-        const menuItems = rightMenu.navItems.map(pageNavItem)
+        const menuItems = rightMenu.navItems.map((item, index) => pageNavItem(item, index, itemComponent));
         children = children.concat(menuItems);
     }
     return children;
 }
 
-const NavbarMenuItems = ({disabled, hasConnectedCameras, rightMenu, onClick = () => true}) => (
+const NavbarMenuItems = ({disabled, hasConnectedCameras, rightMenu, sectionMenu, onClick = () => true}) => (
     <React.Fragment>
         <NavItem icon='list' content='Sequences' to="/sequences" disabled={disabled} onClick={onClick} />
         <NavItem icon='computer' content='INDI Server' to="/indi" disabled={disabled} onClick={onClick} />
@@ -32,8 +29,18 @@ const NavbarMenuItems = ({disabled, hasConnectedCameras, rightMenu, onClick = ()
         <NavItem icon='settings' content='Settings' to="/settings" disabled={disabled} onClick={onClick} />
         { rightMenu && (
             <Menu.Menu position='right'>
-                {pageMenuItems(rightMenu)}
+                <Dropdown item text={rightMenu.section}>
+                    <Dropdown.Menu>
+                        {pageMenuItems(rightMenu, Dropdown.Item)}
+                    </Dropdown.Menu>
+                </Dropdown>
             </Menu.Menu>
+        )}
+        { sectionMenu && (
+            <React.Fragment>
+                <Menu.Item header content={sectionMenu.section} />
+                {pageMenuItems(sectionMenu, Menu.Item)}
+            </React.Fragment>
         )}
     </React.Fragment>
 )
@@ -62,12 +69,15 @@ class ResponsiveNavbar extends React.Component {
     toggleVisible = () => this.setVisible(! this.state.visible);
 
     render = () => {
-        const {children, ...props} = this.props;
+        const {children, rightMenu, ...props} = this.props;
+        if(! rightMenu) {
+console.log(rightMenu);
+}
         return (
             <Sidebar.Pushable>
                 <Sidebar as={NavbarMenu} vertical animation='overlay' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>
                     <SiteMenuHeader />
-                    <NavbarMenuItems {...props} onClick={() => this.setVisible(false)} />
+                    <NavbarMenuItems sectionMenu={rightMenu} {...props} onClick={() => this.setVisible(false)} />
                 </Sidebar>
                 <Sidebar.Pusher>
                     <Menu inverted color='grey' size='large'>
@@ -89,10 +99,10 @@ class ResponsiveNavbar extends React.Component {
 
 const Navbar = ({location, ...props}) => (
     <React.Fragment>
-        <Responsive maxWidth={1129}>
+        <Responsive maxWidth={768}>
             <ResponsiveNavbar {...props} />
         </Responsive>
-        <Responsive minWidth={1130}>
+        <Responsive minWidth={769}>
             <NavbarDesktop {...props} />
         </Responsive>
     </React.Fragment>
