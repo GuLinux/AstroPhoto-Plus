@@ -44,22 +44,21 @@ class ResponsiveNavbar extends React.Component {
     render = () => {
         const {children, ...props} = this.props;
         return (
-            <React.Fragment>
-                <Menu inverted color='grey' size='large'>
+            <Sidebar.Pushable>
+                <Sidebar as={NavbarMenu} animation='overlay' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>
                     <SiteMenuHeader />
-                    <Menu.Menu position='right'>
-                        <Menu.Item as='a' icon='sidebar' onClick={() => this.toggleVisible()} />
-                    </Menu.Menu>
-                </Menu>
-                <Sidebar.Pushable>
-                    <Sidebar as={NavbarMenu} animation='push' direction='top' visible={this.state.visible}>
-                        <NavbarMenuItems {...props} onClick={() => this.setVisible(false)} />
-                    </Sidebar>
-                    <Sidebar.Pusher>
-                        {children}
-                    </Sidebar.Pusher>
-                </Sidebar.Pushable>
-            </React.Fragment>
+                    <NavbarMenuItems {...props} onClick={() => this.setVisible(false)} />
+                </Sidebar>
+                <Sidebar.Pusher>
+                    <Menu inverted color='grey' size='large'>
+                        <SiteMenuHeader />
+                        <Menu.Menu position='right'>
+                            <Menu.Item as='a' icon='sidebar' onClick={() => this.toggleVisible()} />
+                        </Menu.Menu>
+                    </Menu>
+                    {children}
+                </Sidebar.Pusher>
+            </Sidebar.Pushable>
         )
     }
 }
