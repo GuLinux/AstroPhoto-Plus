@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Table, Button, Container, Image, Header } from 'semantic-ui-react';
+import { Table, Button, Container, Image, Header } from 'semantic-ui-react';
 import Filesize from '../components/Filesize';
 import DateTime from '../components/DateTime';
 import { Link, withRouter } from 'react-router-dom';

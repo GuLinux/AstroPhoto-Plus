@@ -1,7 +1,7 @@
 import React from 'react';
 import AddSequenceItemModal from '../SequenceItems/AddSequenceItemModal'
 import SequenceItemsContainer from '../SequenceItems/SequenceItemsContainer';
-import { Label, Container, Header, Card, Icon, Menu } from 'semantic-ui-react';
+import { Label, Container, Header, Card, Icon } from 'semantic-ui-react';
 import { canStart } from './model';
 import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
 import INDILight from '../INDI-Server/INDILight';

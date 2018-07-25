@@ -1,7 +1,6 @@
 import React from 'react';
 import { Form, Container, Button, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
-import { ModalDialog } from '../Modals/ModalDialog'; 
 
 const valueOrDefault = (value, defaultValue) => value ? value : defaultValue;
 

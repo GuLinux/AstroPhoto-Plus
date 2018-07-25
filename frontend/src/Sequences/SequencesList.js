@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Button, Table, Label, Menu} from 'semantic-ui-react'
+import { Container, Button, Table, Label } from 'semantic-ui-react'
 import AddSequenceModalContainer from './AddSequenceModalContainer';
 import { ConfirmDialog } from '../Modals/ModalDialog';
 import { canStart } from './model'
