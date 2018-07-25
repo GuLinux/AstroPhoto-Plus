@@ -1,18 +1,19 @@
 import React from 'react';
 import { Responsive } from 'semantic-ui-react';
 
-import { DesktopNavbarContainer, ResponsiveNavbarContainer } from './NavbarContainer';
+import { DesktopNavbar } from './DesktopNavbar';
+import { ResponsiveNavbar } from './ResponsiveNavbar';
 
 const TRIGGER_SIZE = 768;
 
 
-const Navbar = ({location, ...props}) => (
+const Navbar = ({location, children}) => (
     <React.Fragment>
         <Responsive maxWidth={TRIGGER_SIZE}>
-            <ResponsiveNavbarContainer {...props} />
+            <ResponsiveNavbar children={children} />
         </Responsive>
         <Responsive minWidth={TRIGGER_SIZE + 1}>
-            <DesktopNavbarContainer {...props} />
+            <DesktopNavbar children={children} />
         </Responsive>
     </React.Fragment>
 )

@@ -1,12 +1,13 @@
 import React from 'react';
 import { Menu, Sidebar, Dropdown } from 'semantic-ui-react';
-import { NavbarMenu, SiteMenuHeader, NavbarMenuItems } from './NavbarMenuItems';
+import { NavbarMenu, SiteMenuHeader } from './NavbarMenuItems';
+import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';
 
-export const DesktopNavbar = ({children, ...props}) => (
+export const DesktopNavbar = ({children}) => (
     <React.Fragment>
         <NavbarMenu>
             <SiteMenuHeader />
-            <NavbarMenuItems {...props} />
+            <NavbarMenuItemsContainer />
         </NavbarMenu>
         {children}
     </React.Fragment>

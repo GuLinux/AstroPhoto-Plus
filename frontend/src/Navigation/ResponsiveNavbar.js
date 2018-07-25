@@ -1,6 +1,7 @@
 import React from 'react';
-import { NavbarMenu, SiteMenuHeader, NavbarMenuItems } from './NavbarMenuItems';
+import { NavbarMenu, SiteMenuHeader } from './NavbarMenuItems';
 import { Menu, Sidebar, Dropdown } from 'semantic-ui-react';
+import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';
 
 export class ResponsiveNavbar extends React.Component {
     constructor(props) {
@@ -13,15 +14,12 @@ export class ResponsiveNavbar extends React.Component {
     toggleVisible = () => this.setVisible(! this.state.visible);
 
     render = () => {
-        const {children, rightMenu, ...props} = this.props;
-        if(! rightMenu) {
-console.log(rightMenu);
-}
+        const {children, ...props} = this.props;
         return (
             <Sidebar.Pushable>
                 <Sidebar as={NavbarMenu} vertical animation='overlay' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>
                     <SiteMenuHeader />
-                    <NavbarMenuItems sectionMenu={rightMenu} {...props} onClick={() => this.setVisible(false)} />
+                    <NavbarMenuItemsContainer isResponsive={true} onClick={() => this.setVisible(false)} />
                 </Sidebar>
                 <Sidebar.Pusher>
                     <Menu inverted color='grey' size='large'>
