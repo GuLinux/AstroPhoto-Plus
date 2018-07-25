@@ -65,7 +65,7 @@ class ResponsiveNavbar extends React.Component {
         const {children, ...props} = this.props;
         return (
             <Sidebar.Pushable>
-                <Sidebar as={NavbarMenu} animation='overlay' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>
+                <Sidebar as={NavbarMenu} vertical animation='overlay' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>
                     <SiteMenuHeader />
                     <NavbarMenuItems {...props} onClick={() => this.setVisible(false)} />
                 </Sidebar>
