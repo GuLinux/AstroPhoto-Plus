@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
-project(StarQuew LANGUAGES NONE VERSION 0.0.1)
+include(project_version.cmake)
+project(StarQuew LANGUAGES NONE VERSION ${STARQUEW_PROJECT_VERSION})
 
 set(STARQUEW_HOME lib/${CMAKE_PROJECT_NAME})
 set(STARQUEW_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${STARQUEW_HOME})

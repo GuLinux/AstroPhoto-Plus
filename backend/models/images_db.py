@@ -36,6 +36,12 @@ class ImagesDatabase:
 
     def all(self):
         return [Image.from_map(v) for v in redis_client.list_values(self.name, 'images')] 
+
+    def to_map(self):
+        images_map = {}
+        for image in self.all():
+            images_map[image.id] = image.to_map()
+        return images_map
         
 
     def __remove(self, image_id, remove_fits):

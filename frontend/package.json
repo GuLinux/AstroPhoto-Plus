@@ -1,32 +1,32 @@
 {
-  "name": "StarQuew-frontend",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "event-source-polyfill": "0.0.12",
-    "isomorphic-fetch": "^2.2.1",
-    "normalizr": "^3.2.4",
-    "npm": "^6.1.0",
-    "printj": "^1.1.2",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0",
-    "react-image-crop": "^4.0.1",
-    "react-redux": "^5.0.6",
-    "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "^1.1.4",
-    "recharts": "^1.0.0-beta.10",
-    "redux": "^3.7.2",
-    "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.2.0",
-    "reselect": "^3.0.1",
-    "semantic-ui-css": "^2.3.1",
-    "semantic-ui-react": "^0.81.1"
-  },
-  "scripts": {
-    "start": "rm -rf src/themes && mkdir -p src/themes && cp -a forest-themes/output/dist/* src/themes/ && cp -a forest-themes/src/themes/ src/themes/bootswatch && react-scripts start",
-    "build": "rm -rf src/themes && mkdir -p src/themes && cp -a forest-themes/output/dist/* src/themes/ && cp -a forest-themes/src/themes/ src/themes/bootswatch && react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
+    "dependencies": {
+        "event-source-polyfill": "0.0.12",
+        "isomorphic-fetch": "^2.2.1",
+        "normalizr": "^3.2.4",
+        "npm": "^6.1.0",
+        "printj": "^1.1.2",
+        "react": "^16.4.0",
+        "react-dom": "^16.4.0",
+        "react-image-crop": "^4.0.1",
+        "react-redux": "^5.0.6",
+        "react-router": "^4.3.1",
+        "react-router-dom": "^4.3.1",
+        "react-scripts": "^1.1.4",
+        "recharts": "^1.0.0-beta.10",
+        "redux": "^3.7.2",
+        "redux-logger": "^3.0.6",
+        "redux-thunk": "^2.2.0",
+        "reselect": "^3.0.1",
+        "semantic-ui-css": "^2.3.1",
+        "semantic-ui-react": "^0.81.1"
+    },
+    "name": "StarQuew-frontend",
+    "private": true,
+    "scripts": {
+        "build": "rm -rf src/themes && mkdir -p src/themes && cp -a forest-themes/output/dist/* src/themes/ && cp -a forest-themes/src/themes/ src/themes/bootswatch && react-scripts build",
+        "eject": "react-scripts eject",
+        "start": "rm -rf src/themes && mkdir -p src/themes && cp -a forest-themes/output/dist/* src/themes/ && cp -a forest-themes/src/themes/ src/themes/bootswatch && react-scripts start",
+        "test": "react-scripts test --env=jsdom"
+    },
+    "version": "0.1.0"
 }

@@ -16,6 +16,10 @@ app.logger.handlers = gunicorn_logger.handlers
 is_debug_mode = int(os.environ.get('DEV_MODE', '0')) == 1
 app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG' if is_debug_mode else 'INFO' ))
 
+@app.route('/api/version')
+@json_api
+def backend_version():
+    return app.config['version']
 
 @app.route('/api/events')
 def events():
