@@ -1,5 +1,5 @@
 import React from 'react';
-import NavbarContainer from '../Navigation/NavbarContainer';
+import Navbar from '../Navigation/Navbar';
 import LoadingContainer from '../containers/LoadingContainer';
 import SequencesPage from '../Sequences/SequencesPage';
 import INDIServerContainer from '../INDI-Server/INDIServerContainer';
@@ -14,7 +14,7 @@ import { Route, Redirect } from "react-router-dom";
 
 const App = ({location}) => (
   <div className="App">
-    <NavbarContainer location={location}>
+    <Navbar location={location}>
         <NotificationsContainer />
         <ErrorPageContainer>
             <Route exact path="/" render={() => <Redirect to="/sequences"/> }/>
@@ -25,7 +25,7 @@ const App = ({location}) => (
             <Route path="/image/:type/:id" render={({match, location}) => <ImageContainer id={match.params.id} type={match.params.type} />} />
         </ErrorPageContainer>
         <LoadingContainer />
-    </NavbarContainer>
+    </Navbar>
   </div>
 );
 

@@ -1,6 +1,7 @@
-import { connect } from 'react-redux'
-import Navbar from './Navbar'
-import { hasConnectedCameras } from '../Gear/selectors'
+import { connect } from 'react-redux';
+import { hasConnectedCameras } from '../Gear/selectors';
+import { DesktopNavbar } from './DesktopNavbar';
+import { ResponsiveNavbar } from './ResponsiveNavbar';
 
 const mapStateToProps = state => ({
     disabled: state.errors.isError,
@@ -11,9 +12,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({})
 
 
-const NavbarContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Navbar)
+export const DesktopNavbarContainer = connect(mapStateToProps, mapDispatchToProps)(DesktopNavbar)
+export const ResponsiveNavbarContainer = connect(mapStateToProps, mapDispatchToProps)(ResponsiveNavbar)
 
-export default NavbarContainer
