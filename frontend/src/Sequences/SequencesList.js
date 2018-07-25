@@ -17,12 +17,13 @@ const GearDescription = ({gear}) => {
 const uriFor = sequence => '/sequences/' + sequence.id;
 
 class SequencesList extends React.Component {
-    componentDidMount = () => this.props.onMount(
-        <React.Fragment>
-            <Menu.Item header content='Sequences' />
-            <AddSequenceModalContainer trigger={<Menu.Item icon='add' content='new sequence' />} />
-        </React.Fragment>
-    );
+    componentDidMount = () => this.props.onMount({
+        section: 'Sequences',
+        navItems: [
+            { icon: 'add', content: 'new sequence', openModal: AddSequenceModalContainer },
+        ],
+    });
+
     componentWillUnmount = () => this.props.onUnmount();
 
     render = () => {

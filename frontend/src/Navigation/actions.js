@@ -1,4 +1,4 @@
 export default {
-    setRightMenu: (items) => ({ type: 'NAVBAR_RIGHT_MENU', items }),
+    setRightMenu: (data) => ({ type: 'NAVBAR_RIGHT_MENU', data }),
     resetRightMenu: () => ({ type: 'NAVBAR_RIGHT_MENU' }),
 };

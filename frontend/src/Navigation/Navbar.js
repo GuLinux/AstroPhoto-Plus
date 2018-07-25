@@ -4,6 +4,26 @@ import { Menu, Sidebar, Responsive } from 'semantic-ui-react'
 
 const NavItem = ({disabled, ...args}) => <Menu.Item disabled={disabled} as={disabled ? 'a' : NavLink} {...args} />
 
+const pageNavItem = (item, index) => {
+    if(item.openModal) {
+        const { openModal: ModalClass, modalProps = {}, ...props } = item;
+        return <ModalClass trigger={<Menu.Item {...props} />} {...modalProps} key={index}/>
+    }
+    return <Menu.Item {...item} key={index} />
+}
+
+const pageMenuItems = (rightMenu) => {
+    let children = [];
+    if(rightMenu.section) {
+        children.push(<Menu.Item header content={rightMenu.section} key='section' />);
+    }
+    if(rightMenu.navItems) {
+        const menuItems = rightMenu.navItems.map(pageNavItem)
+        children = children.concat(menuItems);
+    }
+    return children;
+}
+
 const NavbarMenuItems = ({disabled, hasConnectedCameras, rightMenu, onClick = () => true}) => (
     <React.Fragment>
         <NavItem icon='list' content='Sequences' to="/sequences" disabled={disabled} onClick={onClick} />
@@ -12,7 +32,7 @@ const NavbarMenuItems = ({disabled, hasConnectedCameras, rightMenu, onClick = ()
         <NavItem icon='settings' content='Settings' to="/settings" disabled={disabled} onClick={onClick} />
         { rightMenu && (
             <Menu.Menu position='right'>
-                {rightMenu}
+                {pageMenuItems(rightMenu)}
             </Menu.Menu>
         )}
     </React.Fragment>

@@ -91,16 +91,18 @@ class Sequence extends React.Component {
         const { startSequence, sequence, canEdit, onMount, gear } = this.props;
         if(sequence === null)
             return;
-        onMount(
-            <React.Fragment>
-                <Menu.Item header content='Sequence Items' />
-                <Menu.Item icon='play' onClick={() => startSequence()} disabled={!canStart(sequence, gear)} content='start' />
-                <AddSequenceItem onCreateSequenceItem={this.props.onCreateSequenceItem} sequenceId={sequence.id} trigger={
-                    <Menu.Item icon='add' disabled={!canEdit} content='new' />
-                } />
-                <Menu.Item icon='arrow left' as={Link} to="/sequences" content='back to sequences' />
-            </React.Fragment>
-        );
+        onMount({
+            section: 'Sequences Items',
+            navItems: [
+                { icon: 'play', onClick: () => startSequence(), disabled: !canStart(sequence, gear), content: 'start' },
+                { openModal: AddSequenceItem, modalProps: {
+                        onCreateSequenceItem: this.props.onCreateSequenceItem,
+                        sequenceId: sequence.id
+                    },
+                    icon: 'add', disabled: !canEdit, content: 'new' },
+                { icon: 'arrow left', as: Link, to: "/sequences", content: 'back to sequences' },
+            ],
+        });
     }
 
     componentDidMount = () => this.updateMenu();

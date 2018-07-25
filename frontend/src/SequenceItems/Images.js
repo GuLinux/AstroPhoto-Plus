@@ -31,13 +31,13 @@ class Images extends React.Component {
         this.state = { imagesData: {}, previews: false };
     }
 
-    updateMenu = () => this.props.onMount(
-        <React.Fragment>
-            <Menu.Item header content='Images' />
-            <Menu.Item content='previews' icon='image' active={this.state.previews} onClick={() => this.togglePreviews()}/>
-            <Menu.Item content='back' icon='arrow left' onClick={() => this.props.history.goBack() } />
-        </React.Fragment>
-    );
+    updateMenu = () => this.props.onMount({
+        section: 'Images',
+        navItems: [
+            { content: 'previews', icon: 'image', active: this.state.previews, onClick: () => this.togglePreviews(), },
+            { content: 'back', icon: 'arrow left', onClick: () => this.props.history.goBack(), }
+        ],
+    });
 
 
     componentDidMount = () => {

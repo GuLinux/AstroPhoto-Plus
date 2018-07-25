@@ -14,7 +14,7 @@ const mapDispatchToProps = dispatch => {
     onSequenceDelete: (sequenceId) => dispatch(Actions.Sequences.remove(sequenceId)),
     startSequence: (sequence) => dispatch(Actions.Sequences.start(sequence)),
     duplicateSequence: (sequence) => dispatch(Actions.Sequences.duplicate(sequence)),
-    onMount: (items) => dispatch(Actions.Navigation.setRightMenu(items)),
+    onMount: (data) => dispatch(Actions.Navigation.setRightMenu(data)),
     onUnmount: () => dispatch(Actions.Navigation.resetRightMenu()),
   }
 }
