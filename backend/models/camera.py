@@ -102,7 +102,11 @@ class Camera:
             roi = options['roi']
             with fits.open(source_path) as hdu:
                 data = hdu[0].data
-                cutout = Cutout2D(data, (roi['x'], roi['y']), (roi['width'], roi['height']), copy=True)
+                full_height, full_width = hdu[0].shape
+                logger.debug('shape: {}x{}'.format(full_width, full_height))
+                cutout_size = (roi['height'], roi['width'])
+                cutout_center = ( roi['x'] + roi['width']/2, roi['y'] + roi['height']/2 )
+                cutout = Cutout2D(data, cutout_center, cutout_size, copy=True)
                 hdu[0].data = cutout.data
                 hdu.writeto(dest_path)
         else:
