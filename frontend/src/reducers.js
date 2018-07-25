@@ -53,8 +53,16 @@ const network = (state = { fetching: false }, action) => {
     }
 }
 
+const version = (state = {}, action) => {
+    switch(action.type) {
+        case 'BACKEND_VERSION_FETCHED':
+            return {...state, ...action.version};
+        default:
+            return state;
+    }
+}
 
 
-const indiLiteApp = combineReducers({sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation});
+const indiLiteApp = combineReducers({version, sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation});
 
 export default indiLiteApp

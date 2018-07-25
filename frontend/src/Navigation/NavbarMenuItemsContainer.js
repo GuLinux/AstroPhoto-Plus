@@ -6,6 +6,7 @@ const mapStateToProps = state => ({
     disabled: state.errors.isError,
     hasConnectedCameras: hasConnectedCameras(state),
     sectionMenu: state.navigation.sectionMenu,
+    version: state.version && state.version.version,
 })
 
 const mapDispatchToProps = dispatch => ({})

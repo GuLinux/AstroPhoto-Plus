@@ -40,6 +40,7 @@ let store = createStore(
     createMiddleware()
 )
 
+store.dispatch(Actions.fetchBackendVersion())
 store.dispatch(Actions.Sequences.fetch())
 store.dispatch(Actions.INDIServer.fetchServerState(true))
 store.dispatch(Actions.INDIService.fetchService())

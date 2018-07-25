@@ -28,6 +28,8 @@ const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
         });
 }
 
+export const fetchBackendVersion = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/version', {}, json => onSuccess(json));
+
 export const startSequenceAPI = (dispatch, sequence, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/start`, {
         method: 'POST',
     }, json => onSuccess(json), onError);

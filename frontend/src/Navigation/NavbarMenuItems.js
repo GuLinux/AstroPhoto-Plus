@@ -26,25 +26,49 @@ const pageMenuItems = (sectionMenu, itemComponent) => {
     return children;
 }
 
-export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, isResponsive=false, onClick = () => true}) => (
+export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, isResponsive=false, onClick = () => true, version='N/A'}) => (
     <React.Fragment>
         <NavItem icon='list' content='Sequences' to="/sequences" disabled={disabled} onClick={onClick} />
         <NavItem icon='computer' content='INDI Server' to="/indi" disabled={disabled} onClick={onClick} />
         <NavItem icon='camera' content='Camera' to="/camera" disabled={disabled || ! hasConnectedCameras} onClick={onClick}/>
         <NavItem icon='settings' content='Settings' to="/settings" disabled={disabled} onClick={onClick} />
-        { !isResponsive && sectionMenu && (
+        { !isResponsive && (
             <Menu.Menu position='right'>
-                <Dropdown item text={sectionMenu.section}>
+                { sectionMenu && (
+
+                        <Dropdown item text={sectionMenu.section}>
+                            <Dropdown.Menu>
+                                {pageMenuItems(sectionMenu, Dropdown.Item)}
+                            </Dropdown.Menu>
+                        </Dropdown>
+
+                )}
+                <Dropdown item text='About'>
                     <Dropdown.Menu>
-                        {pageMenuItems(sectionMenu, Dropdown.Item)}
+                        <Dropdown.Header content='StarQuew' />
+                        <Dropdown.Item content={'Version: ' + version} />
+                        <Dropdown.Item content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
+                        <Dropdown.Item content='Github homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
+                        <Dropdown.Item content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
                     </Dropdown.Menu>
                 </Dropdown>
+
             </Menu.Menu>
         )}
-        { isResponsive && sectionMenu && (
+        { isResponsive && (
             <React.Fragment>
-                <Menu.Item header content={sectionMenu.section} />
-                {pageMenuItems(sectionMenu, Menu.Item)}
+                { sectionMenu && (
+                    <React.Fragment>
+                        <Menu.Item header content={sectionMenu.section} />
+                        {pageMenuItems(sectionMenu, Menu.Item)}
+                    </React.Fragment>
+                )}
+                <Menu.Item header content='About StarQuew' />
+                <Menu.Item content={'Version: ' + version} />
+                <Menu.Item content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
+                <Menu.Item content='Github homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
+                <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
+
             </React.Fragment>
         )}
     </React.Fragment>
