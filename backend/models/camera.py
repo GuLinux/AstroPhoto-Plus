@@ -4,6 +4,7 @@ from .model import random_id
 from .image import Image
 from .images_db import camera_images_db
 from astropy.io import fits
+from astropy.nddata.utils import Cutout2D
 import shutil
 import os
 import time
@@ -91,10 +92,28 @@ class Camera:
         sample_fits = [x for x in os.listdir(os.environ['SAMPLE_FITS_PATH']) if x.lower().endswith('.fits')]
         file_index = int(time.time() * 1000) % len(sample_fits)
         dest_filename = '{}.fits'.format(id)
-        shutil.copyfile(
-            os.path.join(os.environ['SAMPLE_FITS_PATH'], sample_fits[file_index]),
-            os.path.join(self.settings.camera_tempdir, dest_filename),
-            follow_symlinks=True)
+
+        
+        source_path = os.path.join(os.environ['SAMPLE_FITS_PATH'], sample_fits[file_index])
+        dest_path = os.path.join(self.settings.camera_tempdir, dest_filename)
+        logger.debug('{} ==> {}'.format(source_path, dest_path))
+
+        if 'roi' in options and options['roi']:
+            roi = options['roi']
+            with fits.open(source_path) as hdu:
+                data = hdu[0].data
+                full_height, full_width = hdu[0].shape
+                logger.debug('shape: {}x{}'.format(full_width, full_height))
+                cutout_size = (roi['height'], roi['width'])
+                cutout_center = ( roi['x'] + roi['width']/2, roi['y'] + roi['height']/2 )
+                cutout = Cutout2D(data, cutout_center, cutout_size, copy=True)
+                hdu[0].data = cutout.data
+                hdu.writeto(dest_path)
+        else:
+            shutil.copyfile(
+                source_path,
+                dest_path,
+                follow_symlinks=True)
         image = self.__new_image_to_list(dest_filename, id)
         return image.to_map(for_saving=False)
 
