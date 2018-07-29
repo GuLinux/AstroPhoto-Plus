@@ -1,7 +1,70 @@
 import React from 'react';
 import { apiFetch } from '../middleware/api';
 
-import { Label, Message, Modal, Container, Grid, Button, Header } from 'semantic-ui-react';
+import { Form, Confirm, Label, Message, Modal, Container, Grid, Button, Header } from 'semantic-ui-react';
+
+
+const CommandConfirmationModal = ({ commandName, confirmationMessage, visible, onCancel, onConfirm }) => (
+    <Confirm
+        centered={false}
+        basic
+        open={visible}
+        onCancel={onCancel}
+        onConfirm={onConfirm}
+        header={commandName}
+    />
+)
+
+class CommandEnvironmentModal extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { environment: {} }
+        if(props.requestEnvironment) {
+            props.requestEnvironment.variables.forEach( v => this.state.environment[v.name] = v.default_value || '' );
+        }
+    }
+
+    canRun = () => {
+        return this.props.requestEnvironment.variables
+            .map( v => !v.required || (this.state.environment[v.name] && this.state.environment[v.name] !== ''))
+            .reduce( (acc, cur) => acc &= cur, true)
+        ;
+    }
+
+    render = () => {
+        const { visible, commandName, requestEnvironment, onClose, onRun } = this.props;
+        return requestEnvironment && (
+            <Modal
+                centered={false}
+                size='large'
+                basic
+                open={visible}
+                onClose={onClose}
+            >
+                <Modal.Header content={'Environment for ' + commandName} />
+                <Modal.Content>
+                    <Message content={requestEnvironment.message} />
+                    <Form>{ requestEnvironment.variables.map( variable => (
+                        <Form.Input
+                            type={variable.type || "text"}
+                            name={variable.name}
+                            key={variable.name}
+                            value={this.state.environment[variable.name]}
+                            label={variable.label}
+                            onChange={(e, data) => this.setState({...this.state, environment: { ...this.state.environment, [variable.name]: data.value } })}
+                        />
+                    ))}</Form>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button content='Cancel' onClick={() => onClose()} />
+                    <Button content='Run' onClick={() => onRun(this.state.environment)} primary disabled={!this.canRun()}/>
+                </Modal.Actions>
+            </Modal>
+        );
+    }
+}
+
+
 
 const CommandResultModal = ({commandName, commandLine, visible, onClose, result}) => {
     const isSuccess = result && result.exit_code === 0;
@@ -47,13 +110,7 @@ class Command extends React.Component {
         this.state = {};
     }
 
-    commandLine = () => {
-        let cmdLine = this.props.command.program;
-        if(this.props.command.arguments) {
-            cmdLine += ' ' + this.props.command.arguments.join(' ');
-        }
-        return cmdLine;
-    }
+    commandLine = () => this.props.command.arguments.join(' ');
 
     render = () => { 
         const { result, showResult, running } = this.state;
@@ -63,7 +120,28 @@ class Command extends React.Component {
         const { icon, ...buttonProps } = uiProperties;
         return (
             <React.Fragment>
-                <CommandResultModal visible={showResult} onClick={() => this.update({showResult: false})} commandLine={this.commandLine()} commandName={command.name} />
+                <CommandResultModal
+                    visible={showResult}
+                    onClose={() => this.update({showResult: false})}
+                    commandLine={this.commandLine()}
+                    commandName={command.name}
+                    result={result}
+                />
+                <CommandConfirmationModal
+                    commandName={command.name}
+                    confirmationMessage={command.confirmation_message}
+                    onCancel={() => this.update({showConfirmation: false})}
+                    onConfirm={() => this.run({confirmed: true})}
+                    visible={this.state.showConfirmation}
+                />
+                <CommandEnvironmentModal
+                    commandName={command.name}
+                    requestEnvironment={command.request_environment}
+                    visible={this.state.showRequestEnvironment}
+                    onClose={() => this.update({showRequestEnvironment: false})}
+                    onRun={(environment) => this.run({environment}) }
+                />
+                    
                 <Button
                     content={command.name}
                     disabled={running}
@@ -77,19 +155,20 @@ class Command extends React.Component {
 
     update = (updated) => this.setState({...this.state, ...updated});
 
-    requestBody = () => {
-        let request = {
-            timestamp: new Date(),
-        };
-        return request;
-    }
-
-    run = async () => {
-        this.update({ running: true });
+    run = async ({ confirmed=false, environment=null } = {}) => {
+        if(!environment && !!this.props.command.request_environment) {
+            this.update({ showRequestEnvironment: true });
+            return;
+        }
+        if(!confirmed && this.props.command.confirmation_message) {
+            this.update({ showConfirmation: true });
+            return;
+        }
+        this.update({ running: true, showConfirmation: false, showRequestEnvironment: false });
         try {
             let reply = await apiFetch(`/api/commands/${this.props.command.id}/run`, {
                 method: 'POST',
-                body: JSON.stringify(this.requestBody()),
+                body: JSON.stringify({ environment: environment || {}, timestamp: new Date() }),
                 headers: {
                     'Content-Type': 'application/json',
                 },

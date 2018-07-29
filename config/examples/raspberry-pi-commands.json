@@ -1,0 +1,84 @@
+[
+    {
+        "id": "1",
+        "name": "Shutdown",
+        "arguments": ["sudo", "systemctl", "poweroff"],
+        "category": "System",
+        "confirmation_message": "Are you sure you want to shutdown?",
+        "check": ["sudo", "systemctl", "is-system-running"],
+        "ui_properties": {
+            "icon": "shutdown",
+            "color": "red"
+        }
+    },
+    {
+        "id": "2",
+        "name": "Reboot",
+        "confirmation_message": "Are you sure you want to reboot?",
+        "arguments": ["sudo", "systemctl", "reboot"],
+        "check": ["sudo", "systemctl", "is-system-running"],
+        "category": "System",
+        "ui_properties": {
+            "icon": "redo",
+            "color": "red"
+        }
+    },
+    {
+        "id": "3",
+        "name": "Turn on wifi access point",
+        "confirmation_message": "This might cause network disconnection. Are you sure?",
+        "arguments": ["sudo", "starquew-wifi-helper", "ap-on"],
+        "category": "Wifi",
+        "check": ["sudo", "starquew-wifi-helper", "is-ap-on"],
+        "ui_properties": {
+            "icon": "wifi"
+        }
+    },
+    {
+        "id": "4",
+        "name": "Turn off wifi access point",
+        "program": "sudo",
+        "arguments": ["sudo", "starquew-wifi-helper", "ap-off"],
+        "confirmation_message": "This might cause network disconnection. Are you sure?",
+        "category": "Wifi",
+        "check": ["starquew-wifi-helper", "is-ap-off"],
+        "ui_properties": {
+            "icon": "wifi"
+        }
+    },
+    {
+        "id": "5",
+        "name": "Configure access point",
+        "arguments": ["sudo", "starquew-wifi-helper", "configure-ap"],
+        "category": "Wifi",
+        "check": ["sudo", "starquew-wifi-helper", "status"],
+        "request_environment": {
+            "message": "Enter ESSID and Secret for your access point. Please note that you need to restart your server to apply the new configuration.",
+            "variables": [
+                { "label": "ESSID", "name": "ESSID", "type": "text", "required": true, "get_default_value": ["starquew-wifi-helper", "get-ap-essid"] },
+                { "label": "Secret", "name": "PSK", "type": "text", "required": true, "get_default_value": ["starquew-wifi-helper", "get-ap-psk"] }
+            ]
+        },
+        "ui_properties": {
+            "icon": "wifi"
+        }
+    },
+    {
+        "id": "6",
+        "name": "Configure client WiFi",
+        "arguments": ["sudo", "starquew-wifi-helper", "configure-client-wifi"],
+        "category": "Wifi",
+        "check": ["sudo", "starquew-wifi-helper", "status"],
+        "request_environment": {
+            "message": "Set wifi network to connect to. Please note that you need to restart your server to apply the new configuration.",
+            "variables": [
+                { "label": "ESSID", "name": "ESSID", "type": "text", "required": true, "get_default_value": ["starquew-wifi-helper", "get-client-essid"] },
+                { "label": "Secret", "name": "PSK", "type": "text", "required": true, "get_default_value": ["starquew-wifi-helper", "get-client-psk"] },
+                { "label": "Country", "name": "country", "type": "text", "required": true, "get_default_value": ["starquew-wifi-helper", "get-client-country"] }
+            ]
+        },
+        "ui_properties": {
+            "icon": "wifi"
+        }
+    }
+]

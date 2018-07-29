@@ -3,27 +3,45 @@ import subprocess
 import json
 import os
 from .settings import settings
-from .exceptions import NotFoundError, BadRequestError
+from .exceptions import NotFoundError, BadRequestError, FailedMethodError
+from app import logger
 
 class Command:
     def __init__(self, obj, readonly=False):
         self.id = random_id(obj.get('id'))
         self.name = obj['name']
         self.category = obj.get('category', 'Misc')
-        self.program = obj['program']
         self.arguments = obj.get('arguments', [])
         self.readonly = readonly
         self.ui_properties = obj.get('ui_properties', None)
         self.confirmation_message = obj.get('confirmation_message', None)
-        self.request_environment = obj.get('request_environment', None)
+        self.request_environment = self.__build_request_environment(obj.get('request_environment', None))
         self._check = obj.get('check', None)
+
+    def __build_request_environment(self, request_environment):
+        if not request_environment or not 'variables' in request_environment:
+            return None
+
+        def get_environment_dict(variable):
+            if 'get_default_value' in variable:
+                try:
+                    result = subprocess.run(variable['get_default_value'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                    if result.stderr:
+                        logger.debug(result.stderr.decode())
+                    variable['default_value'] = result.stdout.decode()
+                except Exception as e:
+                    logger.warning('error getting default value for variable {}'.format(variable), e)
+            return variable
+
+        variables = [get_environment_dict(v) for v in request_environment['variables']]
+        request_environment.update({ 'variables': variables })
+        return request_environment
 
     def to_map(self):
         return {
             'id': self.id,
             'name': self.name,
             'category': self.category,
-            'program': self.program,
             'arguments': self.arguments,
             'readonly': self.readonly,
             'ui_properties': self.ui_properties,
@@ -42,19 +60,19 @@ class Command:
             return False
 
     def run(self, request_obj):
-        args = [self.program]
-        args.extend(self.arguments)
         subprocess_env = os.environ
         if 'environment' in request_obj:
             subprocess_env.update(request_obj['environment'])
 
-        result = subprocess.run(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, env=subprocess_env)
-        return {
-            'exit_code': result.returncode,
-            'stdout': result.stdout.decode() if result.stdout else None,
-            'stderr': result.stderr.decode() if result.stderr else None,
-        }
-    
+        try:
+            result = subprocess.run(self.arguments, stdin=subprocess.PIPE, stdout=subprocess.PIPE, env=subprocess_env)
+            return {
+                'exit_code': result.returncode,
+                'stdout': result.stdout.decode() if result.stdout else None,
+                'stderr': result.stderr.decode() if result.stderr else None,
+            }
+        except Exception as e:
+            raise FailedMethodError(str(e))
 
 class Commands:
     def __init__(self):
