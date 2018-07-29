@@ -412,7 +412,8 @@ def get_available_commands():
     return commands.to_map()
 
 @app.route('/api/commands/<id>/run', methods=['POST'])
+@json_input
 @json_api
-def run_command(id):
-    return commands.run(id)
+def run_command(id, json):
+    return commands.run(id, json)
 

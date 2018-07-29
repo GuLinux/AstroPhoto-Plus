@@ -3,6 +3,43 @@ import { apiFetch } from '../middleware/api';
 
 import { Label, Message, Modal, Container, Grid, Button, Header } from 'semantic-ui-react';
 
+const CommandResultModal = ({commandName, commandLine, visible, onClose, result}) => {
+    const isSuccess = result && result.exit_code === 0;
+    return (
+        <Modal
+            centered={false}
+            size='large'
+            basic
+            open={visible}
+            onClose={onClose}
+            closeIcon
+        >
+            <Modal.Header content={'Result for command ' + commandName} />
+            <Modal.Content>
+                <Message
+                    positive={isSuccess}
+                    negative={!isSuccess}
+                >
+                    Command {commandLine} finished with exit code: {result && result.exit_code}.
+                </Message>
+                {result && result.stdout && (
+                    <React.Fragment>
+                        <Header size='small' content='stdout' />
+                        <pre>{result.stdout}</pre>
+                    </React.Fragment>
+                )}
+                {result && result.stderr && (
+                    <React.Fragment>
+                        <Header size='small' content='stderr' />
+                        <pre>{result.stderr}</pre>
+                    </React.Fragment>
+                )}
+
+            </Modal.Content>
+        </Modal>
+    );
+}
+
 
 class Command extends React.Component {
     constructor(props) {
@@ -21,42 +58,12 @@ class Command extends React.Component {
     render = () => { 
         const { result, showResult, running } = this.state;
         const { command } = this.props;
-        const isSuccess = result && result.exit_code === 0;
+
         const uiProperties = { icon: 'play', color: 'grey', ...(command.ui_properties || {}) };
         const { icon, ...buttonProps } = uiProperties;
         return (
             <React.Fragment>
-                <Modal
-                    centered={false}
-                    size='large'
-                    basic
-                    open={showResult}
-                    onClose={() => this.update({showResult: false})}
-                    closeIcon
-                >
-                    <Modal.Header content={'Result for command ' + command.name} />
-                    <Modal.Content>
-                        <Message
-                            positive={isSuccess}
-                            negative={!isSuccess}
-                        >
-                            Command {this.commandLine()} finished with exit code: {result && result.exit_code}.
-                        </Message>
-                        {result && result.stdout && (
-                            <React.Fragment>
-                                <Header size='small' content='stdout' />
-                                <pre>{result.stdout}</pre>
-                            </React.Fragment>
-                        )}
-                        {result && result.stderr && (
-                            <React.Fragment>
-                                <Header size='small' content='stderr' />
-                                <pre>{result.stderr}</pre>
-                            </React.Fragment>
-                        )}
-
-                    </Modal.Content>
-                </Modal>
+                <CommandResultModal visible={showResult} onClick={() => this.update({showResult: false})} commandLine={this.commandLine()} commandName={command.name} />
                 <Button
                     content={command.name}
                     disabled={running}
@@ -70,10 +77,23 @@ class Command extends React.Component {
 
     update = (updated) => this.setState({...this.state, ...updated});
 
+    requestBody = () => {
+        let request = {
+            timestamp: new Date(),
+        };
+        return request;
+    }
+
     run = async () => {
         this.update({ running: true });
         try {
-            let reply = await apiFetch(`/api/commands/${this.props.command.id}/run`, { method: 'POST' });
+            let reply = await apiFetch(`/api/commands/${this.props.command.id}/run`, {
+                method: 'POST',
+                body: JSON.stringify(this.requestBody()),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             this.update({ result: reply.json, running: false, showResult: true});
         } catch(err) {
             this.update({ running: false});

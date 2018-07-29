@@ -14,6 +14,9 @@ class Command:
         self.arguments = obj.get('arguments', [])
         self.readonly = readonly
         self.ui_properties = obj.get('ui_properties', None)
+        self.confirmation_message = obj.get('confirmation_message', None)
+        self.request_environment = obj.get('request_environment', None)
+        self._check = obj.get('check', None)
 
     def to_map(self):
         return {
@@ -24,12 +27,28 @@ class Command:
             'arguments': self.arguments,
             'readonly': self.readonly,
             'ui_properties': self.ui_properties,
+            'confirmation_message': self.confirmation_message,
+            'request_environment': self.request_environment,
+            'check': self._check
         }
 
-    def run(self):
+    def check(self):
+        if not self._check:
+            return True
+        try:
+            result = subprocess.run(self._check, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+            return result.returncode == 0
+        except:
+            return False
+
+    def run(self, request_obj):
         args = [self.program]
         args.extend(self.arguments)
-        result = subprocess.run(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        subprocess_env = os.environ
+        if 'environment' in request_obj:
+            subprocess_env.update(request_obj['environment'])
+
+        result = subprocess.run(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, env=subprocess_env)
         return {
             'exit_code': result.returncode,
             'stdout': result.stdout.decode() if result.stdout else None,
@@ -45,17 +64,18 @@ class Commands:
             with open(ro_commands_file, 'r') as json_commands_file:
                 commands.extend(json.load(json_commands_file))
         self.commands = [Command(c, readonly=True) for c in commands]
+        self.commands = [c for c in self.commands if c.check()]
 
     def to_map(self):
         return [c.to_map() for c in self.commands]
 
-    def run(self, command_id):
+    def run(self, command_id, request_obj):
         commands = [c for c in self.commands if c.id == command_id]
         if not commands:
             raise NotFoundError('Command with id {} not found'.format(command_id))
 
         command = commands[0]
-        return command.run()
+        return command.run(request_obj)
 
 commands = Commands()
 
