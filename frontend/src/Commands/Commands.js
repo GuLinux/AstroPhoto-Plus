@@ -1,11 +1,8 @@
 import React from 'react';
 import { apiFetch } from '../middleware/api';
 
-import { Message, Modal, Container, Table, Button, Header } from 'semantic-ui-react';
+import { Label, Message, Modal, Container, Grid, Button, Header } from 'semantic-ui-react';
 
-
-const commandLine = (command) => {
-}
 
 class Command extends React.Component {
     constructor(props) {
@@ -25,8 +22,10 @@ class Command extends React.Component {
         const { result, showResult, running } = this.state;
         const { command } = this.props;
         const isSuccess = result && result.exit_code === 0;
+        const uiProperties = { icon: 'play', color: 'grey', ...(command.ui_properties || {}) };
+        const { icon, ...buttonProps } = uiProperties;
         return (
-            <Table.Row>
+            <React.Fragment>
                 <Modal
                     centered={false}
                     size='large'
@@ -58,19 +57,14 @@ class Command extends React.Component {
 
                     </Modal.Content>
                 </Modal>
-                <Table.Cell width={4}>{command.name}</Table.Cell>
-                <Table.Cell width={8}>{this.commandLine()}</Table.Cell>
-                <Table.Cell width={2}>
-                    <Button.Group size='mini'>
-                        <Button
-                            content='run'
-                            disabled={running}
-                            icon={running ? { name: 'spinner', loading: true } : { name: 'play' }}
-                            onClick={() => this.run()}
-                        />
-                    </Button.Group>
-                </Table.Cell>
-            </Table.Row>
+                <Button
+                    content={command.name}
+                    disabled={running}
+                    icon={running ? { name: 'spinner', loading: true } : { name: icon }}
+                    onClick={() => this.run()}
+                    {...buttonProps}
+                />
+            </React.Fragment>
         )
     }
 
@@ -93,19 +87,21 @@ class Command extends React.Component {
     }
 }
 
-export const Commands = ({commands, onError}) => commands && (
+const Category = ({category, commands, onError}) => (
+    <Grid.Row>
+        <Grid.Column verticalAlign='middle'><Label>{category}</Label></Grid.Column>
+        <Grid.Column verticalAlign='middle'>
+            <Button.Group size='small'>{
+                commands.map(c => <Command onError={onError} key={c.id} command={c} />)
+            }</Button.Group>
+        </Grid.Column>
+    </Grid.Row>
+)
+
+export const Commands = ({categories, onError}) => categories && (
     <Container>
-        <Table stackable>
-            <Table.Header>
-                <Table.Row>
-                    <Table.HeaderCell>Name</Table.HeaderCell>
-                    <Table.HeaderCell>Command</Table.HeaderCell>
-                    <Table.HeaderCell>Actions</Table.HeaderCell>
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                { commands.map(c => <Command onError={onError} command={c} key={c.id} />) }
-            </Table.Body>
-        </Table>
+        <Grid stackable>
+            { Object.keys(categories).map(category => <Category onError={onError} key={category} category={category} commands={categories[category].commands} />) }
+        </Grid>
     </Container>
 )
