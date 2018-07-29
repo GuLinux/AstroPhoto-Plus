@@ -3,7 +3,7 @@ import React from 'react';
 import { ModalDialog } from '../Modals/ModalDialog'; 
 import { Form, Dimmer, List, Breadcrumb, Modal, Button, Loader, Message, Icon } from 'semantic-ui-react';
 
-import fetch from 'isomorphic-fetch'
+import { apiFetch } from '../middleware/api'
 
 const AddFolderIcon = ({size='large'}) => (
     <Icon.Group size={size}>
@@ -35,7 +35,7 @@ class CreateDirectoryModal extends React.Component {
         this.state = { open: false, name: '' };
     }
     
-    close = () => this.setState({...this.state, open: false});
+    close = () => this.setState({...this.state, open: false, name: ''});
 
     mkdir = () => {
         this.props.mkdir(this.state.name);
@@ -124,22 +124,22 @@ export class DirectoryPicker extends React.Component {
 
     fetchDirectory = async () => {
         this.setState({...this.state, loading: true})
-        let response = await fetch('/api/directory_browser?path=' + this.state.currentPath);
-        if(response.ok) {
-            let data = await response.json();
-            this.onDataReceived({keepError: false, payload: data, error: this.state.keepError ? this.state.error : null});
-        } else {
-            if(response.status === 404) {
-                let errorMessage = await response.json();
+        try {
+            let reply = await apiFetch('/api/directory_browser?path=' + this.state.currentPath);
+            this.onDataReceived({keepError: false, payload: reply.json, error: this.state.keepError ? this.state.error : null});
+        } catch(reply) {
+            if(reply.response.status === 404) {
+                let errorMessage = reply.json
                 errorMessage.mkdir = () => this.mkdir({path: errorMessage.payload.requested_path});
                 this.onDataReceived({error: errorMessage});
                 if(errorMessage.payload && errorMessage.payload.redirect_to) {
                     this.setState({...this.state, currentPath: errorMessage.payload.redirect_to, keepError: true});
                 }
             } else {
-                let errorText = await response.text();
-                console.log('Error fetching directory ' + this.state.currentPath + ': ', response, errorText);
-                this.onDataReceived({error: { error: 'An error has occured', error_message: errorText }});
+                let errorText = reply.json ? reply.json.error_message : reply.text;
+                let errorTitle = reply.json ? reply.json.error : 'An error as occured';
+                console.log('Error fetching directory ' + this.state.currentPath + ': ', reply);
+                this.onDataReceived({error: { error: errorTitle, error_message: errorText }});
             }
         }
     }
