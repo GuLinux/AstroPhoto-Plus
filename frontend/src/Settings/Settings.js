@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Container, Button, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
+import { Grid, Form, Container, Button, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
 
 const valueOrDefault = (value, defaultValue) => value ? value : defaultValue;
@@ -15,7 +15,7 @@ const isChanged = (settings, key) => key in settings.pending && settings.pending
 const displayTextValue = (settings, key) => displayValue(settings, key, (v) => v && v !== '', '')
 
 
-const Settings = ({settings, onChange, reset, update}) => {
+const Settings = ({settings, onChange, reset, update, version='N/A'}) => {
 
     const InputButtons = ({settingsKey, customButtons=null}) => (
         <Button.Group>
@@ -32,7 +32,25 @@ const Settings = ({settings, onChange, reset, update}) => {
     const currentINDIPath = displayTextValue(settings, 'indi_prefix', '');
     return (
         <Container>
+                <Segment>
+                    <Header content='About' />
+                    <Message>
+                        <Grid columns={2}>
+                            <Grid.Column>
+                                StarQuew - version {version}
+                            </Grid.Column>
+                            <Grid.Column textAlign='right'>
+                                <Button.Group>
+                                    <Button content='Homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
+                                    <Button content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
+                                    <Button content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
+                                </Button.Group>
+                            </Grid.Column>
+                        </Grid>
+                    </Message>
+                </Segment>
             <Form>
+
                 <Segment>
                     <Header content='General' />
                     <Form.Input

@@ -4,6 +4,7 @@ import Actions from '../actions'
 
 const mapStateToProps = (state) => ({
     settings: state.settings,
+    version: state.version && state.version.version,
 });
 
 

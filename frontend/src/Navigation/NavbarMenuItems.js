@@ -26,7 +26,7 @@ const pageMenuItems = (sectionMenu, itemComponent) => {
     return children;
 }
 
-export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, isResponsive=false, onClick = () => true, version='N/A'}) => (
+export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, isResponsive=false, onClick = () => true}) => (
     <React.Fragment>
         <NavItem icon='list' content='Sequences' to="/sequences" disabled={disabled} onClick={onClick} />
         <NavItem icon='computer' content='INDI Server' to="/indi" disabled={disabled} onClick={onClick} />
@@ -43,16 +43,6 @@ export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, isR
                         </Dropdown>
 
                 )}
-                <Dropdown item text='About'>
-                    <Dropdown.Menu>
-                        <Dropdown.Header content='StarQuew' />
-                        <Dropdown.Item content={'Version: ' + version} />
-                        <Dropdown.Item content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
-                        <Dropdown.Item content='Github homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
-                        <Dropdown.Item content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
-                    </Dropdown.Menu>
-                </Dropdown>
-
             </Menu.Menu>
         )}
         { isResponsive && (
@@ -63,12 +53,6 @@ export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, isR
                         {pageMenuItems(sectionMenu, Menu.Item)}
                     </React.Fragment>
                 )}
-                <Menu.Item header content='About StarQuew' />
-                <Menu.Item content={'Version: ' + version} />
-                <Menu.Item content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
-                <Menu.Item content='Github homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
-                <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
-
             </React.Fragment>
         )}
     </React.Fragment>
