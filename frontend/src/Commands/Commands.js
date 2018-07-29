@@ -124,7 +124,10 @@ class Command extends React.Component {
             <React.Fragment>
                 <CommandResultModal
                     visible={showResult}
-                    onClose={() => this.update({showResult: false})}
+                    onClose={() => {
+                        this.update({showResult: false});
+                        this.props.refresh && this.props.refresh();
+                    }}
                     commandLine={this.commandLine()}
                     commandName={command.name}
                     result={result}
@@ -188,21 +191,21 @@ class Command extends React.Component {
     }
 }
 
-const Category = ({category, commands, onError}) => (
+const Category = ({category, commands, onError, refresh}) => (
     <Grid.Row>
         <Grid.Column verticalAlign='middle'><Label>{category}</Label></Grid.Column>
         <Grid.Column verticalAlign='middle'>
             <Button.Group size='small'>{
-                commands.map(c => <Command onError={onError} key={c.id} command={c} />)
+                commands.map(c => <Command onError={onError} refresh={refresh} key={c.id} command={c} />)
             }</Button.Group>
         </Grid.Column>
     </Grid.Row>
 )
 
-export const Commands = ({categories, onError}) => categories && (
+export const Commands = ({categories, onError, refresh}) => categories && (
     <Container>
         <Grid stackable>
-            { Object.keys(categories).map(category => <Category onError={onError} key={category} category={category} commands={categories[category].commands} />) }
+            { Object.keys(categories).map(category => <Category refresh={refresh} onError={onError} key={category} category={category} commands={categories[category].commands} />) }
         </Grid>
     </Container>
 )

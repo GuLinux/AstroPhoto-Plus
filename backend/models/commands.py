@@ -85,11 +85,14 @@ class Commands:
         if os.path.isfile(ro_commands_file):
             with open(ro_commands_file, 'r') as json_commands_file:
                 commands.extend(json.load(json_commands_file))
-        self.commands = [Command(c, readonly=True) for c in commands]
-        self.commands = [c for c in self.commands if c.check()]
+        self._commands = [Command(c, readonly=True) for c in commands]
+
+    @property
+    def commands(self):
+        return [c for c in self._commands if c.check()]
 
     def to_map(self):
-        return [c.to_map() for c in self.commands]
+        return [c.to_map() for c in self.commands] 
 
     def run(self, command_id, request_obj):
         commands = [c for c in self.commands if c.id == command_id]
