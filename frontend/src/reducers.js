@@ -10,6 +10,7 @@ import camera from './Camera/reducer';
 import settings from './Settings/reducer';
 import image from './Image/reducer';
 import navigation from './Navigation/reducer';
+import commands from './Commands/reducer';
 
 const network = (state = { fetching: false }, action) => {
     switch(action.type) {
@@ -63,6 +64,6 @@ const version = (state = {}, action) => {
 }
 
 
-const indiLiteApp = combineReducers({version, sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation});
+const indiLiteApp = combineReducers({version, sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation, commands});
 
 export default indiLiteApp

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Form, Container, Button, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
+import { CommandsContainer } from '../Commands/CommandsContainer';
 
 const valueOrDefault = (value, defaultValue) => value ? value : defaultValue;
 
@@ -33,13 +34,17 @@ const Settings = ({settings, onChange, reset, update, version='N/A'}) => {
     return (
         <Container>
                 <Segment>
+                    <Header content='Commands' />
+                    <CommandsContainer />
+                </Segment>
+                <Segment>
                     <Header content='About' />
                     <Message>
-                        <Grid columns={2}>
-                            <Grid.Column>
-                                StarQuew - version {version}
+                        <Grid stackable>
+                            <Grid.Column width={6}>
+                                StarQuew version {version}
                             </Grid.Column>
-                            <Grid.Column textAlign='right'>
+                            <Grid.Column textAlign='right' width={10}>
                                 <Button.Group>
                                     <Button content='Homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
                                     <Button content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />

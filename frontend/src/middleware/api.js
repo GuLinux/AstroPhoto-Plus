@@ -2,8 +2,22 @@ import fetch from 'isomorphic-fetch'
 import Actions from '../actions'
 
 import { normalize } from 'normalizr'
-import { sequenceSchema, sequenceListSchema, sequenceItemSchema } from './schemas'
+import { commandsSchema, sequenceSchema, sequenceListSchema, sequenceItemSchema } from './schemas'
 
+export const apiFetch = async (url, options) => {
+    const response = await fetch(url, options);
+    const isJSON = response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
+    let reply = { response };
+    if(isJSON) {
+        reply.json = await response.json();
+    } else {
+        reply.text = await response.text();
+    }
+    return response.ok ? Promise.resolve(reply) : Promise.reject(reply);
+}
+
+
+// TODO: refactor using apiFetch
 const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
     let dispatchError = response => {
         response.text().then( body => { dispatch(Actions.serverError('network_request', 'response', response, body)) })
@@ -178,4 +192,7 @@ export const updateSettingsApi = (dispatch, settings, onSuccess) => fetchJSON(di
 
 
 export const getImages = (dispatch, type, onSuccess) => fetchJSON(dispatch, `/api/images/${type}`, {}, onSuccess);
+
+
+export const fetchCommandsAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/commands', {}, json => onSuccess(normalize(json, commandsSchema)));
 

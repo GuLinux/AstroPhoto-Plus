@@ -12,6 +12,9 @@ export const sequenceSchema = new schema.Entity('sequences', {
         idAttribute: 'id',
     }
 );
-export const sequenceListSchema = [ sequenceSchema ]
+export const sequenceListSchema = [ sequenceSchema ];
+
+export const commandSchema = new schema.Entity('commands');
+export const commandsSchema = [ commandSchema ];
 
 
