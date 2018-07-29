@@ -9,3 +9,4 @@ from .exceptions import *
 from .indi_service import INDIService
 from .indi_profile import INDIProfile
 from .images_db import ImagesDatabase, main_images_db, camera_images_db
+from .commands import commands, Command

@@ -1,7 +1,7 @@
 from flask import jsonify, Response, send_from_directory, request
 from api_decorators import *
 from api_utils import *
-from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device, INDIProfile, ImagesDatabase, camera_images_db, main_images_db
+from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device, INDIProfile, ImagesDatabase, camera_images_db, main_images_db, commands
 import os
 from controller import controller
 from app import app
@@ -404,3 +404,15 @@ def directory_browser():
     if request.args.get('show_files', 'false') == 'true':
         response['files'] = [dir for dir in entries if os.path.isfile(os.path.join(path, dir))]
     return response
+
+# Run commands
+@app.route('/api/commands', methods=['GET'])
+@json_api
+def get_available_commands():
+    return commands.to_map()
+
+@app.route('/api/commands/<id>/run', methods=['POST'])
+@json_api
+def run_command(id):
+    return commands.run(id)
+

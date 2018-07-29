@@ -7,9 +7,10 @@ from redis_client import redis_client
 class Settings:
     def __init__(self):
         self.default_datadir = os.environ.get('STARQUEW_DATADIR', os.path.join(os.environ['HOME'], 'StarQuew-Data'))
+        self.config_dir = os.path.join(os.environ['HOME'], '.config', 'StarQuew')
         self.indi_service_logs = self.__build_path(['.cache', 'StarQuew', 'logs', 'indi_service'], isdir=True)
 
-        self.ro_props = ['default_datadir', 'indi_service_logs']
+        self.ro_props = ['default_datadir', 'indi_service_logs', 'config_dir']
         self.rw_props = ['sequences_dir', 'indi_prefix', 'indi_host', 'indi_port', 'indi_service']
 
         self.on_update = None
