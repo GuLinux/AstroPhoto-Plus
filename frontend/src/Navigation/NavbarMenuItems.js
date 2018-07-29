@@ -31,7 +31,7 @@ export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, isR
         <NavItem icon='list' content='Sequences' to="/sequences" disabled={disabled} onClick={onClick} />
         <NavItem icon='computer' content='INDI Server' to="/indi" disabled={disabled} onClick={onClick} />
         <NavItem icon='camera' content='Camera' to="/camera" disabled={disabled || ! hasConnectedCameras} onClick={onClick}/>
-        <NavItem icon='settings' content='Settings' to="/settings" disabled={disabled} onClick={onClick} />
+        <NavItem icon='settings' content='System & Settings' to="/settings" disabled={disabled} onClick={onClick} />
         { !isResponsive && (
             <Menu.Menu position='right'>
                 { sectionMenu && (
