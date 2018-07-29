@@ -1,7 +1,7 @@
 import React from 'react';
 import { apiFetch } from '../middleware/api';
 
-import { Modal, Container, Table, Button, Header } from 'semantic-ui-react';
+import { Message, Modal, Container, Table, Button, Header } from 'semantic-ui-react';
 
 
 const commandLine = (command) => {
@@ -21,50 +21,58 @@ class Command extends React.Component {
         return cmdLine;
     }
 
-    render = () => (
-        <Table.Row>
-            <Modal
-                centered={false}
-                size='large'
-                basic
-                open={this.state.showResult}
-                onClose={() => this.update({showResult: false})}
-                closeIcon
-            >
-                <Modal.Header content={'Result for command ' + this.props.command.name} />
-                <Modal.Content>
-                    <p>
-                        Command {this.commandLine()} finished with exit code: {this.state.result && this.state.result.exit_code}.
-                    </p>
-                    {this.state.result && this.state.result.stdout && (
-                        <React.Fragment>
-                            <Header size='small' content='stdout' />
-                            <pre>{this.state.result.stdout}</pre>
-                        </React.Fragment>
-                    )}
-                    {this.state.result && this.state.result.stderr && (
-                        <React.Fragment>
-                            <Header size='small' content='stderr' />
-                            <pre>{this.state.result.stderr}</pre>
-                        </React.Fragment>
-                    )}
+    render = () => { 
+        const { result, showResult, running } = this.state;
+        const { command } = this.props;
+        const isSuccess = result && result.exit_code === 0;
+        return (
+            <Table.Row>
+                <Modal
+                    centered={false}
+                    size='large'
+                    basic
+                    open={showResult}
+                    onClose={() => this.update({showResult: false})}
+                    closeIcon
+                >
+                    <Modal.Header content={'Result for command ' + command.name} />
+                    <Modal.Content>
+                        <Message
+                            positive={isSuccess}
+                            negative={!isSuccess}
+                        >
+                            Command {this.commandLine()} finished with exit code: {result && result.exit_code}.
+                        </Message>
+                        {result && result.stdout && (
+                            <React.Fragment>
+                                <Header size='small' content='stdout' />
+                                <pre>{result.stdout}</pre>
+                            </React.Fragment>
+                        )}
+                        {result && result.stderr && (
+                            <React.Fragment>
+                                <Header size='small' content='stderr' />
+                                <pre>{result.stderr}</pre>
+                            </React.Fragment>
+                        )}
 
-                </Modal.Content>
-            </Modal>
-            <Table.Cell width={4}>{this.props.command.name}</Table.Cell>
-            <Table.Cell width={8}>{this.commandLine()}</Table.Cell>
-            <Table.Cell width={2}>
-                <Button.Group size='mini'>
-                    <Button
-                        content='run'
-                        disabled={this.state.running}
-                        icon={this.state.running ? { name: 'spinner', loading: true } : { name: 'play' }}
-                        onClick={() => this.run()}
-                    />
-                </Button.Group>
-            </Table.Cell>
-        </Table.Row>
-    )
+                    </Modal.Content>
+                </Modal>
+                <Table.Cell width={4}>{command.name}</Table.Cell>
+                <Table.Cell width={8}>{this.commandLine()}</Table.Cell>
+                <Table.Cell width={2}>
+                    <Button.Group size='mini'>
+                        <Button
+                            content='run'
+                            disabled={running}
+                            icon={running ? { name: 'spinner', loading: true } : { name: 'play' }}
+                            onClick={() => this.run()}
+                        />
+                    </Button.Group>
+                </Table.Cell>
+            </Table.Row>
+        )
+    }
 
     update = (updated) => this.setState({...this.state, ...updated});
 

@@ -16,7 +16,7 @@ const isChanged = (settings, key) => key in settings.pending && settings.pending
 const displayTextValue = (settings, key) => displayValue(settings, key, (v) => v && v !== '', '')
 
 
-const Settings = ({settings, onChange, reset, update, version='N/A'}) => {
+const Settings = ({settings, onChange, reset, update, hasCommands, version='N/A'}) => {
 
     const InputButtons = ({settingsKey, customButtons=null}) => (
         <Button.Group>
@@ -33,29 +33,30 @@ const Settings = ({settings, onChange, reset, update, version='N/A'}) => {
     const currentINDIPath = displayTextValue(settings, 'indi_prefix', '');
     return (
         <Container>
+            { hasCommands && (
                 <Segment>
                     <Header content='Commands' />
                     <CommandsContainer />
                 </Segment>
-                <Segment>
-                    <Header content='About' />
-                    <Message>
-                        <Grid stackable>
-                            <Grid.Column width={6}>
-                                StarQuew version {version}
-                            </Grid.Column>
-                            <Grid.Column textAlign='right' width={10}>
-                                <Button.Group>
-                                    <Button content='Homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
-                                    <Button content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
-                                    <Button content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
-                                </Button.Group>
-                            </Grid.Column>
-                        </Grid>
-                    </Message>
-                </Segment>
+            )}
+            <Segment>
+                <Header content='About' />
+                <Message>
+                    <Grid stackable>
+                        <Grid.Column width={6}>
+                            StarQuew version {version}
+                        </Grid.Column>
+                        <Grid.Column textAlign='right' width={10}>
+                            <Button.Group>
+                                <Button content='Homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
+                                <Button content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
+                                <Button content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
+                            </Button.Group>
+                        </Grid.Column>
+                    </Grid>
+                </Message>
+            </Segment>
             <Form>
-
                 <Segment>
                     <Header content='General' />
                     <Form.Input
