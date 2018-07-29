@@ -6,12 +6,12 @@ from .settings import settings
 from .exceptions import NotFoundError, BadRequestError
 
 class Command:
-    def __init__(self, obj):
+    def __init__(self, obj, readonly=False):
         self.id = random_id(obj.get('id'))
         self.name = obj['name']
         self.program = obj['program']
         self.arguments = obj.get('arguments', [])
-        self.readonly = obj.get('readonly', False)
+        self.readonly = readonly
 
     def to_map(self):
         return {
@@ -19,6 +19,7 @@ class Command:
             'name': self.name,
             'program': self.program,
             'arguments': self.arguments,
+            'readonly': self.readonly,
         }
 
     def run(self):
@@ -39,7 +40,7 @@ class Commands:
         if os.path.isfile(ro_commands_file):
             with open(ro_commands_file, 'r') as json_commands_file:
                 commands.extend(json.load(json_commands_file))
-        self.commands = [Command(c) for c in commands]
+        self.commands = [Command(c, readonly=True) for c in commands]
 
     def to_map(self):
         return [c.to_map() for c in self.commands]
