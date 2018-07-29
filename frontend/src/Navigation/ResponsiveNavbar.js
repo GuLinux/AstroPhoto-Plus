@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavbarMenu, SiteMenuHeader } from './NavbarMenuItems';
-import { Menu, Sidebar, Dropdown } from 'semantic-ui-react';
+import { Menu, Sidebar } from 'semantic-ui-react';
 import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';
 
 export class ResponsiveNavbar extends React.Component {
@@ -14,7 +14,7 @@ export class ResponsiveNavbar extends React.Component {
     toggleVisible = () => this.setVisible(! this.state.visible);
 
     render = () => {
-        const {children, ...props} = this.props;
+        const { children } = this.props;
         return (
             <Sidebar.Pushable>
                 <Sidebar as={NavbarMenu} vertical animation='overlay' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>

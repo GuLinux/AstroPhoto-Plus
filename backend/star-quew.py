@@ -361,6 +361,24 @@ def retrieve_image_histogram(type, image):
 
 
 # filesystem
+@app.route('/api/mkdir', methods=['POST'])
+@json_input
+@json_api
+def browser_mkdir(json):
+    try:
+        path = json['path'] if 'path' in json else os.path.join(json['parent'], json['name'])
+        os.makedirs(path)
+        return {
+            'parent': os.path.dirname(path),
+            'name': os.path.basename(path),
+            'path': path,
+            'created': True,
+        }
+    except KeyError:
+        raise BadRequestError('Invalid json')
+    except Exception as e:
+        raise BadRequestError(str(e))
+
 @app.route('/api/directory_browser', methods=['GET'])
 @json_api
 def directory_browser():

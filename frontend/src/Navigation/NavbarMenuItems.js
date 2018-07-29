@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Sidebar, Dropdown } from 'semantic-ui-react';
+import { Menu, Dropdown } from 'semantic-ui-react';
 
 import { NavLink } from 'react-router-dom';
 export const NavbarMenu = (props) => <Menu stackable inverted color='grey' size='large' {...props} />
