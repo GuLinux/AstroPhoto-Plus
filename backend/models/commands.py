@@ -15,14 +15,14 @@ class Command:
         self.readonly = readonly
         self.ui_properties = obj.get('ui_properties', None)
         self.confirmation_message = obj.get('confirmation_message', None)
-        self.request_environment = self.__build_request_environment(obj.get('request_environment', None))
+        self.request_parameters = self.__build_request_parameters(obj.get('request_parameters', None))
         self._check = obj.get('check', None)
 
-    def __build_request_environment(self, request_environment):
-        if not request_environment or not 'variables' in request_environment:
+    def __build_request_parameters(self, request_parameters):
+        if not request_parameters or not 'variables' in request_parameters:
             return None
 
-        def get_environment_dict(variable):
+        def get_parameters_dict(variable):
             if 'get_default_value' in variable:
                 try:
                     result = subprocess.run(variable['get_default_value'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -33,9 +33,9 @@ class Command:
                     logger.warning('error getting default value for variable {}'.format(variable), e)
             return variable
 
-        variables = [get_environment_dict(v) for v in request_environment['variables']]
-        request_environment.update({ 'variables': variables })
-        return request_environment
+        variables = [get_parameters_dict(v) for v in request_parameters['variables']]
+        request_parameters.update({ 'variables': variables })
+        return request_parameters
 
     def to_map(self):
         return {
@@ -46,7 +46,7 @@ class Command:
             'readonly': self.readonly,
             'ui_properties': self.ui_properties,
             'confirmation_message': self.confirmation_message,
-            'request_environment': self.request_environment,
+            'request_parameters': self.request_parameters,
             'check': self._check
         }
 
@@ -61,11 +61,15 @@ class Command:
 
     def run(self, request_obj):
         subprocess_env = os.environ
-        if 'environment' in request_obj:
-            subprocess_env.update(request_obj['environment'])
+        arguments = self.arguments.copy()
+        logger.debug('arguments: {}'.format(arguments))
+        if 'parameters' in request_obj:
+            logger.debug('parameters: {}'.format(request_obj['parameters']))
+            arguments.extend([p['value'] for p in request_obj['parameters']])
+        logger.debug('arguments: {}'.format(arguments))
 
         try:
-            result = subprocess.run(self.arguments, stdin=subprocess.PIPE, stdout=subprocess.PIPE, env=subprocess_env)
+            result = subprocess.run(arguments, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
             return {
                 'exit_code': result.returncode,
                 'stdout': result.stdout.decode() if result.stdout else None,

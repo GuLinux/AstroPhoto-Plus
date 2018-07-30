@@ -15,25 +15,27 @@ const CommandConfirmationModal = ({ commandName, confirmationMessage, visible, o
     />
 )
 
-class CommandEnvironmentModal extends React.Component {
+class CommandParametersModal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { environment: {} }
-        if(props.requestEnvironment) {
-            props.requestEnvironment.variables.forEach( v => this.state.environment[v.name] = v.default_value || '' );
+        this.state = { parameters: {} }
+        if(props.requestParameters) {
+            props.requestParameters.variables.forEach( v => this.state.parameters[v.name] = v.default_value || '' );
         }
     }
 
     canRun = () => {
-        return this.props.requestEnvironment.variables
-            .map( v => !v.required || (this.state.environment[v.name] && this.state.environment[v.name] !== ''))
+        return this.props.requestParameters.variables
+            .map( v => !v.required || (this.state.parameters[v.name] && this.state.parameters[v.name] !== ''))
             .reduce( (acc, cur) => acc &= cur, true)
         ;
     }
 
+    buildParametersArray = () => this.props.requestParameters.variables.map(v => ({ name: v.name, value: this.state.parameters[v.name]}))
+
     render = () => {
-        const { visible, commandName, requestEnvironment, onClose, onRun } = this.props;
-        return requestEnvironment && (
+        const { visible, commandName, requestParameters, onClose, onRun } = this.props;
+        return requestParameters && (
             <Modal
                 centered={false}
                 size='large'
@@ -41,23 +43,23 @@ class CommandEnvironmentModal extends React.Component {
                 open={visible}
                 onClose={onClose}
             >
-                <Modal.Header content={'Environment for ' + commandName} />
+                <Modal.Header content={'Parameters for ' + commandName} />
                 <Modal.Content>
-                    <Message content={requestEnvironment.message} />
-                    <Form>{ requestEnvironment.variables.map( variable => (
+                    <Message content={requestParameters.message} />
+                    <Form>{ requestParameters.variables.map( variable => (
                         <Form.Input
                             type={variable.type || "text"}
                             name={variable.name}
                             key={variable.name}
-                            value={this.state.environment[variable.name]}
+                            value={this.state.parameters[variable.name]}
                             label={variable.label}
-                            onChange={(e, data) => this.setState({...this.state, environment: { ...this.state.environment, [variable.name]: data.value } })}
+                            onChange={(e, data) => this.setState({...this.state, parameters: { ...this.state.parameters, [variable.name]: data.value } })}
                         />
                     ))}</Form>
                 </Modal.Content>
                 <Modal.Actions>
                     <Button content='Cancel' onClick={() => onClose()} />
-                    <Button content='Run' onClick={() => onRun(this.state.environment)} primary disabled={!this.canRun()}/>
+                    <Button content='Run' onClick={() => onRun(this.buildParametersArray())} primary disabled={!this.canRun()}/>
                 </Modal.Actions>
             </Modal>
         );
@@ -134,12 +136,12 @@ class Command extends React.Component {
                     onConfirm={() => this.run({confirmed: true})}
                     visible={this.state.showConfirmation}
                 />
-                <CommandEnvironmentModal
+                <CommandParametersModal
                     commandName={command.name}
-                    requestEnvironment={command.request_environment}
-                    visible={this.state.showRequestEnvironment}
-                    onClose={() => this.update({showRequestEnvironment: false})}
-                    onRun={(environment) => this.run({environment}) }
+                    requestParameters={command.request_parameters}
+                    visible={this.state.showRequestParameters}
+                    onClose={() => this.update({showRequestParameters: false})}
+                    onRun={(parameters) => this.run({parameters}) }
                 />
                     
                 <Button
@@ -155,20 +157,20 @@ class Command extends React.Component {
 
     update = (updated) => this.setState({...this.state, ...updated});
 
-    run = async ({ confirmed=false, environment=null } = {}) => {
-        if(!environment && !!this.props.command.request_environment) {
-            this.update({ showRequestEnvironment: true });
+    run = async ({ confirmed=false, parameters=null } = {}) => {
+        if(!parameters && !!this.props.command.request_parameters) {
+            this.update({ showRequestParameters: true });
             return;
         }
         if(!confirmed && this.props.command.confirmation_message) {
             this.update({ showConfirmation: true });
             return;
         }
-        this.update({ running: true, showConfirmation: false, showRequestEnvironment: false });
+        this.update({ running: true, showConfirmation: false, showRequestParameters: false });
         try {
             let reply = await apiFetch(`/api/commands/${this.props.command.id}/run`, {
                 method: 'POST',
-                body: JSON.stringify({ environment: environment || {}, timestamp: new Date() }),
+                body: JSON.stringify({ parameters: parameters || {}, timestamp: new Date() }),
                 headers: {
                     'Content-Type': 'application/json',
                 },

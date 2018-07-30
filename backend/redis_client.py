@@ -18,7 +18,7 @@ def retry_connection(f):
             except exceptions.ConnectionError as e:
                 logger.warning('Unable to connect to redis, attempt number {} of {}'.format(retry + 1, max_retry))
                 retry += 1
-                time.sleep(retry)
+                time.sleep(retry * 5)
                 error = e
         if error:
             raise error
