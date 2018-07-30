@@ -1,0 +1,164 @@
+#!/bin/bash
+
+config_filename="/etc/$( basename "$0").cfg"
+[ -r "$config_filename" ] && . "$config_filename"
+
+AP_ON="${AP_ON:-false}"
+
+save-settings() {
+    status > "$config_filename"
+}
+
+ap-on() {
+    rm -f /etc/dhcpcd.conf
+    echo "AP-ON" > /etc/dhcpcd.conf
+    export AP_ON="true"
+    echo "Fake - set AP mode ON"
+}
+
+is-ap-on() {
+    echo "$AP_ON"
+    [ "$AP_ON" == "true" ]
+}
+
+ap-off() {
+    rm -f /etc/dhcpcd.conf
+    echo "AP-OFF" > /etc/dhcpcd.conf
+    export AP_ON="false"
+    echo "Fake - set AP mode OFF"
+}
+
+is-ap-off() {
+    if [ "$AP_ON" == "true" ]; then
+        echo "false"
+        exit 1
+    else
+        echo "true"
+        exit 0
+    fi
+}
+
+configure-ap() {
+    if [ -z "$2" ]; then
+        echo "Error! ESSID and PSK variables must not be empty" >&2
+        exit 1
+    fi
+    ESSID="$1"
+    PSK="$2"
+    mkdir -p /etc/hostapd
+    cat >/etc/hostapd/hostapd.conf <<EOF
+interface=wlan0
+driver=nl80211
+hw_mode=g
+channel=7
+wmm_enabled=0
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP
+
+
+ssid=${ESSID}
+wpa_passphrase=${PSK}
+EOF
+    export AP_ESSID="${ESSID}"
+    export AP_PSK="$PSK"
+    echo "[FAKE] Configuration done. Settings will be applied after rebooting. ESSID=$ESSID, PSK=$PSK"
+}
+
+get-ap-essid() {
+    echo -n "${AP_ESSID}"
+}
+
+get-ap-psk() {
+    echo -n "${AP_PSK}"
+}
+
+configure-client-wifi() {
+    if [ -z "$3" ]; then
+        echo "Error! ESSID, PSK and COUNTRY variables must not be empty" >&2
+        exit 1
+    fi
+    ESSID="$1"
+    PSK="$2"
+    COUNTRY="$3"
+    mkdir -p /etc/wpa_supplicant
+
+    cat >/etc/wpa_supplicant/wpa_supplicant.conf <<EOF
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+country=${COUNTRY}
+update_config=1
+EOF
+    cat >> /etc/wpa_supplicant/wpa_supplicant.conf <<EOF
+network={
+    essid=$ESSID
+    psk=$PSK
+}
+EOF
+    export CLIENT_ESSID="${ESSID}"
+    export CLIENT_PSK="${PSK}"
+    export CLIENT_COUNTRY="${COUNTRY}"
+    echo "[FAKE] Configuration done. Settings will be applied after rebooting. ESSID=$ESSID, PSK=$PSK, COUNTRY=$COUNTRY"
+}
+
+get-client-essid() {
+    echo -n "$CLIENT_ESSID"
+}
+
+get-client-psk() {
+    echo -n "$CLIENT_PSK"
+}
+
+get-client-country() {
+    echo -n "$COUNTRY"
+}
+
+status() {
+    cat <<EOF
+    AP_ON="${AP_ON}"
+    AP_ESSID="${AP_ESSID}"
+    AP_PSK="${AP_PSK}"
+    CLIENT_ESSID="${CLIENT_ESSID}"
+    CLIENT_PSK="${CLIENT_PSK}"
+    CLIENT_COUNTRY="${CLIENT_COUNTRY}"
+EOF
+}
+
+usage() {
+    cat <<EOF
+Usage: $0 command
+
+Commands:
+  - ap-on
+  - is-ap-on
+  - ap-off
+  - is-ap-off
+  - configure-ap
+  - get-ap-essid
+  - get-ap-psk
+  - configure-client-wifi
+  - get-client-essid
+  - get-client-psk
+  - get-client-country
+  - status
+EOF
+}
+
+
+command="$1"; shift
+case "$command" in
+    ap-on|ap-off|configure-ap|configure-client-wifi)
+        "$command" "$@"
+        save-settings
+        ;;
+    is-ap-on|is-ap-off|get-ap-essid|get-ap-psk|get-client-essid|get-client-psk|get-client-country|status)
+        "$command" "$@"
+        ;;
+    *)
+        usage
+        exit 1
+esac
+
