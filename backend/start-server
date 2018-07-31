@@ -21,7 +21,7 @@ if [ "$1" == --check-user ]; then
 fi
 
 export VENV_HOME="$HOME/.local/share/StarQuew/python-venv"
-if [ ! -d "$VENV_HOME" ]; then
+if ! [ -d "$VENV_HOME" ] && ! [ -r "$VENV_HOME/bin/activate" ]; then
     mkdir -p "$( dirname "$VENV_HOME" )"
     python3 -m venv "$VENV_HOME"
 fi
