@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Form, Container, Button, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
+import { Dropdown, Menu, Grid, Form, Container, Button, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
 import { CommandsContainer } from '../Commands/CommandsContainer';
 
@@ -17,18 +17,19 @@ const displayTextValue = (settings, key) => displayValue(settings, key, (v) => v
 
 
 const Settings = ({settings, onChange, reset, update, showCommands, version='N/A'}) => {
-
     const InputButtons = ({settingsKey, customButtons=null}) => (
-        <Button.Group>
-            {customButtons}
-            <Button content='update' primary disabled={!isChanged(settings, settingsKey)} onClick={() => update(settingsKey, settings.pending[settingsKey])} />
-            <Button content='reset' onClick={() => reset(settingsKey)} disabled={!isChanged(settings, settingsKey)}/>
-        </Button.Group>
+        <Dropdown direction='left' button basic floating icon='ellipsis horizontal'>
+            <Dropdown.Menu>
+                {customButtons}
+                <Dropdown.Item content='update' disabled={!isChanged(settings, settingsKey)} onClick={() => update(settingsKey, settings.pending[settingsKey])} />
+                <Dropdown.Item content='reset' onClick={() => reset(settingsKey)} disabled={!isChanged(settings, settingsKey)}/>
+            </Dropdown.Menu>
+        </Dropdown>
     )
 
     const onInputChange = (key) => (e, data) => onChange(key, data.value);
-
-    const InputIcon = ({settingsKey}) => isChanged(settings, settingsKey) ? <Icon name='edit' /> : null;
+    const getIconProp = (settingsKey) => isChanged(settings, settingsKey) ? { iconPosition: 'left', icon: <Icon name='edit' />} : {};
+ 
     const currentSequencesDir = displayTextValue(settings, 'sequences_dir', '');
     const currentINDIPath = displayTextValue(settings, 'indi_prefix', '');
     return (
@@ -40,11 +41,11 @@ const Settings = ({settings, onChange, reset, update, showCommands, version='N/A
                         StarQuew version {version}
                     </Grid.Column>
                     <Grid.Column textAlign='right' width={10} verticalAlign='middle'>
-                        <Button.Group>
-                            <Button content='Homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
-                            <Button content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
-                            <Button content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
-                        </Button.Group>
+                        <Menu compact stackable>
+                            <Menu.Item content='Homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
+                            <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
+                            <Menu.Item content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
+                        </Menu>
                     </Grid.Column>
                 </Grid>
             </Segment>
@@ -61,15 +62,14 @@ const Settings = ({settings, onChange, reset, update, showCommands, version='N/A
                         label='Sequences data directory'
                         fluid
                         type='text'
-                        icon={<InputIcon settingsKey='sequences_dir' />}
-                        iconPosition='left'
+                        {...getIconProp('sequences_dir')}
                         value={currentSequencesDir}
                         onChange={onInputChange('sequences_dir')}
                         action={<InputButtons settingsKey='sequences_dir' customButtons={
                             <DirectoryPicker currentDirectory={currentSequencesDir} onSelected={
                                 (dir) => onChange('sequences_dir', dir)
                                 } trigger={
-                                <Button content='Browse...' icon='folder' />
+                                <Dropdown.Item content='Browse...' icon='folder' />
                             } />
                         } />}
                     />
@@ -79,15 +79,14 @@ const Settings = ({settings, onChange, reset, update, showCommands, version='N/A
                         label='INDI path prefix'
                         fluid
                         type='text'
-                        icon={<InputIcon settingsKey='indi_prefix' />}
-                        iconPosition='left'
+                        {...getIconProp('indi_prefix')}
                         value={currentINDIPath}
                         onChange={onInputChange('indi_prefix')}
                         action={<InputButtons settingsKey='indi_prefix' customButtons={
                             <DirectoryPicker currentDirectory={currentINDIPath} onSelected={
                                 (dir) => onChange('indi_prefix', dir)
                                 } trigger={
-                                <Button content='Browse...' icon='folder' />
+                                <Dropdown.Item content='Browse...' icon='folder' />
                             } />
                         } />}
                     />

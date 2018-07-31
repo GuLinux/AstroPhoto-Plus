@@ -1,7 +1,7 @@
 import React from 'react';
 import { apiFetch } from '../middleware/api';
 
-import { Dimmer, Loader, Form, Confirm, Label, Message, Modal, Container, Grid, Button, Header } from 'semantic-ui-react';
+import { Menu, Dimmer, Loader, Form, Confirm, Label, Message, Modal, Container, Grid, Button, Header } from 'semantic-ui-react';
 
 
 const CommandConfirmationModal = ({ commandName, confirmationMessage, visible, onCancel, onConfirm }) => (
@@ -147,7 +147,7 @@ class Command extends React.Component {
                     onRun={(parameters) => this.run({parameters}) }
                 />
                     
-                <Button
+                <Menu.Item
                     content={command.name}
                     disabled={running}
                     icon={running ? { name: 'spinner', loading: true } : { name: icon }}
@@ -195,9 +195,9 @@ const Category = ({category, commands, onError, refresh}) => (
     <Grid.Row>
         <Grid.Column width={2} verticalAlign='middle'><Label>{category}</Label></Grid.Column>
         <Grid.Column width={14} verticalAlign='middle'>
-            <Button.Group size='small'>{
+            <Menu stackable compact>{
                 commands.map(c => <Command onError={onError} refresh={refresh} key={c.id} command={c} />)
-            }</Button.Group>
+            }</Menu>
         </Grid.Column>
     </Grid.Row>
 )
