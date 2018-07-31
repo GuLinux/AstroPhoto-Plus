@@ -81,7 +81,7 @@ const ImagePage  = ({id, type, url, options, setOption, history, imageLoading, o
                     </Form>
                 </Segment>
             </Grid.Column>
-            <Grid.Column width={12}>
+            <Grid.Column width={12} className='image-viewer'>
                 <ImageLoader id={id} type={type} uri={url} fitScreen={!!options.fitToScreen} />
             </Grid.Column>
         </Grid>
