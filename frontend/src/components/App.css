@@ -68,3 +68,7 @@ body {
 .ui.basic.label {
     color: #555555;
 }
+
+.starquew-sidebar {
+    min-height: 100vh;
+}

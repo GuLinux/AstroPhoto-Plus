@@ -16,7 +16,7 @@ export class ResponsiveNavbar extends React.Component {
     render = () => {
         const { children } = this.props;
         return (
-            <Sidebar.Pushable>
+            <Sidebar.Pushable className='starquew-sidebar'>
                 <Sidebar as={NavbarMenu} vertical animation='overlay' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>
                     <SiteMenuHeader />
                     <NavbarMenuItemsContainer isResponsive={true} onClick={() => this.setVisible(false)} />
