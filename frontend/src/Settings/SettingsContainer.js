@@ -5,7 +5,7 @@ import Actions from '../actions'
 const mapStateToProps = (state) => ({
     settings: state.settings,
     version: state.version && state.version.version,
-    hasCommands: state.commands.ids.length > 0,
+    showCommands: state.commands.ids.length > 0 || state.commands.fetching,
 });
 
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { apiFetch } from '../middleware/api';
 
-import { Form, Confirm, Label, Message, Modal, Container, Grid, Button, Header } from 'semantic-ui-react';
+import { Dimmer, Loader, Form, Confirm, Label, Message, Modal, Container, Grid, Button, Header } from 'semantic-ui-react';
 
 
 const CommandConfirmationModal = ({ commandName, confirmationMessage, visible, onCancel, onConfirm }) => (
@@ -193,8 +193,8 @@ class Command extends React.Component {
 
 const Category = ({category, commands, onError, refresh}) => (
     <Grid.Row>
-        <Grid.Column verticalAlign='middle'><Label>{category}</Label></Grid.Column>
-        <Grid.Column verticalAlign='middle'>
+        <Grid.Column width={2} verticalAlign='middle'><Label>{category}</Label></Grid.Column>
+        <Grid.Column width={14} verticalAlign='middle'>
             <Button.Group size='small'>{
                 commands.map(c => <Command onError={onError} refresh={refresh} key={c.id} command={c} />)
             }</Button.Group>
@@ -202,10 +202,17 @@ const Category = ({category, commands, onError, refresh}) => (
     </Grid.Row>
 )
 
-export const Commands = ({categories, onError, refresh}) => categories && (
+export const Commands = ({categories, onError, refresh, fetching}) => (
     <Container>
-        <Grid stackable>
-            { Object.keys(categories).map(category => <Category refresh={refresh} onError={onError} key={category} category={category} commands={categories[category].commands} />) }
-        </Grid>
+        { categories && (
+            <Grid stackable>
+                { Object.keys(categories).map(category => <Category refresh={refresh} onError={onError} key={category} category={category} commands={categories[category].commands} />) }
+            </Grid>
+        )}
+        { fetching && (
+            <Dimmer active>
+                <Loader />
+            </Dimmer>
+        )}
     </Container>
 )

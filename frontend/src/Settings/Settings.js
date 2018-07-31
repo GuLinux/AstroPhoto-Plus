@@ -16,7 +16,7 @@ const isChanged = (settings, key) => key in settings.pending && settings.pending
 const displayTextValue = (settings, key) => displayValue(settings, key, (v) => v && v !== '', '')
 
 
-const Settings = ({settings, onChange, reset, update, hasCommands, version='N/A'}) => {
+const Settings = ({settings, onChange, reset, update, showCommands, version='N/A'}) => {
 
     const InputButtons = ({settingsKey, customButtons=null}) => (
         <Button.Group>
@@ -48,7 +48,7 @@ const Settings = ({settings, onChange, reset, update, hasCommands, version='N/A'
                     </Grid.Column>
                 </Grid>
             </Segment>
-            { hasCommands && (
+            { showCommands && (
                 <Segment>
                     <Header content='Commands' />
                     <CommandsContainer />
