@@ -190,7 +190,7 @@ export class DirectoryPicker extends React.Component {
                     trigger={<Button icon={<AddFolderIcon size={null} />} content='Create folder' />}
                     mkdir={(name) => this.mkdir({parent: this.state.currentPath, name})}
                 />
-                <ModalDialog.CloseButton content='Cancel' />
+                <ModalDialog.CloseButton content='Cancel' onClose={() => this.fetchDirectory(this.props.currentDirectory)} />
                 <ModalDialog.CloseButton
                     content='Select'
                     primary
