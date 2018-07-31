@@ -122,15 +122,18 @@ export class DirectoryPicker extends React.Component {
         this.setState({...this.state, ...newState, loading: false});
     }
 
-    fetchDirectory = async () => {
-        this.setState({...this.state, loading: true})
+    fetchDirectory = async (path=null) => {
+        if(!path) {
+            path = this.state.currentPath;
+        }
+        this.setState({...this.state, loading: true, currentPath: path})
         try {
-            let reply = await apiFetch('/api/directory_browser?path=' + this.state.currentPath);
+            let reply = await apiFetch('/api/directory_browser?path=' + path);
             this.onDataReceived({keepError: false, payload: reply.json, error: this.state.keepError ? this.state.error : null});
         } catch(reply) {
             if(reply.response.status === 404) {
                 let errorMessage = reply.json
-                errorMessage.mkdir = () => this.mkdir({path: errorMessage.payload.requested_path});
+                errorMessage.mkdir = () => this.mkdir({path: errorMessage.payload.requested_path}, true);
                 this.onDataReceived({error: errorMessage});
                 if(errorMessage.payload && errorMessage.payload.redirect_to) {
                     this.setState({...this.state, currentPath: errorMessage.payload.redirect_to, keepError: true});
@@ -144,7 +147,7 @@ export class DirectoryPicker extends React.Component {
         }
     }
 
-    mkdir = async (payload) => {
+    mkdir = async (payload, cdOnCreated=false) => {
         this.setState({...this.state, loading: true})
         let response = await fetch('/api/mkdir', {
             method: 'POST',
@@ -155,7 +158,7 @@ export class DirectoryPicker extends React.Component {
         });
         if(response.ok) {
             let data = await response.json();
-            this.fetchDirectory();
+            this.fetchDirectory(cdOnCreated ? payload.path : this.state.currentPath);
         } else {
             let error;
             if(response.headers.has('content-type') && response.headers.get('content-type') === 'application/json') {
