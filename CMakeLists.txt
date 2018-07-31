@@ -15,6 +15,12 @@ add_subdirectory(backend)
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/scripts/StarQuew-ctl DESTINATION bin)
 install(FILES ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION .)
 install(FILES ${CMAKE_SOURCE_DIR}/README.md DESTINATION .)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/config DESTINATION share/StarQuew/)
+install(PROGRAMS
+    ${CMAKE_SOURCE_DIR}/config/raspberry_pi/starquew-deb-updater
+    ${CMAKE_SOURCE_DIR}/config/raspberry_pi/starquew-wifi-helper
+    DESTINATION share/StarQuew/config/raspberry_pi/
+)
 
 SET(CPACK_GENERATOR "TGZ;DEB")
 SET(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/packages)

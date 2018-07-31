@@ -79,5 +79,26 @@
         "ui_properties": {
             "icon": "wifi"
         }
+    },
+    {
+        "id": "7",
+        "name": "Update StarQuew",
+        "arguments": ["sudo", "starquew-deb-updater", "update"],
+        "category": "Updates",
+        "check": ["starquew-deb-updater", "get-latest-info"],
+        "confirmation_message": "This will restart StarQuew, and any job in progress. Are you sure?",
+        "ui_properties": {
+            "icon": "sync"
+        }
+    },
+    {
+        "id": "8",
+        "name": "Update System",
+        "arguments": ["sudo", "apt", "dist-upgrade", "-y"],
+        "category": "Updates",
+        "check": ["curl", "-f", "-s", "http://raspbian.raspberrypi.org/raspbian/dists/stretch/Release.gpg"],
+        "ui_properties": {
+            "icon": "sync"
+        }
     }
 ]

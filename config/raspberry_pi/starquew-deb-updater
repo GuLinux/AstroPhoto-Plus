@@ -1,0 +1,79 @@
+#!/bin/bash
+
+set -e
+
+LATEST_BASE_URL="https://gulinux.net/downloads/StarQuew/latest"
+
+get-installed-version() {
+    dpkg-query --showformat='${Version}' --show starquew
+}
+
+get-latest-info() {
+    curl -f -s "$LATEST_BASE_URL/info.json"
+}
+
+get-latest-deb() {
+    python3 - <<EOF
+import requests
+import json
+
+latest_version = requests.get('$LATEST_BASE_URL/info.json')
+latest_version_info = latest_version.json()
+deb_artifact = [artifact for artifact in latest_version_info['artifacts'] if artifact.endswith('.deb')]
+print(deb_artifact[0])
+EOF
+}
+
+needs-update() {
+    python3 - <<EOF
+current_version = '$( get-installed-version)'
+
+if not current_version:
+    raise RuntimeError('Unable to detect installed version')
+
+latest = '$1'
+
+if latest.startswith('StarQuew-{}'.format(current_version)):
+    print('is_latest')
+else:
+    print('needs_update')
+
+EOF
+}
+
+run-updater() {
+    echo "Updating to package $@"
+    temp_deb_file="/tmp/$1"
+    cd /tmp
+    curl "$LATEST_BASE_URL/$1" -o "$temp_deb_file"
+    apt install -y "$temp_deb_file"
+    rm -f "$temp_deb_file"
+    echo "Your system will now reboot."
+    StarQuew-ctl restart
+}
+
+
+update() {
+    latest_deb="$( get-latest-deb )"
+
+    if [ "$(needs-update "$latest_deb")" == "is_latest" ]; then
+        echo "Already at latest version"
+    else
+        echo "New version found! Updating..."
+        run-updater "$latest_deb"
+    fi
+}
+
+case "$1" in
+    update)
+        update
+        ;;
+    get-latest-info)
+        get-latest-info
+        ;;
+    *)
+        echo "Usage: $0 update|get-latest-info" >&1
+        exit 1
+        ;;
+esac
+
