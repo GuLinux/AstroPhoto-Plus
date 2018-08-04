@@ -64,6 +64,16 @@ export const createSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(di
         body: JSON.stringify(sequence)
     }, json => onSuccess(normalize(json, sequenceSchema)));
 
+export const editSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, '/api/sequences/' + sequence.id, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(sequence)
+    }, json => onSuccess(normalize(json, sequenceSchema)));
+
+
+
 export const deleteSequenceAPI = (dispatch, sequenceId, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}`, {
         method: 'DELETE'
     }, json => onSuccess(normalize(json, sequenceSchema)));

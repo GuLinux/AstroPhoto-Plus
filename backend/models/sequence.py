@@ -19,6 +19,12 @@ class Sequence:
             return sequence_item[0]
         raise NotFoundError()
 
+    def update(self, json):
+        self.name = json['name']
+        self.upload_path = json['directory']
+        self.camera = json['camera']
+        self.filter_wheel = json['filterWheel']
+
     @staticmethod
     def from_map(map_object):
         return Sequence(
@@ -43,7 +49,7 @@ class Sequence:
         }
 
     def duplicate(self):
-        new_sequence = Sequence(self.name, self.upload_path, self.camera, self.filter_wheel)
+        new_sequence = Sequence(self.name + ' (copy)', self.upload_path, self.camera, self.filter_wheel)
         for item in self.sequence_items:
             new_sequence.sequence_items.append(item.duplicate())
 

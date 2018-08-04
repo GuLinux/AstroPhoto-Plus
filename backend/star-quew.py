@@ -206,6 +206,20 @@ def new_sequence(json):
         raise BadRequestError('Invalid json')
 
 
+@app.route('/api/sequences/<id>', methods=['PUT'])
+@json_input
+@json_api
+def edit_sequence(id, json):
+    try:
+        with controller.sequences.lookup_edit(id) as sequence:
+            sequence.update(json)
+            return sequence.to_map()
+    except KeyError:
+        raise BadRequestError('Invalid json')
+
+
+
+
 @app.route('/api/sequences/<id>/start', methods=['POST'])
 @json_api
 def start_sequence(id):

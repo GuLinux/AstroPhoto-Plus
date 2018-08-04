@@ -55,6 +55,7 @@ class SequencesList extends React.Component {
                             <Table.Cell>
                                 <Button.Group icon>
                                     <Button as={Link} to={uriFor(sequence)} title="Open" icon='folder open' />
+                                    <AddSequenceModalContainer trigger={<Button title="Edit" icon='edit' />} sequence={sequence} />
                                     <ConfirmDialog
                                         trigger={
                                             // TODO: disable when running 

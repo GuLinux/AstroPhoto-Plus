@@ -78,8 +78,8 @@ const FilterWheelDetailsPage = ({filterWheel, filterNumber, filterName}) => {
     )
 }
 
-const AddSequenceItem = withRouter( ({history, onCreateSequenceItem, sequenceId, trigger}) => (
-    <AddSequenceItemModal trigger={trigger} onAddSequenceItem={(...args) => {
+const AddSequenceItem = withRouter( ({history, onCreateSequenceItem, sequenceId, trigger, hasFilterWheel}) => (
+    <AddSequenceItemModal trigger={trigger} hasFilterWheel={hasFilterWheel} onAddSequenceItem={(...args) => {
         onCreateSequenceItem(...args);
         history.push('/sequences/' + sequenceId + '/items/pending')
     }} />
@@ -97,7 +97,8 @@ class Sequence extends React.Component {
                 { icon: 'play', onClick: () => startSequence(), disabled: !canStart(sequence, gear), content: 'start' },
                 { openModal: AddSequenceItem, modalProps: {
                         onCreateSequenceItem: this.props.onCreateSequenceItem,
-                        sequenceId: sequence.id
+                        sequenceId: sequence.id,
+                        hasFilterWheel: sequence.filterWheel && sequence.filterWheel !== 'none',
                     },
                     icon: 'add', disabled: !canEdit, content: 'new' },
                 { icon: 'arrow left', as: Link, to: "/sequences", content: 'back to sequences' },

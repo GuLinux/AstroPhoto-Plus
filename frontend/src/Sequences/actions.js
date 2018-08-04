@@ -1,4 +1,4 @@
-import { createSequenceAPI, fetchSequencesAPI, deleteSequenceAPI, duplicateSequenceAPI, startSequenceAPI } from '../middleware/api'
+import { createSequenceAPI, editSequenceAPI, fetchSequencesAPI, deleteSequenceAPI, duplicateSequenceAPI, startSequenceAPI } from '../middleware/api'
 import Actions from '../actions'
 
 export const Sequences = {
@@ -15,6 +15,13 @@ export const Sequences = {
         sequence: sequences[id],
         sequenceItems
     }),
+
+    modified: (sequences, id, sequenceItems) => ({
+        type: 'SEQUENCE_MODIFIED',
+        sequence: sequences[id],
+        sequenceItems
+    }),
+
 
     deleted: (sequences, id) => ({
             type: 'SEQUENCE_DELETED',
@@ -72,6 +79,16 @@ export const Sequences = {
             dispatch({type: 'REQUEST_SEQUENCES'});
             return fetchSequencesAPI( dispatch, data => {
                 dispatch(Sequences.receive(data.entities.sequences, data.result, data.entities.sequenceItems));
+            });
+        }
+    },
+
+    edit: (id, name, directory, cameraID, filterWheelID) => {
+        return dispatch => {
+            const sequence = {id, name, directory, camera: cameraID, filterWheel: filterWheelID };
+            dispatch({type: 'REQUEST_EDIT_SEQUENCE', sequence});
+            return editSequenceAPI( dispatch, sequence, data => {
+                dispatch(Sequences.updated(data));
             });
         }
     },

@@ -16,19 +16,23 @@ class AddSequenceModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = initialState;
+        if(this.props.sequence) {
+            let { camera, directory, filterWheel, name } = props.sequence;
+            this.state = { camera, directory, filterWheel, name };
+        }
     }
 
     onNameChanged(name) {
-        this.setState({...this.state, name: name, nameValid: name !== '', directory: sanitizePath(name), directoryValid: name !== '' });
+        this.setState({...this.state, name, directory: sanitizePath(name) });
     }
 
     onDirectoryChanged(directory) {
-        this.setState({...this.state, directory: sanitizePath(directory), directoryValid: directory !== '' });
+        this.setState({...this.state, directory: sanitizePath(directory) });
     }
 
 
     onPrimaryCameraChanged(camera) {
-        this.setState({...this.state, camera, cameraValid: camera !== 'none'});
+        this.setState({...this.state, camera, });
     }
 
     onFilterWheelChanged(filterWheel) {
@@ -36,12 +40,19 @@ class AddSequenceModal extends React.Component {
     }
 
     onAddClicked() {
-        this.props.onAddSequence(this.state.name, this.state.directory, this.state.camera, this.state.filterWheel !== 'none' ? this.state.filterWheel : null)
+        if(this.props.sequence) {
+            this.props.onEditSequence(this.props.sequence.id, this.state.name, this.state.directory, this.state.camera, this.state.filterWheel !== 'none' ? this.state.filterWheel : null)
+        } else {
+            this.props.onAddSequence(this.state.name, this.state.directory, this.state.camera, this.state.filterWheel !== 'none' ? this.state.filterWheel : null)
+        }
         this.setState(initialState);
     }
 
     isValid() {
-        return this.state.nameValid && this.state.directoryValid && this.state.cameraValid
+        const nameValid = this.state.name !== '';
+        const directoryValid = this.state.directory !== '';
+        const cameraValid = this.state.camera && this.state.camera !== 'none';
+        return nameValid && directoryValid && cameraValid;
     }
 
     render() {
@@ -104,7 +115,7 @@ class AddSequenceModal extends React.Component {
             </Modal.Content>
             <Modal.Actions>
                 <ModalDialog.CloseButton content='Close' />
-                <ModalDialog.CloseButton content='Add' primary disabled={!this.isValid()} onClose={() => this.onAddClicked()} />
+                <ModalDialog.CloseButton content={this.props.sequence ? 'Edit' : 'Add'} primary disabled={!this.isValid()} onClose={() => this.onAddClicked()} />
             </Modal.Actions>
           </ModalDialog>
         )
