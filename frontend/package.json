@@ -28,5 +28,5 @@
         "start": "rm -rf src/themes && mkdir -p src/themes && cp -a forest-themes/output/dist/* src/themes/ && cp -a forest-themes/src/themes/ src/themes/bootswatch && react-scripts start",
         "test": "react-scripts test --env=jsdom"
     },
-    "version": "0.1.1"
+    "version": "0.1.2"
 }
