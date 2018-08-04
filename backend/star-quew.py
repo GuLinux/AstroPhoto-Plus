@@ -16,6 +16,17 @@ app.logger.handlers = gunicorn_logger.handlers
 is_debug_mode = int(os.environ.get('DEV_MODE', '0')) == 1
 app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG' if is_debug_mode else 'INFO' ))
 
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    if not app.config['has_static_folder']:
+        return 'Resource not found: {}'.format(path), 405
+    static_file = path
+    if not os.path.isfile(os.path.join(app.config['static_folder'], path)):
+        static_file = 'index.html'
+    return send_from_directory(app.config['static_folder'], static_file)
+
+
 @app.route('/api/version')
 @json_api
 def backend_version():
