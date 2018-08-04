@@ -30,7 +30,7 @@ class Command:
                         logger.debug(result.stderr.decode())
                     variable['default_value'] = result.stdout.decode()
                 except Exception as e:
-                    logger.warning('error getting default value for variable {}'.format(variable), e)
+                    logger.warning('error getting default value for variable {}: %s'.format(variable), e)
             return variable
 
         variables = [get_parameters_dict(v) for v in request_parameters['variables']]
