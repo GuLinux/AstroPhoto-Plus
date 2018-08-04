@@ -5,7 +5,7 @@
         "arguments": ["sudo", "systemctl", "poweroff"],
         "category": "System",
         "confirmation_message": "Are you sure you want to shutdown?",
-        "check": ["sudo", "systemctl", "is-system-running"],
+        "check": ["sudo", "systemctl", "get-default"],
         "ui_properties": {
             "icon": "shutdown",
             "color": "red"
@@ -16,7 +16,7 @@
         "name": "Reboot",
         "confirmation_message": "Are you sure you want to reboot?",
         "arguments": ["sudo", "systemctl", "reboot"],
-        "check": ["sudo", "systemctl", "is-system-running"],
+        "check": ["sudo", "systemctl", "get-default"],
         "category": "System",
         "ui_properties": {
             "icon": "redo",
