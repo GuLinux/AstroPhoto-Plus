@@ -31,7 +31,7 @@ const DeviceCardHeader = ({device}) => {
 
 const ExposuresPage = ({sequenceItems, sequenceItemEntities}) => {
     const exposureSequenceItems = sequenceItems.map(s => sequenceItemEntities[s]).filter(s => s.type === 'shots');
-    const remapped = exposureSequenceItems.map(s => ( size='small'{
+    const remapped = exposureSequenceItems.map(s => ({
         count: s.count,
         shot: s.progress,
         remaining: s.count - s.progress,
