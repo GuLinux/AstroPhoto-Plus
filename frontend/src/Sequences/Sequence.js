@@ -173,7 +173,6 @@ class Sequence extends React.Component {
 
             <SequenceItemsContainer canEdit={canEdit} sequenceId={sequence.id} />
 
-            <Header size="medium">Devices</Header>
             <Card.Group>
                 <ExposuresPage sequenceItems={sequence.sequenceItems} sequenceItemEntities={sequence.sequenceItemEntities} />
                 <CameraDetailsPage camera={camera} />
