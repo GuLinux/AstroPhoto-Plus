@@ -49,7 +49,7 @@ console.log(remapped);
                     <Card.Header size='medium'>Exposures</Card.Header>
                     <Card.Meta>{exposureSequenceItems.length} sequences</Card.Meta>
                     <Card.Description>
-                        <Table definition basic compact='very'>
+                        <Table definition basic compact='very' size='small'>
                             <Table.Body>
                                 <Table.Row>
                                     <Table.Cell content='Total' />
