@@ -5,6 +5,7 @@
  - Allow to edit sequence after creation (name, camera, filter wheel, directory)
  - Add '(copy)' suffix to duplicated sequences
  - Block filter wheel sequence item creation if no filter wheel is defined on sequence
+ - add "Exposures" card with info about total, finished and remaining shots of a sequence (number and time)
 
 ## [0.1.1] - 2018-08-03
 ### User experience improvements

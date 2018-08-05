@@ -31,7 +31,7 @@ const DeviceCardHeader = ({device}) => {
 
 const ExposuresPage = ({sequenceItems, sequenceItemEntities}) => {
     const exposureSequenceItems = sequenceItems.map(s => sequenceItemEntities[s]).filter(s => s.type === 'shots');
-    const remapped = exposureSequenceItems.map(s => ({
+    const remapped = exposureSequenceItems.map(s => ( size='small'{
         count: s.count,
         shot: s.progress,
         remaining: s.count - s.progress,
@@ -39,8 +39,6 @@ const ExposuresPage = ({sequenceItems, sequenceItemEntities}) => {
         elapsed: s.progress * s.exposure,
         timeRemaining: s.exposure * (s.count - s.progress),
     }));
-console.log(exposureSequenceItems);
-console.log(remapped);
     const computeTotal = (prop) => remapped.reduce( (cur, val) => cur + val[prop], 0);
     return (
         <Card>
