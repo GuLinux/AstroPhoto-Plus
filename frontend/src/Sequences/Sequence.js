@@ -1,7 +1,7 @@
 import React from 'react';
 import AddSequenceItemModal from '../SequenceItems/AddSequenceItemModal'
 import SequenceItemsContainer from '../SequenceItems/SequenceItemsContainer';
-import { Label, Container, Header, Card, Icon } from 'semantic-ui-react';
+import { Table, Label, Container, Header, Card, Icon } from 'semantic-ui-react';
 import { canStart } from './model';
 import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
 import INDILight from '../INDI-Server/INDILight';
@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import PRINTJ from 'printj'
 import LastCapturedSequenceImageContainer from './LastCapturedSequenceImageContainer';
 import NotFoundPage from '../components/NotFoundPage';
+import { secs2time } from '../utils';
 
 // TODO: refactor Gear pages out of this
 
@@ -28,6 +29,51 @@ const DeviceCardHeader = ({device}) => {
 }
 
 
+const ExposuresPage = ({sequenceItems, sequenceItemEntities}) => {
+    const exposureSequenceItems = sequenceItems.map(s => sequenceItemEntities[s]).filter(s => s.type === 'shots');
+    const remapped = exposureSequenceItems.map(s => ({
+        count: s.count,
+        shot: s.progress,
+        remaining: s.count - s.progress,
+        totalTime: s.count * s.exposure,
+        elapsed: s.progress * s.exposure,
+        timeRemaining: s.exposure * (s.count - s.progress),
+    }));
+console.log(exposureSequenceItems);
+console.log(remapped);
+    const computeTotal = (prop) => remapped.reduce( (cur, val) => cur + val[prop], 0);
+    return (
+        <Card>
+            <Card.Content>
+                    <Icon name='camera' style={{float: 'right'}} />
+                    <Card.Header size='medium'>Exposures</Card.Header>
+                    <Card.Meta>{exposureSequenceItems.length} sequences</Card.Meta>
+                    <Card.Description>
+                        <Table definition basic compact='very'>
+                            <Table.Body>
+                                <Table.Row>
+                                    <Table.Cell content='Total' />
+                                    <Table.Cell content={computeTotal('count')} />
+                                    <Table.Cell content={<Label content={secs2time(computeTotal('totalTime'))} />} />
+                                </Table.Row>
+                                <Table.Row>
+                                    <Table.Cell content='Completed' />
+                                    <Table.Cell content={computeTotal('shot')} />
+                                    <Table.Cell content={<Label content={secs2time(computeTotal('elapsed'))} />} />
+                                </Table.Row>
+                                <Table.Row>
+                                    <Table.Cell content='Remaining' />
+                                    <Table.Cell content={computeTotal('remaining')} />
+                                    <Table.Cell content={<Label content={secs2time(computeTotal('timeRemaining')) }/> } />
+                                </Table.Row>
+                            </Table.Body>
+                        </Table>
+                    </Card.Description>
+            </Card.Content>
+        </Card>
+    )
+
+}
 
 const CameraDetailsPage = ({camera}) => {
     if(!camera)
@@ -129,6 +175,7 @@ class Sequence extends React.Component {
 
             <Header size="medium">Devices</Header>
             <Card.Group>
+                <ExposuresPage sequenceItems={sequence.sequenceItems} sequenceItemEntities={sequence.sequenceItemEntities} />
                 <CameraDetailsPage camera={camera} />
                 <FilterWheelDetailsPage filterWheel={filterWheel} />
             </Card.Group>
