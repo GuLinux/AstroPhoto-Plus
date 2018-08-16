@@ -42,7 +42,16 @@ class ImagesDatabase:
         for image in self.all():
             images_map[image.id] = image.to_map()
         return images_map
-        
+
+    def filter(self, data):
+        result = {}
+        if 'ids' in data:
+            for id in data['ids']:
+                try:
+                    result[id] = self.lookup(id).to_map()
+                except NotFoundError:
+                    pass
+        return result
 
     def __remove(self, image_id, remove_fits):
         image = self.lookup(image_id)

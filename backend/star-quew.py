@@ -361,6 +361,12 @@ def image_is_ready(type, image):
 def retrieve_images(type):
     return get_image_database(type).to_map()
 
+@app.route('/api/images/<type>/search', methods=['POST'])
+@json_input
+@json_api
+def filter_images(type, json):
+    return get_image_database(type).filter(json)
+
 @app.route('/api/images/<type>/<image>', methods=['GET'])
 @managed_api
 def retrieve_image(type, image):

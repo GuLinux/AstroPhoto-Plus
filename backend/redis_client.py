@@ -42,7 +42,8 @@ class RedisClient:
     @retry_connection
     def lookup(self, object_id, list_name, list_type=None):
         _, object_full_id = self.__calc_ids(object_id, list_name, list_type)
-        return json.loads(self.client.get(object_full_id))
+        object_map = self.client.get(object_full_id)
+        return json.loads(object_map) if object_map else None
 
     @retry_connection
     def update(self, object_id, object_dict, list_name, list_type=None):

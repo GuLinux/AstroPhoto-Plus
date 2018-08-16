@@ -202,6 +202,11 @@ export const updateSettingsApi = (dispatch, settings, onSuccess) => fetchJSON(di
 
 
 export const getImages = (dispatch, type, onSuccess) => fetchJSON(dispatch, `/api/images/${type}`, {}, onSuccess);
+export const searchImages = (dispatch, type, params, onSuccess) => fetchJSON(dispatch, `/api/images/${type}/search`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: { 'Content-Type': 'application/json' },
+}, onSuccess);
 
 
 export const fetchCommandsAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/commands', {}, json => onSuccess(normalize(json, commandsSchema)));

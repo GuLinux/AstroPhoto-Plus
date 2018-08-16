@@ -46,17 +46,31 @@ class Images extends React.Component {
     }
 
     componentDidUpdate = (prevProps) => {
-        if(prevProps.images !== this.props.images)
-            this.getImages();
+        if(prevProps.images !== this.props.images) {
+            if(this.__getImagesTimeout) {
+                return;
+            }
+            this.__getImagesTimeout = setTimeout( () => {
+                this.__getImagesTimeout = null;
+
+                this.getImages();
+            }, 1000);
+
+        }
         this.updateMenu();
     }
 
-    componentWillUnmount = () => this.props.onUnmount();
+    componentWillUnmount = () => {
+        if(this.__getImagesTimeout) {
+            clearTimeout(this.__getImagesTimeout);
+        }
+        this.props.onUnmount();
+    }
 
     getImages = () => {
         if(!this.props.images)
             return;
-        this.props.fetchImages( (imagesData) => this.setState({...this.state, imagesData}));
+        this.props.fetchImages( this.props.images, (imagesData) => this.setState({...this.state, imagesData}));
     }
 
     togglePreviews = () => this.setState({...this.state, previews: !this.state.previews});
