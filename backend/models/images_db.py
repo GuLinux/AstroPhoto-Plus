@@ -46,11 +46,9 @@ class ImagesDatabase:
     def filter(self, data):
         result = {}
         if 'ids' in data:
-            for id in data['ids']:
-                try:
-                    result[id] = self.lookup(id).to_map()
-                except NotFoundError:
-                    pass
+            objects = redis_client.multi_lookup(data['ids'], self.name, 'images')
+            for object in objects:
+                result[object['id']] = Image.from_map(object).to_map()
         return result
 
     def __remove(self, image_id, remove_fits):
