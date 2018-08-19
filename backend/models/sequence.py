@@ -1,5 +1,5 @@
 from .model import random_id
-from .exceptions import NotFoundError
+from .exceptions import NotFoundError, BadRequestError
 from .sequence_item import SequenceItem
 import os
 
@@ -12,6 +12,7 @@ class Sequence:
         self.id = random_id(id)
         self.sequence_items = sequence_items if sequence_items else []
         self.status = status if status else 'idle'
+        self.running_sequence_item = None
 
     def item(self, sequence_item_id):
         sequence_item = [x for x in self.sequence_items if x.id == sequence_item_id]
@@ -62,6 +63,14 @@ class Sequence:
 
         return new_sequence
 
+    def stop(self, on_update=None):
+        if self.status != 'running' or not self.running_sequence_item:
+            raise BadRequestError('Sequence not running')
+        self.running_sequence_item.stop()
+        self.status = 'stopped'
+        if on_update:
+            on_update()
+
     def run(self, server, root_directory, event_listener, logger, on_update=None):
         camera = [c for c in server.cameras() if c.id == self.camera]
         if not camera:
@@ -91,6 +100,7 @@ class Sequence:
 
             self.status = 'running'
             for index, sequence_item in enumerate(self.sequence_items):
+                self.running_sequence_item = sequence_item
                 sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
             self.status = 'finished'
             on_update()
@@ -99,3 +109,5 @@ class Sequence:
             self.status = 'error'
             on_update()
             raise e
+        finally:
+            self.running_sequence_item = None
