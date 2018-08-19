@@ -56,7 +56,7 @@ class Sequence:
         }
 
     def duplicate(self):
-        new_sequence = Sequence(self.name + ' (copy)', self.upload_path, self.camera, self.filter_wheel)
+        new_sequence = Sequence(self.name + ' (copy)', self.upload_path + ' (copy)', self.camera, self.filter_wheel)
         for item in self.sequence_items:
             new_sequence.sequence_items.append(item.duplicate())
 

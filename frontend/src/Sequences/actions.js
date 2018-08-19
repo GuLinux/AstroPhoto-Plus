@@ -1,4 +1,4 @@
-import { createSequenceAPI, editSequenceAPI, fetchSequencesAPI, deleteSequenceAPI, duplicateSequenceAPI, startSequenceAPI } from '../middleware/api'
+import { importSequenceAPI, createSequenceAPI, editSequenceAPI, fetchSequencesAPI, deleteSequenceAPI, duplicateSequenceAPI, startSequenceAPI } from '../middleware/api'
 import Actions from '../actions'
 
 export const Sequences = {
@@ -101,6 +101,15 @@ export const Sequences = {
             });
         }
     },
+    import: (sequenceData) => {
+        return dispatch => {
+            dispatch({type: 'REQUEST_IMPORT_SEQUENCE'});
+            return importSequenceAPI( dispatch, sequenceData, data => {
+                dispatch(Sequences.created(data.entities.sequences, data.result, data.entities.sequence_items));
+            });
+        }
+    },
+
     remove: id => {
         return dispatch => {
             dispatch({type: 'REQUEST_DELETE_SEQUENCE'});

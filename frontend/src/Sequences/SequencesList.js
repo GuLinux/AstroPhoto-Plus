@@ -1,9 +1,10 @@
 import React from 'react';
-import { Container, Button, Table, Label } from 'semantic-ui-react'
+import { Dropdown, Container, Button, Table, Label } from 'semantic-ui-react'
 import AddSequenceModalContainer from './AddSequenceModalContainer';
 import { ConfirmDialog } from '../Modals/ModalDialog';
 import { canStart } from './model'
 import { Link } from 'react-router-dom';
+import ImportSequenceContainer from './ImportSequenceContainer';
 
 const GearDescription = ({gear}) => {
     let elements = [];
@@ -21,6 +22,7 @@ class SequencesList extends React.Component {
         section: 'Sequences',
         navItems: [
             { icon: 'add', content: 'new sequence', openModal: AddSequenceModalContainer },
+            { icon: 'upload', content: 'import sequence', openModal: ImportSequenceContainer },
         ],
     });
 
@@ -53,27 +55,35 @@ class SequencesList extends React.Component {
                             <Table.Cell verticalAlign='middle'>{sequence.sequenceItems.length}</Table.Cell>
                             <Table.Cell verticalAlign='middle'>{sequence.status}</Table.Cell>
                             <Table.Cell>
-                                <Button.Group icon>
+                                <Button.Group icon compact size='mini'>
                                     <Button as={Link} to={uriFor(sequence)} title="Open" icon='folder open' />
                                     <AddSequenceModalContainer trigger={<Button title="Edit" icon='edit' />} sequence={sequence} />
-                                    <ConfirmDialog
-                                        trigger={
-                                            // TODO: disable when running 
-                                            <Button compact size="mini" title="Remove" icon='remove' />
-                                        }
-                                        content='Do you really want to remove this sequence?'
-                                        header='Confirm sequence removal'
-                                        cancelButton='No'
-                                        confirmButton='Yes'
-                                        onConfirm={() => onSequenceDelete(sequence.id)}
-                                        size='mini'
-                                        basic
-                                        centered={false}
-                                    />
-                                    <Button compact size="mini" title="Start" disabled={!canStart(sequence, gear[sequence.id])}  onClick={() => startSequence(sequence)} icon='play' />
-                                    <Button compact size="mini" title="Pause" disabled={true} icon='pause' />
-                                    <Button compact size="mini" title="Stop" disabled={true} icon='stop'/>
-                                    <Button compact size="mini" title="Duplicate" onClick={() => duplicateSequence(sequence)} icon='copy' />
+                                    <Button title="Start" disabled={!canStart(sequence, gear[sequence.id])}  onClick={() => startSequence(sequence)} icon='play' />
+                                    <Button title="Pause" disabled={true} icon='pause' />
+                                    <Button title="Stop" disabled={true} icon='stop'/>
+                                    <Button as='div'>
+                                        <Dropdown text='more...'>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item text="Duplicate" onClick={() => duplicateSequence(sequence)} icon='copy' />
+                                                <ConfirmDialog
+                                                    trigger={
+                                                        // TODO: disable when running 
+                                                        <Dropdown.Item text="Remove" icon='remove' />
+                                                    }
+                                                    content='Do you really want to remove this sequence?'
+                                                    header='Confirm sequence removal'
+                                                    cancelButton='No'
+                                                    confirmButton='Yes'
+                                                    onConfirm={() => onSequenceDelete(sequence.id)}
+                                                    size='mini'
+                                                    basic
+                                                    centered={false}
+                                                />
+                                                <Dropdown.Item text="Export" as='a' href={`/api/sequences/${sequence.id}/export`} icon='save' />
+
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </Button>
                                 </Button.Group>
                             </Table.Cell>
                         </Table.Row>

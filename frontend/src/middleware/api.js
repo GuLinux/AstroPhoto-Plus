@@ -54,6 +54,16 @@ export const duplicateSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON
     }, json => onSuccess(normalize(json, sequenceSchema)));
 
 
+export const importSequenceAPI = (dispatch, data, onSuccess) => fetchJSON(dispatch, '/api/sequences/import', {
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    }, json => onSuccess(normalize(json, sequenceSchema)));
+
+
+
 export const fetchSequencesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/sequences', {}, json => onSuccess(normalize(json, sequenceListSchema)));
 
 export const createSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, '/api/sequences', {
