@@ -10,12 +10,14 @@ from .exceptions import NotFoundError
 class Server:
     DEFAULT_PORT = INDIClient.DEFAULT_PORT
 
-    def __init__(self, logger, settings, event_listener):
+    def __init__(self, logger, settings, event_listener, receive_blobs=False):
         self.logger = logger
         self.settings = settings
         self.client = None
         self.__disconnect_requested = 0
         self.event_listener = event_listener
+        self.receive_blobs = receive_blobs
+        self.on_blob_received = {}
 
     def to_map(self):
         return {'host': self.settings.indi_host, 'port': self.settings.indi_port, 'connected': self.is_connected() }
@@ -30,7 +32,7 @@ class Server:
         self.client.callbacks['on_new_switch'] = self.__on_property_updated
         self.client.callbacks['on_new_number'] = self.__on_property_updated
         self.client.callbacks['on_new_text'] = self.__on_property_updated
-        self.client.callbacks['on_new_blob'] = self.__on_property_updated
+        self.client.callbacks['on_new_blob'] = self.__on_new_blob
         self.client.callbacks['on_new_light'] = self.__on_property_updated
         self.client.callbacks['on_new_message'] = self.__on_message
 
@@ -58,6 +60,13 @@ class Server:
     def filter_wheels(self):
         return [FilterWheel(self.client, self.logger, filter_wheel=f) for f in self.client.filter_wheels()]
 
+    def register_blob_callback(self, id, callback):
+        self.on_blob_received[id] = callback
+
+    def unregister_blob_callback(self, id):
+        if id in self.on_blob_received:
+            del self.on_blob_received[id]
+
 
     def __on_message(self, device, message):
         self.event_listener.on_indi_message(self.device(indi_device=device), message)
@@ -78,7 +87,13 @@ class Server:
         self.event_listener.on_indi_property_removed(self.property(indi_device_property=indi_property))
 
     def __on_device_added(self, device):
+        self.client.setBLOBMode(1 if self.receive_blobs else 0, device.name, None)
         self.event_listener.on_device_added(self.device(name=device.name))
 
     def __on_device_removed(self, device):
         self.event_listener.on_device_removed(self.device(name=device.name))
+
+    def __on_new_blob(self, bp):
+        for _, cb in self.on_blob_received:
+            cb(bp)
+

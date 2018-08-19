@@ -1,6 +1,9 @@
 import os, time
 from .save_async_fits import SaveAsyncFITS
 import tempfile
+from app import logger
+from pyindi_sequence import INDIClient
+from queue import Queue
 
 
 class SequenceCallbacks:
@@ -20,7 +23,7 @@ class SequenceCallbacks:
 
 
 class ExposureSequenceItemRunner:
-    def __init__(self, camera, exposure, count, upload_path, progress=0, filename_template='{name}_{exposure}s_{number:04}.fits', filename_template_params={}, **kwargs):
+    def __init__(self, server, camera, exposure, count, upload_path, progress=0, filename_template='{name}_{exposure}s_{number:04}.fits', filename_template_params={}, **kwargs):
         self.camera = camera
         self.count = count
         self.exposure = exposure
@@ -34,6 +37,7 @@ class ExposureSequenceItemRunner:
             os.makedirs(upload_path)
         self.__next_index = self.finished
         self.stopped = False
+        self.server = server
 
     def stop(self):
         self.stopped = True
@@ -42,7 +46,7 @@ class ExposureSequenceItemRunner:
         self.callbacks.run('on_each_saved', self, item.sequence, item.file_name)
 
     def run(self):
-        self.camera.set_upload_to('local')
+        self.camera.set_upload_to('both')
         tmp_prefix = '__sequence_TMP'
         tmp_upload_path = tempfile.gettempdir()
         tmp_file = os.path.join(tmp_upload_path, tmp_prefix + '.fits')
@@ -51,6 +55,9 @@ class ExposureSequenceItemRunner:
 
         self.camera.set_upload_path(tmp_upload_path, tmp_prefix)
         self.callbacks.run('on_started', self)
+
+        fits_queue = Queue()
+        blob_watcher = threading.Thread(target=self.__blob_watcher, args=(fits_queue,))
 
         try:
             for sequence in range(self.finished, self.count):
@@ -104,9 +111,32 @@ class ExposureSequenceItemRunner:
 
         finally:
             save_async_fits.finished()
+            indi_client.disconnectServer()
 
         # Note: this means we wait for *all* images in this sequences to be saved, before starting the next sequence. Which might be a bottleneck, but then again, if you're shooting much faster than you can save, then you probably have a bigger issue...
         self.callbacks.run('on_finished', self)
+
+
+    def __blob_watcher(self, fits_queue):
+        indi_host, indi_port = self.server.client.host, self.server.client.port
+        logger.debug('**** starting secondary indi client: host={}, port={}'.format(indi_host, indi_port))
+        def on_new_blob(bp):
+            logger.debug('******** got new blob! {}'.format(dir(bp)))
+
+        indi_client = INDIClient(address=indi_host, port=indi_port, callbacks={
+            'on_new_blob': on_new_blob,
+        }, autoconnect=False)
+
+
+        def on_new_property(device, group, property_name):
+            indi_client.setBLOBMode(1, device, None)
+
+        indi_client.callbacks['on_new_property'] = on_new_property 
+
+        indi_client.connectServer()
+
+
+
 
     @property
     def ccd_temperature(self):
