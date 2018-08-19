@@ -4,6 +4,7 @@ import tempfile
 from app import logger
 from pyindi_sequence import INDIClient
 from queue import Queue
+import threading
 
 
 class SequenceCallbacks:
@@ -58,6 +59,7 @@ class ExposureSequenceItemRunner:
 
         fits_queue = Queue()
         blob_watcher = threading.Thread(target=self.__blob_watcher, args=(fits_queue,))
+        blob_watcher.start()
 
         try:
             for sequence in range(self.finished, self.count):
@@ -69,6 +71,11 @@ class ExposureSequenceItemRunner:
                 self.callbacks.run('on_each_started', self, sequence)
                 temp_before = self.ccd_temperature
                 time_started = time.time()
+                fits_queue.put({
+                    'type': 'shot',
+                    'index': sequence,
+                    'initial_temperature': temp_before,
+                })
                 self.camera.shoot(self.exposure)
                 temp_after = self.ccd_temperature
                 time_finished = time.time()
@@ -110,18 +117,21 @@ class ExposureSequenceItemRunner:
                 })
 
         finally:
+            fits_queue.put({'type': 'finished'})
             save_async_fits.finished()
-            indi_client.disconnectServer()
+
 
         # Note: this means we wait for *all* images in this sequences to be saved, before starting the next sequence. Which might be a bottleneck, but then again, if you're shooting much faster than you can save, then you probably have a bigger issue...
         self.callbacks.run('on_finished', self)
 
 
     def __blob_watcher(self, fits_queue):
+        finished = False
         indi_host, indi_port = self.server.client.host, self.server.client.port
         logger.debug('**** starting secondary indi client: host={}, port={}'.format(indi_host, indi_port))
         def on_new_blob(bp):
-            logger.debug('******** got new blob! {}'.format(dir(bp)))
+            blob_info = 'name={}, label={}, format={}, bloblen={}, size={}'.format(bp.name, bp.label, bp.format, bp.bloblen, bp.size)
+            logger.debug('******** got new blob! {}'.format(blob_info))
 
         indi_client = INDIClient(address=indi_host, port=indi_port, callbacks={
             'on_new_blob': on_new_blob,
@@ -134,6 +144,10 @@ class ExposureSequenceItemRunner:
         indi_client.callbacks['on_new_property'] = on_new_property 
 
         indi_client.connectServer()
+
+        while not finished:
+            queue.get()
+        indi_client.disconnectServer()
 
 
 
