@@ -264,6 +264,15 @@ def stop_sequence(id):
     running_sequence.stop()
     return running_sequence.sequence.to_map()
 
+@app.route('/api/sequences/<id>/reset', methods=['POST'])
+@json_api
+def reset_sequence(id):
+    with controller.sequences.lookup_edit(id) as sequence:
+        if sequence.is_running():
+            raise BadRequestError('Sequence with id {} running, cannot reset'.format(id))
+        sequence.reset()
+        return sequence.to_map()
+
 
 @app.route('/api/sequences/<id>/duplicate', methods=['POST'])
 @json_api

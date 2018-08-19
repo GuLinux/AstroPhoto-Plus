@@ -54,10 +54,9 @@ class ExposureSequenceItem:
             raise BadRequestError("Sequence not running, can't stop")
         self.sequence.stop()
         self.sequence = None
+        return 'stopped'
 
     def run(self, server, devices, root_path, event_listener, logger, on_update, index):
-        self.progress = 0
-
         images_queue = Queue()
 
         filename_template_params = {
@@ -70,7 +69,7 @@ class ExposureSequenceItem:
             filename_template_params['filter_index'], filename_template_params['filter'] = devices['filter_wheel'].indi_sequence_filter_wheel().current_filter()
 
         upload_path = os.path.join(root_path, self.directory)
-        self.sequence = ExposureSequenceItemRunner(devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, filename_template=self.filename, filename_template_params=filename_template_params)
+        self.sequence = ExposureSequenceItemRunner(devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, progress=self.progress, filename_template=self.filename, filename_template_params=filename_template_params)
 
         def on_started(sequence):
             pass

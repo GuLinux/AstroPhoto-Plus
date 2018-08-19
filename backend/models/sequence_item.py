@@ -37,9 +37,10 @@ class SequenceItem:
         return SequenceItem(data)
 
     def stop(self):
+        self.status = 'stopping'
         if hasattr(self.job, 'stop'):
-            self.job.stop()
-        self.status = 'stopped'
+            self.status = self.job.stop()
+
 
     @staticmethod
     def from_map(map_object):

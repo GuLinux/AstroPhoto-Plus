@@ -53,6 +53,10 @@ export const stopSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(disp
         method: 'POST',
     }, json => onSuccess(json));
 
+export const resetSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/reset`, {
+        method: 'POST',
+    }, json => onSuccess(normalize(json, sequenceSchema)));
+
 
 export const duplicateSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/duplicate`, {
         method: 'POST',

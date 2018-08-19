@@ -20,19 +20,19 @@ class SequenceCallbacks:
 
 
 class ExposureSequenceItemRunner:
-    def __init__(self, camera, exposure, count, upload_path, start_index=1, filename_template='{name}_{exposure}s_{number:04}.fits', filename_template_params={}, **kwargs):
+    def __init__(self, camera, exposure, count, upload_path, progress=0, filename_template='{name}_{exposure}s_{number:04}.fits', filename_template_params={}, **kwargs):
         self.camera = camera
         self.count = count
         self.exposure = exposure
         self.upload_path = upload_path
         self.callbacks = SequenceCallbacks(**kwargs)
-        self.finished = 0
-        self.start_index = start_index
+        self.finished = progress
+        self.start_index = 1
         self.filename_template = filename_template
         self.filename_template_params = filename_template_params
         if not os.path.isdir(upload_path):
             os.makedirs(upload_path)
-        self.__next_index = 0
+        self.__next_index = self.finished
         self.stopped = False
 
     def stop(self):
@@ -53,7 +53,7 @@ class ExposureSequenceItemRunner:
         self.callbacks.run('on_started', self)
 
         try:
-            for sequence in range(0, self.count):
+            for sequence in range(self.finished, self.count):
                 if self.stopped:
                     self.callbacks.run('on_stopped', self, sequence)
                     save_async_fits.join()

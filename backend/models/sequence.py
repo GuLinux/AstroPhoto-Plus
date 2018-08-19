@@ -57,6 +57,9 @@ class Sequence:
             'status': self.status,
         }
 
+    def is_running(self):
+        return self.status == 'running'
+
     def duplicate(self):
         new_sequence = Sequence(self.name + ' (copy)', self.upload_path + ' (copy)', self.camera, self.filter_wheel)
         for item in self.sequence_items:
@@ -65,12 +68,19 @@ class Sequence:
         return new_sequence
 
     def stop(self, on_update=None):
-        if self.status != 'running' or not self.running_sequence_item:
+        if not self.is_running() or not self.running_sequence_item:
             raise BadRequestError('Sequence not running')
         self.status = 'stopped'
         self.running_sequence_item.stop()
         if on_update:
             on_update()
+
+
+    def reset(self):
+        for sequence_item in self.sequence_items:
+            self.status = 'idle'
+            logger.debug('resetting sequence item {}'.format(sequence_item))
+            sequence_item.reset()
 
     def run(self, server, root_directory, event_listener, logger, on_update=None):
         camera = [c for c in server.cameras() if c.id == self.camera]
@@ -93,7 +103,7 @@ class Sequence:
         self.status = 'starting'
 
         for sequence_item in self.sequence_items:
-            if self.is_todo(sequence_item):
+            if self.is_todo(sequence_item) and sequence_item.status != 'stopped':
                 logger.debug('resetting sequence item {}'.format(sequence_item))
                 sequence_item.reset()
 

@@ -17,6 +17,7 @@ const mapDispatchToProps = dispatch => {
     onMount: (data) => dispatch(Actions.Navigation.setRightMenu(data)),
     onUnmount: () => dispatch(Actions.Navigation.resetRightMenu()),
     stopSequence: (sequence) => dispatch(Actions.Sequences.stop(sequence)),
+    resetSequence: (sequence) => dispatch(Actions.Sequences.reset(sequence)),
   }
 }
 
