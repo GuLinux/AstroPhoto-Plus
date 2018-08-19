@@ -105,7 +105,7 @@ export const Sequences = {
         return dispatch => {
             dispatch({type: 'REQUEST_IMPORT_SEQUENCE'});
             return importSequenceAPI( dispatch, sequenceData, data => {
-                dispatch(Sequences.created(data.entities.sequences, data.result, data.entities.sequence_items));
+                dispatch(Sequences.created(data.entities.sequences, data.result, data.entities.sequenceItems));
             });
         }
     },
