@@ -29,7 +29,7 @@ class SequencesList extends React.Component {
     componentWillUnmount = () => this.props.onUnmount();
 
     render = () => {
-        const {sequences, gear, onSequenceDelete, startSequence, duplicateSequence} = this.props;
+        const {sequences, gear, onSequenceDelete, startSequence, duplicateSequence, stopSequence} = this.props;
         return (
             <Container>
 
@@ -59,8 +59,7 @@ class SequencesList extends React.Component {
                                     <Button as={Link} to={uriFor(sequence)} title="Open" icon='folder open' />
                                     <AddSequenceModalContainer trigger={<Button title="Edit" icon='edit' />} sequence={sequence} />
                                     <Button title="Start" disabled={!canStart(sequence, gear[sequence.id])}  onClick={() => startSequence(sequence)} icon='play' />
-                                    <Button title="Pause" disabled={true} icon='pause' />
-                                    <Button title="Stop" disabled={true} icon='stop'/>
+                                    <Button title="Stop" disabled={sequence.status !== 'running'} onClick={() => stopSequence(sequence)} icon='stop'/>
                                     <Button as='div'>
                                         <Dropdown text='more...'>
                                             <Dropdown.Menu>

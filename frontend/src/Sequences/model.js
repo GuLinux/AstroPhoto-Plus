@@ -8,7 +8,7 @@ export const canStart = (sequence, gear) => {
     if( gear.filterWheel && ! gear.filterWheel.connected) {
         return false;
     }
-    return ['idle', 'error'].includes(sequence.status) && sequence.sequenceItems.length > 0;
+    return ['idle', 'stopped', 'error'].includes(sequence.status) && sequence.sequenceItems.length > 0;
 }
 
 
