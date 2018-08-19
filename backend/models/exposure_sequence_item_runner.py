@@ -57,8 +57,8 @@ class ExposureSequenceItemRunner:
         self.camera.set_upload_path(tmp_upload_path, tmp_prefix)
         self.callbacks.run('on_started', self)
 
-        fits_queue = Queue()
-        blob_watcher = threading.Thread(target=self.__blob_watcher, args=(fits_queue,))
+        shots_queue = Queue()
+        blob_watcher = threading.Thread(target=self.__blob_watcher, args=(shots_queue,))
         blob_watcher.start()
 
         try:
@@ -71,7 +71,7 @@ class ExposureSequenceItemRunner:
                 self.callbacks.run('on_each_started', self, sequence)
                 temp_before = self.ccd_temperature
                 time_started = time.time()
-                fits_queue.put({
+                shots_queue.put({
                     'type': 'shot',
                     'index': sequence,
                     'initial_temperature': temp_before,
@@ -117,7 +117,7 @@ class ExposureSequenceItemRunner:
                 })
 
         finally:
-            fits_queue.put({'type': 'finished'})
+            shots_queue.put({'type': 'finished'})
             save_async_fits.finished()
 
 
@@ -125,13 +125,15 @@ class ExposureSequenceItemRunner:
         self.callbacks.run('on_finished', self)
 
 
-    def __blob_watcher(self, fits_queue):
+    def __blob_watcher(self, shots_queue):
         finished = False
         indi_host, indi_port = self.server.client.host, self.server.client.port
         logger.debug('**** starting secondary indi client: host={}, port={}'.format(indi_host, indi_port))
+        blobs_queue = Queue()
         def on_new_blob(bp):
             blob_info = 'name={}, label={}, format={}, bloblen={}, size={}'.format(bp.name, bp.label, bp.format, bp.bloblen, bp.size)
             logger.debug('******** got new blob! {}'.format(blob_info))
+            blobs_queue.put(bp)
 
         indi_client = INDIClient(address=indi_host, port=indi_port, callbacks={
             'on_new_blob': on_new_blob,
@@ -146,7 +148,16 @@ class ExposureSequenceItemRunner:
         indi_client.connectServer()
 
         while not finished:
-            queue.get()
+            received_blob = None
+            item = shots_queue.get()
+            if item['type'] == 'finished':
+                finished = True
+            elif item['type'] == 'shot':
+                time_started = time.time()
+                blob = blobs_queue.get()
+                temp_after = self.ccd_temperature
+                time_finished = time.time()
+                logger.debug('**** now saving blob')
         indi_client.disconnectServer()
 
 
