@@ -2,6 +2,7 @@ from .model import random_id
 from .exceptions import NotFoundError, BadRequestError
 from .sequence_item import SequenceItem
 import os
+from app import logger
 
 class Sequence:
     def __init__(self, name, upload_path, camera, filter_wheel=None, id=None, sequence_items=None, status=None):
@@ -66,8 +67,8 @@ class Sequence:
     def stop(self, on_update=None):
         if self.status != 'running' or not self.running_sequence_item:
             raise BadRequestError('Sequence not running')
-        self.running_sequence_item.stop()
         self.status = 'stopped'
+        self.running_sequence_item.stop()
         if on_update:
             on_update()
 
@@ -90,9 +91,11 @@ class Sequence:
         logger.debug('Starting sequence with camera: {}={} and filter_wheel: {}={}'.format(self.camera, camera.device.name, self.filter_wheel, filter_wheel.device.name if filter_wheel else 'N/A'))
 
         self.status = 'starting'
+
         for sequence_item in self.sequence_items:
-            logger.debug('resetting sequence item {}'.format(sequence_item))
-            sequence_item.reset()
+            if self.is_todo(sequence_item):
+                logger.debug('resetting sequence item {}'.format(sequence_item))
+                sequence_item.reset()
 
         on_update()
         try:
@@ -100,8 +103,11 @@ class Sequence:
 
             self.status = 'running'
             for index, sequence_item in enumerate(self.sequence_items):
-                self.running_sequence_item = sequence_item
-                sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
+                if self.status == 'stopped':
+                    return
+                if self.is_todo(sequence_item):
+                    self.running_sequence_item = sequence_item
+                    sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
             self.status = 'finished'
             on_update()
         except Exception as e:
@@ -111,3 +117,7 @@ class Sequence:
             raise e
         finally:
             self.running_sequence_item = None
+
+    def is_todo(self, sequence_item):
+        return sequence_item.status != 'finished'
+
