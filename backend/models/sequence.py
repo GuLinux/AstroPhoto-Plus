@@ -37,6 +37,13 @@ class Sequence:
             status=map_object['status']
         )
 
+    @staticmethod
+    def import_from_data(data):
+        data['id'] = random_id()
+        for item in data['sequenceItems']:
+            item['id'] = random_id()
+        return Sequence.from_map(data)
+
     def to_map(self):
         return {
             'id': self.id,

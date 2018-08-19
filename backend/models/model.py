@@ -3,7 +3,7 @@ import functools
 import hashlib
 import uuid
 
-def random_id(id_or_none):
+def random_id(id_or_none=None):
     if(id_or_none):
         return id_or_none
     return uuid.uuid4().hex

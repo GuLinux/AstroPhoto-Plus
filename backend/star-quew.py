@@ -1,4 +1,4 @@
-from flask import jsonify, Response, send_from_directory, request
+from flask import jsonify, Response, send_from_directory, send_file, request
 from api_decorators import *
 from api_utils import *
 from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device, INDIProfile, ImagesDatabase, camera_images_db, main_images_db, commands
@@ -7,6 +7,7 @@ from controller import controller
 from app import app
 import logging
 import io
+import json
 
 default_settings = {}
 
@@ -191,7 +192,23 @@ def get_sequences():
 @app.route('/api/sequences/<id>', methods=['GET'])
 @json_api
 def get_sequence(id):
-    return controller.sequences.lookup(id).to_map()
+    controller.sequences.lookup(id).to_map()
+
+@app.route('/api/sequences/<id>/export', methods=['GET'])
+@managed_api
+def export_sequence(id):
+    sequence = controller.sequences.lookup(id).to_map()
+    fileobj = io.BytesIO(json.dumps(sequence, sort_keys=True, indent=4).encode())
+    return send_file(fileobj, 'application/json', as_attachment=True, attachment_filename='{}.json'.format(sequence['name']))
+
+
+@app.route('/api/sequences/import', methods=['POST'])
+@json_input
+@json_api
+def import_sequence(json):
+    sequence = Sequence.import_from_data(json)
+    controller.sequences.append(sequence)
+    return sequence.to_map()
 
 
 # TODO: cleanup all resources, such as sequence items and images
