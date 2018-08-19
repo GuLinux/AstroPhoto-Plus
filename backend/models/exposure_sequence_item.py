@@ -3,11 +3,12 @@ import time
 from queue import Queue
 
 from .exceptions import BadRequestError
-from pyindi_sequence import Sequence
 from .image import Image
 from .images_db import main_images_db
+from .exposure_sequence_item_runner import ExposureSequenceItemRunner
 
 from app import logger
+
 
 class ExposureSequenceItem:
     def __init__(self, data):
@@ -62,7 +63,7 @@ class ExposureSequenceItem:
             filename_template_params['filter_index'], filename_template_params['filter'] = devices['filter_wheel'].indi_sequence_filter_wheel().current_filter()
 
         upload_path = os.path.join(root_path, self.directory)
-        sequence = Sequence(devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, filename_template=self.filename, filename_template_params=filename_template_params)
+        sequence = ExposureSequenceItemRunner(devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, filename_template=self.filename, filename_template_params=filename_template_params)
 
         def on_started(sequence):
             pass
