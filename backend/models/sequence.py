@@ -1,7 +1,8 @@
 from .model import random_id
-from .exceptions import NotFoundError
+from .exceptions import NotFoundError, BadRequestError
 from .sequence_item import SequenceItem
 import os
+from app import logger
 
 class Sequence:
     def __init__(self, name, upload_path, camera, filter_wheel=None, id=None, sequence_items=None, status=None):
@@ -12,6 +13,7 @@ class Sequence:
         self.id = random_id(id)
         self.sequence_items = sequence_items if sequence_items else []
         self.status = status if status else 'idle'
+        self.running_sequence_item = None
 
     def item(self, sequence_item_id):
         sequence_item = [x for x in self.sequence_items if x.id == sequence_item_id]
@@ -55,12 +57,30 @@ class Sequence:
             'status': self.status,
         }
 
+    def is_running(self):
+        return self.status == 'running'
+
     def duplicate(self):
         new_sequence = Sequence(self.name + ' (copy)', self.upload_path + ' (copy)', self.camera, self.filter_wheel)
         for item in self.sequence_items:
             new_sequence.sequence_items.append(item.duplicate())
 
         return new_sequence
+
+    def stop(self, on_update=None):
+        if not self.is_running() or not self.running_sequence_item:
+            raise BadRequestError('Sequence not running')
+        self.status = 'stopped'
+        self.running_sequence_item.stop()
+        if on_update:
+            on_update()
+
+
+    def reset(self):
+        for sequence_item in self.sequence_items:
+            self.status = 'idle'
+            logger.debug('resetting sequence item {}'.format(sequence_item))
+            sequence_item.reset()
 
     def run(self, server, root_directory, event_listener, logger, on_update=None):
         camera = [c for c in server.cameras() if c.id == self.camera]
@@ -81,9 +101,11 @@ class Sequence:
         logger.debug('Starting sequence with camera: {}={} and filter_wheel: {}={}'.format(self.camera, camera.device.name, self.filter_wheel, filter_wheel.device.name if filter_wheel else 'N/A'))
 
         self.status = 'starting'
+
         for sequence_item in self.sequence_items:
-            logger.debug('resetting sequence item {}'.format(sequence_item))
-            sequence_item.reset()
+            if self.is_todo(sequence_item) and sequence_item.status != 'stopped':
+                logger.debug('resetting sequence item {}'.format(sequence_item))
+                sequence_item.reset()
 
         on_update()
         try:
@@ -91,7 +113,11 @@ class Sequence:
 
             self.status = 'running'
             for index, sequence_item in enumerate(self.sequence_items):
-                sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
+                if self.status == 'stopped':
+                    return
+                if self.is_todo(sequence_item):
+                    self.running_sequence_item = sequence_item
+                    sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
             self.status = 'finished'
             on_update()
         except Exception as e:
@@ -99,3 +125,9 @@ class Sequence:
             self.status = 'error'
             on_update()
             raise e
+        finally:
+            self.running_sequence_item = None
+
+    def is_todo(self, sequence_item):
+        return sequence_item.status != 'finished'
+

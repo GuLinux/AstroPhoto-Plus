@@ -1,4 +1,4 @@
-import { importSequenceAPI, createSequenceAPI, editSequenceAPI, fetchSequencesAPI, deleteSequenceAPI, duplicateSequenceAPI, startSequenceAPI } from '../middleware/api'
+import { resetSequenceAPI, stopSequenceAPI, importSequenceAPI, createSequenceAPI, editSequenceAPI, fetchSequencesAPI, deleteSequenceAPI, duplicateSequenceAPI, startSequenceAPI } from '../middleware/api'
 import Actions from '../actions'
 
 export const Sequences = {
@@ -53,6 +53,28 @@ export const Sequences = {
             })
         }
     },
+
+    stop: sequence => {
+        return dispatch => {
+            dispatch({type: 'STOP_SEQUENCE_REQUESTED'});
+            return stopSequenceAPI(dispatch, sequence, data => {
+                dispatch({type: 'RECEIVED_STOP_SEQUENCE_REPLY', sequence: { id: sequence.id, status: data.status} });
+            })
+        }
+    },
+
+    reset: sequence => {
+        return dispatch => {
+            dispatch({type: 'RESET_SEQUENCE_REQUESTED'});
+            return resetSequenceAPI(dispatch, sequence, data => {
+console.log(data);
+                dispatch({type: 'RECEIVED_RESET_SEQUENCE_REPLY', sequence: { id: sequence.id, status: data.status} });
+                dispatch(Sequences.updated(data));
+            })
+        }
+    },
+
+
 
     error: ({sequence, error_message}) => dispatch => {
         dispatch(Actions.Notifications.add('Sequence error', `Error running sequence: ${error_message}`, 'error'));

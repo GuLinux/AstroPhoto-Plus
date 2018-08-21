@@ -255,6 +255,25 @@ def start_sequence(id):
     return controller.sequences.lookup(id).to_map()
 
 
+@app.route('/api/sequences/<id>/stop', methods=['POST'])
+@json_api
+def stop_sequence(id):
+    running_sequence = controller.sequences_runner.get(id)
+    if not running_sequence:
+        raise BadRequestError('Sequence with id {} not running'.format(id))
+    running_sequence.stop()
+    return running_sequence.sequence.to_map()
+
+@app.route('/api/sequences/<id>/reset', methods=['POST'])
+@json_api
+def reset_sequence(id):
+    with controller.sequences.lookup_edit(id) as sequence:
+        if sequence.is_running():
+            raise BadRequestError('Sequence with id {} running, cannot reset'.format(id))
+        sequence.reset()
+        return sequence.to_map()
+
+
 @app.route('/api/sequences/<id>/duplicate', methods=['POST'])
 @json_api
 def duplicate_sequence(id):

@@ -36,6 +36,12 @@ class SequenceItem:
             data.pop('saved_images') # TODO: move from here?
         return SequenceItem(data)
 
+    def stop(self):
+        self.status = 'stopping'
+        if hasattr(self.job, 'stop'):
+            self.status = self.job.stop()
+
+
     @staticmethod
     def from_map(map_object):
         return SequenceItem(map_object)

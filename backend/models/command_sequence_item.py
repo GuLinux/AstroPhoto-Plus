@@ -24,7 +24,6 @@ class CommandSequenceItem:
                 err.write(cmd_description)
 
                 result = subprocess.run(shlex.split(self.command), stdout=out, stderr=err)
-                logger.debug(os.listdir(root_path))
 
             if result.returncode != 0:
                 raise RuntimeError('Error running command {}'.format(self.command))

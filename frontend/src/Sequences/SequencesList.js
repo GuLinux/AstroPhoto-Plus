@@ -29,7 +29,7 @@ class SequencesList extends React.Component {
     componentWillUnmount = () => this.props.onUnmount();
 
     render = () => {
-        const {sequences, gear, onSequenceDelete, startSequence, duplicateSequence} = this.props;
+        const {sequences, gear, onSequenceDelete, startSequence, duplicateSequence, stopSequence, resetSequence} = this.props;
         return (
             <Container>
 
@@ -59,10 +59,10 @@ class SequencesList extends React.Component {
                                     <Button as={Link} to={uriFor(sequence)} title="Open" icon='folder open' />
                                     <AddSequenceModalContainer trigger={<Button title="Edit" icon='edit' />} sequence={sequence} />
                                     <Button title="Start" disabled={!canStart(sequence, gear[sequence.id])}  onClick={() => startSequence(sequence)} icon='play' />
-                                    <Button title="Pause" disabled={true} icon='pause' />
-                                    <Button title="Stop" disabled={true} icon='stop'/>
+                                    <Button title="Stop" disabled={sequence.status !== 'running'} onClick={() => stopSequence(sequence)} icon='stop'/>
+
                                     <Button as='div'>
-                                        <Dropdown text='more...'>
+                                        <Dropdown text='more...' closeOnChange={true}>
                                             <Dropdown.Menu>
                                                 <Dropdown.Item text="Duplicate" onClick={() => duplicateSequence(sequence)} icon='copy' />
                                                 <ConfirmDialog
@@ -79,6 +79,21 @@ class SequencesList extends React.Component {
                                                     basic
                                                     centered={false}
                                                 />
+                                                <ConfirmDialog
+                                                    trigger={
+                                                        <Dropdown.Item text="Reset" disabled={sequence.status === 'running'} icon='redo'/>
+                                                    }
+                                                    content='This will reset the status of all jobs in this sequence. Are you sure?'
+                                                    header='Confirm sequence reset'
+                                                    cancelButton='No'
+                                                    confirmButton='Yes'
+                                                    onConfirm={() => resetSequence(sequence)}
+                                                    size='mini'
+                                                    basic
+                                                    centered={false}
+                                                />
+
+
                                                 <Dropdown.Item text="Export" as='a' href={`/api/sequences/${sequence.id}/export`} icon='save' />
 
                                             </Dropdown.Menu>
