@@ -130,8 +130,6 @@ class ExposureSequenceItemRunner:
                     'blob': blob.getblobdata(),
                 })
 
-
-
         indi_client.disconnectServer()
 
 
@@ -152,6 +150,44 @@ class ExposureSequenceItemRunner:
             output_file = '{}__{}{}'.format(filepath, file_suffix_to_skip_overwriting, extension)
             file_suffix_to_skip_overwriting += 1
         return output_file
+
+
+    def __blob_watcher(self, shots_queue):
+        finished = False
+        indi_host, indi_port = self.server.client.host, self.server.client.port
+        logger.debug('**** starting secondary indi client: host={}, port={}'.format(indi_host, indi_port))
+        blobs_queue = Queue()
+        def on_new_blob(bp):
+            blob_info = 'name={}, label={}, format={}, bloblen={}, size={}'.format(bp.name, bp.label, bp.format, bp.bloblen, bp.size)
+            logger.debug('******** got new blob! {}'.format(blob_info))
+            blobs_queue.put(bp)
+
+        indi_client = INDIClient(address=indi_host, port=indi_port, callbacks={
+            'on_new_blob': on_new_blob,
+        }, autoconnect=False)
+
+
+        def on_new_property(device, group, property_name):
+            indi_client.setBLOBMode(1, device, None)
+
+        indi_client.callbacks['on_new_property'] = on_new_property 
+
+        indi_client.connectServer()
+
+        while not finished:
+            received_blob = None
+            item = shots_queue.get()
+            if item['type'] == 'finished':
+                finished = True
+            elif item['type'] == 'shot':
+                time_started = time.time()
+                blob = blobs_queue.get()
+                temp_after = self.ccd_temperature
+                time_finished = time.time()
+                logger.debug('**** now saving blob')
+        indi_client.disconnectServer()
+
+
 
 
     @property
