@@ -70,9 +70,9 @@ class SaveAsyncFITS:
                 with open(info_json, 'w') as info_file:
                     json.dump(info, info_file)
 
-                temp_move_file = os.path.join(os.path.dirname(output_file), os.path.basename(item.temp_filename))
-                shutil.move(item.temp_filename, temp_move_file)
-                os.rename(temp_move_file, output_file)
+                with open(output_file, 'wb') as fits_file:
+                    fits_file.write(item.blob)
+
                 notify_queue.put({
                     'type': 'each_finished',
                     'sequence': item.number,
