@@ -5,6 +5,8 @@ from argparse import Namespace
 import json
 import shutil
 
+from app import logger
+
 
 class SaveAsyncFITS:
     def __init__(self, on_saved=None):
