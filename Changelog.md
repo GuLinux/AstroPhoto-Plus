@@ -6,6 +6,11 @@
  - Add '(copy)' suffix to duplicated sequences
  - Block filter wheel sequence item creation if no filter wheel is defined on sequence
  - add "Exposures" card with info about total, finished and remaining shots of a sequence (number and time)
+ - allow to stop and resume sequences.
+ - allow to "reset" sequences to restart them.
+ - switch to INDI blob for sequences (speed/reliability improvement)
+ - import/export sequences to JSON files
+ - Images database optimization
 
 ## [0.1.1] - 2018-08-03
 ### User experience improvements
