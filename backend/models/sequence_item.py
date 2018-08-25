@@ -5,6 +5,8 @@ from .filter_wheel_sequence_item import FilterWheelSequenceItem
 from .property_sequence_item import PropertySequenceItem
 from .command_sequence_item import CommandSequenceItem
 import time
+from app import logger
+from .sequence_exceptions import SequenceItemStatusError 
 
 
 class SequenceItem:
@@ -40,6 +42,7 @@ class SequenceItem:
         self.status = 'stopping'
         if hasattr(self.job, 'stop'):
             self.status = self.job.stop()
+        logger.debug('stop finished: status={}'.format(self.status))
 
 
     @staticmethod
@@ -70,12 +73,17 @@ class SequenceItem:
         self.started_ts = time.time()
         on_update()
         try:
-            self.job.run(server, devices, root_path, event_listener, logger, on_update, index)
+            self.job.run(server, devices, root_path, event_listener, on_update, index)
             self.status = 'finished'
             self.finished_ts = time.time()
+            on_update()
+        except SequenceItemStatusError as e:
+            self.status = e.status
+            logger.debug('Sequence job status changed to {}'.format(e.status))
             on_update()
         except RuntimeError as e: # TODO: specific exception?
             self.status = 'error'
             self.error_message = str(e)
+            logger.exception('Error running sequence job')
             raise e
 

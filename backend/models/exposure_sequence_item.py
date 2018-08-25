@@ -9,6 +9,8 @@ from .exposure_sequence_item_runner import ExposureSequenceItemRunner
 
 from app import logger
 
+import traceback
+
 
 class ExposureSequenceItem:
     def __init__(self, data):
@@ -50,13 +52,12 @@ class ExposureSequenceItem:
         }
 
     def stop(self):
-        if not self.sequence:
-            raise BadRequestError("Sequence not running, can't stop")
-        self.sequence.stop()
-        self.sequence = None
+        if self.sequence:
+            self.sequence.stop()
+            self.sequence = None
         return 'stopped'
 
-    def run(self, server, devices, root_path, event_listener, logger, on_update, index):
+    def run(self, server, devices, root_path, event_listener, on_update, index):
         images_queue = Queue()
 
         filename_template_params = {
@@ -110,6 +111,9 @@ class ExposureSequenceItem:
         self.sequence.callbacks.add('on_finished', on_finished)
         try:
             self.sequence.run()
+        except:
+            self.progress = self.sequence.finished
+            raise
         finally:
             self.sequence = None
 

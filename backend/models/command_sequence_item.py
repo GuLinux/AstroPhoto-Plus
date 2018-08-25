@@ -2,6 +2,7 @@ import subprocess
 import time
 import shlex
 import os
+from app import logger
 
 
 class CommandSequenceItem:
@@ -13,7 +14,7 @@ class CommandSequenceItem:
             'command': self.command,
         }
 
-    def run(self, server, devices, root_path, event_listener, logger, on_update, index):
+    def run(self, server, devices, root_path, event_listener, on_update, index):
         os.makedirs(root_path, exist_ok=True)
 
         with open(os.path.join(root_path, self.__log_filename(index, 'stdout')), 'w') as out:

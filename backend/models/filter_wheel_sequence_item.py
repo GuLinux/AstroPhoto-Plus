@@ -1,3 +1,6 @@
+from app import logger
+
+
 class FilterWheelSequenceItem:
     def __init__(self, data):
         self.filter_number = data.get('filterNumber')
@@ -7,7 +10,7 @@ class FilterWheelSequenceItem:
             'filterNumber': self.filter_number,
         }
 
-    def run(self, server, devices, root_path, event_listener, logger, on_update, index):
+    def run(self, server, devices, root_path, event_listener, on_update, index):
         wheel = devices['filter_wheel']
         logger.debug('Changing filter to {} on filter wheel {}'.format(self.filter_number, wheel))
         wheel.indi_sequence_filter_wheel().set_filter_number(self.filter_number)
