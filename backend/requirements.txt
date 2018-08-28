@@ -9,3 +9,5 @@ pillow
 six
 redis
 pkgconfig
+donuts
+
