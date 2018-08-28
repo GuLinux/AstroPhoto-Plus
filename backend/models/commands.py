@@ -3,7 +3,7 @@ import subprocess
 import json
 import os
 from .settings import settings
-from .exceptions import NotFoundError, BadRequestError, FailedMethodError
+from errors import NotFoundError, BadRequestError, FailedMethodError
 from app import logger
 
 class Command:

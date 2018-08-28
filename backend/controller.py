@@ -1,10 +1,11 @@
 from functools import wraps
 import os
-from models import Server, Device, Property, SavedList, INDIService, Sequence, INDIProfile, settings
+from indi import Server, Device, Property, INDIService, INDIProfile
+from models import SavedList, settings
 from server_sent_events import SSE
 from app import app
 import time
-from sequences_runner import SequencesRunner
+from sequences import SequencesRunner, Sequence
 import threading
 
 

@@ -1,5 +1,5 @@
 import os
-from .exceptions import BadRequestError
+from errors import BadRequestError
 import six
 from redis_client import redis_client
 

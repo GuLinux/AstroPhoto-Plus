@@ -2,9 +2,8 @@ import os
 import time
 from queue import Queue
 
-from .exceptions import BadRequestError
-from .image import Image
-from .images_db import main_images_db
+from errors import BadRequestError
+from images import Image, main_images_db
 from .exposure_sequence_item_runner import ExposureSequenceItemRunner
 
 from app import logger

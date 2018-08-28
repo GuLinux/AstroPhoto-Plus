@@ -4,7 +4,7 @@ from .filter_wheel import FilterWheel
 from .device import Device
 from .indi_property import Property
 import time
-from .exceptions import NotFoundError
+from errors import NotFoundError
 
 
 class Server:

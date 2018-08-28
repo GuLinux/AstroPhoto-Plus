@@ -1,7 +1,11 @@
 from flask import jsonify, Response, send_from_directory, send_file, request
 from api_decorators import *
 from api_utils import *
-from models import Server, Sequence, SequenceItem, NotFoundError, Property, Device, INDIProfile, ImagesDatabase, camera_images_db, main_images_db, commands
+from indi import Server, Property, Device, INDIProfile
+from errors import NotFoundError
+from images import ImagesDatabase, camera_images_db, main_images_db
+from models import commands
+from sequences import Sequence, SequenceItem
 import os
 from controller import controller
 from app import app

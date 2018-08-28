@@ -1,6 +1,6 @@
 import os
 from xml.etree import ElementTree
-from .service import Service
+from models import Service
 
 class INDIService:
     def __init__(self, settings, on_started=None, on_exit=None):

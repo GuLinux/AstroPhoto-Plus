@@ -5,7 +5,7 @@ from app import logger
 from pyindi_sequence import INDIClient
 from queue import Queue
 import threading
-from .sequence_exceptions import SequenceItemStatusError 
+from errors import SequenceItemStatusError 
 
 
 class SequenceCallbacks:

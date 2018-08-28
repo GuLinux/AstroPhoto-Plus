@@ -3,7 +3,7 @@ from api_utils import *
 from functools import wraps
 import time
 from controller import controller
-from models import BadRequestError, NotFoundError, FailedMethodError
+from errors import BadRequestError, NotFoundError, FailedMethodError
 
 def managed_api(f):
     @wraps(f)
