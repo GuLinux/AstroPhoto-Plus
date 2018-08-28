@@ -1,4 +1,4 @@
-from models import settings
+from system import settings
 from errors import NotFoundError
 from .image import Image
 from contextlib import contextmanager

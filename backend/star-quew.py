@@ -4,10 +4,9 @@ from api_utils import *
 from indi import Server, Property, Device, INDIProfile
 from errors import NotFoundError
 from images import ImagesDatabase, camera_images_db, main_images_db
-from models import commands
+from system import commands, controller
 from sequences import Sequence, SequenceItem
 import os
-from controller import controller
 from app import app
 import logging
 import io

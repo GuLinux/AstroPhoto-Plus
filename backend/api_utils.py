@@ -1,5 +1,5 @@
 from flask import jsonify
-from controller import controller
+from system import controller
 
 
 def api_error(code, title, message=None, payload=None):

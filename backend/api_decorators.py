@@ -2,7 +2,7 @@ from flask import jsonify, request
 from api_utils import *
 from functools import wraps
 import time
-from controller import controller
+from system import controller
 from errors import BadRequestError, NotFoundError, FailedMethodError
 
 def managed_api(f):

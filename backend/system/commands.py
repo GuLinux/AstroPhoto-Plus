@@ -1,4 +1,4 @@
-from .model import random_id
+from models import random_id
 import subprocess
 import json
 import os
