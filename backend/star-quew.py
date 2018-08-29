@@ -487,3 +487,41 @@ def get_available_commands():
 def run_command(id, json):
     return commands.run(id, json)
 
+# Autoguider
+@app.route('/api/autoguider', methods=['GET'])
+@json_api
+def get_autoguider_status():
+    return {}
+
+@app.route('/api/autoguider/set_camera', methods=['POST'])
+@json_input
+@json_api
+def set_autoguider_camera(json):
+    return {}
+
+@app.route('/api/autoguider/set_guider_control', methods=['POST'])
+@json_input
+@json_api
+def set_autoguider_control(json):
+    # params:
+    # - INDI device
+    # - dec_guider (bool)
+    # Look for TELESCOPE_TIMED_GUIDE_NS/TELESCOPE_TIMED_GUIDE_WE properties
+    return {}
+
+@app.route('/api/autoguider/training', methods=['POST'])
+@json_api
+def autoguider_training():
+    return {}
+
+@app.route('/api/autoguider/start', methods=['POST'])
+@json_api
+def start_autoguider():
+    return {}
+
+@app.route('/api/autoguider/stop', methods=['POST'])
+@json_api
+def stop_autoguider():
+    return {}
+
+
