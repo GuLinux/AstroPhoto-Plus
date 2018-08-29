@@ -1,5 +1,5 @@
-from .model import random_id
-from .exceptions import BadRequestError
+from models import random_id
+from errors import BadRequestError
 
 class INDIProfile:
     def __init__(self, id=None, name='', devices=[]):

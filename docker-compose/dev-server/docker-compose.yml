@@ -1,7 +1,7 @@
 version: '2'
 services:
   nginx:
-    image: nginx:alpine
+    image: nginx:stable-alpine
     ports:
         - "${EXTERNAL_WEB_PORT}:80"
     volumes:

@@ -1,6 +1,5 @@
-from .exceptions import NotFoundError
+from errors import NotFoundError
 from contextlib import contextmanager
-from .sequence import Sequence
 import json
 import os
 from redis_client import redis_client

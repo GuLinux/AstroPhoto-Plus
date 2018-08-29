@@ -1,5 +1,5 @@
 from .device import Device
-from .exceptions import NotFoundError
+from errors import NotFoundError
 
 class FilterWheel:
     def __init__(self, client, logger, device=None, filter_wheel=None):

@@ -1,5 +1,5 @@
-from .model import id_by_properties
-from .exceptions import NotFoundError
+from models import id_by_properties
+from errors import NotFoundError
 import functools
 from . import indi_property
 

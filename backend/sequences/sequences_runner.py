@@ -1,4 +1,4 @@
-from models import BadRequestError
+from errors import BadRequestError
 import threading
 import time
 

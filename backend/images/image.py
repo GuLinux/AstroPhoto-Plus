@@ -2,8 +2,8 @@ import os
 import time
 import hashlib
 from astropy.io import fits
-from .exceptions import BadRequestError, NotFoundError
-from .model import random_id 
+from errors import BadRequestError, NotFoundError
+from models import random_id 
 import math
 import numpy
 from image_processing.image_processing import ImageProcessing

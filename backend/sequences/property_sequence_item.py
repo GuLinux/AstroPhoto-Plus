@@ -1,4 +1,4 @@
-from .indi_property import Property
+from indi import Property
 from app import logger
 
 

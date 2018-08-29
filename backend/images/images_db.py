@@ -1,8 +1,8 @@
-from .exceptions import NotFoundError
+from system import settings
+from errors import NotFoundError
 from .image import Image
 from contextlib import contextmanager
 import os
-from .settings import settings
 from redis_client import redis_client
 
 
