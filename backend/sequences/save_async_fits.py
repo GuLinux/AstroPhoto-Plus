@@ -13,8 +13,10 @@ class SaveFITSError(Exception):
 
 
 class SaveAsyncFITS:
+    MAX_QUEUE_SIZE=10
+
     def __init__(self, on_saved, on_error):
-        self.files_queue = multiprocessing.Queue()
+        self.files_queue = multiprocessing.Queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
         self.notify_queue = multiprocessing.Queue()
 
         self.process_files = multiprocessing.Process(target=self.__process_sequence_files, args=(self.files_queue, self.notify_queue))

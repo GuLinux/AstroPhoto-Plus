@@ -59,7 +59,7 @@ class ExposureSequenceItemRunner:
 
         self.callbacks.run('on_started', self)
 
-        shots_queue = Queue()
+        shots_queue = Queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
         blob_watcher = threading.Thread(target=self.__blob_watcher, args=(shots_queue,))
         blob_watcher.start()
         try:
@@ -102,7 +102,7 @@ class ExposureSequenceItemRunner:
         save_async_fits = SaveAsyncFITS(on_saved=self.on_saved, on_error=self.on_error)
         indi_host, indi_port = self.server.client.host, self.server.client.port
 
-        blobs_queue = Queue()
+        blobs_queue = Queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
         def on_new_blob(bp):
             blob_info = 'name={}, label={}, format={}, bloblen={}, size={}'.format(bp.name, bp.label, bp.format, bp.bloblen, bp.size)
             blobs_queue.put(bp)
