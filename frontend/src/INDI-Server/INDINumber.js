@@ -87,19 +87,51 @@ const formatValue = (displayValue, format) => {
 
 // TODO: revisit when https://github.com/vlad-ignatov/react-numeric-input/pull/80 gets merged
 
-const onNumericInputChange = (currentValue, newValue, onChange, parseValue) => {
-    const parsed = parseValue(newValue);
-     onChange(parsed);
-}
+class NumericInput extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { value: null };
+    }
 
-const NumericInput = ({value, format, parse, min, max, step, onChange, ...args}) => (
-    <Input
-        className='indi-number'
-        value={format(value)}
-        onChange={onChange ? (e, data) => onNumericInputChange(value, data.value, onChange, parse) : null}
-        type='text' {...args}
-    />
-)
+    onChange = (data) => {
+        console.log(data)
+        if(this.valueChangedTimer) {
+            clearTimeout(this.valueChangedTimer);
+        }
+        this.setState({...this.state, value: data.value});
+        this.valueChangedTimer = setTimeout( this.mergeState, 900);
+        
+    }
+
+    mergeState = () => {
+        if(! this.props.onChange) {
+            return;
+        }
+        let value = this.props.parse(this.state.value);
+        if(this.props.min !== undefined) {
+            value = Math.max(value, this.props.min);
+        }
+        if(this.props.max !== undefined) {
+            value = Math.min(value, this.props.max);
+        }
+        this.props.onChange(value);
+        this.setState({...this.state, value: null });
+    }
+
+    value = () => this.state.value === null ? this.props.format(this.props.value) : this.state.value;
+
+    render = () => {
+        const  { value, format, parse, min, max, step, onChange, ...args } = this.props;
+        return (
+            <Input
+                className='indi-number'
+                value={this.value()}
+                onChange={(e, data) => this.onChange(data)}
+                type='text' {...args}
+            />
+        )
+    }
+}
 
 const EditableInput = ({value, format, min, max, step, onChange, ...args}) => (
     <NumericInput
@@ -108,9 +140,9 @@ const EditableInput = ({value, format, min, max, step, onChange, ...args}) => (
         size='small'
         format={v => formatValue(v, format)}
         parse={s => parseStringValue(s, format)}
-        min={value.min}
-        max={value.max}
-        step={value.step}
+        min={min}
+        max={max}
+        step={step}
         {...args}
     />
 )
@@ -135,6 +167,7 @@ const INDINumber = ({value, isWriteable, displayValue, addPendingValues, hideCur
     if(!isWriteable)
         return <CurrentValue format={value.format} label={value.label} value={value.value} fluid />
     return (
+        
         <EditableInput
             min={value.min} max={value.max} step={value.step}
             format={value.format}
