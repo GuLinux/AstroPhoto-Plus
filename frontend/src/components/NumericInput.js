@@ -28,7 +28,7 @@ export class NumericInput extends React.Component {
     }
 
     setValue = (newValue) => {
-        let value = this.props.parse(newValue);
+        let value = this.props.parse ? this.props.parse(newValue) : parseFloat(newValue) ;
         if(this.props.min !== undefined) {
             value = Math.max(value, this.props.min);
         }
@@ -39,7 +39,9 @@ export class NumericInput extends React.Component {
         this.setState({...this.state, value: null });
     }
 
-    value = () => this.state.value === null ? this.props.format(this.props.value) : this.state.value;
+    format = (value) => this.props.format ? this.props.format(value) : value;
+
+    value = () => this.state.value === null ? this.format(this.props.value) : this.state.value;
 
     step = (direction) => {
         if(! this.props.step) {
