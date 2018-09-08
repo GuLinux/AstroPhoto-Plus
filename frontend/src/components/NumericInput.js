@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from 'semantic-ui-react'
+import { Icon, Button, Input } from 'semantic-ui-react'
 
 export class NumericInput extends React.Component {
     constructor(props) {
@@ -68,10 +68,14 @@ export class NumericInput extends React.Component {
                 value={this.value()}
                 onChange={(e, data) => this.onChange(data)}
                 type='text' {...args}
-                
+                action={ step && !args.readOnly && (
+                    <Button.Group vertical size='mini' className='number-steps'>
+                        <Button icon='caret up' onClick={() => this.step(+1)} />
+                        <Button icon='caret down'onClick={() => this.step(-1)} />
+                    </Button.Group>
+                )}
             />
         )
     }
 }
-
 

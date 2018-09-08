@@ -24,21 +24,21 @@ class INDIInputProperty extends React.Component {
 
         return (
             <Grid>
-                <Grid.Column width={14}>
+                <Grid.Column width={11}>
                     {property.values.map( (value, index) =>
                         <InputComponent key={index} value={value} addPendingValues={addPendingValues} displayValue={displayValues[value.name]} editMode={editMode} />
                     )}
                 </Grid.Column>
-                <Grid.Column width={2} verticalAlign='middle'>
+                <Grid.Column width={5} verticalAlign='middle'>
                     { isWriteable && (
                         <Button.Group size='mini'>
                         { editMode ? (
                             <React.Fragment>
-                                <Button onClick={() => this.commitPendingValues()} content='set' />
-                                <Button onClick={() => this.editMode(false)} content='cancel' />
+                                <Button onClick={() => this.commitPendingValues()} content='set' icon='check' />
+                                <Button onClick={() => this.editMode(false)} content='cancel' icon='cancel' />
                             </React.Fragment>
                             ) :
-                            <Button onClick={() => this.editMode(true)} primary content='edit' />
+                            <Button onClick={() => this.editMode(true)} primary content='edit' icon='edit' />
                         }
                         </Button.Group>
                     )}
