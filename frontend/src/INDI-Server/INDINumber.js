@@ -94,7 +94,6 @@ class NumericInput extends React.Component {
     }
 
     onChange = (data) => {
-        console.log(data)
         if(this.valueChangedTimer) {
             clearTimeout(this.valueChangedTimer);
         }
@@ -104,10 +103,18 @@ class NumericInput extends React.Component {
     }
 
     mergeState = () => {
-        if(! this.props.onChange) {
+        if(! this.props.onChange || this.props.readOnly || this.state.value === null ) {
             return;
         }
-        let value = this.props.parse(this.state.value);
+        if(this.valueChangedTimer) {
+            clearTimeout(this.valueChangedTimer);
+            this.valueChangedTimer = null;
+        }
+        this.setValue(this.state.value);
+    }
+
+    setValue = (newValue) => {
+        let value = this.props.parse(newValue);
         if(this.props.min !== undefined) {
             value = Math.max(value, this.props.min);
         }
@@ -120,14 +127,34 @@ class NumericInput extends React.Component {
 
     value = () => this.state.value === null ? this.props.format(this.props.value) : this.state.value;
 
+    step = (direction) => {
+        if(! this.props.step) {
+            return;
+        }
+        const newValue = this.props.value + (direction * this.props.step)
+        this.setValue(`${newValue}`);
+    }
+
+    onKeyUp = (keyEvent) => {
+        if(keyEvent.key === 'ArrowUp') {
+            this.step(+1);
+        }
+        if(keyEvent.key === 'ArrowDown') {
+            this.step(-1);
+        }
+    }
+
     render = () => {
         const  { value, format, parse, min, max, step, onChange, ...args } = this.props;
         return (
             <Input
+                onKeyUp={e => this.onKeyUp(e)}
+                onBlur={() => this.mergeState()}
                 className='indi-number'
                 value={this.value()}
                 onChange={(e, data) => this.onChange(data)}
                 type='text' {...args}
+                
             />
         )
     }
