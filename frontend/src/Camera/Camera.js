@@ -86,7 +86,7 @@ const Camera = ({
                                         size='tiny'
                                         checked={options.histogramLogarithmic}
                                         onChange={(e, data) => setOption({histogramLogarithmic: data.checked})}
-                                        />,
+                                        />
                                     <Form.Field key='bins'>
                                         <Input
                                             type='number'
