@@ -11,6 +11,8 @@
  - switch to INDI blob for sequences (speed/reliability improvement)
  - import/export sequences to JSON files
  - Images database optimization
+ - Fix histogram not reloading on image changing
+ - Histogram improvements
 
 ## [0.1.1] - 2018-08-03
 ### User experience improvements

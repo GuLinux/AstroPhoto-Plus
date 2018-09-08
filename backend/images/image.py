@@ -111,14 +111,14 @@ class Image:
             self.cached_conversions[key] = self.__file_info(filepath, format_name, format['content_type'])
         return self.cached_conversions[key]
 
-    def histogram(self, bins=50):
+    def histogram(self, bins=50, range_int = False):
         # Histogram looks fast enough to be kept in python code. Still worth having a look in the future to see if it's too slow on an older/slower machine, and if the performance gain in C++ would be sensible.
         with fits.open(self.path) as fits_file:
             image_data = fits_file[0].data
             values, bins_boundaries = numpy.histogram(image_data, bins=int(bins), range=(0, image_data.max()), density=False)
             histogram = {
                 'values': [int(x) for x in values],
-                'bins': [float(x) for x in bins_boundaries],
+                'bins': [int(x) if range_int else float(x) for x in bins_boundaries],
             }
             return histogram
 

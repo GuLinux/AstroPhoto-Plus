@@ -427,6 +427,8 @@ def retrieve_image_histogram(type, image):
     args = {}
     if 'bins' in request.args:
         args['bins'] = request.args['bins']
+    if 'range_int' in request.args:
+        args['range_int'] = request.args['range_int'] != '0'
     return image.histogram(**args)
 
 
