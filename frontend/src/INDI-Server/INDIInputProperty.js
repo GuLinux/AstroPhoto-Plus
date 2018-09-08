@@ -4,32 +4,6 @@ import INDIText from './INDIText';
 
 import { Button, Grid } from 'semantic-ui-react'
 
-export const CommitPendingValuesButton = ({isWriteable, commitPendingValues, ...args}) => {
-    if(!isWriteable)
-        return null;
-    return (
-        <Button
-            {...args}
-            onClick={e => commitPendingValues()}
-            >set</Button>
-    )
-}
-
-export const ChangePropertyButtons = ({ isWriteable, isEditMode, onCancelClicked, onEditClicked, commitPendingValues, ...buttonsArgs}) => {
-    if(!isWriteable) {
-        return null;
-    }
-    if(isEditMode) {
-        return (
-            <Button.Group {...buttonsArgs}>
-                <CommitPendingValuesButton {...{ isWriteable, commitPendingValues } } />
-                <Button onClick={onCancelClicked} content='cancel' />
-            </Button.Group>
-        );
-    }
-    return <Button onClick={onEditClicked} {...buttonsArgs} content='edit' />
-};
-
 class INDIInputProperty extends React.Component {
     constructor(props) {
         super(props);
@@ -38,9 +12,16 @@ class INDIInputProperty extends React.Component {
 
     editMode = (mode) => this.props.isWriteable && this.setState({...this.state, editMode: mode});
 
+
+    commitPendingValues = args => {
+        this.props.commitPendingValues();
+        this.editMode(false);
+    }
+
     render = () => {
-        const { InputComponent, property, isWriteable, pendingValues, displayValues, addPendingValues, commitPendingValues } = this.props;
+        const { InputComponent, property, isWriteable, pendingValues, displayValues, addPendingValues } = this.props;
         const { editMode } = this.state;
+
         return (
             <Grid>
                 <Grid.Column width={14}>
@@ -49,18 +30,18 @@ class INDIInputProperty extends React.Component {
                     )}
                 </Grid.Column>
                 <Grid.Column width={2} verticalAlign='middle'>
-                    <ChangePropertyButtons
-                        isEditMode={editMode}
-                        onCancelClicked={() => this.editMode(false)}
-                        onEditClicked={() => this.editMode(true)}
-                        primary
-                        size="mini"
-                        isWriteable={isWriteable}
-                        commitPendingValues={(...args) => {
-                            commitPendingValues(...args);
-                            this.editMode(false);
-                        }}
-                    />
+                    { isWriteable && (
+                        <Button.Group size='mini'>
+                        { editMode ? (
+                            <React.Fragment>
+                                <Button onClick={() => this.commitPendingValues()} content='set' />
+                                <Button onClick={() => this.editMode(false)} content='cancel' />
+                            </React.Fragment>
+                            ) :
+                            <Button onClick={() => this.editMode(true)} primary content='edit' />
+                        }
+                        </Button.Group>
+                    )}
                 </Grid.Column>
             </Grid>
         );
