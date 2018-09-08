@@ -104,7 +104,6 @@ const EditableInput = ({value, format, min, max, step, onChange, ...args}) => (
 
 const CurrentValue = ({value, format, ...args}) => (
     <NumericInput
-
         value={value}
         size='small'
         readOnly={true}
@@ -114,25 +113,23 @@ const CurrentValue = ({value, format, ...args}) => (
     />
 )
 
-const INDINumber = ({value, isWriteable, displayValue, addPendingValues, hideCurrent}) => {
+const INDINumber = ({value, displayValue, addPendingValues, editMode}) => {
     const onChange= (numValue, stringValue) => addPendingValues({ [value.name]: numValue })
 
-    if(hideCurrent)
-        return <EditableInput label={value.label} format={value.format} min={value.min} max={value.max} step={value.step} value={displayValue} onChange={onChange} fluid />
-    if(!isWriteable)
-        return <CurrentValue format={value.format} label={value.label} value={value.value} fluid />
-    return (
-        
-        <EditableInput
-            min={value.min} max={value.max} step={value.step}
-            format={value.format}
-            value={displayValue}
-            fluid
-            onChange={onChange}
-            action={<CurrentValue value={value.value} label={value.label} format={value.format} />}
-            actionPosition='left'
-        />
-    )
+    if(editMode) {
+        return (
+            <EditableInput
+                min={value.min} max={value.max} step={value.step}
+                label={value.label}
+                format={value.format}
+                value={displayValue}
+                fluid
+                onChange={onChange}
+            />
+
+        )
+    }
+    return <CurrentValue format={value.format} label={value.label} value={value.value} fluid />
 }
 
 export default INDINumber

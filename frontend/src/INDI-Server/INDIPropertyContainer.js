@@ -1,8 +1,7 @@
 import { connect } from 'react-redux'
 import INDISwitchProperty from './INDISwitchProperty'
 import INDILightProperty from './INDILightProperty'
-import INDITextProperty from './INDITextProperty'
-import INDINumberProperty from './INDINumberProperty'
+import { INDINumberProperty, INDITextProperty } from './INDIInputProperty'
 import Actions from '../actions'
 
 
