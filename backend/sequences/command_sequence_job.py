@@ -5,7 +5,7 @@ import os
 from app import logger
 
 
-class CommandSequenceItem:
+class CommandSequenceJob:
     def __init__(self, data):
         self.command= data['command']
        

@@ -1,30 +1,30 @@
 from models import random_id
-from errors import BadRequestError, SequenceItemStatusError
+from errors import BadRequestError, SequenceJobStatusError
 
-from .exposure_sequence_item import ExposureSequenceItem
-from .filter_wheel_sequence_item import FilterWheelSequenceItem
-from .property_sequence_item import PropertySequenceItem
-from .command_sequence_item import CommandSequenceItem
+from .exposure_sequence_job import ExposureSequenceJob
+from .filter_wheel_sequence_job import FilterWheelSequenceJob
+from .property_sequence_job import PropertySequenceJob
+from .command_sequence_job import CommandSequenceJob
 import time
 from app import logger
 
 
-class SequenceItem:
+class SequenceJob:
     def __init__(self, data):
         self.id = random_id(data.get('id'))
         self.type = data['type']
         data.update({'id': self.id})
         self.job = None
         if self.type == 'shots':
-            self.job = ExposureSequenceItem(data)
+            self.job = ExposureSequenceJob(data)
         elif self.type == 'filter':
-            self.job = FilterWheelSequenceItem(data)
+            self.job = FilterWheelSequenceJob(data)
         elif self.type == 'property':
-            self.job = PropertySequenceItem(data)
+            self.job = PropertySequenceJob(data)
         elif self.type == 'command':
-            self.job = CommandSequenceItem(data)
+            self.job = CommandSequenceJob(data)
         else:
-            raise BadRequestError('Invalid sequence item type: {}'.format(self.type))
+            raise BadRequestError('Invalid sequence job type: {}'.format(self.type))
 
         self.status = data.get('status', 'idle')
         self.started_ts, self.finished_ts = None, None
@@ -36,7 +36,7 @@ class SequenceItem:
             data.pop('status')
         if 'saved_images' in data:
             data.pop('saved_images') # TODO: move from here?
-        return SequenceItem(data)
+        return SequenceJob(data)
 
     def stop(self):
         self.status = 'stopping'
@@ -47,7 +47,7 @@ class SequenceItem:
 
     @staticmethod
     def from_map(map_object):
-        return SequenceItem(map_object)
+        return SequenceJob(map_object)
 
     def to_map(self):
         data = {
@@ -77,7 +77,7 @@ class SequenceItem:
             self.status = 'finished'
             self.finished_ts = time.time()
             on_update()
-        except SequenceItemStatusError as e:
+        except SequenceJobStatusError as e:
             self.status = e.status
             logger.debug('Sequence job status changed to {}'.format(e.status))
             on_update()

@@ -38,7 +38,7 @@ class SequencesList extends React.Component {
                         <Table.Row>
                             <Table.HeaderCell><Label content='Name' /></Table.HeaderCell>
                             <Table.HeaderCell><Label content='Gear' /></Table.HeaderCell>
-                            <Table.HeaderCell><Label content='Sequence Items'/></Table.HeaderCell>
+                            <Table.HeaderCell><Label content='Sequence Jobs'/></Table.HeaderCell>
                             <Table.HeaderCell><Label content='State'/></Table.HeaderCell>
                             <Table.HeaderCell><Label content='Action' /></Table.HeaderCell>
                         </Table.Row>
@@ -52,7 +52,7 @@ class SequencesList extends React.Component {
                                 </Link>
                             </Table.Cell>
                             <Table.Cell verticalAlign='middle'><GearDescription gear={gear[sequence.id]} /></Table.Cell>
-                            <Table.Cell verticalAlign='middle'>{sequence.sequenceItems.length}</Table.Cell>
+                            <Table.Cell verticalAlign='middle'>{sequence.sequenceJobs.length}</Table.Cell>
                             <Table.Cell verticalAlign='middle'>{sequence.status}</Table.Cell>
                             <Table.Cell>
                                 <Button.Group icon compact size='mini'>

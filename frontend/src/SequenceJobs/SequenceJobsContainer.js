@@ -45,7 +45,7 @@ const sequenceJobViewModel = (state, sequenceJob) => ({
 const mapStateToProps = (state, ownProps) => {
   let sequence = state.sequences.entities[ownProps.sequenceId];
   return {
-    sequenceJobs: sequence.sequenceItems.map(id => sequenceJobViewModel(state, state.sequenceItems[id]))
+    sequenceJobs: sequence.sequenceJobs.map(id => sequenceJobViewModel(state, state.sequenceJobs[id]))
   }
 }
 

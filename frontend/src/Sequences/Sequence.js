@@ -29,8 +29,8 @@ const DeviceCardHeader = ({device}) => {
 }
 
 
-const ExposuresPage = ({sequenceItems, sequenceItemEntities}) => {
-    const exposureSequenceJobs = sequenceItems.map(s => sequenceItemEntities[s]).filter(s => s.type === 'shots');
+const ExposuresPage = ({sequenceJobs, sequenceJobEntities}) => {
+    const exposureSequenceJobs = sequenceJobs.map(s => sequenceJobEntities[s]).filter(s => s.type === 'shots');
     const remapped = exposureSequenceJobs.map(s => ({
         count: s.count,
         shot: s.progress,
@@ -172,7 +172,7 @@ class Sequence extends React.Component {
             <SequenceJobsContainer canEdit={canEdit} sequenceId={sequence.id} />
 
             <Card.Group>
-                <ExposuresPage sequenceItems={sequence.sequenceItems} sequenceItemEntities={sequence.sequenceItemEntities} />
+                <ExposuresPage sequenceJobs={sequence.sequenceJobs} sequenceJobEntities={sequence.sequenceJobEntities} />
                 <CameraDetailsPage camera={camera} />
                 <FilterWheelDetailsPage filterWheel={filterWheel} />
             </Card.Group>

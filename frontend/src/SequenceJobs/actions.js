@@ -1,27 +1,27 @@
-import {  moveSequenceItemAPI, updateSequenceItemAPI, createSequenceItemAPI, deleteSequenceItemAPI, duplicateSequenceItemAPI } from '../middleware/api'
+import {  moveSequenceJobAPI, updateSequenceJobAPI, createSequenceJobAPI, deleteSequenceJobAPI, duplicateSequenceJobAPI } from '../middleware/api'
 import Actions from '../actions'
 
 export const SequenceJobs = {
     newPending: (itemType, sequenceID) => ({
-        type: 'NEW_SEQUENCE_ITEM',
+        type: 'NEW_SEQUENCE_JOB',
         itemType,
         sequenceID,
     }),
 
     updated: (dispatch, sequence, data, wasNew) => {
-        let sequenceItem = {...data.entities.sequenceItems[data.result], sequence};
-        dispatch({ type: 'SEQUENCE_ITEM_UPDATED', sequenceItem})
+        let sequenceJob = {...data.entities.sequenceJobs[data.result], sequence};
+        dispatch({ type: 'SEQUENCE_JOB_UPDATED', sequenceJob})
         if(wasNew) {
-            dispatch({type: 'SEQUENCE_ITEM_REMOVED', id: 'pending', sequence})
-            dispatch({type: 'SEQUENCE_ITEM_CREATED', sequenceItem, sequence})
+            dispatch({type: 'SEQUENCE_JOB_REMOVED', id: 'pending', sequence})
+            dispatch({type: 'SEQUENCE_JOB_CREATED', sequenceJob, sequence})
         }
     },
 
-    saveSequenceJob: (sequenceItem,onSaved) => dispatch => {
-        dispatch({type: 'REQUEST_SAVE_SEQUENCE_ITEM', sequenceItem});
+    saveSequenceJob: (sequenceJob,onSaved) => dispatch => {
+        dispatch({type: 'REQUEST_SAVE_SEQUENCE_JOB', sequenceJob});
 
         let onError = response => {
-            dispatch({type: 'REQUEST_SAVE_SEQUENCE_ITEM_ERROR'})
+            dispatch({type: 'REQUEST_SAVE_SEQUENCE_JOB_ERROR'})
             if(response.status === 400) {
                 response.json().then(data => dispatch(Actions.Notifications.add('Error saving sequence item', data.error_message, 'warning')) );
                 return true;
@@ -30,34 +30,34 @@ export const SequenceJobs = {
         }
 
         let onSuccess = (data, wasCreated) => {
-            SequenceJobs.updated(dispatch, sequenceItem.sequence, data, wasCreated)
+            SequenceJobs.updated(dispatch, sequenceJob.sequence, data, wasCreated)
             onSaved();
         }
 
-        if(sequenceItem.id === 'pending') {
-            delete sequenceItem.id
-            return createSequenceItemAPI(dispatch, sequenceItem, (data) => onSuccess(data, true) , onError);
+        if(sequenceJob.id === 'pending') {
+            delete sequenceJob.id
+            return createSequenceJobAPI(dispatch, sequenceJob, (data) => onSuccess(data, true) , onError);
         }
-        return updateSequenceItemAPI(dispatch, sequenceItem, data => onSuccess(data, false), onError );
+        return updateSequenceJobAPI(dispatch, sequenceJob, data => onSuccess(data, false), onError );
     },
 
-    delete: (sequenceItem) => dispatch => {
-        dispatch({type: 'REQUEST_DELETE_SEQUENCE_ITEM', sequenceItem});
-        return deleteSequenceItemAPI(dispatch, sequenceItem.sequence, sequenceItem.id, (data) => SequenceJobs.deleted(dispatch, sequenceItem));
+    delete: (sequenceJob) => dispatch => {
+        dispatch({type: 'REQUEST_DELETE_SEQUENCE_JOB', sequenceJob});
+        return deleteSequenceJobAPI(dispatch, sequenceJob.sequence, sequenceJob.id, (data) => SequenceJobs.deleted(dispatch, sequenceJob));
     },
 
-    deleted: (dispatch, sequenceItem) => {
-        dispatch({type: 'SEQUENCE_ITEM_DELETED', sequenceItem});
+    deleted: (dispatch, sequenceJob) => {
+        dispatch({type: 'SEQUENCE_JOB_DELETED', sequenceJob});
     },
 
-    move: (sequenceItem, direction) => dispatch => {
-        dispatch({type: 'REQUEST_SEQUENCE_ITEM_MOVE', sequenceItem, direction});
-        return moveSequenceItemAPI(dispatch, sequenceItem, direction, (data) => dispatch(Actions.Sequences.updated(data)));
+    move: (sequenceJob, direction) => dispatch => {
+        dispatch({type: 'REQUEST_SEQUENCE_JOB_MOVE', sequenceJob, direction});
+        return moveSequenceJobAPI(dispatch, sequenceJob, direction, (data) => dispatch(Actions.Sequences.updated(data)));
     },
 
-    duplicate: (sequenceItem) => dispatch => {
-        dispatch({type: 'REQUEST_SEQUENCE_ITEM_DUPLICATE', sequenceItem});
-        return duplicateSequenceItemAPI(dispatch, sequenceItem, (data) => dispatch(Actions.Sequences.updated(data)));
+    duplicate: (sequenceJob) => dispatch => {
+        dispatch({type: 'REQUEST_SEQUENCE_JOB_DUPLICATE', sequenceJob});
+        return duplicateSequenceJobAPI(dispatch, sequenceJob, (data) => dispatch(Actions.Sequences.updated(data)));
     },
 
 

@@ -5,7 +5,7 @@ from indi import Server, Property, Device, INDIProfile
 from errors import NotFoundError
 from images import ImagesDatabase, camera_images_db, main_images_db
 from system import commands, controller
-from sequences import Sequence, SequenceItem
+from sequences import Sequence, SequenceJob
 import os
 from app import app
 import logging
@@ -214,7 +214,7 @@ def import_sequence(json):
     return sequence.to_map()
 
 
-# TODO: cleanup all resources, such as sequence items and images
+# TODO: cleanup all resources, such as sequence jobs and images
 @app.route('/api/sequences/<id>', methods=['DELETE'])
 @json_api
 def delete_sequence(id):
@@ -283,68 +283,68 @@ def duplicate_sequence(id):
     return controller.sequences.duplicate(id).to_map()
 
 
-# Sequence Items
+# Sequence Jobs
 
-@app.route('/api/sequences/<id>/sequence_items', methods=['POST'])
+@app.route('/api/sequences/<id>/sequence_jobs', methods=['POST'])
 @json_input
 @json_api
-def add_sequence_item(id, json):
-    new_sequence_item = SequenceItem(json)
+def add_sequence_job(id, json):
+    new_sequence_job = SequenceJob(json)
     with controller.sequences.lookup_edit(id) as sequence:
-        app.logger.debug('adding sequence item {} to id {}'.format(new_sequence_item, id))
-        sequence.sequence_items.append(new_sequence_item)
-    return new_sequence_item.to_map()
+        app.logger.debug('adding sequence job {} to id {}'.format(new_sequence_job, id))
+        sequence.sequence_jobs.append(new_sequence_job)
+    return new_sequence_job.to_map()
 
 
-@app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>', methods=['PUT'])
+@app.route('/api/sequences/<sequence_id>/sequence_jobs/<sequence_job_id>', methods=['PUT'])
 @json_input
 @json_api
-def update_sequence_item(sequence_id, sequence_item_id, json):
-    app.logger.debug('modifying sequence item {} from sequence'.format(sequence_item_id, sequence_id))
-    new_sequence_item = SequenceItem(json)
+def update_sequence_job(sequence_id, sequence_job_id, json):
+    app.logger.debug('modifying sequence job {} from sequence'.format(sequence_job_id, sequence_id))
+    new_sequence_job = SequenceJob(json)
     with controller.sequences.lookup_edit(sequence_id) as sequence:
-        sequence.sequence_items = [new_sequence_item if x.id == sequence_item_id else x for x in sequence.sequence_items]
-    return new_sequence_item.to_map()
+        sequence.sequence_jobs = [new_sequence_job if x.id == sequence_job_id else x for x in sequence.sequence_jobs]
+    return new_sequence_job.to_map()
 
 
-@app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>/move', methods=['PUT'])
+@app.route('/api/sequences/<sequence_id>/sequence_jobs/<sequence_job_id>/move', methods=['PUT'])
 @json_input
 @json_api
-def move_sequence_item(sequence_id, sequence_item_id, json):
-    app.logger.debug('moving sequence item {}: direction: {}'.format(sequence_item_id, json['direction']))
+def move_sequence_job(sequence_id, sequence_job_id, json):
+    app.logger.debug('moving sequence job {}: direction: {}'.format(sequence_job_id, json['direction']))
     with controller.sequences.lookup_edit(sequence_id) as sequence:
-        index = [ index for index, item in enumerate(sequence.sequence_items) if item.id == sequence_item_id]
+        index = [ index for index, job in enumerate(sequence.sequence_jobs) if job.id == sequence_job_id]
         if not index:
-            raise NotFoundError('Sequence item {} not found in sequence {}'.format(sequence_item_id, sequence_id))
+            raise NotFoundError('Sequence job {} not found in sequence {}'.format(sequence_job_id, sequence_id))
         index = index[0]
         new_index = index-1 if json['direction'] == 'up' else index+1
-        if new_index >= 0 and new_index < len(sequence.sequence_items):
-            sequence.sequence_items.insert(new_index, sequence.sequence_items.pop(index))
+        if new_index >= 0 and new_index < len(sequence.sequence_jobs):
+            sequence.sequence_jobs.insert(new_index, sequence.sequence_jobs.pop(index))
         return sequence.to_map()
 
 
 
-@app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>/duplicate', methods=['PUT'])
+@app.route('/api/sequences/<sequence_id>/sequence_jobs/<sequence_job_id>/duplicate', methods=['PUT'])
 @json_api
-def duplicate_sequence_item(sequence_id, sequence_item_id):
-    app.logger.debug('duplicate item {}'.format(sequence_item_id))
+def duplicate_sequence_job(sequence_id, sequence_job_id):
+    app.logger.debug('duplicate job {}'.format(sequence_job_id))
     with controller.sequences.lookup_edit(sequence_id) as sequence:
-        sequence_item = sequence.item(sequence_item_id)
-        sequence.sequence_items.append(sequence_item.duplicate())
+        sequence_job = sequence.job(sequence_job_id)
+        sequence.sequence_jobs.append(sequence_job.duplicate())
         return sequence.to_map()
 
 
 
 
-@app.route('/api/sequences/<sequence_id>/sequence_items/<sequence_item_id>', methods=['DELETE'])
+@app.route('/api/sequences/<sequence_id>/sequence_jobs/<sequence_job_id>', methods=['DELETE'])
 @json_api
-def delete_sequence_item(sequence_id, sequence_item_id):
+def delete_sequence_job(sequence_id, sequence_job_id):
     with controller.sequences.lookup_edit(sequence_id) as sequence:
-        sequence_item = sequence.item(sequence_item_id)
-        sequence_item = sequence_item.to_map()
-        sequence_item.update({'status': 'deleted'})
-        sequence.sequence_items = [x for x in sequence.sequence_items if x.id != sequence_item_id]
-        return sequence_item
+        sequence_job = sequence.job(sequence_job_id)
+        sequence_job = sequence_job.to_map()
+        sequence_job.update({'status': 'deleted'})
+        sequence.sequence_jobs = [x for x in sequence.sequence_jobs if x.id != sequence_job_id]
+        return sequence_job
 
 #imaging module
 

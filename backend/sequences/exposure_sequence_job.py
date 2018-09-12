@@ -4,16 +4,16 @@ from queue import Queue
 
 from errors import BadRequestError
 from images import Image, main_images_db
-from .exposure_sequence_item_runner import ExposureSequenceItemRunner
+from .exposure_sequence_job_runner import ExposureSequenceJobRunner
 
 from app import logger
 
 import traceback
 
 
-class ExposureSequenceItem:
+class ExposureSequenceJob:
     def __init__(self, data):
-        self.sequence_item_id = data['id']
+        self.sequence_job_id = data['id']
         self.filename = data['filename']
         self.count = data['count']
         self.exposure = data['exposure']
@@ -69,7 +69,7 @@ class ExposureSequenceItem:
             filename_template_params['filter_index'], filename_template_params['filter'] = devices['filter_wheel'].indi_sequence_filter_wheel().current_filter()
 
         upload_path = os.path.join(root_path, self.directory)
-        self.sequence = ExposureSequenceItemRunner(server, devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, progress=self.progress, filename_template=self.filename, filename_template_params=filename_template_params)
+        self.sequence = ExposureSequenceJobRunner(server, devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, progress=self.progress, filename_template=self.filename, filename_template_params=filename_template_params)
 
         def on_started(sequence):
             pass

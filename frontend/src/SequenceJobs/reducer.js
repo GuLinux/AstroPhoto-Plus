@@ -1,37 +1,37 @@
 
-let addSequenceItem = (state, action) => {
-    let sequenceItem = action.sequenceItem;
+let addSequenceJob = (state, action) => {
+    let sequenceJob = action.sequenceJob;
     return {
         ...state,
-        [sequenceItem.id]: sequenceItem
+        [sequenceJob.id]: sequenceJob
     }
 }
 
-let sequenceItemRemoved = (state, action) => {
-    let sequenceItemID = action.sequenceItem.id;
+let sequenceJobRemoved = (state, action) => {
+    let sequenceJobID = action.sequenceJob.id;
     let newState = {...state};
-    delete newState[sequenceItemID];
+    delete newState[sequenceJobID];
     return newState;
 }
 
 
-const sequenceItems = (state = {}, action) => {
+const sequenceJobs = (state = {}, action) => {
     switch(action.type) {
-        case 'NEW_SEQUENCE_ITEM':
+        case 'NEW_SEQUENCE_JOB':
             return {...state, 'pending': { id: 'pending', type: action.itemType, sequence: action.sequenceID }};
-        case 'SEQUENCE_ITEM_UPDATED':
-            return addSequenceItem(state, action);
-        case 'SEQUENCE_ITEM_DELETED':
-            return sequenceItemRemoved(state, action)
+        case 'SEQUENCE_JOB_UPDATED':
+            return addSequenceJob(state, action);
+        case 'SEQUENCE_JOB_DELETED':
+            return sequenceJobRemoved(state, action)
         case 'RECEIVE_SEQUENCES':
-            return {...state, ...action.sequenceItems};
+            return {...state, ...action.sequenceJobs};
         case 'SEQUENCE_CREATED':
-            return {...state, ...action.sequenceItems};
+            return {...state, ...action.sequenceJobs};
         case 'SEQUENCE_UPDATED':
-            return {...state, ...action.data.entities.sequenceItems};
+            return {...state, ...action.data.entities.sequenceJobs};
         default:
             return state;
     }
 }
 
-export default sequenceItems
+export default sequenceJobs

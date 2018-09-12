@@ -64,7 +64,6 @@ const version = (state = {}, action) => {
 }
 
 
-// TODO: rename sequenceItems
-const indiLiteApp = combineReducers({version, sequenceItems: sequenceJobs, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation, commands});
+const indiLiteApp = combineReducers({version, sequenceJobs, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation, commands});
 
 export default indiLiteApp

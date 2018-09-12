@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch'
 import Actions from '../actions'
 
 import { normalize } from 'normalizr'
-import { commandsSchema, sequenceSchema, sequenceListSchema, sequenceItemSchema } from './schemas'
+import { commandsSchema, sequenceSchema, sequenceListSchema, sequenceJobSchema } from './schemas'
 
 export const apiFetch = async (url, options) => {
     const response = await fetch(url, options);
@@ -98,23 +98,23 @@ export const deleteSequenceAPI = (dispatch, sequenceId, onSuccess) => fetchJSON(
     }, json => onSuccess(normalize(json, sequenceSchema)));
 
 
-export const createSequenceItemAPI = (dispatch, sequenceItem, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceItem.sequence}/sequence_items`, {
+export const createSequenceJobAPI = (dispatch, sequenceJob, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceJob.sequence}/sequence_jobs`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(sequenceItem)
-    }, json => onSuccess(normalize(json, sequenceItemSchema)));
+        body: JSON.stringify(sequenceJob)
+    }, json => onSuccess(normalize(json, sequenceJobSchema)));
 
-export const updateSequenceItemAPI = (dispatch, sequenceItem, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceItem.sequence}/sequence_items/${sequenceItem.id}`, {
+export const updateSequenceJobAPI = (dispatch, sequenceJob, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceJob.sequence}/sequence_jobs/${sequenceJob.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(sequenceItem)
-    }, json => onSuccess(normalize(json, sequenceItemSchema)), onError);
+        body: JSON.stringify(sequenceJob)
+    }, json => onSuccess(normalize(json, sequenceJobSchema)), onError);
 
-export const moveSequenceItemAPI = (dispatch, sequenceItem, direction, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceItem.sequence}/sequence_items/${sequenceItem.id}/move`, {
+export const moveSequenceJobAPI = (dispatch, sequenceJob, direction, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceJob.sequence}/sequence_jobs/${sequenceJob.id}/move`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -123,12 +123,12 @@ export const moveSequenceItemAPI = (dispatch, sequenceItem, direction, onSuccess
     }, json => onSuccess(normalize(json, sequenceSchema)), onError);
 
 
-export const duplicateSequenceItemAPI = (dispatch, sequenceItem, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceItem.sequence}/sequence_items/${sequenceItem.id}/duplicate`, {
+export const duplicateSequenceJobAPI = (dispatch, sequenceJob, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceJob.sequence}/sequence_jobs/${sequenceJob.id}/duplicate`, {
         method: 'PUT',
     }, json => onSuccess(normalize(json, sequenceSchema)), onError);
 
 
-export const deleteSequenceItemAPI = (dispatch, sequenceId, sequenceItemId, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}/sequence_items/${sequenceItemId}`, {
+export const deleteSequenceJobAPI = (dispatch, sequenceId, sequenceJobId, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}/sequence_jobs/${sequenceJobId}`, {
         method: 'DELETE'
     }, json => onSuccess(normalize(json, sequenceSchema)));
 

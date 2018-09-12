@@ -2,14 +2,14 @@ import { connect } from 'react-redux';
 import Sequence from './Sequence';
 import Actions from '../actions';
 import { getSequencesGears } from '../Gear/selectors';
-import { getSequenceEntitiesWithItems } from './selectors';
+import { getSequenceEntitiesWithJobs } from './selectors';
 
 const mapStateToProps = (state, ownProps) => {
     let sequenceId = ownProps.sequenceId;
     if(!(sequenceId in state.sequences.entities)) {
         return { sequence: null }
     }
-    const sequence = getSequenceEntitiesWithItems(state)[sequenceId];
+    const sequence = getSequenceEntitiesWithJobs(state)[sequenceId];
     let gear = getSequencesGears(state)[sequenceId];
 
     let properties = {sequence, camera: gear.camera, filterWheel: gear.filterWheel, canEdit: canEdit(state, sequence), gear};
