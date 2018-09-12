@@ -36,20 +36,17 @@ class Histogram extends React.Component {
             name: `${histogram.bins[index]}-${histogram.bins[index+1]}}`,
             number: logarithmic? v+1 : v,
         }));
-        const min = Math.min(...histogram.values);
-        const max = Math.max(...histogram.values);
-        const mean = histogram.values.reduce((a, b) => a + b) / histogram.values.length;
         return (
             <Container fluid>
                 <Header size='large' content='Histogram' />
                 <Segment>
                     <Grid divided columns={6} verticalAlign='middle' stackable>
                             <Grid.Column><Label content='min: ' /></Grid.Column>
-                            <Grid.Column>{min}</Grid.Column>
+                            <Grid.Column>{histogram.min}</Grid.Column>
                             <Grid.Column><Label content='max: ' /></Grid.Column>
-                            <Grid.Column>{max}</Grid.Column>
+                            <Grid.Column>{histogram.max}</Grid.Column>
                             <Grid.Column><Label content='mean: ' /></Grid.Column>
-                            <Grid.Column>{mean.toFixed(2)}</Grid.Column>
+                            <Grid.Column>{histogram.mean.toFixed(2)}</Grid.Column>
                     </Grid>
                 </Segment>
 

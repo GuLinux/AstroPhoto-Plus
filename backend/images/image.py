@@ -119,6 +119,9 @@ class Image:
             histogram = {
                 'values': [int(x) for x in values],
                 'bins': [int(x) if range_int else float(x) for x in bins_boundaries],
+                'min': int(image_data.min()),
+                'max': int(image_data.max()),
+                'mean': float(image_data.mean()),
             }
             return histogram
 
