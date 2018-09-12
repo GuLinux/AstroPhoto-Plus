@@ -4,7 +4,7 @@ import { getSequencesGears } from '../Gear/selectors'
 
 const mapStateToProps = (state, ownProps) => {
     let gear = getSequencesGears(state)[ownProps.sequenceItem.sequence];
-    return { camera: gear.camera}
+    return { camera: gear.camera, hasFilterWheel: !!gear.filterWheel }
 }
 
 const ExposureSequenceItemContainer = connect(
