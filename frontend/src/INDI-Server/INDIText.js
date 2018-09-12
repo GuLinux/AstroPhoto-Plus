@@ -24,19 +24,11 @@ const CurrentValue = ({value, ...args}) => (
     />
 )
 
-const INDIText = ({value, isWriteable, displayValue, addPendingValues, hideCurrent}) => {
+const INDIText = ({value, editMode, displayValue, addPendingValues}) => {
     const onChange = text => addPendingValues({ [value.name]: text})
-    if(hideCurrent)
+    if(editMode)
         return <EditableInput label={value.label} value={displayValue} onChange={onChange} fluid />
-    if(!isWriteable)
-        return <CurrentValue label={value.label} value={value.value} fluid />
-    return <EditableInput
-        value={displayValue}
-        fluid
-        onChange={onChange}
-        action={<CurrentValue value={value.value} label={value.label} />}
-        actionPosition='left'
-        />
+    return <CurrentValue label={value.label} value={value.value} fluid />
 }
 
 

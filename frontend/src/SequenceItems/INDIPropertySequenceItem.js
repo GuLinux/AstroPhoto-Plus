@@ -53,7 +53,7 @@ class INDIPropertySequenceItem extends React.Component {
         let displayValues = this.state.sequenceItem.values
         let addPendingValues = (values) => this.setState({...this.state, sequenceItem: {...this.state.sequenceItem, values: {...this.state.sequenceItem.values, ...values} } });
         return property.values.map( (value, index) => {
-            let props = { key: index, value, property, displayValue: displayValues[value.name], isWriteable: true, addPendingValues, hideCurrent: true }
+            let props = { key: index, value, property, displayValue: displayValues[value.name], addPendingValues, editMode: true }
             switch(property.type) {
                 case 'switch':
                     return <INDISwitch {...props} />;
