@@ -28,8 +28,8 @@ const canEdit = (state, sequence) => {
 
 const mapDispatchToProps = (dispatch, props) => ({
     startSequence: (sequence) => dispatch(Actions.Sequences.start(sequence)),
-    onCreateSequenceItem: (type, sequenceId) => {
-        dispatch(Actions.SequenceItems.newPending(type, sequenceId));
+    onCreateSequenceJob: (type, sequenceId) => {
+        dispatch(Actions.SequenceJobs.newPending(type, sequenceId));
     },
     onMount: (items) => dispatch(Actions.Navigation.setRightMenu(items)),
     onUnmount: () => dispatch(Actions.Navigation.resetRightMenu()),
@@ -39,7 +39,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     ...stateProps,
     ...ownProps,
     ...dispatchProps,
-    onCreateSequenceItem: type => dispatchProps.onCreateSequenceItem(type, stateProps.sequence.id),
+    onCreateSequenceJob: type => dispatchProps.onCreateSequenceJob(type, stateProps.sequence.id),
     startSequence: () => dispatchProps.startSequence(stateProps.sequence),
 })
 

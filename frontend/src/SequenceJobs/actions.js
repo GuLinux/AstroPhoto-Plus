@@ -1,7 +1,7 @@
 import {  moveSequenceItemAPI, updateSequenceItemAPI, createSequenceItemAPI, deleteSequenceItemAPI, duplicateSequenceItemAPI } from '../middleware/api'
 import Actions from '../actions'
 
-export const SequenceItems = {
+export const SequenceJobs = {
     newPending: (itemType, sequenceID) => ({
         type: 'NEW_SEQUENCE_ITEM',
         itemType,
@@ -17,7 +17,7 @@ export const SequenceItems = {
         }
     },
 
-    saveSequenceItem: (sequenceItem,onSaved) => dispatch => {
+    saveSequenceJob: (sequenceItem,onSaved) => dispatch => {
         dispatch({type: 'REQUEST_SAVE_SEQUENCE_ITEM', sequenceItem});
 
         let onError = response => {
@@ -30,7 +30,7 @@ export const SequenceItems = {
         }
 
         let onSuccess = (data, wasCreated) => {
-            SequenceItems.updated(dispatch, sequenceItem.sequence, data, wasCreated)
+            SequenceJobs.updated(dispatch, sequenceItem.sequence, data, wasCreated)
             onSaved();
         }
 
@@ -43,7 +43,7 @@ export const SequenceItems = {
 
     delete: (sequenceItem) => dispatch => {
         dispatch({type: 'REQUEST_DELETE_SEQUENCE_ITEM', sequenceItem});
-        return deleteSequenceItemAPI(dispatch, sequenceItem.sequence, sequenceItem.id, (data) => SequenceItems.deleted(dispatch, sequenceItem));
+        return deleteSequenceItemAPI(dispatch, sequenceItem.sequence, sequenceItem.id, (data) => SequenceJobs.deleted(dispatch, sequenceItem));
     },
 
     deleted: (dispatch, sequenceItem) => {
@@ -63,4 +63,4 @@ export const SequenceItems = {
 
 }
 
-export default SequenceItems;
+export default SequenceJobs;

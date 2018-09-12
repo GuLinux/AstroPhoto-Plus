@@ -1,5 +1,5 @@
 import Sequences from './Sequences/actions';
-import SequenceItems from './SequenceItems/actions';
+import SequenceJobs from './SequenceJobs/actions';
 import INDIServer from './INDI-Server/actions';
 import Notifications from './Notifications/actions';
 import Gear from './Gear/actions';
@@ -13,7 +13,7 @@ import { fetchBackendVersion } from './middleware/api';
 
 export const Actions = {
     Sequences,
-    SequenceItems,
+    SequenceJobs,
     INDIServer,
     Notifications,
     Gear,

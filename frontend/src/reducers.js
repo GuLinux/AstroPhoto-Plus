@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import sequenceItems from './SequenceItems/reducer';
+import sequenceJobs from './SequenceJobs/reducer';
 import sequences from './Sequences/reducer';
 import indiserver from './INDI-Server/reducer';
 import notifications from './Notifications/reducer';
@@ -64,6 +64,7 @@ const version = (state = {}, action) => {
 }
 
 
-const indiLiteApp = combineReducers({version, sequenceItems, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation, commands});
+// TODO: rename sequenceItems
+const indiLiteApp = combineReducers({version, sequenceItems: sequenceJobs, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation, commands});
 
 export default indiLiteApp

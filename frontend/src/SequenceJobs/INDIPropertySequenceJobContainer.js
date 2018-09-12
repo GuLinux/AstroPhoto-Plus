@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { getDevicesProperties } from '../INDI-Server/selectors'
-import INDIPropertySequenceItem from './INDIPropertySequenceItem'
+import INDIPropertySequenceJob from './INDIPropertySequenceJob'
 
 const mapStateToProps = (state, ownProps) => {
     let propertiesMap = getDevicesProperties(state);
@@ -10,10 +10,10 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => ({})
 
-const INDIPropertySequenceItemContainer = connect(
+const INDIPropertySequenceJobContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(INDIPropertySequenceItem)
+)(INDIPropertySequenceJob)
 
-export default INDIPropertySequenceItemContainer 
+export default INDIPropertySequenceJobContainer 
 

@@ -1,23 +1,23 @@
 import React from 'react';
 import { Form, Label, Input, Divider } from 'semantic-ui-react';
 import { sanitizePath, secs2time } from '../utils'
-import SequenceItemButtonsContainer from './SequenceItemButtonsContainer'
+import SequenceJobButtonsContainer from './SequenceJobButtonsContainer'
 import { formatDecimalNumber } from '../utils';
 import { NumericInput } from '../components/NumericInput';
 
-class ExposureSequenceItem extends React.Component {
+class ExposureSequenceJob extends React.Component {
     constructor(props) {
         super(props)
-        this.initialSequenceItem =
+        this.initialSequenceJob =
         this.state = {
-            sequenceItem: this.initialValues(),
+            sequenceJob: this.initialValues(),
             shootingParamsChangesSequence: ['count', 'exposure'],
             validation: {}
         }
     }
 
     initialValues() {
-        let values = {filename: '{exposure}-{number:04}.fits', directory: '', count: '', exposure: '', globalExposure: '', ...this.props.sequenceItem}
+        let values = {filename: '{exposure}-{number:04}.fits', directory: '', count: '', exposure: '', globalExposure: '', ...this.props.sequenceJob}
         if(this.props.hasFilterWheel) {
             values.filename = '{filter}-' + values.filename;
         }
@@ -28,20 +28,20 @@ class ExposureSequenceItem extends React.Component {
 
     isChanged() {
         return ['filename', 'directory', 'count', 'exposure', 'globalExposure']
-            .map(f => this.state.sequenceItem[f] !== this.initialValues()[f])
+            .map(f => this.state.sequenceJob[f] !== this.initialValues()[f])
             .reduce( (isChanged, current) => isChanged || current, false)
     }
 
-    buildSequenceItemState(options) {
-        return {...this.state, sequenceItem: {...this.state.sequenceItem, ...options}};
+    buildSequenceJobState(options) {
+        return {...this.state, sequenceJob: {...this.state.sequenceJob, ...options}};
     }
 
     onFilenameChanged(filename) {
-        this.validate(this.buildSequenceItemState({filename: sanitizePath(filename)}))
+        this.validate(this.buildSequenceJobState({filename: sanitizePath(filename)}))
     }
 
     onDirectoryChanged(directory) {
-        this.validate(this.buildSequenceItemState({directory: sanitizePath(directory) }))
+        this.validate(this.buildSequenceJobState({directory: sanitizePath(directory) }))
     }
 
     onCountChanged(count) {
@@ -67,31 +67,31 @@ class ExposureSequenceItem extends React.Component {
         const exposureValue = exposureProperty.values[0];
         const { min, max } = exposureValue;
 
-        let newState = this.buildSequenceItemState({[key]: value});
+        let newState = this.buildSequenceJobState({[key]: value});
         let shootingParamsChangesSequence = [key, ...this.state.shootingParamsChangesSequence];
-        shootingParamsChangesSequence = shootingParamsChangesSequence.filter( (key, index) => index === shootingParamsChangesSequence.indexOf(key) && newState.sequenceItem[key] > 0);
+        shootingParamsChangesSequence = shootingParamsChangesSequence.filter( (key, index) => index === shootingParamsChangesSequence.indexOf(key) && newState.sequenceJob[key] > 0);
         if(shootingParamsChangesSequence.length > 1) {
             let changedParams = shootingParamsChangesSequence.slice(0, 2);
             if(changedParams.includes('count') && changedParams.includes('exposure'))
-                newState.sequenceItem.globalExposure = newState.sequenceItem.count * newState.sequenceItem.exposure;
+                newState.sequenceJob.globalExposure = newState.sequenceJob.count * newState.sequenceJob.exposure;
             if(changedParams.includes('globalExposure') && changedParams.includes('exposure')) {
-                newState.sequenceItem.count= newState.sequenceItem.globalExposure / newState.sequenceItem.exposure;
+                newState.sequenceJob.count= newState.sequenceJob.globalExposure / newState.sequenceJob.exposure;
             }
             if(changedParams.includes('count') && changedParams.includes('globalExposure'))
-                newState.sequenceItem.exposure = newState.sequenceItem.globalExposure / newState.sequenceItem.count;
+                newState.sequenceJob.exposure = newState.sequenceJob.globalExposure / newState.sequenceJob.count;
         }
-        newState.sequenceItem.count = Math.max(1, parseInt(newState.sequenceItem.count));
-        newState.sequenceItem.exposure = Math.min(max, newState.sequenceItem.exposure);
-        newState.sequenceItem.exposure = Math.max(min, newState.sequenceItem.exposure);
-        newState.sequenceItem.globalExposure = newState.sequenceItem.count * newState.sequenceItem.exposure;
+        newState.sequenceJob.count = Math.max(1, parseInt(newState.sequenceJob.count));
+        newState.sequenceJob.exposure = Math.min(max, newState.sequenceJob.exposure);
+        newState.sequenceJob.exposure = Math.max(min, newState.sequenceJob.exposure);
+        newState.sequenceJob.globalExposure = newState.sequenceJob.count * newState.sequenceJob.exposure;
         this.validate({...newState, shootingParamsChangesSequence});
     }
 
     validate(state) {
         let validation = {
-            filename: !! state.sequenceItem.filename,
-            directory: !! state.sequenceItem.directory,
-            exposure: !! state.sequenceItem.count && !! state.sequenceItem.exposure && !! state.sequenceItem.globalExposure,
+            filename: !! state.sequenceJob.filename,
+            directory: !! state.sequenceJob.directory,
+            exposure: !! state.sequenceJob.count && !! state.sequenceJob.exposure && !! state.sequenceJob.globalExposure,
         }
         state = {...state, validation}
         this.setState(state)
@@ -116,7 +116,7 @@ class ExposureSequenceItem extends React.Component {
             <Form>
                 <Form.Input
                     type='text'
-                    value={this.state.sequenceItem.filename}
+                    value={this.state.sequenceJob.filename}
                     onChange={e => this.onFilenameChanged(e.target.value)}
                     placeholder='filename'
                     label='Filename' />
@@ -138,7 +138,7 @@ class ExposureSequenceItem extends React.Component {
                     type='text'
                     label='Directory'
                     placeholder='directory'
-                    value={this.state.sequenceItem.directory}
+                    value={this.state.sequenceJob.directory}
                     onChange={ e => this.onDirectoryChanged(e.target.value)}
                 />
                 <Label size='tiny'>Directory for this sequence</Label>
@@ -148,7 +148,7 @@ class ExposureSequenceItem extends React.Component {
                     <label>Count</label>
                     <NumericInput
                         placeholder='count'
-                        value={this.state.sequenceItem.count}
+                        value={this.state.sequenceJob.count}
                         min={1}
                         step={1}
                         parse={v => v === '' ? '' : parseInt(v)}
@@ -163,9 +163,9 @@ class ExposureSequenceItem extends React.Component {
                 <Form.Field>
                     <label>Exposure</label>
                     <NumericInput
-                        label={{basic: true, content: this.renderTime(this.state.sequenceItem.exposure)}}
+                        label={{basic: true, content: this.renderTime(this.state.sequenceJob.exposure)}}
                         placeholder='exposure'
-                        value={this.state.sequenceItem.exposure}
+                        value={this.state.sequenceJob.exposure}
                         min={exposureValue.min}
                         max={exposureValue.max}
                         step={exposureValue.step}
@@ -185,19 +185,19 @@ class ExposureSequenceItem extends React.Component {
                         step={exposureValue.step}
                         format={v => v === '' ? '' : formatDecimalNumber(exposureValue.format, v)}
                         parse={v => parseFloat(v)}
-                        label={{basic: true, content: this.renderTime(this.state.sequenceItem.globalExposure)}}
+                        label={{basic: true, content: this.renderTime(this.state.sequenceJob.globalExposure)}}
                         placeholder='exposure'
-                        value={this.state.sequenceItem.globalExposure}
+                        value={this.state.sequenceJob.globalExposure}
                         onChange={v => this.onGlobalExposureChanged(v)}
                     />
                 </Form.Field>
                 <Label size='tiny'>Total exposure time for this sequence</Label>
 
                 <Divider section />
-                <SequenceItemButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceItem={this.state.sequenceItem} />
+                <SequenceJobButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceJob={this.state.sequenceJob} />
             </Form>
         );
     }
 }
 
-export default ExposureSequenceItem;
+export default ExposureSequenceJob;
