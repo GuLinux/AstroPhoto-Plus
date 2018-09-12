@@ -69,7 +69,8 @@ export class NumericInput extends React.Component {
                 className='indi-number'
                 value={this.value()}
                 onChange={(e, data) => this.onChange(data)}
-                type='text' {...args}
+                type='text'
+                {...args}
                 action={ step && !args.readOnly && (
                     <Button.Group vertical size='mini' className='number-steps'>
                         <Button icon='caret up' onClick={() => this.step(+1)} />

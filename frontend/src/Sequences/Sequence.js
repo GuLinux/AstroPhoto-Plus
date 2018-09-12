@@ -7,7 +7,7 @@ import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContaine
 import INDILight from '../INDI-Server/INDILight';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import PRINTJ from 'printj'
+import { formatDecimalNumber } from '../utils';
 import LastCapturedSequenceImageContainer from './LastCapturedSequenceImageContainer';
 import NotFoundPage from '../components/NotFoundPage';
 import { secs2time } from '../utils';
@@ -88,7 +88,7 @@ const CameraDetailsPage = ({camera}) => {
                             { camera.exposureProperty && (
                             <React.Fragment>
                                 <Label content='Current exposure: ' basic/>
-                                <Label content={PRINTJ.sprintf(camera.exposureProperty.values[0].format, camera.exposureProperty.values[0].value)} />
+                                <Label content={formatDecimalNumber(camera.exposureProperty.values[0].format, camera.exposureProperty.values[0].value)} />
                                 <INDILight state={camera.exposureProperty.state } />
                             </React.Fragment>
                             )}

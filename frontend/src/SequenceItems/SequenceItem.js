@@ -1,5 +1,5 @@
 import React from 'react';
-import ExposureSequenceItem from './ExposureSequenceItem'
+import ExposureSequenceItemContainer from './ExposureSequenceItemContainer'
 import CommandSequenceItem from './CommandSequenceItem'
 import FilterSequenceItemContainer from './FilterSequenceItemContainer'
 import INDIPropertySequenceItemContainer from './INDIPropertySequenceItemContainer'
@@ -8,7 +8,7 @@ import { Redirect } from 'react-router';
 const mapItemType = (sequenceItem) => {
     switch(sequenceItem.type) {
         case 'shots':
-            return <ExposureSequenceItem sequenceItem={sequenceItem} />;
+            return <ExposureSequenceItemContainer sequenceItem={sequenceItem} />;
         case 'filter':
             return <FilterSequenceItemContainer sequenceItem={sequenceItem} />;
         case 'command':

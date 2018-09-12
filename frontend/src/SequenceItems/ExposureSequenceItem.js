@@ -2,6 +2,8 @@ import React from 'react';
 import { Form, Label, Input, Divider } from 'semantic-ui-react';
 import { sanitizePath, secs2time } from '../utils'
 import SequenceItemButtonsContainer from './SequenceItemButtonsContainer'
+import { formatDecimalNumber } from '../utils';
+import { NumericInput } from '../components/NumericInput';
 
 class ExposureSequenceItem extends React.Component {
     constructor(props) {
@@ -58,6 +60,10 @@ class ExposureSequenceItem extends React.Component {
     }
 
     updateShootingParams(key, value) {
+        const { exposureProperty } = this.props.camera;
+        const exposureValue = exposureProperty.values[0];
+        const { min, max } = exposureValue;
+
         let newState = this.buildSequenceItemState({[key]: value});
         let shootingParamsChangesSequence = [key, ...this.state.shootingParamsChangesSequence];
         shootingParamsChangesSequence = shootingParamsChangesSequence.filter( (key, index) => index === shootingParamsChangesSequence.indexOf(key) && newState.sequenceItem[key] > 0);
@@ -65,11 +71,16 @@ class ExposureSequenceItem extends React.Component {
             let changedParams = shootingParamsChangesSequence.slice(0, 2);
             if(changedParams.includes('count') && changedParams.includes('exposure'))
                 newState.sequenceItem.globalExposure = newState.sequenceItem.count * newState.sequenceItem.exposure;
-            if(changedParams.includes('globalExposure') && changedParams.includes('exposure'))
+            if(changedParams.includes('globalExposure') && changedParams.includes('exposure')) {
                 newState.sequenceItem.count= newState.sequenceItem.globalExposure / newState.sequenceItem.exposure;
+            }
             if(changedParams.includes('count') && changedParams.includes('globalExposure'))
                 newState.sequenceItem.exposure = newState.sequenceItem.globalExposure / newState.sequenceItem.count;
         }
+        newState.sequenceItem.count = Math.max(1, parseInt(newState.sequenceItem.count));
+        newState.sequenceItem.exposure = Math.min(max, newState.sequenceItem.exposure);
+        newState.sequenceItem.exposure = Math.max(min, newState.sequenceItem.exposure);
+        newState.sequenceItem.globalExposure = newState.sequenceItem.count * newState.sequenceItem.exposure;
         this.validate({...newState, shootingParamsChangesSequence});
     }
 
@@ -96,6 +107,8 @@ class ExposureSequenceItem extends React.Component {
     }
 
     render() {
+        const { exposureProperty } = this.props.camera;
+        const exposureValue = exposureProperty.values[0];
         return (
             <Form>
                 <Form.Input
@@ -128,28 +141,34 @@ class ExposureSequenceItem extends React.Component {
                 <Label size='tiny'>Directory for this sequence</Label>
                 <Divider hidden />
 
-                <Form.Input
-                    type='number'
-                    label='Count'
-                    placeholder='count'
-                    value={this.state.sequenceItem.count}
-                    min={1}
-                    step={1}
-                    onChange={e => this.onCountChanged(e.target.value)}
+                <Form.Field>
+                    <label>Count</label>
+                    <NumericInput
+                        placeholder='count'
+                        value={this.state.sequenceItem.count}
+                        min={1}
+                        step={1}
+                        parse={v => v === '' ? '' : parseInt(v)}
+                        format={v => v.toString()}
+                        onChange={v => this.onCountChanged(v)}
                 />
+                </Form.Field>
                 <Label size='tiny'>Number of shots in this sequence item</Label>
                 <Divider hidden />
 
 
                 <Form.Field>
                     <label>Exposure</label>
-                    <Input
-                        type='number'
+                    <NumericInput
                         label={{basic: true, content: this.renderTime(this.state.sequenceItem.exposure)}}
                         placeholder='exposure'
                         value={this.state.sequenceItem.exposure}
-                        min={0}
-                        onChange={e => this.onExposureChanged(e.target.value)}
+                        min={exposureValue.min}
+                        max={exposureValue.max}
+                        step={exposureValue.step}
+                        format={v => v === '' ? '' : formatDecimalNumber(exposureValue.format, v)}
+                        parse={v => parseFloat(v)}
+                        onChange={v => this.onExposureChanged(v)}
                     />
                 </Form.Field>
                 <Label size='tiny'>Exposure for each shot in seconds</Label>
@@ -158,13 +177,15 @@ class ExposureSequenceItem extends React.Component {
 
                 <Form.Field>
                     <label>Total Exposure</label>
-                    <Input
-                        type='number'
+                    <NumericInput
+                        min={exposureValue.min}
+                        step={exposureValue.step}
+                        format={v => v === '' ? '' : formatDecimalNumber(exposureValue.format, v)}
+                        parse={v => parseFloat(v)}
                         label={{basic: true, content: this.renderTime(this.state.sequenceItem.globalExposure)}}
                         placeholder='exposure'
                         value={this.state.sequenceItem.globalExposure}
-                        min={0}
-                        onChange={e => this.onGlobalExposureChanged(e.target.value)}
+                        onChange={v => this.onGlobalExposureChanged(v)}
                     />
                 </Form.Field>
                 <Label size='tiny'>Total exposure time for this sequence</Label>
