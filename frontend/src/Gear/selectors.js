@@ -2,7 +2,6 @@ import { getDeviceEntities, getDevicesProperties, getDevicesConnectionState } fr
 import { createSelector } from 'reselect'
 
 export const getSequences = state => state.sequences;
-export const getSequenceItems = state => state.sequenceItems;
 
 export const getGear = state => state.gear
 

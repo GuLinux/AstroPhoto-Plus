@@ -1,24 +1,24 @@
 from models import random_id
 from errors import NotFoundError, BadRequestError
-from .sequence_item import SequenceItem
+from .sequence_job import SequenceJob
 import os
 from app import logger
 
 class Sequence:
-    def __init__(self, name, upload_path, camera, filter_wheel=None, id=None, sequence_items=None, status=None):
+    def __init__(self, name, upload_path, camera, filter_wheel=None, id=None, sequence_jobs=None, status=None):
         self.name = name
         self.upload_path = upload_path
         self.camera = camera
         self.filter_wheel = filter_wheel
         self.id = random_id(id)
-        self.sequence_items = sequence_items if sequence_items else []
+        self.sequence_jobs = sequence_jobs if sequence_jobs else []
         self.status = status if status else 'idle'
-        self.running_sequence_item = None
+        self.running_sequence_job = None
 
-    def item(self, sequence_item_id):
-        sequence_item = [x for x in self.sequence_items if x.id == sequence_item_id]
-        if sequence_item:
-            return sequence_item[0]
+    def job(self, sequence_job_id):
+        sequence_job = [x for x in self.sequence_jobs if x.id == sequence_job_id]
+        if sequence_job:
+            return sequence_job[0]
         raise NotFoundError()
 
     def update(self, json):
@@ -35,15 +35,15 @@ class Sequence:
             map_object['camera'],
             map_object['filterWheel'],
             id=map_object['id'],
-            sequence_items=[SequenceItem.from_map(x) for x in map_object['sequenceItems']],
+            sequence_jobs=[SequenceJob.from_map(x) for x in map_object['sequenceJobs']],
             status=map_object['status']
         )
 
     @staticmethod
     def import_from_data(data):
         data['id'] = random_id()
-        for item in data['sequenceItems']:
-            item['id'] = random_id()
+        for job in data['sequenceJobs']:
+            job['id'] = random_id()
         return Sequence.from_map(data)
 
     def to_map(self):
@@ -53,7 +53,7 @@ class Sequence:
             'camera': self.camera,
             'filterWheel': self.filter_wheel,
             'directory': self.upload_path,
-            'sequenceItems': [x.to_map() for x in self.sequence_items],
+            'sequenceJobs': [x.to_map() for x in self.sequence_jobs],
             'status': self.status,
         }
 
@@ -62,25 +62,25 @@ class Sequence:
 
     def duplicate(self):
         new_sequence = Sequence(self.name + ' (copy)', self.upload_path + ' (copy)', self.camera, self.filter_wheel)
-        for item in self.sequence_items:
-            new_sequence.sequence_items.append(item.duplicate())
+        for job in self.sequence_jobs:
+            new_sequence.sequence_jobs.append(job.duplicate())
 
         return new_sequence
 
     def stop(self, on_update=None):
-        if not self.is_running() or not self.running_sequence_item:
+        if not self.is_running() or not self.running_sequence_job:
             raise BadRequestError('Sequence not running')
         self.status = 'stopped'
-        self.running_sequence_item.stop()
+        self.running_sequence_job.stop()
         if on_update:
             on_update()
 
 
     def reset(self):
-        for sequence_item in self.sequence_items:
+        for sequence_job in self.sequence_jobs:
             self.status = 'idle'
-            logger.debug('resetting sequence item {}'.format(sequence_item))
-            sequence_item.reset()
+            logger.debug('resetting sequence job {}'.format(sequence_job))
+            sequence_job.reset()
 
     def run(self, server, root_directory, event_listener, logger, on_update=None):
         camera = [c for c in server.cameras() if c.id == self.camera]
@@ -102,22 +102,22 @@ class Sequence:
 
         self.status = 'starting'
 
-        for sequence_item in self.sequence_items:
-            if self.is_todo(sequence_item) and sequence_item.status != 'stopped':
-                logger.debug('resetting sequence item {}'.format(sequence_item))
-                sequence_item.reset()
+        for sequence_job in self.sequence_jobs:
+            if self.is_todo(sequence_job) and sequence_job.status != 'stopped':
+                logger.debug('resetting sequence job {}'.format(sequence_job))
+                sequence_job.reset()
 
         on_update()
         try:
             os.makedirs(sequence_root_path, exist_ok=True)
 
             self.status = 'running'
-            for index, sequence_item in enumerate(self.sequence_items):
+            for index, sequence_job in enumerate(self.sequence_jobs):
                 if self.status == 'stopped':
                     return
-                if self.is_todo(sequence_item):
-                    self.running_sequence_item = sequence_item
-                    sequence_item.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
+                if self.is_todo(sequence_job):
+                    self.running_sequence_job = sequence_job
+                    sequence_job.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
             self.status = 'finished'
             on_update()
         except Exception as e:
@@ -126,8 +126,8 @@ class Sequence:
             on_update()
             raise e
         finally:
-            self.running_sequence_item = None
+            self.running_sequence_job = None
 
-    def is_todo(self, sequence_item):
-        return sequence_item.status != 'finished'
+    def is_todo(self, sequence_job):
+        return sequence_job.status != 'finished'
 

@@ -3,23 +3,23 @@ import Actions from '../actions'
 
 export const Sequences = {
 
-    receive: (sequences, ids, sequenceItems) => ({
+    receive: (sequences, ids, sequenceJobs) => ({
         type: 'RECEIVE_SEQUENCES',
         sequences,
         ids,
-        sequenceItems
+        sequenceJobs
     }),
 
-    created: (sequences, id, sequenceItems) => ({
+    created: (sequences, id, sequenceJobs) => ({
         type: 'SEQUENCE_CREATED',
         sequence: sequences[id],
-        sequenceItems
+        sequenceJobs
     }),
 
-    modified: (sequences, id, sequenceItems) => ({
+    modified: (sequences, id, sequenceJobs) => ({
         type: 'SEQUENCE_MODIFIED',
         sequence: sequences[id],
-        sequenceItems
+        sequenceJobs
     }),
 
 
@@ -89,7 +89,7 @@ console.log(data);
         return dispatch => {
             dispatch({type: 'DUPLICATE_SEQUENCE_REQUESTED', sequence});
             return duplicateSequenceAPI(dispatch, sequence, data => {
-                dispatch(Sequences.created(data.entities.sequences, data.result, data.entities.sequenceItems));
+                dispatch(Sequences.created(data.entities.sequences, data.result, data.entities.sequenceJobs));
             });
         }
     },
@@ -100,7 +100,7 @@ console.log(data);
         return dispatch => {
             dispatch({type: 'REQUEST_SEQUENCES'});
             return fetchSequencesAPI( dispatch, data => {
-                dispatch(Sequences.receive(data.entities.sequences, data.result, data.entities.sequenceItems));
+                dispatch(Sequences.receive(data.entities.sequences, data.result, data.entities.sequenceJobs));
             });
         }
     },
@@ -127,7 +127,7 @@ console.log(data);
         return dispatch => {
             dispatch({type: 'REQUEST_IMPORT_SEQUENCE'});
             return importSequenceAPI( dispatch, sequenceData, data => {
-                dispatch(Sequences.created(data.entities.sequences, data.result, data.entities.sequenceItems));
+                dispatch(Sequences.created(data.entities.sequences, data.result, data.entities.sequenceJobs));
             });
         }
     },

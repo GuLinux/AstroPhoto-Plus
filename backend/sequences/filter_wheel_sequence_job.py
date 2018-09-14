@@ -1,7 +1,7 @@
 from app import logger
 
 
-class FilterWheelSequenceItem:
+class FilterWheelSequenceJob:
     def __init__(self, data):
         self.filter_number = data.get('filterNumber')
        

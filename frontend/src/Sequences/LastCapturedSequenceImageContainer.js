@@ -1,20 +1,20 @@
 import { connect } from 'react-redux';
 import LastCapturedSequenceImage from './LastCapturedSequenceImage';
-import { getSequenceEntitiesWithItems } from './selectors';
+import { getSequenceEntitiesWithJobs } from './selectors';
 import { imageUrlBuilder } from '../utils';
 import Actions from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
-    const sequenceEntity = getSequenceEntitiesWithItems(state)[ownProps.sequence];
+    const sequenceEntity = getSequenceEntitiesWithJobs(state)[ownProps.sequence];
     const showLastImage = state.sequences.showLastImage;
 
     if(! sequenceEntity) {
         return { showLastImage };
     }
-    const images = sequenceEntity.sequenceItems
-        .map(i => sequenceEntity.sequenceItemEntities[i])
+    const images = sequenceEntity.sequenceJobs
+        .map(i => sequenceEntity.sequenceJobEntities[i])
         .filter(i => i.type === 'shots' && i.saved_images)
-        .map(i => ({ sequenceItem: i.id, savedImages: i.saved_images}) )
+        .map(i => ({ sequenceJob: i.id, savedImages: i.saved_images}) )
         .reduce( (acc, cur) => [...acc, ...cur.savedImages], []);
 
     const type = 'main';

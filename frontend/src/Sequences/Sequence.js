@@ -1,6 +1,6 @@
 import React from 'react';
-import AddSequenceItemModal from '../SequenceItems/AddSequenceItemModal'
-import SequenceItemsContainer from '../SequenceItems/SequenceItemsContainer';
+import AddSequenceJobModal from '../SequenceJobs/AddSequenceJobModal'
+import SequenceJobsContainer from '../SequenceJobs/SequenceJobsContainer';
 import { Table, Label, Container, Header, Card, Icon } from 'semantic-ui-react';
 import { canStart } from './model';
 import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
@@ -29,9 +29,9 @@ const DeviceCardHeader = ({device}) => {
 }
 
 
-const ExposuresPage = ({sequenceItems, sequenceItemEntities}) => {
-    const exposureSequenceItems = sequenceItems.map(s => sequenceItemEntities[s]).filter(s => s.type === 'shots');
-    const remapped = exposureSequenceItems.map(s => ({
+const ExposuresPage = ({sequenceJobs, sequenceJobEntities}) => {
+    const exposureSequenceJobs = sequenceJobs.map(s => sequenceJobEntities[s]).filter(s => s.type === 'shots');
+    const remapped = exposureSequenceJobs.map(s => ({
         count: s.count,
         shot: s.progress,
         remaining: s.count - s.progress,
@@ -45,7 +45,7 @@ const ExposuresPage = ({sequenceItems, sequenceItemEntities}) => {
             <Card.Content>
                     <Icon name='camera' style={{float: 'right'}} />
                     <Card.Header size='medium'>Exposures</Card.Header>
-                    <Card.Meta>{exposureSequenceItems.length} sequences</Card.Meta>
+                    <Card.Meta>{exposureSequenceJobs.length} sequences</Card.Meta>
                     <Card.Description>
                         <Table definition basic compact='very' size='small'>
                             <Table.Body>
@@ -122,9 +122,9 @@ const FilterWheelDetailsPage = ({filterWheel, filterNumber, filterName}) => {
     )
 }
 
-const AddSequenceItem = withRouter( ({history, onCreateSequenceItem, sequenceId, trigger, hasFilterWheel}) => (
-    <AddSequenceItemModal trigger={trigger} hasFilterWheel={hasFilterWheel} onAddSequenceItem={(...args) => {
-        onCreateSequenceItem(...args);
+const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, trigger, hasFilterWheel}) => (
+    <AddSequenceJobModal trigger={trigger} hasFilterWheel={hasFilterWheel} onAddSequenceJob={(...args) => {
+        onCreateSequenceJob(...args);
         history.push('/sequences/' + sequenceId + '/items/pending')
     }} />
 ))
@@ -136,11 +136,11 @@ class Sequence extends React.Component {
         if(sequence === null)
             return;
         onMount({
-            section: 'Sequences Items',
+            section: 'Sequence Jobs',
             navItems: [
                 { icon: 'play', onClick: () => startSequence(), disabled: !canStart(sequence, gear), content: 'start' },
-                { openModal: AddSequenceItem, modalProps: {
-                        onCreateSequenceItem: this.props.onCreateSequenceItem,
+                { openModal: AddSequenceJob, modalProps: {
+                        onCreateSequenceJob: this.props.onCreateSequenceJob,
                         sequenceId: sequence.id,
                         hasFilterWheel: sequence.filterWheel && sequence.filterWheel !== 'none',
                     },
@@ -169,10 +169,10 @@ class Sequence extends React.Component {
             <Header size="medium">{sequence.name}</Header>
 
 
-            <SequenceItemsContainer canEdit={canEdit} sequenceId={sequence.id} />
+            <SequenceJobsContainer canEdit={canEdit} sequenceId={sequence.id} />
 
             <Card.Group>
-                <ExposuresPage sequenceItems={sequence.sequenceItems} sequenceItemEntities={sequence.sequenceItemEntities} />
+                <ExposuresPage sequenceJobs={sequence.sequenceJobs} sequenceJobEntities={sequence.sequenceJobEntities} />
                 <CameraDetailsPage camera={camera} />
                 <FilterWheelDetailsPage filterWheel={filterWheel} />
             </Card.Group>

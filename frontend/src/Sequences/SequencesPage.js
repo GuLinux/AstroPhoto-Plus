@@ -1,8 +1,8 @@
 import React from 'react';
 import SequenceContainer from './SequenceContainer';
-import SequenceItemContainer from '../SequenceItems/SequenceItemContainer';
+import SequenceJobContainer from '../SequenceJobs/SequenceJobContainer';
 import SequencesListContainer from './SequencesListContainer';
-import ImagesContainer from '../SequenceItems/ImagesContainer';
+import ImagesContainer from '../SequenceJobs/ImagesContainer';
 import { Route } from "react-router";
 import { Container } from 'semantic-ui-react'
 
@@ -13,11 +13,11 @@ const SequencesPage = () => (
             ({match}) => <SequenceContainer sequenceId={match.params.id} />
         } />
         <Route path="/sequences/:id/items/:itemId" exact={true} render={
-            ({match}) => <SequenceItemContainer sequenceItemId={match.params.itemId} />
+            ({match}) => <SequenceJobContainer sequenceJobId={match.params.itemId} />
         } />
 
         <Route path="/sequences/:id/items/:itemId/images" exact={true} render={
-            ({match}) => <ImagesContainer sequenceItem={match.params.itemId} />
+            ({match}) => <ImagesContainer sequenceJob={match.params.itemId} />
         } />
 
     </Container>

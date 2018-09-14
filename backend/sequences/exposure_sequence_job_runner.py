@@ -5,7 +5,7 @@ from app import logger
 from pyindi_sequence import INDIClient
 from queue import Queue
 import threading
-from errors import SequenceItemStatusError 
+from errors import SequenceJobStatusError 
 
 
 class SequenceCallbacks:
@@ -24,7 +24,7 @@ class SequenceCallbacks:
             callback(*args, **kwargs)
 
 
-class ExposureSequenceItemRunner:
+class ExposureSequenceJobRunner:
     def __init__(self, server, camera, exposure, count, upload_path, progress=0, filename_template='{name}_{exposure}s_{number:04}.fits', filename_template_params={}, **kwargs):
         self.camera = camera
         self.count = count
@@ -67,7 +67,7 @@ class ExposureSequenceItemRunner:
                 if self.stopped:
                     self.callbacks.run('on_stopped', self, sequence)
                     shots_queue.put({'type': 'stopped'})
-                    raise SequenceItemStatusError('stopped', 'Exposure sequence job stopped')
+                    raise SequenceJobStatusError('stopped', 'Exposure sequence job stopped')
 
                 if self.error:
                     self.finished = self.error[1] -1
@@ -201,7 +201,7 @@ class ExposureSequenceItemRunner:
         return self.next_index - 1
 
     def __str__(self):
-        return 'ExposureSequenceItemRunner: {0} {1}s exposure (total exp time: {2}s), start index: {3}'.format(self.count,
+        return 'ExposureSequenceJobRunner: {0} {1}s exposure (total exp time: {2}s), start index: {3}'.format(self.count,
                                                                                                  self.exposure,
                                                                                                  self.total_seconds,
                                                                                                  self.start_index)
