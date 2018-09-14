@@ -4,7 +4,7 @@ import { ModalDialog } from '../Modals/ModalDialog'
 
 const AddSequenceJobModal = ({onAddSequenceJob, trigger, hasFilterWheel}) => (
     <ModalDialog trigger={trigger} basic size='small' centered={false}>
-        <Modal.Header>Add new sequence element</Modal.Header>
+        <Modal.Header>Add new sequence job</Modal.Header>
         <Modal.Content>
             <Menu vertical fluid>
                 <Menu.Header>Sequence item type</Menu.Header>
