@@ -38,7 +38,7 @@ class SequencesList extends React.Component {
                         <Table.Row>
                             <Table.HeaderCell><Label content='Name' /></Table.HeaderCell>
                             <Table.HeaderCell><Label content='Gear' /></Table.HeaderCell>
-                            <Table.HeaderCell><Label content='Sequence Jobs'/></Table.HeaderCell>
+                            <Table.HeaderCell><Label content='Jobs'/></Table.HeaderCell>
                             <Table.HeaderCell><Label content='State'/></Table.HeaderCell>
                             <Table.HeaderCell><Label content='Action' /></Table.HeaderCell>
                         </Table.Row>
