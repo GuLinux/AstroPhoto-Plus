@@ -14,10 +14,10 @@ export const INDIService = {
 
     selectProfile: id => ({ type: 'SELECTED_INDI_PROFILE', id}),
 
-    addProfile: (name, devices) => {
+    addProfile: (name, drivers) => {
         return dispatch => {
             dispatch({type: 'FETCH_ADD_PROFILE'});
-            return addINDIProfileAPI(dispatch, {name, devices}, data => {
+            return addINDIProfileAPI(dispatch, {name, drivers}, data => {
                 dispatch({type: 'INDI_SERVICE_PROFILE_ADDED', data})
             });
         }
@@ -30,10 +30,10 @@ export const INDIService = {
         }
     },
 
-    updateProfile: (id, name, devices) => {
+    updateProfile: (id, name, drivers) => {
         return dispatch => {
             dispatch({type: 'FETCH_UPDATE_PROFILE'});
-            return updateINDIProfileAPI(dispatch, {id, name, devices}, data => {
+            return updateINDIProfileAPI(dispatch, {id, name, drivers}, data => {
                 dispatch(INDIService.fetchProfiles())
             })
         }
@@ -67,10 +67,10 @@ export const INDIService = {
 
     dismissError: () => ({ type: 'INDI_SERVICE_DISMISS_ERROR' }),
 
-    startService: (devices) => {
+    startService: (drivers) => {
         return dispatch => {
             dispatch({type: 'FETCH_START_INDI_SERVICE'});
-            return startINDIServiceAPI(dispatch, devices, data => {}, error => {
+            return startINDIServiceAPI(dispatch, drivers, data => {}, error => {
                 if(error.status === 400) {
                     error.json().then(t => dispatch(Actions.Notifications.add('INDI Service', `Error starting INDI Service: ${t.error_message}`, 'error')))
                     dispatch({ type: 'INDI_SERVICE_ERROR_STARTING'})

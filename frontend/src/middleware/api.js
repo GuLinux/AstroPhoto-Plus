@@ -162,9 +162,9 @@ export const setINDIValuesAPI = (dispatch, device, property, pendingValues, onSu
     }, onSuccess);
 
 export const getINDIServiceAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/indi_service', {}, onSuccess);
-export const startINDIServiceAPI = (dispatch, devices, onSuccess, onError) => fetchJSON(dispatch, '/api/indi_service/start', {
+export const startINDIServiceAPI = (dispatch, drivers, onSuccess, onError) => fetchJSON(dispatch, '/api/indi_service/start', {
         method: 'POST',
-        body: JSON.stringify({ devices }),
+        body: JSON.stringify({ drivers }),
         headers: {
             'Content-Type': 'application/json'
         }

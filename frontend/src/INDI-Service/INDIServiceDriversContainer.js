@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import INDIServiceDevicesPage from './INDIServiceDevicesPage'
+import INDIServiceDriversPage from './INDIServiceDriversPage'
 import Actions from '../actions'
 
 import { getINDIServiceDrivers, getINDIServiceGroups } from './selectors'
@@ -16,9 +16,9 @@ const mapDispatchToProps = dispatch => ({
     toggleDriverSelection: (driver, selected) => dispatch(Actions.INDIService.toggleDriver(driver, selected))
 })
 
-const INDIServiceDevicesContainer = connect(
+const INDIServiceDriversContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(INDIServiceDevicesPage)
+)(INDIServiceDriversPage)
 
-export default INDIServiceDevicesContainer
+export default INDIServiceDriversContainer

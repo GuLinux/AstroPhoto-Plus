@@ -2,9 +2,9 @@ from models import random_id
 from errors import BadRequestError
 
 class INDIProfile:
-    def __init__(self, id=None, name='', devices=[]):
+    def __init__(self, id=None, name='', drivers=[]):
         self.name = name
-        self.devices = devices
+        self.drivers = drivers
         self.id = random_id(id)
 
     @staticmethod
@@ -15,15 +15,15 @@ class INDIProfile:
         return {
             'id': self.id,
             'name': self.name,
-            'devices': self.devices,
+            'drivers': self.drivers,
         }
 
     def update(self, data):
-        if 'name' not in data and 'devices' not in data:
-            raise BadRequestError('Invalid json: either name or devices must be specified')
+        if 'name' not in data and 'drivers' not in data:
+            raise BadRequestError('Invalid json: either name or drivers must be specified')
         if 'name' in data:
             self.name = data['name']
-        if 'devices' in data:
-            self.devices = data['devices']
+        if 'drivers' in data:
+            self.drivers = data['drivers']
 
 

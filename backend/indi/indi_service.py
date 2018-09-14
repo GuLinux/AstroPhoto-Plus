@@ -13,7 +13,7 @@ class INDIService:
         self.service = Service('indiserver', settings.indi_service_logs)
         self.groups = {}
         self.drivers = {}
-        self.devices_running = []
+        self.drivers_running = []
         if self.server_exists:
             self.__parse_drivers()
 
@@ -34,20 +34,20 @@ class INDIService:
         return {
             'is_running': self.service.is_running(),
             'is_error': self.service.is_error(),
-            'devices_enabled': self.devices_running,
+            'drivers_enabled': self.drivers_running,
         }
 
-    def start(self, devices):
+    def start(self, drivers):
         if not self.server_exists:
             raise RuntimeError('INDI Server not found in {}'.format(self.indi_prefix))
-        if not devices:
-            raise RuntimeError('Start called without devices')
+        if not drivers:
+            raise RuntimeError('Start called without drivers')
         if self.service.is_running():
             raise RuntimeError('Service is already running')
 
-        driver_binaries = [self.__binpath(self.drivers[device]['binary']) for device in devices]
-        self.service.start(self.indiserver_path, driver_binaries, on_started=lambda service: self.on_started(devices, service), on_exit=self.on_exit)
-        self.devices_running = devices
+        driver_binaries = [self.__binpath(self.drivers[driver]['binary']) for driver in drivers]
+        self.service.start(self.indiserver_path, driver_binaries, on_started=lambda service: self.on_started(drivers, service), on_exit=self.on_exit)
+        self.drivers_running = drivers
 
     def stop(self, *args, **kwargs):
         self.service.stop(*args, **kwargs)
@@ -76,13 +76,13 @@ class INDIService:
         if not name in self.groups:
             self.groups[name] = { 'name': name, 'drivers': [] }
 
-        for device in group:
-            driver = self.__parse_device(device)
+        for driver in group:
+            driver = self.__parse_driver(driver)
             if driver:
                 self.groups[name]['drivers'].append(driver['name'])
                 self.drivers[driver['name']] = driver
 
-    def __parse_device(self, device):
+    def __parse_driver(self, device):
         driver = { 'label': device.attrib['label'] }
         for child in device:
             if child.tag == 'version':

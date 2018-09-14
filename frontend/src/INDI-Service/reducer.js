@@ -26,10 +26,10 @@ const toggleDriver = (state, driver, selected) => {
     return {...state, selectedDrivers: [...state.selectedDrivers, driver]}
 }
 
-const indiServiceStarted = (state, devices) => ({
+const indiServiceStarted = (state, drivers) => ({
     ...state,
     server_running: true,
-    selectedDrivers: devices,
+    selectedDrivers: drivers,
     startStopPending: false,
 })
 
@@ -49,7 +49,7 @@ const selectedProfile = (state, id) => {
     return {
         ...state,
         selectedProfile: id,
-        selectedDrivers: profile ? profile.devices : state.selectedDrivers,
+        selectedDrivers: profile ? profile.drivers : state.selectedDrivers,
     }
 }
 
@@ -66,7 +66,7 @@ const indiservice = (state = defaultState, action) => {
         case 'INDI_SERVICE_ERROR_STOPPING':
             return {...state, startStopPending: false};
         case 'INDI_SERVICE_STARTED':
-            return indiServiceStarted(state, action.payload.devices)
+            return indiServiceStarted(state, action.payload.drivers)
         case 'INDI_SERVICE_EXITED':
             return indiServiceExited(state, action.is_error, action.payload)
         case 'INDI_SERVICE_DISMISS_ERROR':

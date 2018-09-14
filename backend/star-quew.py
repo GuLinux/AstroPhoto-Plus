@@ -72,7 +72,7 @@ def get_indi_service():
 @json_api
 def start_indi_service(json):
     try:
-        controller.indi_service.start(json['devices'])
+        controller.indi_service.start(json['drivers'])
         return { 'indi_service': 'starting' }
     except RuntimeError as e:
         raise BadRequestError(str(e))
@@ -112,7 +112,7 @@ def delete_indi_profile(id):
 @json_api
 def new_indi_profile(json):
     try:
-        new_indi_profile = INDIProfile(name=json['name'], devices=json['devices'])
+        new_indi_profile = INDIProfile(name=json['name'], drivers=json['drivers'])
         controller.indi_profiles.append(new_indi_profile)
         return new_indi_profile.to_map()
     except KeyError:

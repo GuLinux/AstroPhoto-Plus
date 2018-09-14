@@ -24,7 +24,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     ...dispatchProps,
     ...ownProps,
     addProfile: (name) => dispatchProps.addProfile(name, stateProps.selectedDrivers),
-    renameProfile: (id, name) => dispatchProps.updateProfile(id, name, stateProps.profiles.find(p => p.id === id).devices),
+    renameProfile: (id, name) => dispatchProps.updateProfile(id, name, stateProps.profiles.find(p => p.id === id).drivers),
     updateProfile: (id) => dispatchProps.updateProfile(id, undefined, stateProps.selectedDrivers),
 })
 

@@ -42,8 +42,8 @@ class EventListener:
     def on_sequence_error(self, sequence, message):
         self.sse.publish({'event': 'sequence_error', 'payload': {'sequence': sequence.to_map(), 'error_message': message}, 'is_error': True}, type='sequences')
 
-    def on_indi_service_started(self, devices, service):
-        self.sse.publish({'event': 'started', 'payload': { 'devices': devices, 'status': service.status() }, 'is_error': False}, type='indi_service')
+    def on_indi_service_started(self, drivers, service):
+        self.sse.publish({'event': 'started', 'payload': { 'drivers': drivers, 'status': service.status() }, 'is_error': False}, type='indi_service')
 
     def on_indi_service_reloaded(self):
         self.sse.publish({'event': 'reloaded', 'payload': {}, 'is_error': False}, type='indi_service')

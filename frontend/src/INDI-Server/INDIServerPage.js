@@ -3,7 +3,7 @@ import { Menu, Container, Grid, Header } from 'semantic-ui-react';
 import INDIServerDetailsContainer from './INDIServerDetailsContainer';
 import INDIDeviceContainer from './INDIDeviceContainer';
 import INDIServiceContainer from '../INDI-Service/INDIServiceContainer';
-import INDIServiceDevicesContainer from '../INDI-Service/INDIServiceDevicesContainer';
+import INDIServiceDriversContainer from '../INDI-Service/INDIServiceDriversContainer';
 import INDIServiceProfilesContainer from '../INDI-Service/INDIServiceProfilesContainer';
 import { Route } from 'react-router';
 import { NavLink } from 'react-router-dom';
@@ -20,7 +20,7 @@ const INDISettingsPage = ({hasLocalServer}) => {
         <Grid celled container stackable>
             <Grid.Column width={10}>
                 <INDIServiceProfilesContainer />
-                <INDIServiceDevicesContainer />
+                <INDIServiceDriversContainer />
             </Grid.Column>
             <Grid.Column width={6}>
                 <Header size='small'>Server manager</Header>

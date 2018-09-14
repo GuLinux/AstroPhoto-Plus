@@ -85,7 +85,7 @@ const SearchDriversList = ({drivers, toggleDriverSelection, serverRunning, searc
     }
 
 
-class INDIServiceDevicesPage extends React.Component {
+class INDIServiceDriversPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = { searchString: '', };
@@ -100,9 +100,9 @@ class INDIServiceDevicesPage extends React.Component {
         return (
             <Container>
                 <Menu secondary fluid size='small' borderless>
-                    <Menu.Item fitted header content='Available devices' />
+                    <Menu.Item fitted header content='Available drivers' />
                     <Menu.Menu position='right'>
-                        <Input icon='search' placeholder='Search devices' value={this.state.searchString} onChange={(e, data) => this.onSearch(data.value)} />
+                        <Input icon='search' placeholder='Search drivers' value={this.state.searchString} onChange={(e, data) => this.onSearch(data.value)} />
                     </Menu.Menu>
                 </Menu>
                 {
@@ -116,4 +116,4 @@ class INDIServiceDevicesPage extends React.Component {
     }
 }
 
-export default INDIServiceDevicesPage
+export default INDIServiceDriversPage
