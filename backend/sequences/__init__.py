@@ -1,3 +1,3 @@
 from .sequence import Sequence
-from .sequence_item import SequenceItem
+from .sequence_job import SequenceJob
 from .sequences_runner import SequencesRunner

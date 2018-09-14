@@ -2,7 +2,7 @@ from indi import Property
 from app import logger
 
 
-class PropertySequenceItem:
+class PropertySequenceJob:
     def __init__(self, data):
         self.device = data['device']
         self.property = data['property']

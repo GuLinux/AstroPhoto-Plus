@@ -4,10 +4,10 @@ import { searchImages } from '../middleware/api';
 import { Actions } from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
-    if(! (ownProps.sequenceItem in state.sequenceItems))
+    if(! (ownProps.sequenceJob in state.sequenceJobs))
         return {};
     return {
-        images: state.sequenceItems[ownProps.sequenceItem].saved_images,
+        images: state.sequenceJobs[ownProps.sequenceJob].saved_images,
     };
 }
 

@@ -1,45 +1,45 @@
 import React from 'react';
 import { Menu, Divider, Container, Grid } from 'semantic-ui-react'
-import SequenceItemButtonsContainer from './SequenceItemButtonsContainer'
+import SequenceJobButtonsContainer from './SequenceJobButtonsContainer'
 
 import INDIText from '../INDI-Server/INDIText';
 import INDINumber from '../INDI-Server/INDINumber';
 import INDISwitch from '../INDI-Server/INDISwitch';
 
-class INDIPropertySequenceItem extends React.Component {
+class INDIPropertySequenceJob extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { group: '', sequenceItem: {device: '', property: '', ...props.sequenceItem }}
+        this.state = { group: '', sequenceJob: {device: '', property: '', ...props.sequenceJob }}
 
-        if(props.sequenceItem.device && props.sequenceItem.property) {
-            this.state.group = this.getProperties()[props.sequenceItem.property].group
+        if(props.sequenceJob.device && props.sequenceJob.property) {
+            this.state.group = this.getProperties()[props.sequenceJob.property].group
         }
     }
 
     isValid() {
-        return this.state.sequenceItem.device !== '' && this.state.sequenceItem.property !== '' && Object.keys(this.state.sequenceItem.values).length !== 0;
+        return this.state.sequenceJob.device !== '' && this.state.sequenceJob.property !== '' && Object.keys(this.state.sequenceJob.values).length !== 0;
     }
 
     isChanged() {
-        //this.state.sequenceItem.device !== this.props.sequenceItem.device && this.state.sequenceItem.property !== this.props.sequenceItem.property;
+        //this.state.sequenceJob.device !== this.props.sequenceJob.device && this.state.sequenceJob.property !== this.props.sequenceJob.property;
         return true;
     }
 
     onDeviceChanged(device) {
-        this.setState({...this.state, group: '', sequenceItem: {...this.state.sequenceItem, device, property: ''} })
+        this.setState({...this.state, group: '', sequenceJob: {...this.state.sequenceJob, device, property: ''} })
     }
 
     onGroupChanged(group) {
-        this.setState({...this.state, group, sequenceItem: {...this.state.sequenceItem, property: ''} });
+        this.setState({...this.state, group, sequenceJob: {...this.state.sequenceJob, property: ''} });
     }
 
     onPropertyChanged(property) {
         let values = this.getProperties()[property].values.reduce( (values, value) => ({...values, [value.name]: value.value}), {} )
-        this.setState({...this.state, sequenceItem: {...this.state.sequenceItem, property, values  } });
+        this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, property, values  } });
     }
 
     getDevice() {
-        return this.props.devices.find(d => d.name === this.state.sequenceItem.device );
+        return this.props.devices.find(d => d.name === this.state.sequenceJob.device );
     }
 
     getProperties() {
@@ -47,11 +47,11 @@ class INDIPropertySequenceItem extends React.Component {
     }
 
     getValuesForm() {
-        if( this.state.sequenceItem.property === '')
+        if( this.state.sequenceJob.property === '')
             return null;
-        let property = this.getProperties()[this.state.sequenceItem.property];
-        let displayValues = this.state.sequenceItem.values
-        let addPendingValues = (values) => this.setState({...this.state, sequenceItem: {...this.state.sequenceItem, values: {...this.state.sequenceItem.values, ...values} } });
+        let property = this.getProperties()[this.state.sequenceJob.property];
+        let displayValues = this.state.sequenceJob.values
+        let addPendingValues = (values) => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, values: {...this.state.sequenceJob.values, ...values} } });
         return property.values.map( (value, index) => {
             let props = { key: index, value, property, displayValue: displayValues[value.name], addPendingValues, editMode: true }
             switch(property.type) {
@@ -68,7 +68,7 @@ class INDIPropertySequenceItem extends React.Component {
     }
 
     getGroups() {
-        if(this.state.sequenceItem.device === '')
+        if(this.state.sequenceJob.device === '')
             return [];
         let properties = this.getProperties();
         let groups = Object.keys(properties).map(name => properties[name].group);
@@ -113,7 +113,7 @@ class INDIPropertySequenceItem extends React.Component {
                 <Menu.Item header>Property</Menu.Item>
                 { properties.map(p => (
                     <Menu.Item
-                        active={this.state.sequenceItem.property === p.name}
+                        active={this.state.sequenceJob.property === p.name}
                         key={p.id}
                         onClick={() => this.onPropertyChanged(p.name)}
                     >
@@ -133,7 +133,7 @@ class INDIPropertySequenceItem extends React.Component {
                     <Menu.Item header>Device</Menu.Item>
                     { this.props.devices.map(d => (
                         <Menu.Item
-                            active={this.state.sequenceItem.device === d.name}
+                            active={this.state.sequenceJob.device === d.name}
                             key={d.id}
                             onClick={() => this.onDeviceChanged(d.name)}
                         >
@@ -153,10 +153,10 @@ class INDIPropertySequenceItem extends React.Component {
                     </Grid.Column>
                 </Grid>
                 <Divider section />
-                <SequenceItemButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceItem={this.state.sequenceItem} />
+                <SequenceJobButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceJob={this.state.sequenceJob} />
             </Container>
         )
     }
 }
 
-export default INDIPropertySequenceItem
+export default INDIPropertySequenceJob

@@ -1,13 +1,13 @@
 import { schema } from 'normalizr'
 
 
-export const sequenceItemSchema = new schema.Entity('sequenceItems', {}, {
+export const sequenceJobSchema = new schema.Entity('sequenceJobs', {}, {
     idAttribute: 'id',
     processStrategy: (v, p) => ({...v, sequence: p.id} ),
 
 });
 export const sequenceSchema = new schema.Entity('sequences', {
-        sequenceItems: [ sequenceItemSchema ]
+        sequenceJobs: [ sequenceJobSchema ]
     }, {
         idAttribute: 'id',
     }

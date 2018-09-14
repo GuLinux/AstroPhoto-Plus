@@ -2,6 +2,7 @@ import React from 'react';
 //import NumericInput from 'react-numeric-input';
 
 import PRINTJ from 'printj'
+import { formatDecimalNumber } from '../utils';
 import { NumericInput } from '../components/NumericInput';
 
 // copied from INDI github repo: https://github.com/indilib/indi/blob/bda9177ef25c6a219ac3879994c6efcae3b2d1c6/libindi/libs/indicom.c#L117
@@ -82,7 +83,7 @@ const formatValue = (displayValue, format) => {
     if(isSexagesimal(format)) {
         return sex2string(format, displayValue);
     }
-    let formatted = PRINTJ.sprintf(format, displayValue)
+    let formatted = formatDecimalNumber(format, displayValue)
     return formatted;
 }
 

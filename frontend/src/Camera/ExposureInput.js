@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input, Button, Icon } from 'semantic-ui-react';
-import PRINTJ from 'printj'
 import { NumericInput } from '../components/NumericInput';
+import { formatDecimalNumber } from '../utils';
 
 const parseExposure = (exposure) => parseFloat(exposure);
 const exposureValid = (exposure) => parseExposure(exposure) > 0;
@@ -14,7 +14,7 @@ const ExposureShootIcon = ({disabled, onClick, isShooting, size}) => (
 
 const getValue = (isShooting, shotParameters, cameraExposureValue) => {
     if(isShooting && cameraExposureValue) {
-        return PRINTJ.sprintf(cameraExposureValue.format, cameraExposureValue.value).trim();
+        return cameraExposureValue.value;
     }
     return isNumber(shotParameters.exposure) ? parseExposure(shotParameters.exposure) : ''
 }
@@ -26,7 +26,7 @@ const ExposureInput = ({shotParameters, cameraExposureValue, onExposureChanged, 
         min={cameraExposureValue ? cameraExposureValue.min : null}
         max={cameraExposureValue ? cameraExposureValue.max : null}
         step={cameraExposureValue ? cameraExposureValue.step: null}
-        format={(v) => cameraExposureValue ? PRINTJ.sprintf(cameraExposureValue.format, v).trim() : ''}
+        format={(v) => v !== '' && cameraExposureValue ? formatDecimalNumber(cameraExposureValue.format, v) : ''}
         parse={(v) => parseFloat(v)}
         onChange={(exposure) => onExposureChanged(exposure)}
         disabled={disabled}

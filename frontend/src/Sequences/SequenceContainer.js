@@ -2,14 +2,14 @@ import { connect } from 'react-redux';
 import Sequence from './Sequence';
 import Actions from '../actions';
 import { getSequencesGears } from '../Gear/selectors';
-import { getSequenceEntitiesWithItems } from './selectors';
+import { getSequenceEntitiesWithJobs } from './selectors';
 
 const mapStateToProps = (state, ownProps) => {
     let sequenceId = ownProps.sequenceId;
     if(!(sequenceId in state.sequences.entities)) {
         return { sequence: null }
     }
-    const sequence = getSequenceEntitiesWithItems(state)[sequenceId];
+    const sequence = getSequenceEntitiesWithJobs(state)[sequenceId];
     let gear = getSequencesGears(state)[sequenceId];
 
     let properties = {sequence, camera: gear.camera, filterWheel: gear.filterWheel, canEdit: canEdit(state, sequence), gear};
@@ -28,8 +28,8 @@ const canEdit = (state, sequence) => {
 
 const mapDispatchToProps = (dispatch, props) => ({
     startSequence: (sequence) => dispatch(Actions.Sequences.start(sequence)),
-    onCreateSequenceItem: (type, sequenceId) => {
-        dispatch(Actions.SequenceItems.newPending(type, sequenceId));
+    onCreateSequenceJob: (type, sequenceId) => {
+        dispatch(Actions.SequenceJobs.newPending(type, sequenceId));
     },
     onMount: (items) => dispatch(Actions.Navigation.setRightMenu(items)),
     onUnmount: () => dispatch(Actions.Navigation.resetRightMenu()),
@@ -39,7 +39,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     ...stateProps,
     ...ownProps,
     ...dispatchProps,
-    onCreateSequenceItem: type => dispatchProps.onCreateSequenceItem(type, stateProps.sequence.id),
+    onCreateSequenceJob: type => dispatchProps.onCreateSequenceJob(type, stateProps.sequence.id),
     startSequence: () => dispatchProps.startSequence(stateProps.sequence),
 })
 
