@@ -25,65 +25,72 @@ def retry_connection(f):
     return f_wrapper
 
 class RedisClient:
+    CURRENT_VERSION=1
+    PREFIX='sq_'
+
     def __init__(self):
         redis_host = os.environ.get('REDIS_SERVER', '127.0.0.1')
         redis_port = os.environ.get('REDIS_PORT', 6379) 
         logger.debug('Connecting to redis server at {}:{}'.format(redis_host, redis_port))
         self.client = StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
+        self.version = self.get_version()
+        logger.debug('Initialized redis, schema version: {}'.format(self.version))
+        if self.version != RedisClient.CURRENT_VERSION:
+            self.migrate_schema()
 
     @retry_connection
     def append(self, object_dict, list_name, list_type=None):
         list_full_id, object_full_id = self.__calc_ids(object_dict['id'], list_name, list_type)
         pipe = self.client.pipeline()
-        pipe.lpush(list_full_id, object_full_id)
-        pipe.set(object_full_id, json.dumps(object_dict))
+        self.__prefix_cmd(pipe, 'lpush', list_full_id, object_full_id)
+        self.__prefix_cmd(pipe, 'set', object_full_id, json.dumps(object_dict))
         pipe.execute()
 
     @retry_connection
     def lookup(self, object_id, list_name, list_type=None):
         _, object_full_id = self.__calc_ids(object_id, list_name, list_type)
-        object_map = self.client.get(object_full_id)
+        object_map = self.__prefix_client('get', object_full_id)
         return json.loads(object_map) if object_map else None
 
     @retry_connection
     def multi_lookup(self, object_ids, list_name, list_type=None):
         object_full_ids = [self.__calc_ids(object_id, list_name, list_type)[1] for object_id in object_ids]
-        object_maps = self.client.mget(object_full_ids)
+        object_maps = self.__prefix_client('mget', object_full_ids)
         return [json.loads(object_map) for object_map in object_maps if object_map]
 
 
     @retry_connection
     def update(self, object_id, object_dict, list_name, list_type=None):
         _, object_full_id = self.__calc_ids(object_id, list_name, list_type)
-        self.client.set(object_full_id, json.dumps(object_dict))
+        self.__prefix_client('set', object_full_id, json.dumps(object_dict))
         
     @retry_connection
     def delete(self, object_id, list_name, list_type=None):
         list_full_id, object_full_id = self.__calc_ids(object_id, list_name, list_type)
         pipe = self.client.pipeline()
-        pipe.delete(object_full_id)
-        pipe.lrem(list_full_id, 0, object_full_id)
+        self.__prefix_cmd(pipe, 'delete', object_full_id)
+        self.__prefix_cmd(pipe, 'lrem', list_full_id, 0, object_full_id)
         pipe.execute()
 
     @retry_connection
     def list_length(self, list_name, list_type=None):
         list_full_id = self.__calc_list_id(list_name, list_type)
-        return self.client.llen(list_full_id)
+        return self.__prefix_client('llen', list_full_id)
 
     @retry_connection
     def item_exists(self, object_id, list_name, list_type=None):
         _, object_full_id = self.__calc_ids(object_id, list_name, list_type)
-        return self.client.exists(object_full_id)
+        return self.__prefix_client('exists', object_full_id)
         
     @retry_connection
     def item_at(self, index, list_name, list_type=None):
         list_full_id = self.__calc_list_id(list_name, list_type)
-        return redis_client.lindex(list_full_id, index)
+        return self.__prefix_client('lindex', list_full_id, index)
 
     @retry_connection
     def list_keys(self, list_name, list_type=None):
         list_full_id = self.__calc_list_id(list_name, list_type)
-        full_ids = self.client.lrange(list_full_id, 0, -1)
+        full_ids = self.__prefix_client('lrange', list_full_id, 0, -1)
         return [id[len(list_full_id)+1:] for id in full_ids]
         
     @retry_connection
@@ -93,20 +100,42 @@ class RedisClient:
 
     @retry_connection
     def set(self, key, value):
-        self.client.set(key, value)
+        self.__prefix_client('set', key, value)
 
     @retry_connection
     def get(self, key, default_value=None):
-        value = self.client.get(key)
+        value = self.__prefix_client('get', key)
         return value if value else default_value
 
     @retry_connection
     def dict_set(self, key, value):
-        self.client.hmset(key, value)
+        self.__prefix_client('hmset', key, value)
 
     @retry_connection
     def dict_get(self, key):
-        return self.client.hgetall(key)
+        return self.__prefix_client('hgetall', key)
+
+    @retry_connection
+    def get_version(self):
+        version = self.__prefix_client('get', 'version')
+        return int(version) if version else 0
+
+    @retry_connection
+    def set_version(self):
+        self.__prefix_client('set', 'version', RedisClient.CURRENT_VERSION)
+
+    @retry_connection
+    def migrate_schema(self):
+        for start_version in range(self.version, RedisClient.CURRENT_VERSION):
+            if start_version == 0:
+                pass
+        self.set_version()
+
+    def __prefix_cmd(self, obj, cmd, key, *args, **kwargs):
+        return getattr(obj, cmd)(RedisClient.PREFIX + key, *args, **kwargs)
+
+    def __prefix_client(self, cmd, key, *args, **kwargs):
+        return self.__prefix_cmd(self.client, cmd, key, *args, **kwargs)
 
     def __calc_list_id(self, list_name, list_type=None):
         return ':'.join([list_type, list_name]) if list_type else list_name
