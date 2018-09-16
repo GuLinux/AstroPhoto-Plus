@@ -18,7 +18,7 @@ const onCheckbox = (property, value, displayValue, addPendingValues) => {
 }
 
 
-const INDISwitch = ({property, value, displayValue, isWriteable, addPendingValues}) => {
+const INDISwitch = ({property, value, displayValue, editMode, addPendingValues}) => {
     switch(property.rule) {
         case "ONE_OF_MANY":
         case "AT_MOST_ONE":
@@ -27,7 +27,8 @@ const INDISwitch = ({property, value, displayValue, isWriteable, addPendingValue
                         key={value.name}
                         active={displayValue}
                         onClick={e => onButtonClick(property, value, displayValue, addPendingValues)}
-                        disabled={!isWriteable}
+                        disabled={!editMode}
+                        icon={displayValue && 'check'}
                         content={value.label} />
                     )
         case "ANY":
@@ -37,7 +38,7 @@ const INDISwitch = ({property, value, displayValue, isWriteable, addPendingValue
                     slider
                     checked={displayValue}
                     label={value.label}
-                    readOnly={!isWriteable}
+                    readOnly={!editMode}
                     onChange={e => onCheckbox(property, value, displayValue, addPendingValues)}
                 />
             )

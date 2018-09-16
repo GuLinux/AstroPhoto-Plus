@@ -10,7 +10,7 @@ const INDISwitchProperty = ({property, isWriteable, pendingValues, displayValues
                 property={property}
                 value={value}
                 displayValue={displayValues[value.name]}
-                isWriteable={isWriteable} addPendingValues={addPendingValues}
+                editMode={isWriteable} addPendingValues={addPendingValues}
             /> )}
     </span>
 )
