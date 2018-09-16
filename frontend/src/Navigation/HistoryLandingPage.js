@@ -3,9 +3,19 @@ import React from 'react';
 
 class HistoryLandingRoutes extends React.Component {
 
-    componentDidUpdate = (prevProps) => {
-        if(this.props.currentPath !== this.props.route && this.props.currentPath !== prevProps.currentPath) {
+    setLandingPath = () => {
+        if(this.props.currentPath !== this.props.route) {
             this.props.setLandingPath(this.props.currentPath);
+        }
+    }
+
+    componentDidMount = () => {
+        this.setLandingPath();
+    }
+
+    componentDidUpdate = (prevProps) => {
+        if(this.props.currentPath !== prevProps.currentPath) {
+            this.setLandingPath();
         }
     }
 

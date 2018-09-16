@@ -145,7 +145,7 @@ class Sequence extends React.Component {
                         hasFilterWheel: sequence.filterWheel && sequence.filterWheel !== 'none',
                     },
                     icon: 'add', disabled: !canEdit, content: 'new' },
-                { icon: 'arrow left', as: Link, to: "/sequences", content: 'back to sequences' },
+                { icon: 'arrow left', as: Link, to: "/sequences/all", content: 'back to sequences' },
             ],
         });
     }
@@ -162,7 +162,7 @@ class Sequence extends React.Component {
                         title='Sequence not found'
                         message='The requested sequence was not found on the server. It might have been deleted, or it might not be synchronized yet.'
                         backButtonText='Back to sequences list'
-                        backToUrl='/sequences'
+                        backToUrl='/sequences/all'
                     />;
         return (
         <Container>
