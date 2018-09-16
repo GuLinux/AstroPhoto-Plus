@@ -54,8 +54,9 @@ class RedisClient:
 
     @retry_connection
     def multi_lookup(self, object_ids, list_name, list_type=None):
-        object_full_ids = [self.__calc_ids(object_id, list_name, list_type)[1] for object_id in object_ids]
-        object_maps = self.__prefix_client('mget', object_full_ids)
+        # TODO: optimize
+        object_full_ids = [RedisClient.PREFIX + self.__calc_ids(object_id, list_name, list_type)[1] for object_id in object_ids]
+        object_maps = self.client.mget(object_full_ids)
         return [json.loads(object_map) for object_map in object_maps if object_map]
 
 

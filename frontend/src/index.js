@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import { createLogger } from 'redux-logger'
 import { Actions } from './actions'
 import thunkMiddleware from 'redux-thunk'
@@ -13,7 +13,7 @@ import thunkMiddleware from 'redux-thunk'
 //import './themes/semantic-ui/semantic.material.min.css'
 import './themes/bootswatch/semantic.slate.min.css'
 
-import indiLiteApp from './reducers'
+import { starQuewReducer } from './reducers'
 import App from './components/App'
 
 import 'react-image-crop/dist/ReactCrop.css';
@@ -29,14 +29,16 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 const loggerMiddleware = createLogger()
 
 const createMiddleware = () => {
-    if(window.__REDUX_DEVTOOLS_EXTENSION__)
-        return applyMiddleware(thunkMiddleware);
-    return applyMiddleware(thunkMiddleware, loggerMiddleware)
+    const devMode = process.env.NODE_ENV === 'development';
+    const disableLogger = true;
+    const composeEnhancers = (devMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+    const middlewares = [thunkMiddleware];
+    devMode && ! disableLogger && middlewares.push(loggerMiddleware);
+    return composeEnhancers(applyMiddleware(...middlewares));
 }
 
 let store = createStore(
-    indiLiteApp,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+    starQuewReducer,
     createMiddleware()
 )
 

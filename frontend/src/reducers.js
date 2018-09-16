@@ -64,6 +64,5 @@ const version = (state = {}, action) => {
 }
 
 
-const indiLiteApp = combineReducers({version, sequenceJobs, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation, commands});
+export const starQuewReducer = combineReducers({version, sequenceJobs, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation, commands});
 
-export default indiLiteApp
