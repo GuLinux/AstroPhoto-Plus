@@ -112,6 +112,7 @@ class ExposureSequenceJob:
             self.sequence.run()
         except:
             self.progress = self.sequence.finished
+            logger.debug('Error running exposures job')
             raise
         finally:
             self.sequence = None

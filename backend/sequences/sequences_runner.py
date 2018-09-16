@@ -52,3 +52,7 @@ class SequencesRunner:
 
     def get(self, sequence_id):
         return self.running_sequences.get(sequence_id)
+
+    def is_running(self, sequence_id):
+        return sequence_id in self.running_sequences
+

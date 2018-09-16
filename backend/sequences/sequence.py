@@ -3,6 +3,7 @@ from errors import NotFoundError, BadRequestError
 from .sequence_job import SequenceJob
 import os
 from app import logger
+import system.controller
 
 class Sequence:
     def __init__(self, name, upload_path, camera, filter_wheel=None, id=None, sequence_jobs=None, status=None):
@@ -36,7 +37,7 @@ class Sequence:
             map_object['filterWheel'],
             id=map_object['id'],
             sequence_jobs=[SequenceJob.from_map(x) for x in map_object['sequenceJobs']],
-            status=map_object['status']
+            status='stale' if map_object['status'] == 'running' and not system.controller.sequences_runner.is_running(map_object['id']) else map_object['status']
         )
 
     @staticmethod

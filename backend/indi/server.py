@@ -74,7 +74,7 @@ class Server:
     def __on_disconnected(self, error_code):
         self.logger.debug('indi server disconnected; disconnect_requested: {}'.format(self.__disconnect_requested))
         self.client = None
-        if  time.time() - self.__disconnect_requested > 2 and self.on_disconnect:
+        if  time.time() - self.__disconnect_requested > 2 and self.event_listener.on_indiserver_disconnected:
             self.event_listener.on_indiserver_disconnected(error_code)
 
     def __on_property_updated(self, vector_property):

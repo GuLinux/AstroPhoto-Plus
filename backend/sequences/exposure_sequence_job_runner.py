@@ -24,6 +24,31 @@ class SequenceCallbacks:
             callback(*args, **kwargs)
 
 
+class Shot:
+    def __init__(self):
+        pass
+
+    def run(self):
+        pass
+
+class Shots:
+    def __init__(self, camera, exposure):
+        self.camera = camera
+        self.exposure = exposure
+
+    def shoot(self, number):
+        self.camera.shoot(self.exposure)
+        pass
+
+class Blob:
+    def __init__(self):
+        pass
+
+    def wait(self):
+        pass
+
+
+
 class ExposureSequenceJobRunner:
     def __init__(self, server, camera, exposure, count, upload_path, progress=0, filename_template='{name}_{exposure}s_{number:04}.fits', filename_template_params={}, **kwargs):
         self.camera = camera
@@ -85,6 +110,7 @@ class ExposureSequenceJobRunner:
             shots_queue.put({'type': 'finished'})
         except Exception as e:
             self.error = (e,)
+            logger.debug('Exception on shot')
             shots_queue.put({'type': 'error'})
             raise
         finally:
@@ -104,8 +130,9 @@ class ExposureSequenceJobRunner:
 
         blobs_queue = Queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
         def on_new_blob(bp):
-            blob_info = 'name={}, label={}, format={}, bloblen={}, size={}'.format(bp.name, bp.label, bp.format, bp.bloblen, bp.size)
-            blobs_queue.put(bp)
+            # blob_info = 'name={}, label={}, format={}, bloblen={}, size={}'.format(bp.name, bp.label, bp.format, bp.bloblen, bp.size)
+            if bp.bvp.device == self.camera.name:
+                blobs_queue.put(bp)
 
         indi_client = INDIClient(address=indi_host, port=indi_port, callbacks={
             'on_new_blob': on_new_blob,
@@ -120,7 +147,9 @@ class ExposureSequenceJobRunner:
         indi_client.connectServer()
         try:
             while True:
+                logger.debug('ExposureSequenceJobRunner: waiting for shot')
                 item = shots_queue.get()
+                logger.debug('ExposureSequenceJobRunner: shot finished')
                 if item['type'] == 'finished':
                     save_async_fits.finished()
                     return
@@ -132,7 +161,10 @@ class ExposureSequenceJobRunner:
                 elif item['type'] == 'shot':
                     time_started = time.time()
                     temp_before = self.ccd_temperature
-                    blob = blobs_queue.get()
+
+                    logger.debug('ExposureSequenceJobRunner: waiting for BLOB')
+                    blob = blobs_queue.get(timeout=2 + self.exposure * 2)
+                    logger.debug('ExposureSequenceJobRunner: BLOB received')
                     temp_after = self.ccd_temperature
                     time_finished = time.time()
 
