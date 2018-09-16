@@ -80,7 +80,7 @@ class Property:
 
 
     @with_type
-    def set_values(self, property_values):
+    def set_values(self, property_values, sync=False, timeout=None):
         indi_device = device.Device(self.client, self.logger, name=self.device).find_indi_device()
         try:
             if self.type == 'switch':
@@ -95,11 +95,11 @@ class Property:
                 self.logger.debug('on_switches: {}'.format(on_switches))
                 self.logger.debug('off_switches: {}'.format(off_switches))
 
-                indi_device.set_switch(self.name, on_switches, off_switches, sync=False)
+                indi_device.set_switch(self.name, on_switches, off_switches, sync=sync, timeout=timeout)
             elif self.type == 'number':
-                indi_device.set_number(self.name, property_values, sync=False)
+                indi_device.set_number(self.name, property_values, sync=sync, timeout=timeout)
             elif self.type == 'text':
-                indi_device.set_text(self.name, property_values, sync=False)
+                indi_device.set_text(self.name, property_values, sync=sync, timeout=timeout)
             else:
                 raise RuntimeError('Property type unsupported: {}'.format(self.type))
             return True

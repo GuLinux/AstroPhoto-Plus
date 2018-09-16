@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Divider, Container, Grid } from 'semantic-ui-react'
+import { Menu, Divider, Container, Grid, Form } from 'semantic-ui-react'
 import SequenceJobButtonsContainer from './SequenceJobButtonsContainer'
 
 import INDIText from '../INDI-Server/INDIText';
@@ -9,7 +9,7 @@ import INDISwitch from '../INDI-Server/INDISwitch';
 class INDIPropertySequenceJob extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { group: '', sequenceJob: {device: '', property: '', ...props.sequenceJob }}
+        this.state = { group: '', sequenceJob: {device: '', property: '', wait: -1, ...props.sequenceJob }}
 
         if(props.sequenceJob.device && props.sequenceJob.property) {
             this.state.group = this.getProperties()[props.sequenceJob.property].group
@@ -124,7 +124,7 @@ class INDIPropertySequenceJob extends React.Component {
         )
     }
 
-
+    onWaitChanged = (checked) => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, wait: checked ? -1 : 0} });
 
     render() {
         return (
@@ -153,7 +153,12 @@ class INDIPropertySequenceJob extends React.Component {
                     </Grid.Column>
                 </Grid>
                 <Divider section />
+                <Form>
+                    <Form.Checkbox label='Wait until value is set' checked={this.state.sequenceJob.wait !== 0} onChange={(e, data) => this.onWaitChanged(data.checked)}/>
+                </Form>
+                <Divider section />
                 <SequenceJobButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceJob={this.state.sequenceJob} />
+
             </Container>
         )
     }
