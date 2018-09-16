@@ -69,7 +69,7 @@ class INDIServiceProfilesPage extends React.Component{
         } = this.props;
         return (
             <Container>
-                <Menu size='mini' vertical secondary fluid>
+                <Menu size='mini' stackable secondary>
                     <Menu.Item header>
                         {profiles.length === 0 ? 'No profiles' : 'Profiles'}
                         <ProfileNameDialog initialValue='' title='New profile' buttonText='Create' trigger={
@@ -80,7 +80,7 @@ class INDIServiceProfilesPage extends React.Component{
 
                     </Menu.Item>
                     { profiles.map(p => (
-                        <Dropdown item text={p.name} key={p.id}>
+                        <Dropdown item text={p.name} key={p.id} simple>
                             <Dropdown.Menu direction='left'>
                                 <Dropdown.Item icon='check' text='load' onClick={() => loadProfile(p.id)} />
 
