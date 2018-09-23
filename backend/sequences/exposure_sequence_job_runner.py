@@ -163,7 +163,7 @@ class ExposureSequenceJobRunner:
                     temp_before = self.ccd_temperature
 
                     logger.debug('ExposureSequenceJobRunner: waiting for BLOB')
-                    blob = blobs_queue.get(timeout=2 + self.exposure * 2)
+                    blob = blobs_queue.get(timeout=20 + self.exposure * 2)
                     logger.debug('ExposureSequenceJobRunner: BLOB received')
                     temp_after = self.ccd_temperature
                     time_finished = time.time()
