@@ -69,6 +69,7 @@ class Camera:
             self.logger.debug('Camera.shoot: id={}, parameters: {}'.format(id, options))
 
             self.camera.shoot(exposure)
+            self.camera.clear_roi()
         except RuntimeError as e:
             raise FailedMethodError(str(e))
 
