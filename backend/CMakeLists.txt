@@ -12,3 +12,4 @@ INSTALL(
     DESTINATION lib/systemd/system/
 )
 install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/start-server DESTINATION ${STARQUEW_HOME}/backend)
+install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/start-debug-server DESTINATION ${STARQUEW_HOME}/backend)
