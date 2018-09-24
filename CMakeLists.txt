@@ -8,6 +8,11 @@ set(CONFDIR ${CMAKE_INSTALL_PREFIX}/etc CACHE STRING "Directory for system wide 
 set(VERSION_SUFFIX '' CACHE STRING "Suffix to append to version number")
 set(STARQUEW_CONF_FILE ${CONFDIR}/StarQuew.conf)
 configure_file(${CMAKE_SOURCE_DIR}/scripts/StarQuew-ctl ${CMAKE_BINARY_DIR}/scripts/StarQuew-ctl @ONLY)
+execute_process(
+    COMMAND python3 ./scripts/set_version.py ${PROJECT_VERSION_MAJOR} ${PROJECT_VERSION_MINOR} ${PROJECT_VERSION_PATCH}${VERSION_SUFFIX}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
 
 add_subdirectory(frontend)
 add_subdirectory(backend)
