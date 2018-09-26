@@ -1,10 +1,15 @@
 import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoloadConfigurationAPI } from '../middleware/api'
 import Actions from '../actions'
 
-const fetchGear = dispatch => setTimeout( () => {
-    dispatch(Actions.Gear.fetchCameras())
-    dispatch(Actions.Gear.fetchFilterWheels())
-}, 2000);
+let fetchGearTimerId;
+const fetchGear = dispatch => {
+    clearTimeout(fetchGearTimerId);
+    fetchGearTimerId = setTimeout( () => {
+        fetchGearTimerId = null;
+        dispatch(Actions.Gear.fetchCameras())
+        dispatch(Actions.Gear.fetchFilterWheels())
+    }, 1000);
+}
 
 
 export const INDIServer = {

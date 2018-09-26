@@ -22,7 +22,6 @@ const network = (state = { fetching: false }, action) => {
         case 'FETCH_INDI_SERVER_STATE':
         case 'CONNECT_INDI_SERVER':
         case 'DISCONNECT_INDI_SERVER':
-        case 'FETCH_CAMERAS':
         case 'DUPLICATE_SEQUENCE_REQUESTED':
         case 'START_SEQUENCE_REQUESTED':
         case 'REQUEST_SEQUENCE_ITEM_MOVE':

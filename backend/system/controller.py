@@ -16,7 +16,7 @@ class EventListener:
         self.sse = sse
 
     def on_indiserver_disconnected(self, error_code):
-        self.controller.notification('indi_server', 'indi_server_disconnect_error', self.indi_server.to_map(), True, error_code=error_code)
+        controller.notification('indi_server', 'indi_server_disconnect_error', self.indi_server.to_map(), True, error_code=error_code)
 
     def on_indi_message(self, device, message):
         self.sse.publish({'event': 'indi_message', 'payload': {'device': device.to_map(), 'message': message}, 'is_error': False}, type='indi_server')
