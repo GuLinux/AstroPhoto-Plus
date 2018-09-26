@@ -13,6 +13,7 @@ get-latest-info() {
 }
 
 get-latest-deb() {
+    dpkg -s python3-requests >/dev/null 2>&1 || sudo apt install -y python3-requests
     python3 - <<EOF
 import requests
 import json
