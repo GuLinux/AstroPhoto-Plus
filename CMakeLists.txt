@@ -22,7 +22,7 @@ install(FILES ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION .)
 install(FILES ${CMAKE_SOURCE_DIR}/README.md DESTINATION .)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/config DESTINATION share/StarQuew/)
 install(PROGRAMS
-    ${CMAKE_SOURCE_DIR}/config/raspberry_pi/starquew-deb-updater
+    ${CMAKE_SOURCE_DIR}/config/debian_based/starquew-deb-updater
     ${CMAKE_SOURCE_DIR}/config/raspberry_pi/starquew-wifi-helper
     DESTINATION share/StarQuew/config/raspberry_pi/
 )
