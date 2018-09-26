@@ -8,7 +8,7 @@ Usage: $0 <command> [options]
 
 Commands:
 
- - autosetup                   Prepares everything automatically, asking confirmation about choices where necessary.
+ - autosetup [username]        Prepares everything automatically, asking confirmation about choices where necessary.
  - setup-backend username      Setup the backend to run as the specified user.
  - start-redis                 Starts the required Redis server, and enables autostart at boot
  - setup-apache2               Prepares apache2 to serve StarQuew.
@@ -37,8 +37,11 @@ autosetup() {
         echo "Unable to find web servers, exiting"
         exit 1
     fi
-
-    read -p "Please enter the username for your StarQuew backend server: " -i "${SUDO_USER:-$USER}" -e STARQUEW_USER
+    if [ -n "$1" ]; then
+        STARQUEW_USER="$1"
+    else
+        read -p "Please enter the username for your StarQuew backend server: " -i "${SUDO_USER:-$USER}" -e STARQUEW_USER
+    fi
     start-redis
     setup-backend "$STARQUEW_USER"
     autostart
@@ -85,6 +88,12 @@ setup-backend() {
 [Service]
 User=$STARQUEW_USER
 EOF
+    config_json_file="/home/$STARQUEW_USER/.config/StarQuew/commands.json"
+    if which dpkg >/dev/null 2>&1 && ! [ -r "$config_json_file" ]; then
+        mkdir -p "$( dirname "$config_json_file")"
+        chown $STARQUEW_USER "$( dirname "$config_json_file")"
+        ln -s /usr/share/StarQuew/config/debian_based/commands.json "$config_json_file"
+    fi
     systemctl daemon-reload
 }
 
