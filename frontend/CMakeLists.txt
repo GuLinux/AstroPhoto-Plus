@@ -14,6 +14,7 @@ configure_file(${CMAKE_SOURCE_DIR}/config/prod-webserver-conf/apache2/starquew.c
 add_custom_target(
     npm-dependencies
     COMMAND npm i
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 add_custom_target(

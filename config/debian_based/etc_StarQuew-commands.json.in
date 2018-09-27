@@ -1,0 +1,6 @@
+[
+  {
+    "type": "include",
+    "filename": "${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/debian_based/commands.json"
+  }
+]

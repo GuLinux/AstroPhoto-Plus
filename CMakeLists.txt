@@ -5,27 +5,24 @@ project(StarQuew LANGUAGES NONE VERSION ${STARQUEW_PROJECT_VERSION})
 set(STARQUEW_HOME lib/${CMAKE_PROJECT_NAME})
 set(STARQUEW_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${STARQUEW_HOME})
 set(CONFDIR ${CMAKE_INSTALL_PREFIX}/etc CACHE STRING "Directory for system wide configuration files")
-set(VERSION_SUFFIX '' CACHE STRING "Suffix to append to version number")
+set(VERSION_SUFFIX "" CACHE STRING "Suffix to append to version number")
 set(STARQUEW_CONF_FILE ${CONFDIR}/StarQuew.conf)
 configure_file(${CMAKE_SOURCE_DIR}/scripts/StarQuew-ctl ${CMAKE_BINARY_DIR}/scripts/StarQuew-ctl @ONLY)
+
+set(ENV{SKIP_CMAKE} 1) 
 execute_process(
     COMMAND python3 ./scripts/set_version.py ${PROJECT_VERSION_MAJOR} ${PROJECT_VERSION_MINOR} ${PROJECT_VERSION_PATCH}${VERSION_SUFFIX}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
 
+add_subdirectory(config)
 add_subdirectory(frontend)
 add_subdirectory(backend)
 
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/scripts/StarQuew-ctl DESTINATION bin)
 install(FILES ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION .)
 install(FILES ${CMAKE_SOURCE_DIR}/README.md DESTINATION .)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/config DESTINATION share/StarQuew/)
-install(PROGRAMS
-    ${CMAKE_SOURCE_DIR}/config/debian_based/starquew-deb-updater
-    ${CMAKE_SOURCE_DIR}/config/raspberry_pi/starquew-wifi-helper
-    DESTINATION share/StarQuew/config/raspberry_pi/
-)
 
 SET(CPACK_GENERATOR "TGZ;DEB")
 SET(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/packages)

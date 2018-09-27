@@ -15,8 +15,11 @@ else:
     version_patch = sys.argv[3]
     version_full = '.'.join([version_major, version_minor, version_patch])
 
-with open(os.path.join(project_dir, 'project_version.cmake'), 'w') as cmake_version_file:
-    cmake_version_file.write('set(STARQUEW_PROJECT_VERSION {})\n'.format(version_full))
+sys.stderr.write('version: major={}, minor={}, patch={}, version_full: {}\n'.format(version_major, version_minor, version_patch, version_full))
+
+if 'SKIP_CMAKE' not in os.environ:
+    with open(os.path.join(project_dir, 'project_version.cmake'), 'w') as cmake_version_file:
+        cmake_version_file.write('set(STARQUEW_PROJECT_VERSION {})\n'.format(version_full))
 
 frontend_package_json = None
 with open('frontend/package.json', 'r') as frontend_json_file:
