@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if ! [ -r "@ETC_CONFFILE@" ]; then
+    dist_name="$( lsb_release -i -s )"
+    conf_file="@DEBIAN_CONFFILE@"
+    if [ "$dist_name" == "Raspbian" ]; then
+        conf_file="@RASPBIAN_CONFFILE@"
+    fi
+    echo "Linking $conf_file to @ETC_CONFFILE@"
+    ln -sf "$conf_file" "@ETC_CONFFILE@"
+fi
+

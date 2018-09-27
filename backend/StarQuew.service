@@ -7,8 +7,7 @@ Type=simple
 ExecStart=@STARQUEW_INSTALL_PREFIX@/backend/start-server
 ExecStartPre=@STARQUEW_INSTALL_PREFIX@/backend/start-server --check-user
 WorkingDirectory=@STARQUEW_INSTALL_PREFIX@/backend
-#EnvironmentFile=@STARQUEW_CONF_FILE@
-
+Environment="SYSTEM_CONFDIR=@CONFDIR@"
 
 [Install]
 WantedBy=multi-user.target

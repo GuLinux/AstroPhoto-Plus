@@ -6,7 +6,6 @@ set(STARQUEW_HOME lib/${CMAKE_PROJECT_NAME})
 set(STARQUEW_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${STARQUEW_HOME})
 set(CONFDIR ${CMAKE_INSTALL_PREFIX}/etc CACHE STRING "Directory for system wide configuration files")
 set(VERSION_SUFFIX "" CACHE STRING "Suffix to append to version number")
-set(STARQUEW_CONF_FILE ${CONFDIR}/StarQuew.conf)
 configure_file(${CMAKE_SOURCE_DIR}/scripts/StarQuew-ctl ${CMAKE_BINARY_DIR}/scripts/StarQuew-ctl @ONLY)
 
 set(ENV{SKIP_CMAKE} 1) 
@@ -21,8 +20,8 @@ add_subdirectory(frontend)
 add_subdirectory(backend)
 
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/scripts/StarQuew-ctl DESTINATION bin)
-install(FILES ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION .)
-install(FILES ${CMAKE_SOURCE_DIR}/README.md DESTINATION .)
+install(FILES ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION share/StarQuew)
+install(FILES ${CMAKE_SOURCE_DIR}/README.md DESTINATION share/StarQuew)
 
 SET(CPACK_GENERATOR "TGZ;DEB")
 SET(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/packages)

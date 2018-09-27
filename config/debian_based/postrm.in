@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "Removing @ETC_CONFFILE@"
+rm -f "@ETC_CONFFILE@"
+
