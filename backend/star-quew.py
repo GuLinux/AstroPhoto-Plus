@@ -1,4 +1,15 @@
 from flask import jsonify, Response, send_from_directory, send_file, request
+from app import app
+import logging
+import os
+# Init logger, before we import anything else
+gunicorn_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers = gunicorn_logger.handlers
+
+is_debug_mode = int(os.environ.get('DEV_MODE', '0')) == 1
+app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG' if is_debug_mode else 'INFO' ))
+
+
 from api_decorators import *
 from api_utils import *
 from indi import Server, Property, Device, INDIProfile
@@ -6,19 +17,11 @@ from errors import NotFoundError
 from images import ImagesDatabase, camera_images_db, main_images_db
 from system import commands, controller
 from sequences import Sequence, SequenceJob
-import os
-from app import app
-import logging
+
+
+
 import io
 import json
-
-default_settings = {}
-
-gunicorn_logger = logging.getLogger('gunicorn.error')
-app.logger.handlers = gunicorn_logger.handlers
-
-is_debug_mode = int(os.environ.get('DEV_MODE', '0')) == 1
-app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG' if is_debug_mode else 'INFO' ))
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

@@ -17,6 +17,7 @@ class Command:
         self.confirmation_message = obj.get('confirmation_message', None)
         self.request_parameters = self.__build_request_parameters(obj.get('request_parameters', None))
         self._check = obj.get('check', None)
+        logger.debug('Command parsed: %s', self.name)
 
     def __build_request_parameters(self, request_parameters):
         if not request_parameters or not 'variables' in request_parameters:
@@ -80,12 +81,27 @@ class Command:
 
 class Commands:
     def __init__(self):
-        commands = []
-        ro_commands_file = os.path.join(settings.config_dir, 'commands.json')
-        if os.path.isfile(ro_commands_file):
-            with open(ro_commands_file, 'r') as json_commands_file:
-                commands.extend(json.load(json_commands_file))
+        commands_parsed, commands = self.__read_commands_file(os.path.join(settings.config_dir, 'commands.json'))
+        if not commands_parsed:
+            commands_parsed, commands = self.__read_commands_file('/etc/StarQuew-commands.json')
         self._commands = [Command(c, readonly=True) for c in commands]
+
+
+    def __read_commands_file(self, filename):
+        logger.debug('parsing commands file: {}'.format(filename))
+
+        if not os.path.isfile(filename):
+            logger.debug('commands file not found: {}'.format(filename))
+            return False, []
+
+        with open(filename, 'r') as json_commands_file:
+            entries = json.load(json_commands_file)
+            commands = [x for x in entries if x.get('type', 'command') == 'command']
+            includes = [x for x in entries if x.get('type', 'command') == 'include']
+            for include in includes:
+                _, include_commands = self.__read_commands_file(include['filename'])
+                commands.extend(include_commands)
+            return True, commands
 
     @property
     def commands(self):
