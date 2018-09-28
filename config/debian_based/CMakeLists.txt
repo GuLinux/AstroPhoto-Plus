@@ -8,5 +8,5 @@ configure_file(postrm.in ${CMAKE_CURRENT_BINARY_DIR}/postrm @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/commands.json ${CMAKE_CURRENT_BINARY_DIR}/etc_StarQuew-commands.json DESTINATION share/StarQuew/config/debian_based)
 install(PROGRAMS starquew-deb-updater DESTINATION share/StarQuew/config/debian_based)
 
-set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/postinst;${CMAKE_CURRENT_BINARY_DIR}/postrm")
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/postinst;${CMAKE_CURRENT_BINARY_DIR}/postrm" CACHE INTERNAL "debian scripts")
 
