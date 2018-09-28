@@ -37,9 +37,9 @@
     {
         "id": "8",
         "name": "Update System",
-        "arguments": ["sudo", "apt-get", "dist-upgrade", "-y"],
+        "arguments": ["sudo", "bash", "-c", "apt-get update && apt-get dist-upgrade -y"],
         "category": "Updates",
-        "check": ["sudo", "apt-get", "update"],
+        "check": ["sudo", "bash", "-c", "apt-get check"],
         "ui_properties": {
             "icon": "sync"
         }
