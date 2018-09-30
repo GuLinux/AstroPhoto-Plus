@@ -23,17 +23,18 @@ class Server:
         return {'host': self.settings.indi_host, 'port': self.settings.indi_port, 'connected': self.is_connected() }
 
     def connect(self):
-        self.client = INDIClient(address=self.settings.indi_host, port=self.settings.indi_port)
-        self.client.callbacks['on_server_disconnected'] = self.__on_disconnected
-        self.client.callbacks['on_new_device'] = self.__on_device_added
-        self.client.callbacks['on_device_removed'] = self.__on_device_removed
-        self.client.callbacks['on_new_property'] = self.__on_property_added
-        self.client.callbacks['on_remove_property'] = self.__on_property_removed
-        self.client.callbacks['on_new_switch'] = self.__on_property_updated
-        self.client.callbacks['on_new_number'] = self.__on_property_updated
-        self.client.callbacks['on_new_text'] = self.__on_property_updated
-        self.client.callbacks['on_new_light'] = self.__on_property_updated
-        self.client.callbacks['on_new_message'] = self.__on_message
+        self.client = INDIClient(address=self.settings.indi_host, port=self.settings.indi_port, callbacks={
+            'on_server_disconnected': self.__on_disconnected,
+            'on_new_device': self.__on_device_added,
+            'on_device_removed': self.__on_device_removed,
+            'on_new_property': self.__on_property_added,
+            'on_remove_property': self.__on_property_removed,
+            'on_new_switch': self.__on_property_updated,
+            'on_new_number': self.__on_property_updated,
+            'on_new_text': self.__on_property_updated,
+            'on_new_light': self.__on_property_updated,
+            'on_new_message': self.__on_message,
+        })
         self.blob_client.connect(self.settings.indi_host, self.settings.indi_port)
 
     def disconnect(self):

@@ -47,22 +47,31 @@ class BLOBClient:
         self.__listeners = []
         self.queue_size = queue_size
 
+    def __on_new_property(self, device, group, property_name):
+        self.indi_client.setBLOBMode(1, device, None)
+
     def connect(self, indi_host, indi_port):
         self.indi_client = INDIClient(address=indi_host, port=indi_port, callbacks={
             'on_new_blob': self.__on_new_blob,
+            'on_server_connected': lambda: logger.debug('BLOBClient: INDI server connected'),
+            'on_server_disconnected': self.__on_disconnected,
+            'on_new_property': self.__on_new_property,
         }, autoconnect=False)
-        def on_new_property(device, group, property_name):
-            self.indi_client.setBLOBMode(1, device, None)
 
-        self.indi_client.callbacks['on_new_property'] = on_new_property 
         self.indi_client.connectServer()
         logger.debug('BLOBClient connected')
 
     def disconnect(self):
         if self.indi_client:
-            self.indi_client.disconnectServer()
-        self.indi_client = None
+            indi_client = self.indi_client
+            self.indi_client = None
+            indi_client.disconnectServer()
         logger.debug('BLOBClient disconnected')
+    
+    def __on_disconnected(self, code):
+        if self.indi_client:
+            logger.warning('BLOBClient: Unexpected disconnection from INDI server with error code {}, trying to connect'.format(code))
+            self.connect(self.indi_client.host, self.indi_client.port)
 
     @contextmanager
     def listener(self, device):
