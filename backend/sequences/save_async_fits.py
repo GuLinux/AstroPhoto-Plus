@@ -2,8 +2,8 @@ import os
 from argparse import Namespace
 import json
 import shutil
-from utils.threads import new_thread
-from utils.mp import mp_queue, mp_process
+from utils.threads import start_thread
+from utils.mp import mp_queue, mp_start_process
 
 from app import logger
 
@@ -19,17 +19,11 @@ class SaveAsyncFITS:
         self.files_queue = mp_queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
         self.notify_queue = mp_queue()
 
-        self.process_files = mp_process(self.__process_sequence_files, self.files_queue, self.notify_queue)
-        self.notify_thread = new_thread(self.__notify_sequence_finished, self.notify_queue)
-
-        self.process_files.start()
-        self.notify_thread.start()
-
+        self.process_files = mp_start_process(self.__process_sequence_files, self.files_queue, self.notify_queue)
+        self.notify_thread = start_thread(self.__notify_sequence_finished, self.notify_queue)
 
         self.on_saved = on_saved
         self.on_error = on_error
-
-
 
     def join(self):
         self.process_files.join()

@@ -62,9 +62,6 @@ class ExposureSequenceJobRunner:
 
         self.callbacks.run('on_started', self)
 
-        #shots_queue = thread_queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
-        #blob_watcher = start_thread(self.__blob_watcher, shots_queue)
-
         save_async_fits = SaveAsyncFITS(on_saved=self.on_saved, on_error=self.on_error)
 
         def check_for_error():
