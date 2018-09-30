@@ -96,6 +96,9 @@ class Settings:
         on_update_args = [(x, getattr(self, x), new_data[x]) for x in new_data.keys()]
         
         self.json_map.update(new_data)
+        if 'log_level' in new_data:
+            self.update_log_level()
+
         redis_client.dict_set('settings', self.to_map())
 
         if self.on_update:

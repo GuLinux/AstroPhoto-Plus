@@ -92,8 +92,6 @@ class Controller:
             self.__create_indi_server()
         elif value_name == 'indi_service':
             self.__create_indi_server()
-        elif value_name == 'log_level':
-            settings.update_log_level()
 
     def __create_indi_server(self):
         self.__disconnect_indi_server()
