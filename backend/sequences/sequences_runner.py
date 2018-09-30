@@ -1,14 +1,13 @@
 from errors import BadRequestError
-import threading
 import time
+from utils.threads import start_thread
 
 class RunningSequence:
     def __init__(self, sequence, controller, logger, on_finished=None):
         self.sequence = sequence
         self.controller = controller
         self.logger = logger
-        self.thread = threading.Thread(target=self.__run)
-        self.thread.start()
+        self.thread = start_thread(self.__run)
         self.on_finished = on_finished
 
     def __on_updated(self):

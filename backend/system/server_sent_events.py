@@ -1,8 +1,7 @@
 import json
-from queue import Queue
 import uuid
 import time
-import threading
+from utils.threads import start_thread, thread_queue
 
 
 class SSEMessage:
@@ -21,7 +20,7 @@ class SSEMessage:
 
 class SSEClient:
     def __init__(self, sse):
-        self.queue = Queue()
+        self.queue = thread_queue()
         self.sse = sse
 
     def publish(self, message):
@@ -44,8 +43,7 @@ class SSE:
         self.logger = logger
 
     def publish(self, data, type):
-        publish_thread = threading.Thread(target=self.__publish_to_clients, args=(data, type))
-        publish_thread.start()
+        start_thread(self.__publish_to_clients, data, type)
 
     def __publish_to_clients(self, data, type):
         for client in self.clients:

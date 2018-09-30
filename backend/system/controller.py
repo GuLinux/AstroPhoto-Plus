@@ -7,7 +7,7 @@ from .server_sent_events import SSE
 from app import app
 import time
 from sequences import SequencesRunner, Sequence
-import threading
+from utils.threads import start_thread
 
 
 class EventListener:
@@ -73,8 +73,7 @@ class Controller:
         self.event_listener = EventListener(self.sse)
         self.sequences_runner = SequencesRunner(app.logger, self)
         self.sequences = None
-        self.ping_thread = threading.Thread(target=self.__ping_clients)
-        self.ping_thread.start()
+        self.ping_thread = start_thread(self.__ping_clients)
         self.__create_indi_service()
         self.__create_indi_server()
         self.sequences = SavedList(Sequence)

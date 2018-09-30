@@ -1,6 +1,6 @@
 import os
-import threading
 import subprocess
+from utils.threads import start_thread
 
 
 class Service:
@@ -46,7 +46,7 @@ class Service:
                     self.process.wait()
                     if on_exit:
                         on_exit(self)
-        threading.Thread(target=run_process).start()
+        start_thread(target=run_process)
 
     def stop(self, kill=False, wait=False):
         if not self.is_running():

@@ -1,10 +1,10 @@
 import queue
-import multiprocessing
 import shutil
 import os
 from pyindi_sequence import INDIClient
 from contextlib import contextmanager
 from app import logger
+from utils.mp import mp_queue
 
 class BLOBError(Exception):
     def __init(self, message):
@@ -29,7 +29,7 @@ class BLOB:
 class BLOBListener:
     def __init__(self, device, queue_size):
         self.device = device
-        self.queue = multiprocessing.Queue(queue_size)
+        self.queue = mp_queue(queue_size)
 
     def get(self, timeout=30):
         try:

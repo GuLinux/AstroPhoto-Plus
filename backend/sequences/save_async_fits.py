@@ -1,9 +1,9 @@
-import threading
 import os
-import multiprocessing
 from argparse import Namespace
 import json
 import shutil
+from utils.threads import new_thread
+from utils.mp import mp_queue, mp_process
 
 from app import logger
 
@@ -16,14 +16,15 @@ class SaveAsyncFITS:
     MAX_QUEUE_SIZE=2
 
     def __init__(self, on_saved, on_error):
-        self.files_queue = multiprocessing.Queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
-        self.notify_queue = multiprocessing.Queue()
+        self.files_queue = mp_queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
+        self.notify_queue = mp_queue()
 
-        self.process_files = multiprocessing.Process(target=self.__process_sequence_files, args=(self.files_queue, self.notify_queue))
-        self.notify_thread = threading.Thread(target=self.__notify_sequence_finished, args=(self.notify_queue,))
+        self.process_files = mp_process(self.__process_sequence_files, self.files_queue, self.notify_queue)
+        self.notify_thread = new_thread(self.__notify_sequence_finished, self.notify_queue)
 
         self.process_files.start()
         self.notify_thread.start()
+
 
         self.on_saved = on_saved
         self.on_error = on_error
