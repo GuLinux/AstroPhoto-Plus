@@ -9,6 +9,7 @@ set(VERSION_SUFFIX "" CACHE STRING "Suffix to append to version number")
 configure_file(${CMAKE_SOURCE_DIR}/scripts/StarQuew-ctl ${CMAKE_BINARY_DIR}/scripts/StarQuew-ctl @ONLY)
 
 set(ENV{SKIP_CMAKE} 1) 
+message("Setting build version: ${PROJECT_VERSION_MAJOR} ${PROJECT_VERSION_MINOR} ${PROJECT_VERSION_PATCH}${VERSION_SUFFIX}")
 execute_process(
     COMMAND python3 ./scripts/set_version.py ${PROJECT_VERSION_MAJOR} ${PROJECT_VERSION_MINOR} ${PROJECT_VERSION_PATCH}${VERSION_SUFFIX}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
