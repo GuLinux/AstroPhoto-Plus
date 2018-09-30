@@ -88,8 +88,7 @@ class SaveAsyncFITS:
                     with open(info_json, 'w') as info_file:
                         json.dump(info, info_file)
 
-                    with open(output_file, 'wb') as fits_file:
-                        fits_file.write(item.blob)
+                    item.blob.save(output_file)
 
                     notify_queue.put({
                         'type': 'each_finished',

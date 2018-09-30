@@ -5,6 +5,9 @@ from pyindi_sequence import INDIClient
 from utils.threads import start_thread, thread_queue
 from errors import SequenceJobStatusError 
 
+from indi.blob_client import BLOBError
+
+
 
 class SequenceCallbacks:
     def __init__(self, **kwargs):
@@ -20,31 +23,6 @@ class SequenceCallbacks:
             return
         for callback in self.callbacks[name]:
             callback(*args, **kwargs)
-
-
-class Shot:
-    def __init__(self):
-        pass
-
-    def run(self):
-        pass
-
-class Shots:
-    def __init__(self, camera, exposure):
-        self.camera = camera
-        self.exposure = exposure
-
-    def shoot(self, number):
-        self.camera.shoot(self.exposure)
-        pass
-
-class Blob:
-    def __init__(self):
-        pass
-
-    def wait(self):
-        pass
-
 
 
 class ExposureSequenceJobRunner:
@@ -76,108 +54,71 @@ class ExposureSequenceJobRunner:
         self.error = (error, item_number)
 
     def run(self):
+        # TODO: fix
+        from system import controller
         self.stopped = False
         self.error = None
         self.camera.set_upload_to('client')
 
         self.callbacks.run('on_started', self)
 
-        shots_queue = thread_queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
-        blob_watcher = start_thread(self.__blob_watcher, shots_queue)
+        #shots_queue = thread_queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
+        #blob_watcher = start_thread(self.__blob_watcher, shots_queue)
+
+        save_async_fits = SaveAsyncFITS(on_saved=self.on_saved, on_error=self.on_error)
+
+        def check_for_error():
+            if self.error:
+                self.finished = self.error[1] -1
+                raise RuntimeError(self.error[0])
+
         try:
-            for sequence in range(self.finished, self.count):
-                if self.stopped:
-                    self.callbacks.run('on_stopped', self, sequence)
-                    shots_queue.put({'type': 'stopped'})
-                    raise SequenceJobStatusError('stopped', 'Exposure sequence job stopped')
+            with controller.indi_server.blob_client.listener(self.camera) as blob_listener:
+                for sequence in range(self.finished, self.count):
+                    logger.debug('Running sequence item {} of {}, stopped={}, error={}'.format(sequence, self.count, self.stopped, self.error))
+                    if self.stopped:
+                        save_async_fits.stopped()
+                        self.callbacks.run('on_stopped', self, sequence)
+                        raise SequenceJobStatusError('stopped', 'Exposure sequence job stopped')
+                    check_for_error()
+                    self.callbacks.run('on_each_started', self, sequence)
 
-                if self.error:
-                    self.finished = self.error[1] -1
-                    raise RuntimeError(self.error[0])
+                    time_started = time.time()
+                    temp_before = self.ccd_temperature
 
-                self.callbacks.run('on_each_started', self, sequence)
-                shots_queue.put({
-                    'type': 'shot',
-                    'index': sequence,
-                })
-                self.camera.shoot(self.exposure)
-
-                self.finished += 1
-                self.callbacks.run('on_each_finished', self, sequence, self.__output_file(sequence))
-            shots_queue.put({'type': 'finished'})
+                    self.camera.shoot(self.exposure)
+                    
+                    self.__save_shot(blob_listener.get(), sequence, temp_before, time_started, save_async_fits)
+                    self.finished += 1
+                    self.callbacks.run('on_each_finished', self, sequence, self.__output_file(sequence))
         except Exception as e:
             self.error = (e,)
             logger.debug('Exception on shot')
-            shots_queue.put({'type': 'error'})
             raise
         finally:
             # Note: this means we wait for *all* images in this sequences to be saved, before starting the next sequence. Which might be a bottleneck, but then again, if you're shooting much faster than you can save, then you probably have a bigger issue...
             logger.debug('** sequence run exiting: stopped={}, error={}'.format(self.stopped, self.error))
-            blob_watcher.join()
+            check_for_error()
             if not self.stopped and not self.error:
+                save_async_fits.finished()
                 logger.debug('*** sequence run: calling on_finished')
                 self.callbacks.run('on_finished', self)
 
+    def __save_shot(self, blob, index, temp_before, time_started, save_async_fits):
+        temp_after = self.ccd_temperature
+        time_finished = time.time()
 
-
-
-    def __blob_watcher(self, shots_queue):
-        save_async_fits = SaveAsyncFITS(on_saved=self.on_saved, on_error=self.on_error)
-        indi_host, indi_port = self.server.client.host, self.server.client.port
-
-        blobs_queue = thread_queue(SaveAsyncFITS.MAX_QUEUE_SIZE)
-        def on_new_blob(bp):
-            # blob_info = 'name={}, label={}, format={}, bloblen={}, size={}'.format(bp.name, bp.label, bp.format, bp.bloblen, bp.size)
-            if bp.bvp.device == self.camera.name:
-                blobs_queue.put(bp)
-
-        indi_client = INDIClient(address=indi_host, port=indi_port, callbacks={
-            'on_new_blob': on_new_blob,
-        }, autoconnect=False)
-
-
-        def on_new_property(device, group, property_name):
-            indi_client.setBLOBMode(1, device, None)
-
-        indi_client.callbacks['on_new_property'] = on_new_property 
-
-        indi_client.connectServer()
-        try:
-            while True:
-                logger.debug('ExposureSequenceJobRunner: waiting for shot')
-                item = shots_queue.get()
-                logger.debug('ExposureSequenceJobRunner: shot finished')
-                if item['type'] == 'finished':
-                    save_async_fits.finished()
-                    return
-                elif item['type'] == 'error':
-                    return
-                elif item['type'] == 'stopped':
-                    save_async_fits.stopped()
-                    return
-                elif item['type'] == 'shot':
-                    time_started = time.time()
-                    temp_before = self.ccd_temperature
-
-                    logger.debug('ExposureSequenceJobRunner: waiting for BLOB')
-                    blob = blobs_queue.get(timeout=20 + self.exposure * 2)
-                    logger.debug('ExposureSequenceJobRunner: BLOB received')
-                    temp_after = self.ccd_temperature
-                    time_finished = time.time()
-
-                    save_async_fits.put({
-                        'type': 'exposure_finished',
-                        'number': item['index'] + self.start_index,
-                        'exposure': self.exposure,
-                        'time_started': time_started,
-                        'time_finished': time_finished,
-                        'temperature_started': temp_before,
-                        'temperature_finished': temp_after,
-                        'output_file': self.__output_file(item['index']),
-                        'blob': blob.getblobdata(),
-                    })
-        finally:
-            indi_client.disconnectServer()
+        save_async_fits.put({
+            'type': 'exposure_finished',
+            'number': index + self.start_index,
+            'exposure': self.exposure,
+            'time_started': time_started,
+            'time_finished': time_finished,
+            'temperature_started': temp_before,
+            'temperature_finished': temp_after,
+            'output_file': self.__output_file(index),
+            'blob': blob,
+        })
 
 
     def __output_file(self, sequence):
