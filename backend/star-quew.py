@@ -15,13 +15,13 @@ from api_utils import *
 from indi import Server, Property, Device, INDIProfile
 from errors import NotFoundError
 from images import ImagesDatabase, camera_images_db, main_images_db
-from system import commands, controller
+from system import commands, controller, settings
 from sequences import Sequence, SequenceJob
-
-
 
 import io
 import json
+
+settings.update_log_level()
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

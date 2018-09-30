@@ -58,7 +58,7 @@ class BLOBClient:
         self.indi_client.connectServer()
         logger.debug('BLOBClient connected')
 
-    def disconnect(self, address, port):
+    def disconnect(self):
         if self.indi_client:
             self.indi_client.disconnectServer()
         self.indi_client = None

@@ -2,7 +2,27 @@ import os
 from errors import BadRequestError
 import six
 from redis_client import redis_client
+from app import logger
+import logging
+import sys
+def syslog(s):
+    sys.stderr.write('{}\n'.format(s))
+    sys.stderr.flush()
 
+
+log_levels = {
+    'CRITICAL': logging.CRITICAL,
+    'ERROR': logging.ERROR,
+    'WARNING': logging.WARN,
+    'INFO': logging.INFO,
+    'DEBUG': logging.DEBUG,
+}
+
+def lookup_level(level):
+    level = [k for k, v in log_levels.items() if v == level]
+    if not level:
+        return 'INFO'
+    return level[0]
 
 class Settings:
     def __init__(self):
@@ -12,7 +32,7 @@ class Settings:
         self.indi_service_logs = self.__build_path(['.cache', 'StarQuew', 'logs', 'indi_service'], isdir=True)
 
         self.ro_props = ['default_datadir', 'indi_service_logs', 'config_dir']
-        self.rw_props = ['sequences_dir', 'indi_prefix', 'indi_host', 'indi_port', 'indi_service']
+        self.rw_props = ['sequences_dir', 'indi_prefix', 'indi_host', 'indi_port', 'indi_service', 'log_level']
 
         self.on_update = None
         self.reload()
@@ -61,6 +81,10 @@ class Settings:
     def indi_service(self):
         return self.json_map.get('indi_service', True)
 
+    @property
+    def log_level(self):
+        return lookup_level(logger.getEffectiveLevel())
+
     def update(self, new_data):
         ro_props = [x for x in new_data.keys() if x in self.ro_props]
         unsupported_props = [x for x in new_data.keys() if x not in self.rw_props]
@@ -77,6 +101,13 @@ class Settings:
         if self.on_update:
             for new_item in on_update_args:
                 self.on_update(*new_item)
+
+    def update_log_level(self):
+            settings_level = self.json_map.get('log_level', self.log_level)
+            syslog('setting log level from {} to {}'.format(self.log_level, settings_level))
+            logger.setLevel(log_levels[settings_level])
+
+
 
     def __build_path(self, components, root=None, isdir=False):
         path = os.path.join(root if root else os.environ['HOME'], *components)

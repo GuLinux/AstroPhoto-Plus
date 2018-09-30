@@ -15,6 +15,11 @@ const isChanged = (settings, key) => key in settings.pending && settings.pending
  
 const displayTextValue = (settings, key) => displayValue(settings, key, (v) => v && v !== '', '')
 
+const SettingButton = ({settings, setting, value, onUpdate, ...props}) => (
+    <Button icon={settings.current[setting] === value && 'check'} active={settings.current[setting] === value} onClick={() => onUpdate(setting, value)} {...props} />
+)
+
+
 
 const Settings = ({settings, onChange, reset, update, showCommands, version='N/A'}) => {
     const InputButtons = ({settingsKey, customButtons=null}) => (
@@ -32,6 +37,7 @@ const Settings = ({settings, onChange, reset, update, showCommands, version='N/A
  
     const currentSequencesDir = displayTextValue(settings, 'sequences_dir', '');
     const currentINDIPath = displayTextValue(settings, 'indi_prefix', '');
+
     return (
         <Container>
             <Segment>
@@ -91,6 +97,16 @@ const Settings = ({settings, onChange, reset, update, showCommands, version='N/A
                         } />}
                     />
                     <Message attached='top' content='Only change this setting if you installed INDI on a custom path.' info />
+                    <Divider hidden />
+
+                    <label>Log level</label>
+                    <Form.Group inline>
+                        <SettingButton size='mini' content='Critical' value='CRITICAL' settings={settings} setting='log_level' onUpdate={update} />
+                        <SettingButton size='mini' content='Error' value='ERROR' settings={settings} setting='log_level' onUpdate={update} />
+                        <SettingButton size='mini' content='Warning' value='WARNING' settings={settings} setting='log_level' onUpdate={update} />
+                        <SettingButton size='mini' content='Info' value='INFO' settings={settings} setting='log_level' onUpdate={update} />
+                        <SettingButton size='mini' content='Debug' value='DEBUG' settings={settings} setting='log_level' onUpdate={update} />
+                    </Form.Group>
                 </Segment>
             </Form>
 
