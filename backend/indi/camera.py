@@ -10,6 +10,8 @@ import os
 import time
 from app import logger
 
+from indi.blob_client import BLOBError
+
 
 class Camera:
     IMAGES_LIST_SIZE = 3
@@ -47,13 +49,17 @@ class Camera:
         return self.camera
 
     def shoot_image(self, options):
+        # TODO: not great..
+        from system import controller
         id = random_id(None)
 
         if self.__has_dev_fits():
             return self.__dev_fits(options, id)
+
         exposure = options['exposure']
+        filename = os.path.join(self.settings.camera_tempdir, '{}.fits'.format(id))
         try:
-            self.camera.set_upload_to('local')
+            self.camera.set_upload_to('client')
 
             if 'roi' in options and options['roi']:
                 self.camera.set_roi({
@@ -68,15 +74,17 @@ class Camera:
             self.camera.set_upload_path(self.settings.camera_tempdir, prefix=id)
             self.logger.debug('Camera.shoot: id={}, parameters: {}'.format(id, options))
 
-            self.camera.shoot(exposure)
+            with controller.indi_server.blob_client.listener(self.camera) as blob_listener:
+                self.camera.shoot(exposure)
+                blob_listener.get().save(filename)
             self.camera.clear_roi()
+
         except RuntimeError as e:
             raise FailedMethodError(str(e))
+        except BLOBError as e:
+            raise FailedMethodError(str(e))
 
-        filename = [x for x in os.listdir(self.settings.camera_tempdir) if x.startswith(id)]
-        if not filename:
-            raise FailedMethodError('Image file with id {} not found'.format(id))
-        image = self.__new_image_to_list(filename[0], id)
+        image = self.__new_image_to_list(filename, id)
         return image.to_map(for_saving=False)
 
 

@@ -1,6 +1,5 @@
 import os, time
 from .save_async_fits import SaveAsyncFITS
-import tempfile
 from app import logger
 from pyindi_sequence import INDIClient
 from queue import Queue
