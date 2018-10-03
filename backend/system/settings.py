@@ -21,7 +21,7 @@ log_levels = {
 def lookup_level(level):
     level = [k for k, v in log_levels.items() if v == level]
     if not level:
-        return 'INFO'
+        return 'WARNING'
     return level[0]
 
 class Settings:

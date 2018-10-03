@@ -8,5 +8,4 @@ set -x
 #     pip3 install -r requirements.txt
 # fi
 # echo "$requirements_checksum" > "$last_requirements_checksum_file"
-
-DEV_MODE=1 SAMPLE_FITS_PATH="$PWD/dev_sample_fits" ./start-server --log-level debug
+ACCESS_LOG_FILE=/tmp/access.log ./start-debug-server

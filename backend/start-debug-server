@@ -1,3 +1,2 @@
 #!/bin/bash
-
-DEV_MODE=1 SAMPLE_FITS_PATH="$PWD/dev_sample_fits" ./start-server --log-level debug
+DEV_MODE=1 SAMPLE_FITS_PATH="$PWD/dev_sample_fits" ./start-server --log-level debug --access-logfile "${ACCESS_LOG_FILE:-./access.log}"

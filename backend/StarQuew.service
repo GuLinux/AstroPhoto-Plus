@@ -4,7 +4,7 @@ Wants=redis.service
 
 [Service]
 Type=simple
-ExecStart=@STARQUEW_INSTALL_PREFIX@/backend/start-server
+ExecStart=@STARQUEW_INSTALL_PREFIX@/backend/start-server --log-syslog --log-syslog-prefix StarQuew --disable-redirect-access-to-syslog
 ExecStartPre=@STARQUEW_INSTALL_PREFIX@/backend/start-server --check-user
 WorkingDirectory=@STARQUEW_INSTALL_PREFIX@/backend
 Environment="SYSTEM_CONFDIR=@CONFDIR@"
