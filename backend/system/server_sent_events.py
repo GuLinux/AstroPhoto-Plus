@@ -53,11 +53,11 @@ class SSE:
     def subscribe(self):
         new_client = SSEClient(self)
         self.clients.append(new_client)
-        self.logger.debug('new client subscribed: {}'.format(new_client))
+        self.logger.info('new client subscribed: {}'.format(new_client))
         return new_client
 
     def unsubscribe(self, client):
-        self.logger.debug('unsubscribing client: {} (clients: {})'.format(client, len(self.clients)))
+        self.logger.info('unsubscribing client: {} (clients: {})'.format(client, len(self.clients)))
         self.clients = [x for x in self.clients if x != client]
         self.logger.debug('clients now: {}'.format(len(self.clients)))
                

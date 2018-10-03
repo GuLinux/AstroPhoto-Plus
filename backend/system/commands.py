@@ -17,7 +17,7 @@ class Command:
         self.confirmation_message = obj.get('confirmation_message', None)
         self.request_parameters = self.__build_request_parameters(obj.get('request_parameters', None))
         self._check = obj.get('check', None)
-        logger.debug('Command parsed: %s', self.name)
+        logger.info('Command parsed: %s', self.name)
 
     def __build_request_parameters(self, request_parameters):
         if not request_parameters or not 'variables' in request_parameters:
@@ -28,7 +28,7 @@ class Command:
                 try:
                     result = subprocess.run(variable['get_default_value'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
                     if result.stderr:
-                        logger.debug(result.stderr.decode())
+                        logger.debug('Command default value: '.format(result.stderr.decode()))
                     variable['default_value'] = result.stdout.decode()
                 except Exception as e:
                     logger.warning('error getting default value for variable {}: %s'.format(variable), e)
@@ -63,11 +63,10 @@ class Command:
     def run(self, request_obj):
         subprocess_env = os.environ
         arguments = self.arguments.copy()
-        logger.debug('arguments: {}'.format(arguments))
         if 'parameters' in request_obj:
-            logger.debug('parameters: {}'.format(request_obj['parameters']))
+            logger.debug('Command parameters: {}'.format(request_obj['parameters']))
             arguments.extend([p['value'] for p in request_obj['parameters']])
-        logger.debug('arguments: {}'.format(arguments))
+        logger.debug('Command arguments: {}'.format(arguments))
 
         try:
             result = subprocess.run(arguments, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -88,10 +87,10 @@ class Commands:
 
 
     def __read_commands_file(self, filename):
-        logger.debug('parsing commands file: {}'.format(filename))
+        logger.info('Commands: parsing commands file: {}'.format(filename))
 
         if not os.path.isfile(filename):
-            logger.debug('commands file not found: {}'.format(filename))
+            logger.info('commands file not found: {}'.format(filename))
             return False, []
 
         with open(filename, 'r') as json_commands_file:

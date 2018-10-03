@@ -31,10 +31,10 @@ class RedisClient:
     def __init__(self):
         redis_host = os.environ.get('REDIS_SERVER', '127.0.0.1')
         redis_port = os.environ.get('REDIS_PORT', 6379) 
-        logger.debug('Connecting to redis server at {}:{}'.format(redis_host, redis_port))
+        logger.info('Connecting to redis server at {}:{}'.format(redis_host, redis_port))
         self.client = StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
         self.version = self.get_version()
-        logger.debug('Initialized redis, schema version: {}'.format(self.version))
+        logger.info('Initialized redis, schema version: {}'.format(self.version))
         if self.version != RedisClient.CURRENT_VERSION:
             self.migrate_schema()
 

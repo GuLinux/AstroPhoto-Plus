@@ -83,9 +83,9 @@ class Controller:
 
 
     def __on_settings_update(self, value_name, old_value, new_value):
-        app.logger.debug('setting [{}] updated: {} => {}'.format(value_name, old_value, new_value))
+        app.logger.info('setting [{}] updated: {} => {}'.format(value_name, old_value, new_value))
         if value_name == 'indi_prefix':
-            app.logger.debug('restarting INDI service')
+            app.logger.info('restarting INDI service')
             self.__create_indi_service()
         elif value_name == 'indi_host' or value_name == 'indi_port':
             self.__create_indi_server()

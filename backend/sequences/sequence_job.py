@@ -42,7 +42,7 @@ class SequenceJob:
         self.status = 'stopping'
         if hasattr(self.job, 'stop'):
             self.status = self.job.stop()
-        logger.debug('stop finished: status={}'.format(self.status))
+        logger.info('sequence job stopped: status={}'.format(self.status))
 
 
     @staticmethod
@@ -79,7 +79,7 @@ class SequenceJob:
             on_update()
         except SequenceJobStatusError as e:
             self.status = e.status
-            logger.debug('Sequence job status changed to {}'.format(e.status))
+            logger.info('Sequence job status changed to {}'.format(e.status))
             on_update()
         except RuntimeError as e: # TODO: specific exception?
             self.status = 'error'

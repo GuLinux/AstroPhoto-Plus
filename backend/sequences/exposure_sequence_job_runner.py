@@ -50,7 +50,7 @@ class ExposureSequenceJobRunner:
         self.callbacks.run('on_each_saved', self, item.sequence, item.file_name)
 
     def on_error(self, error, item_number):
-        logger.debug('{}: {}'.format(error, item_number))
+        logger.warning('{}: {}'.format(error, item_number))
         self.error = (error, item_number)
 
     def run(self):
@@ -72,7 +72,7 @@ class ExposureSequenceJobRunner:
         try:
             with controller.indi_server.blob_client.listener(self.camera) as blob_listener:
                 for sequence in range(self.finished, self.count):
-                    logger.debug('Running sequence item {} of {}, stopped={}, error={}'.format(sequence, self.count, self.stopped, self.error))
+                    logger.info('Running sequence item {} of {}, stopped={}, error={}'.format(sequence, self.count, self.stopped, self.error))
                     if self.stopped:
                         save_async_fits.stopped()
                         self.callbacks.run('on_stopped', self, sequence)
@@ -90,11 +90,11 @@ class ExposureSequenceJobRunner:
                     self.callbacks.run('on_each_finished', self, sequence, self.__output_file(sequence))
         except Exception as e:
             self.error = (e,)
-            logger.debug('Exception on shot')
+            logger.warning('Exception on shot')
             raise
         finally:
             # Note: this means we wait for *all* images in this sequences to be saved, before starting the next sequence. Which might be a bottleneck, but then again, if you're shooting much faster than you can save, then you probably have a bigger issue...
-            logger.debug('** sequence run exiting: stopped={}, error={}'.format(self.stopped, self.error))
+            logger.info('** sequence run exiting: stopped={}, error={}'.format(self.stopped, self.error))
             check_for_error()
             if not self.stopped and not self.error:
                 save_async_fits.finished()

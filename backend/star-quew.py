@@ -175,7 +175,7 @@ def get_device_properties(name):
 @json_api
 @indi_connected
 def update_indi_property(device, property_name, json):
-    app.logger.debug('update property: {}/{} ({})'.format(device, property_name, json))
+    app.logger.info('update property: {}/{} ({})'.format(device, property_name, json))
     indi_property = controller.indi_server.property(device=device, name=property_name)
     return { 'action': 'set_property', 'device': device, 'property': property_name, 'values': json, 'result': indi_property.set_values(json) }
 
@@ -294,7 +294,7 @@ def duplicate_sequence(id):
 def add_sequence_job(id, json):
     new_sequence_job = SequenceJob(json)
     with controller.sequences.lookup_edit(id) as sequence:
-        app.logger.debug('adding sequence job {} to id {}'.format(new_sequence_job, id))
+        app.logger.info('adding sequence job {} to id {}'.format(new_sequence_job, id))
         sequence.sequence_jobs.append(new_sequence_job)
     return new_sequence_job.to_map()
 
@@ -303,7 +303,7 @@ def add_sequence_job(id, json):
 @json_input
 @json_api
 def update_sequence_job(sequence_id, sequence_job_id, json):
-    app.logger.debug('modifying sequence job {} from sequence'.format(sequence_job_id, sequence_id))
+    app.logger.info('modifying sequence job {} from sequence'.format(sequence_job_id, sequence_id))
     new_sequence_job = SequenceJob(json)
     with controller.sequences.lookup_edit(sequence_id) as sequence:
         sequence.sequence_jobs = [new_sequence_job if x.id == sequence_job_id else x for x in sequence.sequence_jobs]
@@ -314,7 +314,7 @@ def update_sequence_job(sequence_id, sequence_job_id, json):
 @json_input
 @json_api
 def move_sequence_job(sequence_id, sequence_job_id, json):
-    app.logger.debug('moving sequence job {}: direction: {}'.format(sequence_job_id, json['direction']))
+    app.logger.info('moving sequence job {}: direction: {}'.format(sequence_job_id, json['direction']))
     with controller.sequences.lookup_edit(sequence_id) as sequence:
         index = [ index for index, job in enumerate(sequence.sequence_jobs) if job.id == sequence_job_id]
         if not index:
@@ -330,7 +330,7 @@ def move_sequence_job(sequence_id, sequence_job_id, json):
 @app.route('/api/sequences/<sequence_id>/sequence_jobs/<sequence_job_id>/duplicate', methods=['PUT'])
 @json_api
 def duplicate_sequence_job(sequence_id, sequence_job_id):
-    app.logger.debug('duplicate job {}'.format(sequence_job_id))
+    app.logger.info('duplicate job {}'.format(sequence_job_id))
     with controller.sequences.lookup_edit(sequence_id) as sequence:
         sequence_job = sequence.job(sequence_job_id)
         sequence.sequence_jobs.append(sequence_job.duplicate())

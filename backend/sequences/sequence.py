@@ -80,7 +80,7 @@ class Sequence:
     def reset(self):
         for sequence_job in self.sequence_jobs:
             self.status = 'idle'
-            logger.debug('resetting sequence job {}'.format(sequence_job))
+            logger.info('resetting sequence job {}'.format(sequence_job))
             sequence_job.reset()
 
     def run(self, server, root_directory, event_listener, logger, on_update=None):
@@ -99,15 +99,11 @@ class Sequence:
         sequence_root_path = os.path.join(root_directory, self.upload_path)
 
  
-        logger.debug('Starting sequence with camera: {}={} and filter_wheel: {}={}'.format(self.camera, camera.device.name, self.filter_wheel, filter_wheel.device.name if filter_wheel else 'N/A'))
+        logger.info('Starting sequence with camera: {}={} and filter_wheel: {}={}'.format(self.camera, camera.device.name, self.filter_wheel, filter_wheel.device.name if filter_wheel else 'N/A'))
 
         self.status = 'starting'
 
-        for sequence_job in self.sequence_jobs:
-            if self.is_todo(sequence_job) and sequence_job.status != 'stopped':
-                logger.debug('resetting sequence job {}'.format(sequence_job))
-                sequence_job.reset()
-
+        self.reset()
         on_update()
         try:
             os.makedirs(sequence_root_path, exist_ok=True)

@@ -53,7 +53,7 @@ class BLOBClient:
     def connect(self, indi_host, indi_port):
         self.indi_client = INDIClient(address=indi_host, port=indi_port, callbacks={
             'on_new_blob': self.__on_new_blob,
-            'on_server_connected': lambda: logger.debug('BLOBClient: INDI server connected'),
+            'on_server_connected': lambda: logger.info('BLOBClient: INDI server connected'),
             'on_server_disconnected': self.__on_disconnected,
             'on_new_property': self.__on_new_property,
         }, autoconnect=False)

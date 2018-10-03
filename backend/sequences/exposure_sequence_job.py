@@ -85,7 +85,7 @@ class ExposureSequenceJob:
             on_update()
 
         def on_each_saved(sequence, index, filename):
-            logger.debug('received file for index {}: {}'.format(index, filename))
+            logger.info('received file for index {}: {}'.format(index, filename))
             image = None
 
             while not image or not image.path == filename:
@@ -102,7 +102,7 @@ class ExposureSequenceJob:
             on_update()
             self.sequence = None
 
-        logger.debug('Starting sequence: {}, upload_path={}'.format(self.sequence, upload_path))
+        logger.info('Starting sequence: {}, upload_path={}'.format(self.sequence, upload_path))
         self.sequence.callbacks.add('on_started', on_started)
         self.sequence.callbacks.add('on_each_started', on_each_started)
         self.sequence.callbacks.add('on_each_finished', on_each_finished)
@@ -112,7 +112,7 @@ class ExposureSequenceJob:
             self.sequence.run()
         except:
             self.progress = self.sequence.finished
-            logger.debug('Error running exposures job')
+            logger.warning('Error running exposures job')
             raise
         finally:
             self.sequence = None

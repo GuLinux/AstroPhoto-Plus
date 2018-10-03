@@ -72,7 +72,7 @@ class Camera:
                 self.camera.clear_roi()
 
             self.camera.set_upload_path(self.settings.camera_tempdir, prefix=id)
-            self.logger.debug('Camera.shoot: id={}, parameters: {}'.format(id, options))
+            self.logger.info('Camera.shoot: id={}, parameters: {}'.format(id, options))
 
             with controller.indi_server.blob_client.listener(self.camera) as blob_listener:
                 self.camera.shoot(exposure)

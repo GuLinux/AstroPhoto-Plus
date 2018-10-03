@@ -11,7 +11,6 @@ class RunningSequence:
         self.on_finished = on_finished
 
     def __on_updated(self):
-        #self.logger.debug('sequence updated: {}'.format(self.sequence.to_map()))
         self.controller.event_listener.on_sequence_update(self.sequence)
         self.controller.sequences.save(self.sequence)
 
@@ -19,7 +18,6 @@ class RunningSequence:
         # TODO: not ideal, find a better solution
         # Let the HTTP thread return a response, then start the thread
         time.sleep(1)
-        self.logger.debug('Inside sequence thread')
         try:
             self.sequence.run(self.controller.indi_server, self.controller.settings.sequences_dir, self.controller.event_listener, self.logger, on_update=self.__on_updated)
         except Exception as e:

@@ -66,7 +66,7 @@ class Server:
         self.event_listener.on_indi_message(self.device(indi_device=device), message)
 
     def __on_disconnected(self, error_code):
-        self.logger.debug('indi server disconnected; disconnect_requested: {}'.format(self.__disconnect_requested))
+        self.logger.info('indi server disconnected; disconnect_requested: {}'.format(self.__disconnect_requested))
         self.blob_client.disconnect()
         self.client = None
         if  time.time() - self.__disconnect_requested > 2 and self.event_listener.on_indiserver_disconnected:

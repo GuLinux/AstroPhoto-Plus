@@ -83,6 +83,7 @@ class Property:
     def set_values(self, property_values, sync=False, timeout=None):
         indi_device = device.Device(self.client, self.logger, name=self.device).find_indi_device()
         try:
+            self.logger.info('setting property value for {}'.format(self.name))
             if self.type == 'switch':
                 on_switches = []
                 off_switches = []
@@ -91,7 +92,6 @@ class Property:
                         on_switches.append(key)
                     else:
                         off_switches.append(key)
-                self.logger.debug('setting switch value for {}'.format(self.name))
                 self.logger.debug('on_switches: {}'.format(on_switches))
                 self.logger.debug('off_switches: {}'.format(off_switches))
 
