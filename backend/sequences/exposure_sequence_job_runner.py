@@ -89,7 +89,7 @@ class ExposureSequenceJobRunner:
                     self.finished += 1
                     self.callbacks.run('on_each_finished', self, sequence, self.__output_file(sequence))
         except Exception as e:
-            self.error = (e,)
+            self.error = (e,self.finished)
             logger.warning('Exception on shot')
             raise
         finally:
