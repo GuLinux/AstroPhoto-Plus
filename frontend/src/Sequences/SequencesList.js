@@ -2,7 +2,6 @@ import React from 'react';
 import { Dropdown, Container, Button, Table, Label } from 'semantic-ui-react'
 import AddSequenceModalContainer from './AddSequenceModalContainer';
 import { ConfirmDialog } from '../Modals/ModalDialog';
-import { canStart } from './model'
 import { Link } from 'react-router-dom';
 import ImportSequenceContainer from './ImportSequenceContainer';
 
@@ -58,8 +57,8 @@ class SequencesList extends React.Component {
                                 <Button.Group icon compact size='mini'>
                                     <Button as={Link} to={uriFor(sequence)} title="Open" icon='folder open' />
                                     <AddSequenceModalContainer trigger={<Button title="Edit" icon='edit' />} sequence={sequence} />
-                                    <Button title="Start" disabled={!canStart(sequence, gear[sequence.id])}  onClick={() => startSequence(sequence)} icon='play' />
-                                    <Button title="Stop" disabled={sequence.status !== 'running'} onClick={() => stopSequence(sequence)} icon='stop'/>
+                                    <Button title="Start" disabled={!sequence.canStart(gear[sequence.id])}  onClick={() => startSequence(sequence)} icon='play' />
+                                    <Button title="Stop" disabled={!sequence.canStop} onClick={() => stopSequence(sequence)} icon='stop'/>
 
                                     <Button as='div'>
                                         <Dropdown text='more...' closeOnChange={true}>
@@ -81,7 +80,7 @@ class SequencesList extends React.Component {
                                                 />
                                                 <ConfirmDialog
                                                     trigger={
-                                                        <Dropdown.Item text="Reset" disabled={sequence.status === 'running'} icon='redo'/>
+                                                        <Dropdown.Item text="Reset" disabled={!sequence.canReset} icon='redo'/>
                                                     }
                                                     content='This will reset the status of all jobs in this sequence. Are you sure?'
                                                     header='Confirm sequence reset'

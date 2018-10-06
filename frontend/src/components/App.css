@@ -87,3 +87,8 @@ body {
 .pageNavItem:hover {
     color: #ffffff66!important;
 }
+.pageNavItem.disabled {
+    color: #ffffff66!important;
+}
+
+

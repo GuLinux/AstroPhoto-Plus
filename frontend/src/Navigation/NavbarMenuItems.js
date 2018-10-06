@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Dropdown } from 'semantic-ui-react';
+import { Menu, Dropdown, Header } from 'semantic-ui-react';
 
 import { NavLink } from 'react-router-dom';
 export const NavbarMenu = (props) => <Menu stackable inverted size='large' {...props} />
@@ -50,7 +50,8 @@ export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, isR
             <React.Fragment>
                 { sectionMenu && (
                     <Menu.Item>
-                        {sectionMenu.section}
+                        <Header as='h3' content={sectionMenu.section} />
+                        { sectionMenu.sectionText && <i>{ sectionMenu.sectionText }</i> }
                         <Menu.Menu>
                             {pageMenuItems(sectionMenu, Menu.Item)}
                         </Menu.Menu>

@@ -2,7 +2,6 @@ import React from 'react';
 import AddSequenceJobModal from '../SequenceJobs/AddSequenceJobModal'
 import SequenceJobsContainer from '../SequenceJobs/SequenceJobsContainer';
 import { Table, Label, Container, Header, Card, Icon } from 'semantic-ui-react';
-import { canStart } from './model';
 import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
 import INDILight from '../INDI-Server/INDILight';
 import { withRouter } from 'react-router';
@@ -11,6 +10,7 @@ import { formatDecimalNumber } from '../utils';
 import LastCapturedSequenceImageContainer from './LastCapturedSequenceImageContainer';
 import NotFoundPage from '../components/NotFoundPage';
 import { secs2time } from '../utils';
+import { ConfirmDialog } from '../Modals/ModalDialog';
 
 // TODO: refactor Gear pages out of this
 
@@ -132,19 +132,34 @@ const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, t
 class Sequence extends React.Component {
 
     updateMenu = () => {
-        const { startSequence, sequence, canEdit, onMount, gear } = this.props;
+        const { startSequence, stopSequence, resetSequence, sequence, onMount, gear } = this.props;
         if(sequence === null)
             return;
         onMount({
-            section: 'Sequence Jobs',
+            section: 'Sequence',
+            sectionText: sequence.name,
             navItems: [
-                { icon: 'play', onClick: () => startSequence(), disabled: !canStart(sequence, gear), content: 'start' },
+                { icon: 'play', onClick: () => startSequence(), disabled: !sequence.canStart(gear), content: 'start' },
+                { icon: 'stop', onClick: () => stopSequence(), disabled: !sequence.canStop, content: 'stop' },
+                { openModal: ConfirmDialog, modalProps: {
+                        content: 'This will reset the status of all jobs in this sequence. Are you sure?',
+                        header: 'Confirm sequence reset',
+                        cancelButton: 'No',
+                        confirmButton: 'Yes',
+                        onConfirm: () => resetSequence(sequence),
+                        size: 'mini',
+                        basic: true,
+                        centered: false,
+                    },
+                    icon: 'redo', disabled: !sequence.canReset, content: 'reset' },
+                { icon: 'arrow left', as: Link, to: "/sequences/all", content: 'back to sequences' },
+
                 { openModal: AddSequenceJob, modalProps: {
                         onCreateSequenceJob: this.props.onCreateSequenceJob,
                         sequenceId: sequence.id,
                         hasFilterWheel: sequence.filterWheel && sequence.filterWheel !== 'none',
                     },
-                    icon: 'add', disabled: !canEdit, content: 'new' },
+                    icon: 'add', disabled: !sequence.canEdit(gear), content: 'new job' },
                 { icon: 'arrow left', as: Link, to: "/sequences/all", content: 'back to sequences' },
             ],
         });
@@ -156,7 +171,7 @@ class Sequence extends React.Component {
 
 
     render = () => {
-        const {sequence, camera, filterWheel, canEdit} = this.props;
+        const {sequence, camera, filterWheel, gear} = this.props;
         if(sequence === null)
             return <NotFoundPage
                         title='Sequence not found'
@@ -169,7 +184,7 @@ class Sequence extends React.Component {
             <Header size="medium">{sequence.name}</Header>
 
 
-            <SequenceJobsContainer canEdit={canEdit} sequenceId={sequence.id} />
+            <SequenceJobsContainer canEdit={sequence.canEdit(gear)} sequenceId={sequence.id} />
 
             <Card.Group>
                 <ExposuresPage sequenceJobs={sequence.sequenceJobs} sequenceJobEntities={sequence.sequenceJobEntities} />
