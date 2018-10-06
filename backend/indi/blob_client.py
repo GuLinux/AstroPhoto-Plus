@@ -87,9 +87,6 @@ class BLOBClient:
         self.__listeners = [x for x in self.__listeners if x is not listener]
 
     def __on_new_blob(self, bp):
-        logger.debug(bp)
-        logger.debug(dir(bp))
-        logger.debug(bp.thisown)
         for listener in self.__listeners:
             if bp.bvp.device == listener.device.name:
                 logger.debug('Copying blob {} to listener {}'.format(bp.name, listener))
