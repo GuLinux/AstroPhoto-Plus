@@ -1,4 +1,5 @@
 *.pyc
+access.log
 __pycache__
 dev_sample_fits
 

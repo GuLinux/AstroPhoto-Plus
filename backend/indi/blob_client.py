@@ -35,10 +35,16 @@ class BLOBListener:
         try:
             logger.debug('BLOBListener[{}]: waiting for blob, timeout={}'.format(self.device.name, timeout))
             blob = self.queue.get(True, timeout)
-            logger.debug('BLOBListener[{}]: blob received, name={}, label={}, size={}'.format(self.device.name, blob.name, blob.label, blob.size))
+            logger.debug('BLOBListener[{}]: blob received, name={}, label={}, size={}, queue size: {} (isEmpty: {})'.format(self.device.name, blob.name, blob.label, blob.size, self.queue.qsize(), self.queue.empty()))
             return blob
         except queue.Empty:
             raise BLOBError('Timeout while waiting for BLOB on {}'.format(self.device.name))
+
+    def __str__(self):
+        return 'BLOBListener(device={})'.format(self.device.name)
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class BLOBClient:
@@ -81,8 +87,14 @@ class BLOBClient:
         self.__listeners = [x for x in self.__listeners if x is not listener]
 
     def __on_new_blob(self, bp):
+        logger.debug(bp)
+        logger.debug(dir(bp))
+        logger.debug(bp.thisown)
         for listener in self.__listeners:
             if bp.bvp.device == listener.device.name:
+                logger.debug('Copying blob {} to listener {}'.format(bp.name, listener))
                 listener.queue.put(BLOB(bp))
+        del bp
+
 
     
