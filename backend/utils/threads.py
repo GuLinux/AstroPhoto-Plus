@@ -12,3 +12,6 @@ def start_thread(target, *args, **kwargs):
     t.start()
     return t
 
+def lock(timeout=-1):
+    return threading.Lock()
+

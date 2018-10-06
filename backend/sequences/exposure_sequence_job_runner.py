@@ -2,10 +2,10 @@ import os, time
 from .save_async_fits import SaveAsyncFITS
 from app import logger
 from pyindi_sequence import INDIClient
-from utils.threads import start_thread, thread_queue
+from utils.threads import start_thread, thread_queue, lock
 from errors import SequenceJobStatusError 
-
 from indi.blob_client import BLOBError
+import json
 
 
 
@@ -24,6 +24,68 @@ class SequenceCallbacks:
         for callback in self.callbacks[name]:
             callback(*args, **kwargs)
 
+class Shot:
+    def __init__(self, number, exposure, filename, camera=None, blob_listener=None):
+        self.number = number
+        self.exposure = exposure
+        self.filename = filename
+        self.blob, self.time_started, self.time_finished, self.temperature_started, self.temperature_finished = (None,) * 5
+        if camera and blob_listener:
+            self.shoot(camera, blob_listener)
+
+    def shoot(self, camera, blob_listener):
+        self.time_started = time.time()
+        self.temperature_started = self.__ccd_temperature(camera)
+        camera.shoot(self.exposure)
+        self.time_finished = time.time()
+        self.temperature_finished = self.__ccd_temperature(camera)
+        self.blob = blob_listener.get()
+        logger.debug('shoot: {}'.format(self))
+
+    def save(self):
+        logger.debug('save: {}'.format(self))
+        info_json = os.path.join(os.path.dirname(self.filename), 'info', os.path.basename(self.filename) + '.json')
+        os.makedirs(os.path.dirname(info_json), exist_ok=True)
+        info = {
+            'exposure': self.exposure,
+            'number': self.number,
+            'time_started': self.time_started,
+            'time_finished': self.time_finished,
+        }
+        if self.temperature_started is not None:
+            info.update({ 'temperature_started': self.temperature_started })
+        if self.temperature_finished is not None:
+            info.update({ 'temperature_finished': self.temperature_started })
+        if self.temperature_started is not None and self.temperature_finished is not None:
+            info.update({ 'temperature_average': (self.temperature_started + self.temperature_finished) / 2 })
+        with open(info_json, 'w') as info_file:
+            json.dump(info, info_file)
+
+        self.blob.save(self.filename)
+
+    def __ccd_temperature(self, camera):
+        if camera.has_control('CCD_TEMPERATURE', 'number'):
+            return camera.values('CCD_TEMPERATURE', 'number')['CCD_TEMPERATURE_VALUE']
+        return None
+
+
+    def __str__(self):
+        s = 'Shot[number={}, exposure={}, filename='.format(self.number, self.exposure, self.filename)
+        if self.blob:
+            s += ', blob={} bytes'.format(self.blob.size)
+        if self.temperature_started:
+            s += ', temperature_started={}'.format(self.temperature_started)
+        if self.temperature_finished:
+            s += ', temperature_finished={}'.format(self.temperature_finished)
+        if self.time_started:
+            s += ', time_started={}'.format(self.time_started)
+        if self.time_finished:
+            s += ', time_finished={}'.format(self.time_finished)
+        s += ']'
+        return s
+
+    def __repr__(self):
+        return self.__str__()
 
 class ExposureSequenceJobRunner:
     def __init__(self, server, camera, exposure, count, upload_path, progress=0, filename_template='{name}_{exposure}s_{number:04}.fits', filename_template_params={}, **kwargs):
@@ -42,9 +104,13 @@ class ExposureSequenceJobRunner:
         self.stopped = False
         self.error = None
         self.server = server
+        self.save_async_fits = SaveAsyncFITS(on_saved=self.on_saved, on_error=self.on_error)
+        self.lock = lock()
 
     def stop(self):
-        self.stopped = True
+        with self.lock:
+            self.stopped = True
+            self.save_async_fits.stopped()
 
     def on_saved(self, item):
         self.callbacks.run('on_each_saved', self, item.sequence, item.file_name)
@@ -62,61 +128,43 @@ class ExposureSequenceJobRunner:
 
         self.callbacks.run('on_started', self)
 
-        save_async_fits = SaveAsyncFITS(on_saved=self.on_saved, on_error=self.on_error)
+
 
         def check_for_error():
             if self.error:
-                self.finished = self.error[1] -1
+                if self.error[1]:
+                    self.finished = self.error[1] -1
                 raise RuntimeError(self.error[0])
 
         try:
+
             with controller.indi_server.blob_client.listener(self.camera) as blob_listener:
                 for sequence in range(self.finished, self.count):
-                    logger.info('Running sequence item {} of {}, stopped={}, error={}'.format(sequence, self.count, self.stopped, self.error))
-                    if self.stopped:
-                        save_async_fits.stopped()
-                        self.callbacks.run('on_stopped', self, sequence)
-                        raise SequenceJobStatusError('stopped', 'Exposure sequence job stopped')
-                    check_for_error()
-                    self.callbacks.run('on_each_started', self, sequence)
+                    with self.lock:
+                        logger.info('Running sequence item {} of {}, stopped={}, error={}'.format(sequence, self.count, self.stopped, self.error))
+                        if self.stopped:
+                            self.callbacks.run('on_stopped', self, sequence)
+                            break
+                        check_for_error()
+                        self.callbacks.run('on_each_started', self, sequence)
 
-                    time_started = time.time()
-                    temp_before = self.ccd_temperature
+                        filename = self.__output_file(sequence)
+                        shot = Shot(sequence, self.exposure, filename, self.camera, blob_listener)
+                        self.save_async_fits.put(shot)
 
-                    self.camera.shoot(self.exposure)
-                    
-                    self.__save_shot(blob_listener.get(), sequence, temp_before, time_started, save_async_fits)
-                    self.finished += 1
-                    self.callbacks.run('on_each_finished', self, sequence, self.__output_file(sequence))
+                        self.finished += 1
+                        self.callbacks.run('on_each_finished', self, sequence, filename)
         except Exception as e:
             self.error = (e,self.finished)
             logger.warning('Exception on shot')
             raise
         finally:
-            # Note: this means we wait for *all* images in this sequences to be saved, before starting the next sequence. Which might be a bottleneck, but then again, if you're shooting much faster than you can save, then you probably have a bigger issue...
             logger.info('** sequence run exiting: stopped={}, error={}'.format(self.stopped, self.error))
             check_for_error()
             if not self.stopped and not self.error:
-                save_async_fits.finished()
+                self.save_async_fits.finished()
                 logger.debug('*** sequence run: calling on_finished')
                 self.callbacks.run('on_finished', self)
-
-    def __save_shot(self, blob, index, temp_before, time_started, save_async_fits):
-        temp_after = self.ccd_temperature
-        time_finished = time.time()
-
-        save_async_fits.put({
-            'type': 'exposure_finished',
-            'number': index + self.start_index,
-            'exposure': self.exposure,
-            'time_started': time_started,
-            'time_finished': time_finished,
-            'temperature_started': temp_before,
-            'temperature_finished': temp_after,
-            'output_file': self.__output_file(index),
-            'blob': blob,
-        })
-
 
     def __output_file(self, sequence):
         format_params = { 'exposure': self.exposure, 'number': sequence + self.start_index}
@@ -136,12 +184,6 @@ class ExposureSequenceJobRunner:
             file_suffix_to_skip_overwriting += 1
         return output_file
 
-
-    @property
-    def ccd_temperature(self):
-        if self.camera.has_control('CCD_TEMPERATURE', 'number'):
-            return self.camera.values('CCD_TEMPERATURE', 'number')['CCD_TEMPERATURE_VALUE']
-        return None
 
     @property
     def total_seconds(self):

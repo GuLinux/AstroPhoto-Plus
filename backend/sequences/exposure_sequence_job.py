@@ -22,7 +22,7 @@ class ExposureSequenceJob:
         self.last_message = data.get('last_message', '')
         self.saved_images = data.get('saved_images', [])
         self.__validate(self.filename)
-        self.sequence = None
+        self.job_runner = None
         
     def __validate(self, format_string):
         test_params = { 'exposure': 1, 'number': 2, 'timestamp': 1, 'datetime': 'date-string', 'filter': 'filter-name', 'filter_index': 1}
@@ -51,9 +51,9 @@ class ExposureSequenceJob:
         }
 
     def stop(self):
-        if self.sequence:
-            self.sequence.stop()
-            self.sequence = None
+        if self.job_runner:
+            self.job_runner.stop()
+            self.job_runner = None
         return 'stopped'
 
     def run(self, server, devices, root_path, event_listener, on_update, index):
@@ -69,7 +69,7 @@ class ExposureSequenceJob:
             filename_template_params['filter_index'], filename_template_params['filter'] = devices['filter_wheel'].indi_sequence_filter_wheel().current_filter()
 
         upload_path = os.path.join(root_path, self.directory)
-        self.sequence = ExposureSequenceJobRunner(server, devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, progress=self.progress, filename_template=self.filename, filename_template_params=filename_template_params)
+        self.job_runner = ExposureSequenceJobRunner(server, devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, progress=self.progress, filename_template=self.filename, filename_template_params=filename_template_params)
 
         def on_started(sequence):
             pass
@@ -100,21 +100,23 @@ class ExposureSequenceJob:
         def on_finished(sequence):
             self.last_message = 'finished.'
             on_update()
-            self.sequence = None
+            self.progress = sequence.finished
+            self.job_runner = None
 
-        logger.info('Starting sequence: {}, upload_path={}'.format(self.sequence, upload_path))
-        self.sequence.callbacks.add('on_started', on_started)
-        self.sequence.callbacks.add('on_each_started', on_each_started)
-        self.sequence.callbacks.add('on_each_finished', on_each_finished)
-        self.sequence.callbacks.add('on_each_saved', on_each_saved)
-        self.sequence.callbacks.add('on_finished', on_finished)
+        logger.info('Starting sequence: {}, upload_path={}'.format(self.job_runner, upload_path))
+        self.job_runner.callbacks.add('on_started', on_started)
+        self.job_runner.callbacks.add('on_each_started', on_each_started)
+        self.job_runner.callbacks.add('on_each_finished', on_each_finished)
+        self.job_runner.callbacks.add('on_each_saved', on_each_saved)
+        self.job_runner.callbacks.add('on_finished', on_finished)
         try:
-            self.sequence.run()
+            self.job_runner.run()
         except:
-            self.progress = self.sequence.finished
+            if self.job_runner:
+                self.progress = self.job_runner.finished
             logger.warning('Error running exposures job')
             raise
         finally:
-            self.sequence = None
+            self.job_runner = None
 
 

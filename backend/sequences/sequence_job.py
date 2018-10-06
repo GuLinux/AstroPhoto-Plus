@@ -28,6 +28,7 @@ class SequenceJob:
 
         self.status = data.get('status', 'idle')
         self.started_ts, self.finished_ts = None, None
+        self.stopped = False
 
     def duplicate(self):
         data = self.to_map()
@@ -39,6 +40,7 @@ class SequenceJob:
         return SequenceJob(data)
 
     def stop(self):
+        self.stopped = True
         self.status = 'stopping'
         if hasattr(self.job, 'stop'):
             self.status = self.job.stop()
@@ -70,16 +72,14 @@ class SequenceJob:
 
     def run(self, server, devices, root_path, logger, event_listener, on_update, index):
         self.status = 'running'
+        self.stopped = False
         self.started_ts = time.time()
         on_update()
         try:
             self.job.run(server, devices, root_path, event_listener, on_update, index)
-            self.status = 'finished'
-            self.finished_ts = time.time()
-            on_update()
-        except SequenceJobStatusError as e:
-            self.status = e.status
-            logger.info('Sequence job status changed to {}'.format(e.status))
+            if not self.stopped:
+                self.status = 'finished'
+                self.finished_ts = time.time()
             on_update()
         except RuntimeError as e: # TODO: specific exception?
             self.status = 'error'

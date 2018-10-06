@@ -30,7 +30,7 @@ class SaveAsyncFITS:
         self.notify_thread.join()
 
     def put(self, shot):
-        self.files_queue.put(shot)
+        self.files_queue.put({ 'type': 'shot', 'shot': shot})
 
     def finished(self):
         self.files_queue.put({ 'type': 'finish' })
@@ -54,6 +54,7 @@ class SaveAsyncFITS:
                 self.on_error(item.error, item.number)
 
     def __process_sequence_files(self, input_queue, notify_queue):
+        item_number = None
         while True:
             item = Namespace(**input_queue.get())
             try:
@@ -63,34 +64,16 @@ class SaveAsyncFITS:
                 elif item.type == 'stopped':
                     notify_queue.put({'type': 'stopped'})
                     return
-                elif item.type == 'exposure_finished':
-                    output_file = item.output_file
-                    info_json = os.path.join(os.path.dirname(output_file), 'info', os.path.basename(output_file) + '.json')
-                    os.makedirs(os.path.dirname(info_json), exist_ok=True)
-                    info = {
-                        'exposure': item.exposure,
-                        'number': item.number,
-                        'time_started': item.time_started,
-                        'time_finished': item.time_finished,
-                    }
-                    if item.temperature_started is not None:
-                        info.update({ 'temperature_started': item.temperature_started })
-                    if item.temperature_finished is not None:
-                        info.update({ 'temperature_finished': item.temperature_started })
-                    if item.temperature_started is not None and item.temperature_finished is not None:
-                        info.update({ 'temperature_average': (item.temperature_started + item.temperature_finished) / 2 })
-                    with open(info_json, 'w') as info_file:
-                        json.dump(info, info_file)
-
-                    item.blob.save(output_file)
-
+                elif item.type == 'shot':
+                    item_number = item.shot.number
+                    item.shot.save() 
                     notify_queue.put({
                         'type': 'each_finished',
-                        'sequence': item.number,
-                        'file_name': output_file,
+                        'sequence': item.shot.number,
+                        'file_name': item.shot.filename,
                     })
             except Exception as e:
-                logger.warning('Error saving fits: {}'.format(e))
-                notify_queue.put({ 'type': 'exception', 'error': str(e), 'number': item.number })
+                logger.warning('Error saving fits', e)
+                notify_queue.put({ 'type': 'exception', 'error': str(e), 'number': item_number })
                 return
 

@@ -15,6 +15,7 @@ class Sequence:
         self.sequence_jobs = sequence_jobs if sequence_jobs else []
         self.status = status if status else 'idle'
         self.running_sequence_job = None
+        self.stopped = False
 
     def job(self, sequence_job_id):
         sequence_job = [x for x in self.sequence_jobs if x.id == sequence_job_id]
@@ -71,8 +72,12 @@ class Sequence:
     def stop(self, on_update=None):
         if not self.is_running() or not self.running_sequence_job:
             raise BadRequestError('Sequence not running')
-        self.status = 'stopped'
+        self.stopped = True
+        self.status = 'stopping'
+        if on_update:
+            on_update()
         self.running_sequence_job.stop()
+        self.status = 'stopped'
         if on_update:
             on_update()
 
@@ -103,26 +108,27 @@ class Sequence:
 
         self.status = 'starting'
 
-        self.reset()
+        #self.reset()
         on_update()
         try:
             os.makedirs(sequence_root_path, exist_ok=True)
 
             self.status = 'running'
+            self.stopped = False
             for index, sequence_job in enumerate(self.sequence_jobs):
-                if self.status == 'stopped':
+                if self.stopped:
                     return
                 if self.is_todo(sequence_job):
                     self.running_sequence_job = sequence_job
                     sequence_job.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
-            self.status = 'finished'
-            on_update()
+            if not self.stopped:
+                self.status = 'finished'
         except Exception as e:
             logger.exception('error running sequence')
             self.status = 'error'
-            on_update()
             raise e
         finally:
+            on_update()
             self.running_sequence_job = None
 
     def is_todo(self, sequence_job):
