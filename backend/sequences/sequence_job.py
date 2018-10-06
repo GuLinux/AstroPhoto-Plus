@@ -1,5 +1,5 @@
 from models import random_id
-from errors import BadRequestError, SequenceJobStatusError
+from errors import BadRequestError
 
 from .exposure_sequence_job import ExposureSequenceJob
 from .filter_wheel_sequence_job import FilterWheelSequenceJob
