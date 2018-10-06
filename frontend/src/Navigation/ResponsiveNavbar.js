@@ -21,8 +21,8 @@ export class ResponsiveNavbar extends React.Component {
                     <SiteMenuHeader onClick={() => this.setVisible(false)} />
                     <NavbarMenuItemsContainer isResponsive={true} onClick={() => this.setVisible(false)} />
                 </Sidebar>
-                <Sidebar.Pusher>
-                    <Menu inverted color='white' size='large'>
+                <Sidebar.Pusher style={{overflow: 'initial'}}>
+                    <Menu inverted size='large'>
                         <SiteMenuHeader onClick={() => this.setVisible(true)} />
                         <Menu.Menu position='right'>
                             <Menu.Item as='a' icon='sidebar' onClick={() => this.toggleVisible()} />

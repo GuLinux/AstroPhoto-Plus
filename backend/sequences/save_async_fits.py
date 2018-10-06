@@ -49,7 +49,7 @@ class SaveAsyncFITS:
             elif item.type == 'stopped':
                 return
             elif item.type == 'each_finished':
-                self.on_saved(item)
+                self.on_saved(item.shot)
             elif item.type == 'exception':
                 self.on_error(item.error, item.number)
 
@@ -69,8 +69,7 @@ class SaveAsyncFITS:
                     item.shot.save() 
                     notify_queue.put({
                         'type': 'each_finished',
-                        'sequence': item.shot.number,
-                        'file_name': item.shot.filename,
+                        'shot': shot,
                     })
             except Exception as e:
                 logger.warning('Error saving fits', e)
