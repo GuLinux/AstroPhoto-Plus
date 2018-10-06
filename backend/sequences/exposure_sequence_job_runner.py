@@ -43,7 +43,6 @@ class ExposureSequenceJobRunner:
 
     def stop(self):
         self.stopped = True
-        self.save_async_fits.stopped()
 
     def on_saved(self, item):
         self.callbacks.run('on_each_saved', self, item.sequence, item.file_name)
@@ -72,6 +71,7 @@ class ExposureSequenceJobRunner:
             with controller.indi_server.blob_client.listener(self.camera) as blob_listener:
                 for sequence in range(self.finished, self.count):
                     if self.stopped:
+                        self.save_async_fits.stopped()
                         self.callbacks.run('on_stopped', self, sequence)
                         break
                     logger.info('Running sequence item {} of {}, stopped={}, error={}'.format(sequence, self.count, self.stopped, self.error))
