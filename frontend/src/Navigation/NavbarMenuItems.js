@@ -2,19 +2,20 @@ import React from 'react';
 import { Menu, Dropdown } from 'semantic-ui-react';
 
 import { NavLink } from 'react-router-dom';
-export const NavbarMenu = (props) => <Menu stackable inverted color='grey' size='large' {...props} />
-export const SiteMenuHeader = () => <Menu.Item header>StarQuew</Menu.Item>
+export const NavbarMenu = (props) => <Menu stackable inverted size='large' {...props} />
+export const SiteMenuHeader = (props) => <Menu.Item header {...props}>StarQuew</Menu.Item>
 
 
 
 export const NavItem = ({disabled, ...args}) => <Menu.Item disabled={disabled} as={disabled ? 'a' : NavLink} {...args} />
 
 const pageNavItem = (item, index, Component) => {
+    const overrideProps = { className: 'pageNavItem' };
     if(item.openModal) {
         const { openModal: ModalClass, modalProps = {}, ...props } = item;
-        return <ModalClass trigger={<Component {...props} />} {...modalProps} key={index}/>
+        return <ModalClass trigger={<Component {...props} {...overrideProps} />} {...modalProps} key={index}/>
     }
-    return <Component {...item} key={index} />
+    return <Component {...item} {...overrideProps} key={index} />
 }
 
 const pageMenuItems = (sectionMenu, itemComponent) => {
@@ -48,10 +49,12 @@ export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, isR
         { isResponsive && (
             <React.Fragment>
                 { sectionMenu && (
-                    <React.Fragment>
-                        <Menu.Item header content={sectionMenu.section} />
-                        {pageMenuItems(sectionMenu, Menu.Item)}
-                    </React.Fragment>
+                    <Menu.Item>
+                        {sectionMenu.section}
+                        <Menu.Menu>
+                            {pageMenuItems(sectionMenu, Menu.Item)}
+                        </Menu.Menu>
+                    </Menu.Item>
                 )}
             </React.Fragment>
         )}

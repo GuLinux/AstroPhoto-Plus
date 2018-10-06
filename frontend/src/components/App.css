@@ -79,3 +79,11 @@ body {
     padding-top: 0px!important;
     padding-bottom: 0px!important;
 }
+
+.pageNavItem {
+    color: #ffffff!important;
+}
+
+.pageNavItem:hover {
+    color: #ffffff66!important;
+}
