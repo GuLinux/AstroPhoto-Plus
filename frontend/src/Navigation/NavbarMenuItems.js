@@ -3,7 +3,7 @@ import { Menu, Dropdown } from 'semantic-ui-react';
 
 import { NavLink } from 'react-router-dom';
 export const NavbarMenu = (props) => <Menu stackable inverted size='large' {...props} />
-export const SiteMenuHeader = (props) => <Menu.Item header {...props}>StarQuew</Menu.Item>
+export const SiteMenuHeader = (props) => <Menu.Item header {...props} content='StarQuew' />
 
 
 

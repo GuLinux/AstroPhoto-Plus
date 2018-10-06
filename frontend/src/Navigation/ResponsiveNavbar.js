@@ -23,10 +23,7 @@ export class ResponsiveNavbar extends React.Component {
                 </Sidebar>
                 <Sidebar.Pusher style={{overflow: 'initial'}}>
                     <Menu inverted size='large'>
-                        <SiteMenuHeader onClick={() => this.setVisible(true)} />
-                        <Menu.Menu position='right'>
-                            <Menu.Item as='a' icon='sidebar' onClick={() => this.toggleVisible()} />
-                        </Menu.Menu>
+                        <SiteMenuHeader as='a' icon='sidebar' onClick={() => this.setVisible(true)} />
                     </Menu>
                     {children}
                 </Sidebar.Pusher>
