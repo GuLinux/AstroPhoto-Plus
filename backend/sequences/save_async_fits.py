@@ -44,6 +44,7 @@ class SaveAsyncFITS:
     def __notify_sequence_finished(self, notify_queue):
         while True:
             item = Namespace(**notify_queue.get())
+            logger.debug('__notify_sequence_finished: {}'.format(item))
             if item.type == 'finish':
                 return
             elif item.type == 'stopped':
@@ -66,10 +67,10 @@ class SaveAsyncFITS:
                     return
                 elif item.type == 'shot':
                     item_number = item.shot.number
-                    item.shot.save() 
+                    item.shot.save(clear_blob=True) 
                     notify_queue.put({
                         'type': 'each_finished',
-                        'shot': shot,
+                        'shot': item.shot,
                     })
             except Exception as e:
                 logger.warning('Error saving fits', e)

@@ -22,7 +22,7 @@ class Shot:
         self.blob = blob_listener.get()
         logger.debug('shoot: {}'.format(self))
 
-    def save(self):
+    def save(self, clear_blob=False):
         logger.debug('starting save: {}'.format(self))
         info_json = os.path.join(os.path.dirname(self.filename), 'info', os.path.basename(self.filename) + '.json')
         os.makedirs(os.path.dirname(info_json), exist_ok=True)
@@ -43,6 +43,8 @@ class Shot:
 
         self.blob.save(self.filename)
         logger.debug('saved: {}'.format(self))
+        if clear_blob:
+            self.blob = None
 
     def __ccd_temperature(self, camera):
         if camera.has_control('CCD_TEMPERATURE', 'number'):
@@ -51,7 +53,7 @@ class Shot:
 
 
     def __str__(self):
-        s = 'Shot[number={}, exposure={}, filename='.format(self.number, self.exposure, self.filename)
+        s = 'Shot[number={}, exposure={}, filename={}'.format(self.number, self.exposure, self.filename)
         if self.blob:
             s += ', blob={} bytes'.format(self.blob.size)
         if self.temperature_started:

@@ -45,6 +45,7 @@ class ExposureSequenceJobRunner:
         self.stopped = True
 
     def on_saved(self, shot):
+        logger.debug('on_saved: {}'.format(shot))
         self.callbacks.run('on_each_saved', self, shot.number, shot.filename)
 
     def on_error(self, error, item_number):
@@ -59,7 +60,7 @@ class ExposureSequenceJobRunner:
         self.camera.set_upload_to('client')
 
         self.callbacks.run('on_started', self)
-        async_saving = False # TODO: import from settings
+        async_saving = True # TODO: import from settings
 
 
         def check_for_error():
@@ -80,14 +81,15 @@ class ExposureSequenceJobRunner:
                     self.callbacks.run('on_each_started', self, sequence)
 
                     filename = self.__output_file(sequence)
-                    shot = Shot(sequence, self.exposure, filename, self.camera, blob_listener)
+                    shot = Shot(sequence + self.start_index, self.exposure, filename, self.camera, blob_listener)
+
+                    self.finished += 1
+                    self.callbacks.run('on_each_finished', self, sequence, filename)
                     
                     if async_saving:
                         self.save_async_fits.put(shot)
                     else:
-                        self.finished += 1
-                        self.callbacks.run('on_each_finished', self, sequence, filename)
-                        shot.save()
+                        shot.save(clear_blob=True)
                         self.on_saved(shot)
         except Exception as e:
             self.error = (e,self.finished)
