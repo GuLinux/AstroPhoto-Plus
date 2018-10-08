@@ -6,7 +6,7 @@ import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';
 export const DesktopNavbar = ({children}) => (
     <Grid className='fullHeight'>
         <Grid.Column width={3} className='fullHeight'>
-            <NavbarMenu vertical attached className='fullHeight'>
+            <NavbarMenu vertical attached className='fullHeight' size='large'>
                 <SiteMenuHeader />
                 <NavbarMenuItemsContainer isVertical={true} />
             </NavbarMenu>

@@ -4,7 +4,7 @@ import { Responsive } from 'semantic-ui-react';
 import { DesktopNavbar } from './DesktopNavbar';
 import { ResponsiveNavbar } from './ResponsiveNavbar';
 
-const TRIGGER_SIZE = 768;
+const TRIGGER_SIZE = 1400;
 
 
 const Navbar = ({location, children}) => (
