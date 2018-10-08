@@ -9,11 +9,11 @@ const TRIGGER_SIZE = 768;
 
 const Navbar = ({location, children}) => (
      <React.Fragment>
-        <Responsive maxWidth={TRIGGER_SIZE}>
+        <Responsive maxWidth={TRIGGER_SIZE} className='full-height'>
              <ResponsiveNavbar children={children} />
         </Responsive>
         <Responsive minWidth={TRIGGER_SIZE + 1}>
-            <DesktopNavbar children={children} />
+            <DesktopNavbar children={children} className='full-height' />
         </Responsive>
      </React.Fragment>
 )
