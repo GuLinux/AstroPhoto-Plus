@@ -19,10 +19,10 @@ export class ResponsiveNavbar extends React.Component {
             <Sidebar.Pushable className='starquew-sidebar'>
                 <Sidebar as={NavbarMenu} vertical animation='overlay' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>
                     <SiteMenuHeader onClick={() => this.setVisible(false)} />
-                    <NavbarMenuItemsContainer isResponsive={true} onClick={() => this.setVisible(false)} />
+                    <NavbarMenuItemsContainer isVertical={true} onClick={() => this.setVisible(false)} />
                 </Sidebar>
                 <Sidebar.Pusher style={{overflow: 'initial'}}>
-                    <Menu inverted size='large'>
+                    <Menu inverted size='small'>
                         <SiteMenuHeader as='a' icon='sidebar' onClick={() => this.setVisible(true)} />
                     </Menu>
                     {children}
