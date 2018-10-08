@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Button, Input } from 'semantic-ui-react'
+import { Button, Input } from 'semantic-ui-react'
 
 export class NumericInput extends React.Component {
     constructor(props) {

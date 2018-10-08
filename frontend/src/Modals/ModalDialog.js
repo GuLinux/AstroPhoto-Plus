@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Button, Confirm } from 'semantic-ui-react';
+import { Modal, Button } from 'semantic-ui-react';
 
 const ModalDialogContext = React.createContext();
 

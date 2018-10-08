@@ -5,7 +5,7 @@ import INDIDeviceContainer from './INDIDeviceContainer';
 import INDIServiceContainer from '../INDI-Service/INDIServiceContainer';
 import INDIServiceDriversContainer from '../INDI-Service/INDIServiceDriversContainer';
 import INDIServiceProfilesContainer from '../INDI-Service/INDIServiceProfilesContainer';
-import { Route, Switch } from 'react-router';
+import { Route } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { HistoryLandingContainer } from '../Navigation/HistoryLandingContainer';
 

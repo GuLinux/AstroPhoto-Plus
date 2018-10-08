@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Label, Input, Divider } from 'semantic-ui-react';
+import { Form, Label, Divider } from 'semantic-ui-react';
 import { sanitizePath, secs2time } from '../utils'
 import SequenceJobButtonsContainer from './SequenceJobButtonsContainer'
 import { formatDecimalNumber } from '../utils';
@@ -80,7 +80,7 @@ class ExposureSequenceJob extends React.Component {
             if(changedParams.includes('count') && changedParams.includes('globalExposure'))
                 newState.sequenceJob.exposure = newState.sequenceJob.globalExposure / newState.sequenceJob.count;
         }
-        newState.sequenceJob.count = Math.max(1, parseInt(newState.sequenceJob.count));
+        newState.sequenceJob.count = Math.max(1, parseInt(newState.sequenceJob.count, 10));
         newState.sequenceJob.exposure = Math.min(max, newState.sequenceJob.exposure);
         newState.sequenceJob.exposure = Math.max(min, newState.sequenceJob.exposure);
         newState.sequenceJob.globalExposure = newState.sequenceJob.count * newState.sequenceJob.exposure;
@@ -151,7 +151,7 @@ class ExposureSequenceJob extends React.Component {
                         value={this.state.sequenceJob.count}
                         min={1}
                         step={1}
-                        parse={v => v === '' ? '' : parseInt(v)}
+                        parse={v => v === '' ? '' : parseInt(v, 10)}
                         format={v => v.toString()}
                         onChange={v => this.onCountChanged(v)}
                 />

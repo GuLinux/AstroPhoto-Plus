@@ -157,7 +157,7 @@ export class DirectoryPicker extends React.Component {
             }
         });
         if(response.ok) {
-            let data = await response.json();
+            await response.json(); // TODO: do something with the response?
             this.fetchDirectory(cdOnCreated ? payload.path : this.state.currentPath);
         } else {
             let error;

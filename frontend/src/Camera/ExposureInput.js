@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Button, Icon } from 'semantic-ui-react';
+import { Button, Icon } from 'semantic-ui-react';
 import { NumericInput } from '../components/NumericInput';
 import { formatDecimalNumber } from '../utils';
 

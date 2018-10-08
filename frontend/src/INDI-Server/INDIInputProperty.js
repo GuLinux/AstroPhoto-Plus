@@ -19,7 +19,7 @@ class INDIInputProperty extends React.Component {
     }
 
     render = () => {
-        const { InputComponent, property, isWriteable, pendingValues, displayValues, addPendingValues } = this.props;
+        const { InputComponent, property, isWriteable, displayValues, addPendingValues } = this.props;
         const { editMode } = this.state;
 
         return (

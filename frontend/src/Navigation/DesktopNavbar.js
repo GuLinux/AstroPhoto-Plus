@@ -4,9 +4,9 @@ import { NavbarMenu, SiteMenuHeader } from './NavbarMenuItems';
 import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';
 
 export const DesktopNavbar = ({children}) => (
-    <Grid>
-        <Grid.Column width={3}>
-            <NavbarMenu vertical attached>
+    <Grid className='fullHeight'>
+        <Grid.Column width={3} className='fullHeight'>
+            <NavbarMenu vertical attached className='fullHeight'>
                 <SiteMenuHeader />
                 <NavbarMenuItemsContainer isVertical={true} />
             </NavbarMenu>

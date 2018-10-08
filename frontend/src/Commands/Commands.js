@@ -18,10 +18,11 @@ const CommandConfirmationModal = ({ commandName, confirmationMessage, visible, o
 class CommandParametersModal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { parameters: {} }
+        const state = { parameters: {} }
         if(props.requestParameters) {
-            props.requestParameters.variables.forEach( v => this.state.parameters[v.name] = v.default_value || '' );
+            props.requestParameters.variables.forEach( v => state.parameters[v.name] = v.default_value || '' );
         }
+        this.state = state;
     }
 
     canRun = () => {
