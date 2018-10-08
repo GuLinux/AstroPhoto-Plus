@@ -32,7 +32,7 @@ class Settings:
         self.indi_service_logs = self.__build_path(['.cache', 'StarQuew', 'logs', 'indi_service'], isdir=True)
 
         self.ro_props = ['default_datadir', 'indi_service_logs', 'config_dir']
-        self.rw_props = ['sequences_dir', 'indi_prefix', 'indi_host', 'indi_port', 'indi_service', 'log_level']
+        self.rw_props = ['sequences_dir', 'indi_prefix', 'indi_host', 'indi_port', 'indi_service', 'log_level', 'sequence_async']
 
         self.on_update = None
         self.reload()
@@ -79,7 +79,11 @@ class Settings:
 
     @property
     def indi_service(self):
-        return self.json_map.get('indi_service', True)
+        return self.json_map.get('indi_service', 'True') == 'True'
+
+    @property
+    def sequence_async(self):
+        return self.json_map.get('sequence_async', 'True') == 'True'
 
     @property
     def log_level(self):

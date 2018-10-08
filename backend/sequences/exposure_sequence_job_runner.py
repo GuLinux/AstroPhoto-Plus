@@ -4,6 +4,7 @@ from .shot import Shot
 from app import logger
 from utils.threads import start_thread, thread_queue
 from indi.blob_client import BLOBError
+from system import settings
 
 
 class SequenceCallbacks:
@@ -60,8 +61,7 @@ class ExposureSequenceJobRunner:
         self.camera.set_upload_to('client')
 
         self.callbacks.run('on_started', self)
-        async_saving = True # TODO: import from settings
-
+        async_saving = settings.sequence_async
 
         def check_for_error():
             if self.error:
@@ -86,6 +86,7 @@ class ExposureSequenceJobRunner:
                     self.finished += 1
                     self.callbacks.run('on_each_finished', self, sequence, filename)
                     
+                    logger.debug('Exposure finished for index {}; saving file: async mode={}'.format(sequence, async_saving))
                     if async_saving:
                         self.save_async_fits.put(shot)
                     else:

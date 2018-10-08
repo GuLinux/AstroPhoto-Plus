@@ -63,7 +63,7 @@ const Settings = ({settings, onChange, reset, update, showCommands, version='N/A
             )}
             <Form>
                 <Segment>
-                    <Header content='General' />
+                    <Header content='Settings' />
                     <Form.Input
                         label='Sequences data directory'
                         fluid
@@ -99,14 +99,20 @@ const Settings = ({settings, onChange, reset, update, showCommands, version='N/A
                     <Message attached='top' content='Only change this setting if you installed INDI on a custom path.' info />
                     <Divider hidden />
 
-                    <label>Log level</label>
+
                     <Form.Group inline>
+                        <label>Log level</label>
                         <SettingButton size='mini' content='Critical' value='CRITICAL' settings={settings} setting='log_level' onUpdate={update} />
                         <SettingButton size='mini' content='Error' value='ERROR' settings={settings} setting='log_level' onUpdate={update} />
                         <SettingButton size='mini' content='Warning' value='WARNING' settings={settings} setting='log_level' onUpdate={update} />
                         <SettingButton size='mini' content='Info' value='INFO' settings={settings} setting='log_level' onUpdate={update} />
                         <SettingButton size='mini' content='Debug' value='DEBUG' settings={settings} setting='log_level' onUpdate={update} />
                     </Form.Group>
+                    <Divider hidden />
+
+                    <Form.Checkbox label='Asynchronous file saving' toggle checked={settings.current && settings.current.sequence_async} onChange={(e, data) => update('sequence_async', data.checked)} />
+                    <Message>If enabled (default), will use memory buffering to improve sequences speed, saving a file while taking the next shot. Disable if you run on a low memory system</Message>
+
                 </Segment>
             </Form>
 
