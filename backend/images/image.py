@@ -19,7 +19,7 @@ class Image:
                 'content_type': 'image/jpeg',
                 'extension': 'jpg',
                 'save_options': {
-                    'quality': 90,
+                    'quality': 75,
                 },
             },
             'png': {
