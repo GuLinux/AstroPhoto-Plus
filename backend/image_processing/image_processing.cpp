@@ -12,11 +12,23 @@ ImageProcessing::ImageProcessing(const string &fitsfile) {
     CCfits::PHDU& fits_image = fits->pHDU(); 
     
     valarray<uint16_t>  contents;
+
+//    cerr << "HDUs: " << endl;
+//    for(auto ext: fits->extension()) {
+//        cerr << ext.first << ", " << ext.second->name() << endl;
+//    }
+//    fits_image.readAllKeys();
+//    for(auto kk: fits_image.keyWord()) {
+//        cerr << "read keyword: " << kk.first << endl;
+//    }
+//
+//    cerr << "bitpix: " << fits_image.bitpix() << ", axes: " << fits_image.axes() << endl;
+
     fits_image.read(contents);
     static vector<uint16_t> data(contents.size());
     move(begin(contents), end(contents), data.begin());
     // TODO: datatype check
-    this->image = cv::Mat(fits_image.axis(1), fits_image.axis(0), CV_16UC1, data.data());
+    this->image = cv::Mat(fits_image.axis(1), fits_image.axis(0), fits_image.bitpix() == 16 ? CV_16UC1 : CV_8UC1, data.data());
 }
 
 ImageProcessing::~ImageProcessing() {
@@ -26,7 +38,10 @@ void ImageProcessing::save(const std::string &filename) {
     cv::imwrite(filename, this->image);
 }
 
-cv::Mat to8Bit(const cv::Mat &source) {
+cv::Mat to8Bit(const cv::Mat &source, int source_bpp) {
+    if(source_bpp = 8) {
+        return source;
+    }
     cv::Mat dest;
     source.convertTo(dest, CV_8UC1, 0.00390625);
     return dest;
@@ -36,7 +51,7 @@ cv::Mat to8Bit(const cv::Mat &source) {
 void ImageProcessing::autostretch() {
     cv::Mat normedImage;
     cv::normalize(this->image, normedImage, 0, (1 << this->bpp()), cv::NORM_MINMAX);
-    cv::equalizeHist(to8Bit(normedImage), this->image);
+    cv::equalizeHist(to8Bit(normedImage, this->bpp()), this->image);
 }
 
 #include <iostream>
@@ -61,7 +76,7 @@ void ImageProcessing::clip(float min, float max) {
     double minVal, maxVal;
     cv::minMaxLoc(image, &minVal, &maxVal);
     auto clipped = (image - minVal) * ( (maxBPPValue - 1)/ (maxVal - minVal));
-    this->image = to8Bit(clipped);
+    this->image = to8Bit(clipped, this->bpp());
 }
 
 
