@@ -61,6 +61,10 @@ class EventListener:
         with open(service.stderr_path, 'r') as f:
             service_stderr = f.read()
 
+        app.logger.debug('INDI service exited with exit code {}'.format(service.exit_code()))
+        app.logger.debug('stdout: {}'.format(service_stdout))
+        app.logger.debug('stderr: {}'.format(service_stderr))
+
         self.sse.publish({'event': 'exited', 'payload': { 'exit_code': service.exit_code(), 'stdout': service_stdout, 'stderr': service_stderr }, 'is_error': service.is_error()}, type='indi_service')
 
 
