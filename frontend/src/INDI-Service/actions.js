@@ -60,10 +60,14 @@ export const INDIService = {
         ...data
     }),
 
-    serviceExited: (data) => ({
-        type: 'INDI_SERVICE_EXITED',
-        ...data
-    }),
+    serviceExited: (data) => dispatch => {
+        const notificationMessage = `INDI Service has exited with exit code ${data.payload.exit_code}`;
+        dispatch(Actions.Notifications.add('INDI Service exited', notificationMessage , 'warning', 10000))
+        dispatch({
+            type: 'INDI_SERVICE_EXITED',
+            ...data
+        });
+    },
 
     dismissError: () => ({ type: 'INDI_SERVICE_DISMISS_ERROR' }),
 
