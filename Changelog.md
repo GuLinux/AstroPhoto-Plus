@@ -2,17 +2,30 @@
 
 ## [0.1.2] - Unreleased
 
+### New features:
+
  - Allow to edit sequence after creation (name, camera, filter wheel, directory)
- - Add '(copy)' suffix to duplicated sequences
- - Block filter wheel sequence item creation if no filter wheel is defined on sequence
- - add "Exposures" card with info about total, finished and remaining shots of a sequence (number and time)
  - allow to stop and resume sequences.
+ - import/export sequences to JSON files
+
+### Improvements
+
+ - Add '(copy)' suffix to duplicated sequences
+ - add "Exposures" card with info about total, finished and remaining shots of a sequence (number and time)
  - allow to "reset" sequences to restart them.
  - switch to INDI blob for sequences (speed/reliability improvement)
- - import/export sequences to JSON files
  - Images database optimization
- - Fix histogram not reloading on image changing
  - Histogram improvements
+ - Add "Wait for value" checkbox to INDI property job. This way when changing a property that takes time to get to the desired value (for instance: CCD temperature) it will wait for the value to settle before going forward.
+ - Add min/max validation for exposure sequence item depending on camera values
+ - Better name for sequence files if no filter wheel is available
+ - Autodetect stale sequences
+
+### Bugfixes:
+
+ - Block filter wheel sequence item creation if no filter wheel is defined on sequence
+ - Fix histogram not reloading on image changing
+ - improve values editing for numbers
 
 ## [0.1.1] - 2018-08-03
 ### User experience improvements

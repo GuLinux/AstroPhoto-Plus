@@ -152,8 +152,6 @@ class Sequence extends React.Component {
                         centered: false,
                     },
                     icon: 'redo', disabled: !sequence.canReset, content: 'reset' },
-                { icon: 'arrow left', as: Link, to: "/sequences/all", content: 'back to sequences' },
-
                 { openModal: AddSequenceJob, modalProps: {
                         onCreateSequenceJob: this.props.onCreateSequenceJob,
                         sequenceId: sequence.id,
