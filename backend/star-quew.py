@@ -222,10 +222,9 @@ def import_sequence(json):
 @json_api
 def delete_sequence(id):
     sequence = controller.sequences.lookup(id)
-    sequence_json = sequence.to_map()
-    sequence_json.update({'status': 'deleted'})
+    sequence.on_deleted()
     controller.sequences.remove(sequence)
-    return sequence_json
+    return sequence.to_map()
 
 
 @app.route('/api/sequences', methods=['POST'])
@@ -345,10 +344,9 @@ def duplicate_sequence_job(sequence_id, sequence_job_id):
 def delete_sequence_job(sequence_id, sequence_job_id):
     with controller.sequences.lookup_edit(sequence_id) as sequence:
         sequence_job = sequence.job(sequence_job_id)
-        sequence_job = sequence_job.to_map()
         sequence_job.on_deleted()
         sequence.sequence_jobs = [x for x in sequence.sequence_jobs if x.id != sequence_job_id]
-        return sequence_job
+        return sequence_job.to_map()
 
 #imaging module
 

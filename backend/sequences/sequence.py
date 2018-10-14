@@ -81,6 +81,10 @@ class Sequence:
         if on_update:
             on_update()
 
+    def on_deleted(self):
+        self.status = 'deleted'
+        for job in self.sequence_jobs:
+            job.on_deleted()
 
     def reset(self):
         for sequence_job in self.sequence_jobs:

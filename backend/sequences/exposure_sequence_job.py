@@ -116,6 +116,7 @@ class ExposureSequenceJob:
             self.job_runner = None
 
     def __remove_images(self, remove_fits=False):
+        logger.warning('remove images from sequence job {}'.format(self.sequence_job_id))
         main_images_db.remove_all(self.saved_images, remove_fits)        
         self.saved_images = []
 

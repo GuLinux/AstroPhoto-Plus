@@ -31,7 +31,7 @@ class SequenceJob:
         self.stopped = False
 
     def on_deleted(self):
-        self.update({'status': 'deleted'})
+        self.status = 'deleted'
         if self.job and hasattr(self.job, 'on_deleted'):
             self.job.on_deleted()
 
@@ -42,6 +42,8 @@ class SequenceJob:
             data.pop('status')
         if 'saved_images' in data:
             data.pop('saved_images') # TODO: move from here?
+        if 'progress' in data:
+            data.pop('progress')
         return SequenceJob(data)
 
     def stop(self):
