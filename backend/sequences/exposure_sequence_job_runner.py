@@ -36,7 +36,6 @@ class ExposureSequenceJobRunner:
         self.filename_template_params = filename_template_params
         if not os.path.isdir(upload_path):
             os.makedirs(upload_path)
-        self.__next_index = self.finished
         self.stopped = False
         self.error = None
         self.server = server
@@ -47,11 +46,12 @@ class ExposureSequenceJobRunner:
 
     def on_saved(self, shot):
         logger.debug('on_saved: {}'.format(shot))
+        self.finished += 1
         self.callbacks.run('on_each_saved', self, shot.number, shot.filename)
 
     def on_error(self, error, item_number):
         logger.warning('{}: {}'.format(error, item_number))
-        self.error = (error, item_number)
+        self.error = error
 
     def run(self):
         # TODO: fix
@@ -65,9 +65,7 @@ class ExposureSequenceJobRunner:
 
         def check_for_error():
             if self.error:
-                if self.error[1]:
-                    self.finished = self.error[1] -1
-                raise RuntimeError(self.error[0])
+                raise RuntimeError(self.error)
 
         try:
             with controller.indi_server.blob_client.listener(self.camera) as blob_listener:
@@ -83,7 +81,6 @@ class ExposureSequenceJobRunner:
                     filename = self.__output_file(sequence)
                     shot = Shot(sequence + self.start_index, self.exposure, filename, self.camera, blob_listener)
 
-                    self.finished += 1
                     self.callbacks.run('on_each_finished', self, sequence, filename)
                     
                     logger.debug('Exposure finished for index {}; saving file: async mode={}'.format(sequence, async_saving))
@@ -93,7 +90,7 @@ class ExposureSequenceJobRunner:
                         shot.save(clear_blob=True)
                         self.on_saved(shot)
         except Exception as e:
-            self.error = (e,self.finished)
+            self.error = e
             logger.warning('Exception on shot')
             raise
         finally:
@@ -138,14 +135,6 @@ class ExposureSequenceJobRunner:
     @property
     def remaining_shots(self):
         return self.count - self.finished
-
-    @property
-    def next_index(self):
-        return self.finished + self.start_index
-
-    @property
-    def last_index(self):
-        return self.next_index - 1
 
     def __str__(self):
         return 'ExposureSequenceJobRunner: {0} {1}s exposure (total exp time: {2}s), start index: {3}'.format(self.count,
