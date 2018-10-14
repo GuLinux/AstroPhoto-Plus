@@ -23,6 +23,10 @@ import json
 
 settings.update_log_level()
 
+def arg_bool(request, arg, default_value=False):
+    return request.args.get(arg, 'true' if default_value else 'false') == 'true' or request.get(arg) == '1'
+
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
@@ -221,8 +225,8 @@ def import_sequence(json):
 @app.route('/api/sequences/<id>', methods=['DELETE'])
 @json_api
 def delete_sequence(id):
-    sequence = controller.sequences.lookup(id)
-    sequence.on_deleted()
+    sequence = controller.sequences.looeut(id)
+    sequence.on_deleted(remove_files=arg_bool(request, 'remove_files'))
     controller.sequences.remove(sequence)
     return sequence.to_map()
 
@@ -276,7 +280,7 @@ def reset_sequence(id):
     with controller.sequences.lookup_edit(id) as sequence:
         if sequence.is_running():
             raise BadRequestError('Sequence with id {} running, cannot reset'.format(id))
-        sequence.reset()
+        sequence.reset(remove_files=arg_bool(request, 'remove_files'))
         return sequence.to_map()
 
 
@@ -344,7 +348,7 @@ def duplicate_sequence_job(sequence_id, sequence_job_id):
 def delete_sequence_job(sequence_id, sequence_job_id):
     with controller.sequences.lookup_edit(sequence_id) as sequence:
         sequence_job = sequence.job(sequence_job_id)
-        sequence_job.on_deleted()
+        sequence_job.on_deleted(remove_files=arg_bool(request, 'remove_files'))
         sequence.sequence_jobs = [x for x in sequence.sequence_jobs if x.id != sequence_job_id]
         return sequence_job.to_map()
 

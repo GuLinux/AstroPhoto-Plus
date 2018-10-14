@@ -23,6 +23,6 @@ class PropertySequenceJob:
         timeout = self.wait if self.wait > 0 else 999999999
         property.set_values(self.values, sync=sync, timeout=timeout)
 
-    def reset(self):
+    def reset(self, remove_files=False):
         pass
 

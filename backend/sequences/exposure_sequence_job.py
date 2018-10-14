@@ -36,12 +36,12 @@ class ExposureSequenceJob:
         except KeyError as e:
             raise BadRequestError('Bad filename template: {} parameter not valid'.format(e.args[0]))
 
-    def reset(self):
+    def reset(self, remove_files=False):
         self.progress = 0
-        self.__remove_images()
+        self.__remove_images(remove_files)
 
-    def on_deleted(self):
-        self.__remove_images()
+    def on_deleted(self, remove_files=False):
+        self.__remove_images(remove_files)
 
     def to_map(self, to_view=False):
         return {

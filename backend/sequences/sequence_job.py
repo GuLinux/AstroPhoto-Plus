@@ -30,10 +30,10 @@ class SequenceJob:
         self.started_ts, self.finished_ts = None, None
         self.stopped = False
 
-    def on_deleted(self):
+    def on_deleted(self, remove_files=False):
         self.status = 'deleted'
         if self.job and hasattr(self.job, 'on_deleted'):
-            self.job.on_deleted()
+            self.job.on_deleted(remove_files)
 
     def duplicate(self):
         data = self.to_map()
@@ -73,9 +73,9 @@ class SequenceJob:
         data.update(self.job.to_map())
         return data
 
-    def reset(self):
+    def reset(self, remove_files=False):
         self.status = 'idle'
-        self.job.reset()
+        self.job.reset(remove_files)
 
     def run(self, server, devices, root_path, logger, event_listener, on_update, index):
         self.status = 'running'
