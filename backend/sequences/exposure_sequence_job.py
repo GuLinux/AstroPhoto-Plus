@@ -83,7 +83,7 @@ class ExposureSequenceJob:
         def on_each_saved(job_runner, index, filename):
             logger.info('received file for index {}: {}'.format(index, filename))
 
-            image = Image(path=filename, file_required=False)
+            image = Image(path=filename, file_required=True)
             self.progress = job_runner.finished
             self.saved_images.append(image.id)
             main_images_db.add(image)
