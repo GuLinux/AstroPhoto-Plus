@@ -15,7 +15,7 @@ const getPropertyComponent = property => {
             return ( <INDILightPropertyContainer key={property.id} property={property} /> );
         default:
             // TODO: render blob in some way?
-            return ( <span key={property.id}>Unsupported {property.type} property {property.name}</span> );
+            return ( <span key={property.id}>Unsupported {property.type} property {property.label} ({property.name})</span> );
     }
 }
 
