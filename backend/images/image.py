@@ -163,8 +163,9 @@ class Image:
             remove_if(self.path)
             remove_if(Shot.info_filename(self.path))
 
-        for file in [x for x in os.listdir(self.directory) if x.startswith(self.id) and x != self.filename]:
-            remove_if(os.path.join(self.directory, file))
+        if os.path.isdir(self.directory):
+            for file in [x for x in os.listdir(self.directory) if x.startswith(self.id) and x != self.filename]:
+                remove_if(os.path.join(self.directory, file))
 
     def __base_output(self):
         if self.id:

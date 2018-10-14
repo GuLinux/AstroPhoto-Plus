@@ -10,7 +10,7 @@ import { formatDecimalNumber } from '../utils';
 import LastCapturedSequenceImageContainer from './LastCapturedSequenceImageContainer';
 import NotFoundPage from '../components/NotFoundPage';
 import { secs2time } from '../utils';
-import { ConfirmDialog } from '../Modals/ModalDialog';
+import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
 
 // TODO: refactor Gear pages out of this
 
@@ -141,12 +141,19 @@ class Sequence extends React.Component {
             navItems: [
                 { icon: 'play', onClick: () => startSequence(), disabled: !sequence.canStart(gear), content: 'start' },
                 { icon: 'stop', onClick: () => stopSequence(), disabled: !sequence.canStop, content: 'stop' },
-                { openModal: ConfirmDialog, modalProps: {
+                { openModal: ConfirmFlagsDialog, modalProps: {
                         content: 'This will reset the status of all jobs in this sequence. Are you sure?',
                         header: 'Confirm sequence reset',
                         cancelButton: 'No',
                         confirmButton: 'Yes',
-                        onConfirm: () => resetSequence(sequence),
+                        flags: [
+                            {
+                                name: 'remove_files',
+                                label: 'Also remove all fits files',
+                            },
+                        ],
+                        onConfirm: (flags) => resetSequence(flags),
+                        resetState: true,
                         size: 'mini',
                         basic: true,
                         centered: false,

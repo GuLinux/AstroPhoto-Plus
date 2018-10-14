@@ -24,7 +24,7 @@ import json
 settings.update_log_level()
 
 def arg_bool(request, arg, default_value=False):
-    return request.args.get(arg, 'true' if default_value else 'false') == 'true' or request.get(arg) == '1'
+    return request.args.get(arg, 'true' if default_value else 'false') == 'true' or request.args.get(arg) == '1'
 
 
 @app.route('/', defaults={'path': ''})
@@ -225,7 +225,7 @@ def import_sequence(json):
 @app.route('/api/sequences/<id>', methods=['DELETE'])
 @json_api
 def delete_sequence(id):
-    sequence = controller.sequences.looeut(id)
+    sequence = controller.sequences.lookup(id)
     sequence.on_deleted(remove_files=arg_bool(request, 'remove_files'))
     controller.sequences.remove(sequence)
     return sequence.to_map()

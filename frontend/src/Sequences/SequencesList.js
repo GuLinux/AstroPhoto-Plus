@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dropdown, Container, Button, Table, Label } from 'semantic-ui-react'
 import AddSequenceModalContainer from './AddSequenceModalContainer';
-import { ConfirmDialog } from '../Modals/ModalDialog';
+import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
 import { Link } from 'react-router-dom';
 import ImportSequenceContainer from './ImportSequenceContainer';
 
@@ -64,7 +64,7 @@ class SequencesList extends React.Component {
                                         <Dropdown text='more...' closeOnChange={true}>
                                             <Dropdown.Menu>
                                                 <Dropdown.Item text="Duplicate" onClick={() => duplicateSequence(sequence)} icon='copy' />
-                                                <ConfirmDialog
+                                                <ConfirmFlagsDialog
                                                     trigger={
                                                         // TODO: disable when running 
                                                         <Dropdown.Item text="Remove" icon='remove' />
@@ -72,13 +72,20 @@ class SequencesList extends React.Component {
                                                     content='Do you really want to remove this sequence?'
                                                     header='Confirm sequence removal'
                                                     cancelButton='No'
+                                                    resetState={true}
                                                     confirmButton='Yes'
-                                                    onConfirm={() => onSequenceDelete(sequence.id)}
+                                                    onConfirm={(flags) => onSequenceDelete(sequence.id, flags)}
                                                     size='mini'
                                                     basic
                                                     centered={false}
+                                                    flags={[
+                                                        {
+                                                            name: 'remove_files',
+                                                            label: 'Also remove all fits files',
+                                                        },
+                                                    ]}
                                                 />
-                                                <ConfirmDialog
+                                                <ConfirmFlagsDialog
                                                     trigger={
                                                         <Dropdown.Item text="Reset" disabled={!sequence.canReset} icon='redo'/>
                                                     }
@@ -86,11 +93,18 @@ class SequencesList extends React.Component {
                                                     header='Confirm sequence reset'
                                                     cancelButton='No'
                                                     confirmButton='Yes'
-                                                    onConfirm={() => resetSequence(sequence)}
+                                                    onConfirm={(flags) => resetSequence(sequence, flags)}
+                                                    resetState={true}
                                                     size='mini'
                                                     basic
                                                     centered={false}
-                                                />
+                                                    flags={[
+                                                        {
+                                                            name: 'remove_files',
+                                                            label: 'Also remove all fits files',
+                                                        },
+                                                    ]}
+                                               />
 
 
                                                 <Dropdown.Item text="Export" as='a' href={`/api/sequences/${sequence.id}/export`} icon='save' />

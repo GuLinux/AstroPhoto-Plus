@@ -53,7 +53,7 @@ export const stopSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(disp
         method: 'POST',
     }, json => onSuccess(json));
 
-export const resetSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/reset`, {
+export const resetSequenceAPI = (dispatch, sequence, options, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/reset?remove_files=${String(options.remove_files)}`, {
         method: 'POST',
     }, json => onSuccess(normalize(json, sequenceSchema)));
 
@@ -93,7 +93,7 @@ export const editSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(disp
 
 
 
-export const deleteSequenceAPI = (dispatch, sequenceId, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}`, {
+export const deleteSequenceAPI = (dispatch, sequenceId, options, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}?remove_files=${String(options.remove_files)}`, {
         method: 'DELETE'
     }, json => onSuccess(normalize(json, sequenceSchema)));
 
@@ -128,7 +128,7 @@ export const duplicateSequenceJobAPI = (dispatch, sequenceJob, onSuccess, onErro
     }, json => onSuccess(normalize(json, sequenceSchema)), onError);
 
 
-export const deleteSequenceJobAPI = (dispatch, sequenceId, sequenceJobId, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}/sequence_jobs/${sequenceJobId}`, {
+export const deleteSequenceJobAPI = (dispatch, sequenceId, sequenceJobId, options, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceId}/sequence_jobs/${sequenceJobId}?remove_files=${String(options.remove_files)}`, {
         method: 'DELETE'
     }, json => onSuccess(normalize(json, sequenceSchema)));
 
