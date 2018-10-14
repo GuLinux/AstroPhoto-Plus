@@ -21,8 +21,10 @@ class ExposureSequenceJob:
         self.progress = data.get('progress', 0)
         self.last_message = data.get('last_message', '')
         self.saved_images = data.get('saved_images', [])
+        self.save_directory = data.get('save_directory')
         self.__validate(self.filename)
         self.job_runner = None
+
         
     def __validate(self, format_string):
         test_params = { 'exposure': 1, 'number': 2, 'timestamp': 1, 'datetime': 'date-string', 'filter': 'filter-name', 'filter_index': 1}
@@ -42,6 +44,12 @@ class ExposureSequenceJob:
 
     def on_deleted(self, remove_files=False):
         self.__remove_images(remove_files)
+        if remove_files and self.save_directory and os.path.isdir(self.save_directory):
+            info_dir = os.path.join(self.save_directory, 'info')
+            if os.path.isdir(info_dir) and not os.listdir(info_dir):
+                os.rmdir(info_dir)
+            if not os.listdir(self.save_directory):
+                os.rmdir(self.save_directory)
 
     def to_map(self, to_view=False):
         return {
@@ -52,6 +60,7 @@ class ExposureSequenceJob:
             'progress': self.progress,
             'last_message': self.last_message,
             'saved_images': self.saved_images,
+            'save_directory': self.save_directory
         }
 
     def stop(self):
@@ -71,6 +80,7 @@ class ExposureSequenceJob:
             filename_template_params['filter_index'], filename_template_params['filter'] = devices['filter_wheel'].indi_sequence_filter_wheel().current_filter()
 
         upload_path = os.path.join(root_path, self.directory)
+        self.save_directory = upload_path
         self.job_runner = ExposureSequenceJobRunner(server, devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, progress=self.progress, filename_template=self.filename, filename_template_params=filename_template_params)
 
         def on_started(job_runner):
