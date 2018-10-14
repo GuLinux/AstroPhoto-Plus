@@ -38,6 +38,7 @@ class ExposureSequenceJob:
 
     def reset(self):
         self.progress = 0
+        self.saved_images = []
 
     def to_map(self, to_view=False):
         return {
