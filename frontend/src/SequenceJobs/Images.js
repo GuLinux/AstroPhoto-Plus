@@ -35,7 +35,7 @@ class Images extends React.Component {
         section: 'Images',
         navItems: [
             { content: 'previews', icon: 'image', active: this.state.previews, onClick: () => this.togglePreviews(), },
-            { content: 'back', icon: 'arrow left', onClick: () => this.props.history.goBack(), }
+            { content: 'back', icon: 'arrow left', to: `/sequences/${this.props.sequence}`, as: Link }
         ],
     });
 

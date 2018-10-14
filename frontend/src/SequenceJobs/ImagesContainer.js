@@ -6,8 +6,10 @@ import { Actions } from '../actions';
 const mapStateToProps = (state, ownProps) => {
     if(! (ownProps.sequenceJob in state.sequenceJobs))
         return {};
+    const sequenceJob = state.sequenceJobs[ownProps.sequenceJob];
     return {
-        images: state.sequenceJobs[ownProps.sequenceJob].saved_images,
+        images: sequenceJob.saved_images,
+        sequence: sequenceJob.sequence,
     };
 }
 
