@@ -6,6 +6,20 @@
 
 using namespace std;
 
+
+int getBPP(const cv::Mat &image) {
+    switch(image.depth()) {
+        case CV_8U:
+        case CV_8S:
+            return 8;
+        case CV_16U:
+        case CV_16S:
+            return 16;
+        default:
+            return 32; // This really shouldn't be happening though..
+    }
+}
+
 ImageProcessing::ImageProcessing(const string &fitsfile) {
     auto fits = make_unique<CCfits::FITS>(fitsfile, CCfits::Read, true);
 
@@ -38,8 +52,10 @@ void ImageProcessing::save(const std::string &filename) {
     cv::imwrite(filename, this->image);
 }
 
-cv::Mat to8Bit(const cv::Mat &source, int source_bpp) {
-    if(source_bpp = 8) {
+cv::Mat to8Bit(const cv::Mat &source) {
+    int source_bpp = getBPP(source);
+    cerr << "Converting image to 8bit from " << source_bpp << endl;
+    if(source_bpp == 8) {
         return source;
     }
     cv::Mat dest;
@@ -51,7 +67,7 @@ cv::Mat to8Bit(const cv::Mat &source, int source_bpp) {
 void ImageProcessing::autostretch() {
     cv::Mat normedImage;
     cv::normalize(this->image, normedImage, 0, (1 << this->bpp()), cv::NORM_MINMAX);
-    cv::equalizeHist(to8Bit(normedImage, this->bpp()), this->image);
+    cv::equalizeHist(to8Bit(normedImage), this->image);
 }
 
 #include <iostream>
@@ -76,7 +92,7 @@ void ImageProcessing::clip(float min, float max) {
     double minVal, maxVal;
     cv::minMaxLoc(image, &minVal, &maxVal);
     auto clipped = (image - minVal) * ( (maxBPPValue - 1)/ (maxVal - minVal));
-    this->image = to8Bit(clipped, this->bpp());
+    this->image = to8Bit(clipped);
 }
 
 
@@ -103,14 +119,5 @@ int ImageProcessing::height() const {
 }
 
 int ImageProcessing::bpp() const {
-    switch(this->image.depth()) {
-        case CV_8U:
-        case CV_8S:
-            return 8;
-        case CV_16U:
-        case CV_16S:
-            return 16;
-        default:
-            return 32; // This really shouldn't be happening though..
-    }
+    return getBPP(this->image);
 }
