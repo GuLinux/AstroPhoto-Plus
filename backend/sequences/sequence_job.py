@@ -30,6 +30,11 @@ class SequenceJob:
         self.started_ts, self.finished_ts = None, None
         self.stopped = False
 
+    def on_deleted(self):
+        self.update({'status': 'deleted'})
+        if self.job and hasattr(self.job, 'on_deleted'):
+            self.job.on_deleted()
+
     def duplicate(self):
         data = self.to_map()
         data.pop('id')

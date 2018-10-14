@@ -38,7 +38,10 @@ class ExposureSequenceJob:
 
     def reset(self):
         self.progress = 0
-        self.saved_images = []
+        self.__remove_images()
+
+    def on_deleted(self):
+        self.__remove_images()
 
     def to_map(self, to_view=False):
         return {
@@ -112,4 +115,7 @@ class ExposureSequenceJob:
         finally:
             self.job_runner = None
 
+    def __remove_images(self, remove_fits=False):
+        main_images_db.remove_all(self.saved_images, remove_fits)        
+        self.saved_images = []
 

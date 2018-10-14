@@ -273,6 +273,7 @@ def stop_sequence(id):
 @app.route('/api/sequences/<id>/reset', methods=['POST'])
 @json_api
 def reset_sequence(id):
+    # TODO: delete files as parameter
     with controller.sequences.lookup_edit(id) as sequence:
         if sequence.is_running():
             raise BadRequestError('Sequence with id {} running, cannot reset'.format(id))
@@ -345,7 +346,7 @@ def delete_sequence_job(sequence_id, sequence_job_id):
     with controller.sequences.lookup_edit(sequence_id) as sequence:
         sequence_job = sequence.job(sequence_job_id)
         sequence_job = sequence_job.to_map()
-        sequence_job.update({'status': 'deleted'})
+        sequence_job.on_deleted()
         sequence.sequence_jobs = [x for x in sequence.sequence_jobs if x.id != sequence_job_id]
         return sequence_job
 
