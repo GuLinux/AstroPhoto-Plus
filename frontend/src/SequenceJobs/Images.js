@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Container, Image, Header } from 'semantic-ui-react';
+import { Table, Button, Container, Image, Header, Pagination } from 'semantic-ui-react';
 import Filesize from '../components/Filesize';
 import DateTime from '../components/DateTime';
 import { Link, withRouter } from 'react-router-dom';
@@ -25,10 +25,12 @@ const ImageRow = ({index, imageData, previews}) => imageData ? (
     </Table.Row>
 ) : null;
 
+const PAGE_SIZE = 10;
+
 class Images extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { imagesData: {}, previews: false };
+        this.state = { imagesData: {}, previews: false, startIndex: 0 };
     }
 
     updateMenu = () => this.props.onMount({
@@ -75,13 +77,28 @@ class Images extends React.Component {
 
     togglePreviews = () => this.setState({...this.state, previews: !this.state.previews});
 
+    setPage = (activePage) => {
+        const startIndex = (activePage - 1) * PAGE_SIZE;
+        this.setState({...this.state, startIndex });
+    }
+
+    renderPagination = () => {
+        if(this.props.images.length <= PAGE_SIZE) {
+            return null;
+        }
+        const activePage = this.state.startIndex + 1;
+        const totalPages = Math.ceil(this.props.images.length / PAGE_SIZE);
+        return <Pagination pointing secondary defaultActivePage={activePage} totalPages={totalPages} onPageChange={(e, data) => this.setPage(data.activePage)} />;
+    }
+
     render = () => {
         const { images } = this.props;
         if(!images)
             return null;
         return (
-            <Container>
+            <Container textAlign='center' >
                 <Header>{images.length} images, <Filesize bytes={images.map(i => this.state.imagesData[i]).reduce( (acc, cur) => cur && acc + cur.image_info.size, 0) } /></Header>
+                { this.renderPagination() }
                 <Table stackable striped basic="very" selectable>
                     <Table.Header>
                         <Table.Row>
@@ -95,9 +112,14 @@ class Images extends React.Component {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        { images.map( (image, index) => <ImageRow index={index} imageData={this.state.imagesData[image]} previews={this.state.previews} key={image} />)}
+                        { images
+                            .filter( (image, index) => index >= this.state.startIndex && index < this.state.startIndex + PAGE_SIZE)
+                            .map( (image, index) => <ImageRow index={index + this.state.startIndex} imageData={this.state.imagesData[image]} previews={this.state.previews} key={image} />)
+                        }
                     </Table.Body>
                 </Table>
+                { this.renderPagination() }
+
             </Container>
         )
     }
