@@ -3,14 +3,14 @@ import { Menu, Container } from 'semantic-ui-react';
 import INDIDeviceGroupContainer from './INDIDeviceGroupContainer';
 import INDIMessagesPanel from './INDIMessagesPanel';
 import INDIAutoloadConfiguration from './INDIAutoloadConfiguration';
-import { Route, Redirect} from 'react-router';
+import { Route, Redirect } from 'react-router';
 import { NavLink } from 'react-router-dom';
-
+import { NotFoundPage } from '../components/NotFoundPage';
 
 
 const INDIDevicePage = ({device, groups, addPendingProperties, commitPendingProperties, messages}) => {
     if(! device)
-        return <Redirect to='/indi' />
+        return <NotFoundPage backToUrl='/indi/server' message='INDI Device not found. Perhaps you need to connect to your INDI server?' backButtonText='INDI server page' />
     return (
         <Container>
             <Menu secondary stackable>

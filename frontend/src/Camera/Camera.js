@@ -1,12 +1,12 @@
 import React from 'react';
 import { Container, Grid, Input, Form, Header, Segment, Button, Message } from 'semantic-ui-react';
-import { Redirect } from 'react-router';
 import ExposureInputContainer from './ExposureInputContainer';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
 import AutoExposureContainer from './AutoExposureContainer';
 import HistogramContainer from './HistogramContainer';
 import SelectFilterContainer from './SelectFilterContainer';
 import ImageViewOptions from '../Image/ImageViewOptions';
+import { NotFoundPage } from '../components/NotFoundPage';
 
 
 const FilterWheelSection = ({filterWheels, currentFilterWheel, setCurrentFilterWheel}) => (
@@ -47,7 +47,7 @@ const Camera = ({
         resetCrop,
     }) => {
     if(cameras.length === 0)
-        return <Redirect to='/' />;
+        return <NotFoundPage backToUrl='/indi/server' message='Camera not found. Perhaps you need to connect to your INDI server?' backButtonText='INDI server page' />
     return (
         <Container fluid>
             <AutoExposureContainer />

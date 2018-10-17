@@ -17,7 +17,7 @@ const App = ({location}) => (
     <Navbar location={location}>
         <NotificationsContainer />
         <ErrorPageContainer>
-            <Route exact path="/" render={() => <Redirect to="/sequences"/> }/>
+            <Route exact path="/" render={() => <Redirect to="/sequences/all"/> }/>
             <Route path="/sequences" component={SequencesPage} />
             <Route path="/indi" component={INDIServerContainer} />
             <Route path="/camera" component={CameraContainer} />

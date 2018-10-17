@@ -40,8 +40,6 @@ class INDIServerPage extends React.Component {
         this.state = { lastRoute: 'server' };
     }
 
-    onRouteChange = (newRoute) => this.setState({...this.state, lastRoute: newRoute });
-
     render = () => (
         <Container>
             <Menu stackable>

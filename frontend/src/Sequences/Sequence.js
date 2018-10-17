@@ -8,7 +8,7 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { formatDecimalNumber } from '../utils';
 import LastCapturedSequenceImageContainer from './LastCapturedSequenceImageContainer';
-import NotFoundPage from '../components/NotFoundPage';
+import { NotFoundPage } from '../components/NotFoundPage';
 import { secs2time } from '../utils';
 import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Message, Button, Container } from 'semantic-ui-react';
 import { withRouter } from 'react-router';
 
-const NotFoundPage = withRouter( ({history, title = null, message= null, onBackClick = null, backToUrl = null, backButtonText = null}) => (
+export const NotFoundPage = withRouter( ({history, title = null, message= null, onBackClick = null, backToUrl = null, backButtonText = null}) => (
     <Container>
         <Message>
             <Message.Header content={title || 'Page not found'} />
@@ -22,5 +22,4 @@ const NotFoundPage = withRouter( ({history, title = null, message= null, onBackC
     </Container>
 ))
 
-export default NotFoundPage;
 

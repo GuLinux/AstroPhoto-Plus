@@ -3,7 +3,7 @@ import ExposureSequenceJobContainer from './ExposureSequenceJobContainer'
 import CommandSequenceJob from './CommandSequenceJob'
 import FilterSequenceJobContainer from './FilterSequenceJobContainer'
 import INDIPropertySequenceJobContainer from './INDIPropertySequenceJobContainer'
-import { Redirect } from 'react-router';
+import { NotFoundPage } from '../components/NotFoundPage';
 
 const mapItemType = (sequenceJob) => {
     switch(sequenceJob.type) {
@@ -24,8 +24,7 @@ const SequenceJob = ({sequenceJob}) => {
     if(sequenceJob) {
         return <div className="container">{mapItemType(sequenceJob)}</div>
     }
-    //return null;
-    return <Redirect to="/sequences" />
+    return <NotFoundPage backToUrl='/sequences/all' message='Sequence job not found' />
 }
 
 export default SequenceJob
