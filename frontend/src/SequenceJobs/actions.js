@@ -41,9 +41,9 @@ export const SequenceJobs = {
         return updateSequenceJobAPI(dispatch, sequenceJob, data => onSuccess(data, false), onError );
     },
 
-    delete: (sequenceJob) => dispatch => {
+    delete: (sequenceJob, options) => dispatch => {
         dispatch({type: 'REQUEST_DELETE_SEQUENCE_JOB', sequenceJob});
-        return deleteSequenceJobAPI(dispatch, sequenceJob.sequence, sequenceJob.id, (data) => SequenceJobs.deleted(dispatch, sequenceJob));
+        return deleteSequenceJobAPI(dispatch, sequenceJob.sequence, sequenceJob.id, options, (data) => SequenceJobs.deleted(dispatch, sequenceJob));
     },
 
     deleted: (dispatch, sequenceJob) => {

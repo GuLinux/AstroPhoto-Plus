@@ -154,16 +154,18 @@ class Image:
 
 
     def remove_files(self, remove_fits=False):
+        def remove_if(file):
+            if os.path.exists(file):
+                os.remove(file)
+
         if remove_fits:
-            try:
-                os.remove(self.path)
-            except FileNotFoundError:
-                pass
-        for file in [x for x in os.listdir(self.directory) if x.startswith(self.id) and x != self.filename]:
-            try:
-                os.remove(os.path.join(self.directory, file))
-            except FileNotFoundError:
-                pass
+            from sequences import Shot
+            remove_if(self.path)
+            remove_if(Shot.info_filename(self.path))
+
+        if os.path.isdir(self.directory):
+            for file in [x for x in os.listdir(self.directory) if x.startswith(self.id) and x != self.filename]:
+                remove_if(os.path.join(self.directory, file))
 
     def __base_output(self):
         if self.id:

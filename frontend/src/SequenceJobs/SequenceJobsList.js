@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, Button, Progress } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
-import { ConfirmDialog } from '../Modals/ModalDialog';
+import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
 
 const descriptionComponent = sequenceJob => <span>{sequenceJob.description}</span>
 
@@ -58,16 +58,23 @@ const SequenceJobsList = ({canEdit, sequenceJobs, deleteSequenceJob, moveSequenc
                     <Table.Cell>
                         <Button.Group icon>
                             <Button as={Link} to={`/sequences/${sequenceJob.sequence}/items/${sequenceJob.id}`} icon='edit' title="Edit" size="small" disabled={!canEdit} />
-                            <ConfirmDialog
+                            <ConfirmFlagsDialog
                                 trigger={<Button title="Remove" size="small" icon='remove' />}
                                 header='Confirm removal'
+                                resetState={true}
                                 cancelButton='no'
                                 confirmButton='yes'
-                                onConfirm={() => deleteSequenceJob(sequenceJob)}
+                                onConfirm={(flags) => deleteSequenceJob(sequenceJob, flags)}
                                 content='Do you really want to remove this element?'
                                 size='mini'
                                 basic
                                 centered={false}
+                                flags={[
+                                    {
+                                        name: 'remove_files',
+                                        label: 'Also remove all fits files',
+                                    },
+                                ]}
 
                             />
                             <Button title="Move up" size="small" disabled={index===0} onClick={() => moveSequenceJob(sequenceJob, 'up')} icon='angle up' />

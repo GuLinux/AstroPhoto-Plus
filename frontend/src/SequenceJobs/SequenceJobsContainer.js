@@ -51,7 +51,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    deleteSequenceJob: (sequenceJob) => dispatch(Actions.SequenceJobs.delete(sequenceJob)),
+    deleteSequenceJob: (sequenceJob, options) => dispatch(Actions.SequenceJobs.delete(sequenceJob, options)),
     moveSequenceJob: (sequenceJob, direction) => dispatch(Actions.SequenceJobs.move(sequenceJob, direction) ),
     duplicateSequenceJob: (sequenceJob) => dispatch(Actions.SequenceJobs.duplicate(sequenceJob) ),
   }

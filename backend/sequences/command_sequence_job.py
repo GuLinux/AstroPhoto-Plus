@@ -29,7 +29,7 @@ class CommandSequenceJob:
             if result.returncode != 0:
                 raise RuntimeError('Error running command {}'.format(self.command))
 
-    def reset(self):
+    def reset(self, remove_files=False):
         pass
 
     def __log_filename(self, index, suffix):

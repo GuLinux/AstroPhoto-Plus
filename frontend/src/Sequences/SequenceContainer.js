@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch, props) => ({
     },
     onMount: (items) => dispatch(Actions.Navigation.setRightMenu(items)),
     onUnmount: () => dispatch(Actions.Navigation.resetRightMenu()),
-    resetSequence: (sequence) => dispatch(Actions.Sequences.reset(sequence)),
+    resetSequence: (sequence, options) => dispatch(Actions.Sequences.reset(sequence, options)),
 })
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => ({
@@ -35,7 +35,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     onCreateSequenceJob: type => dispatchProps.onCreateSequenceJob(type, stateProps.sequence.id),
     startSequence: () => dispatchProps.startSequence(stateProps.sequence),
     stopSequence: () => dispatchProps.stopSequence(stateProps.sequence),
-    resetSequence: () => dispatchProps.resetSequence(stateProps.sequence),
+    resetSequence: (options) => dispatchProps.resetSequence(stateProps.sequence, options),
 })
 
 const SequenceContainer = connect(

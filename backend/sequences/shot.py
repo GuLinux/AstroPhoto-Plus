@@ -5,6 +5,12 @@ from app import logger
 
 
 class Shot:
+
+    @staticmethod
+    def info_filename(image_filename):
+        return os.path.join(os.path.dirname(image_filename), 'info', os.path.basename(image_filename) + '.json')
+
+
     def __init__(self, number, exposure, filename, camera=None, blob_listener=None):
         self.number = number
         self.exposure = exposure
@@ -24,7 +30,8 @@ class Shot:
 
     def save(self, clear_blob=False):
         logger.debug('starting save: {}'.format(self))
-        info_json = os.path.join(os.path.dirname(self.filename), 'info', os.path.basename(self.filename) + '.json')
+        info_json = Shot.info_filename(self.filename)
+
         os.makedirs(os.path.dirname(info_json), exist_ok=True)
         info = {
             'exposure': self.exposure,

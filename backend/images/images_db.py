@@ -47,15 +47,24 @@ class ImagesDatabase:
         result = {}
         if 'ids' in data:
             objects = redis_client.multi_lookup(data['ids'], self.name, 'images')
+            missing_images = []
             for object in objects:
-                result[object['id']] = Image.from_map(object).to_map()
+                image = Image.from_map(object)
+                if image.is_ready():
+                    result[object['id']] = image.to_map()
+                else:
+                    missing_images.append(object['id'])
+            self.remove_all(missing_images)
         return result
 
     def __remove(self, image_id, remove_fits):
-        image = self.lookup(image_id)
-        image.remove_files(remove_fits=remove_fits)
-        redis_client.delete(image_id, self.name, 'images')
-        return image
+        try:
+            image = self.lookup(image_id)
+            image.remove_files(remove_fits=remove_fits)
+            redis_client.delete(image_id, self.name, 'images')
+            return image
+        except NotFoundError:
+            return None
 
 
 main_images_db = ImagesDatabase(settings)
