@@ -22,6 +22,13 @@ class Telescope:
         return {
             'id': self.id,
             'device': self.device.to_map(),
+            'connected': self.device.connected(),
+            'info': self.telescope_info(),
         }
 
 
+    def telescope_info(self):
+        indi_device = self.device.find_indi_device()
+        if indi_device:
+            return indi_device.values('TELESCOPE_INFO', 'number')
+        return {}

@@ -40,6 +40,10 @@ class Device:
             'interfaces': self.indi_device.interfaces,
         }
 
+    @with_indi_device
+    def connected(self):
+        return self.indi_device.connected
+
     def find_indi_device(self):
         if not self.indi_device:
             devices = [d  for d in self.client.devices() if d.name == self.name]
