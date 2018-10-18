@@ -437,6 +437,16 @@ def retrieve_image_histogram(type, image):
         args['range_int'] = request.args['range_int'] != '0'
     return image.histogram(**args)
 
+#telescope module
+
+
+@app.route('/api/telescopes', methods=['GET'])
+@json_api
+@indi_connected
+def get_telescopes():
+    return [x.to_map() for x in controller.indi_server.telescopes()]
+
+
 
 # filesystem
 @app.route('/api/mkdir', methods=['POST'])
