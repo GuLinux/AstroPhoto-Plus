@@ -29,6 +29,8 @@ const sequenceJobs = (state = {}, action) => {
             return {...state, ...action.sequenceJobs};
         case 'SEQUENCE_UPDATED':
             return {...state, ...action.data.entities.sequenceJobs};
+        case 'SEQUENCE_JOB_IMAGES_PREVIEW':
+            return {...state, imagesPreview: action.imagesPreview};
         default:
             return state;
     }

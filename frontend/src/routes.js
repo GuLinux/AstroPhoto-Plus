@@ -6,7 +6,10 @@ export const Routes = {
     CAMERA_PAGE: '/camera',
     SETTINGS_PAGE: '/settings',
     IMAGE_PAGE: '/image/:type/:id',
-    SEQUENCE_PAGE: '/sequences/:id',
+    SEQUENCE_PAGE: {
+        route: '/sequences/:id',
+        format: id => `/sequences/${id}`,
+    },
     SEQUENCE_JOB_PAGE: '/sequences/:id/items/:itemId',
     SEQUENCE_JOB_IMAGES: '/sequences/:id/items/:itemId/images',
 }

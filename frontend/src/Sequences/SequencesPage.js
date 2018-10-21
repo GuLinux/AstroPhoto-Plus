@@ -2,7 +2,7 @@ import React from 'react';
 import { SequenceContainer } from './SequenceContainer';
 import SequenceJobContainer from '../SequenceJobs/SequenceJobContainer';
 import SequencesListContainer from './SequencesListContainer';
-import ImagesContainer from '../SequenceJobs/ImagesContainer';
+import { ImagesContainer } from '../SequenceJobs/ImagesContainer';
 import { Route } from "react-router";
 import { Routes } from '../routes';
 import { Container } from 'semantic-ui-react'
@@ -12,7 +12,7 @@ const SequencesPage = () => (
     <Container>
         <HistoryLandingContainer route={Routes.SEQUENCES_PAGE} defaultLandingPath={Routes.SEQUENCES_LIST}>
             <Route path={Routes.SEQUENCES_LIST} exact={true} component={SequencesListContainer} />
-            <Route path={Routes.SEQUENCE_PAGE} exact={true} render={
+            <Route path={Routes.SEQUENCE_PAGE.route} exact={true} render={
                 ({match}) => <SequenceContainer sequenceId={match.params.id} />
             } />
             <Route path={Routes.SEQUENCE_JOB_PAGE} exact={true} render={
