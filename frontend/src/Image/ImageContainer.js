@@ -1,4 +1,4 @@
-import ImagePage from './Image';
+import { ImagePage, ImageSectionMenu } from './Image';
 import { connect } from 'react-redux';
 import { imageUrlBuilder } from '../utils';
 import Actions from '../actions';
@@ -34,10 +34,16 @@ const mapDispatchToProps = (dispatch, props) => {
 };
 
 
-const ImageContainer = connect(
+export const ImageContainer = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    null,
+    { pure: false }
+)(ImagePage);
+
+export const ImageSectionMenuContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-)(withRouter(ImagePage));
+)(withRouter(ImageSectionMenu));
 
 
-export default ImageContainer;

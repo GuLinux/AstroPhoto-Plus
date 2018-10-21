@@ -8,6 +8,7 @@ import { SequencesListSectionMenu } from '../Sequences/SequencesList';
 import { SequenceSectionMenuContainer } from '../Sequences/SequenceContainer';
 import { SequenceJobImagesContainer } from '../SequenceJobs/ImagesContainer';
 import { CameraSectionMenuContainer } from '../Camera/CameraContainer';
+import { ImageSectionMenuContainer } from '../Image/ImageContainer';
 import { NavItem } from './NavbarMenu';
 
 
@@ -25,6 +26,7 @@ export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, onC
             ({match}) => <SequenceJobImagesContainer sequenceJob={match.params.itemId} />
         } />
         <Route exact path={Routes.CAMERA_PAGE} component={CameraSectionMenuContainer} />
+        <Route path={Routes.IMAGE_PAGE} render={({match}) => <ImageSectionMenuContainer id={match.params.id} type={match.params.type} />} />
     </React.Fragment>
 )
 

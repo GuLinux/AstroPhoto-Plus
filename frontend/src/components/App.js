@@ -7,7 +7,7 @@ import NotificationsContainer from '../Notifications/NotificationsContainer';
 import ErrorPageContainer from '../Errors/ErrorPageContainer';
 import { CameraContainer } from '../Camera/CameraContainer';
 import SettingsContainer from '../Settings/SettingsContainer';
-import ImageContainer from '../Image/ImageContainer';
+import { ImageContainer } from '../Image/ImageContainer';
 
 import './App.css';
 import { Route, Redirect } from "react-router-dom";
