@@ -5,6 +5,7 @@ import { Route } from "react-router-dom";
 
 
 import { SequencesListSectionMenu } from '../Sequences/SequencesList';
+import { SequenceSectionMenuContainer } from '../Sequences/SequenceContainer';
 import { NavItem } from './NavbarMenu';
 
 
@@ -33,6 +34,10 @@ export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, onC
         <NavItem icon='camera' content='Camera' to={Routes.CAMERA_PAGE} disabled={disabled || ! hasConnectedCameras} onClick={onClick}/>
         <NavItem icon='settings' content='System & Settings' to={Routes.SETTINGS_PAGE} disabled={disabled} onClick={onClick} />
         <Route exact path={Routes.SEQUENCES_LIST} component={SequencesListSectionMenu} />
+        <Route path={Routes.SEQUENCE_PAGE} exact={true} render={
+            ({match}) => <SequenceSectionMenuContainer sequenceId={match.params.id} />
+        } />
+
         <React.Fragment>
 
             { sectionMenu && (

@@ -4,7 +4,7 @@ import AddSequenceModalContainer from './AddSequenceModalContainer';
 import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
 import { Link } from 'react-router-dom';
 import ImportSequenceContainer from './ImportSequenceContainer';
-import { NavbarSectionMenu, NavItem } from '../Navigation/NavbarMenu';
+import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
 
 const GearDescription = ({gear}) => {
     let elements = [];
