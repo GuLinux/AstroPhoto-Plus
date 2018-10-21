@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Sidebar, Grid, Responsive } from 'semantic-ui-react';
+import { Container, Sticky, Menu, Sidebar, Grid, Responsive } from 'semantic-ui-react';
 
 
 import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';
@@ -11,17 +11,17 @@ const TRIGGER_SIZE = 1400;
 const SiteMenuHeader = (props) => <Menu.Item header {...props} content='StarQuew' />
 
 const DesktopNavbar = ({children}) => (
-    <Grid className='fullHeight'>
-        <Grid.Column width={3} className='fullHeight'>
+    <React.Fragment>
+        <div className='fullHeight desktop-sidebar'>
             <NavbarMenu vertical attached className='fullHeight' size='large'>
                 <SiteMenuHeader />
                 <NavbarMenuItemsContainer />
             </NavbarMenu>
-        </Grid.Column>
-        <Grid.Column width={13}>
-            {children}
-        </Grid.Column>
-    </Grid>
+        </div>
+        <div className='desktop-content'>
+        {children}
+        </div>
+    </React.Fragment>
 );
 
 class ResponsiveNavbar extends React.Component {

@@ -8,6 +8,23 @@ html, body, .App, #root, #root > div > div {
     padding-bottom: 0px!important;
 }
 
+.desktop-sidebar {
+    width: 29rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    background-color: rgb(113, 121, 126);
+}
+
+.desktop-content {
+    margin-left: 30rem;
+}
+
+#root {
+    overflow: auto;
+}
+
 .loadingOverlay {
     width: 100%;
     height: 100%;
