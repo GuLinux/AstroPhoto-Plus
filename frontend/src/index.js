@@ -5,6 +5,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { createLogger } from 'redux-logger'
 import { Actions } from './actions'
 import thunkMiddleware from 'redux-thunk'
+import { Routes } from './routes'
 
 //import 'semantic-ui-css/semantic.min.css';
 // TODO: restore when it is working again
@@ -54,7 +55,7 @@ listenToEvents(store.dispatch)
 render(
   <Provider store={store}>
     <Router>
-        <Route path="/">
+        <Route path={Routes.ROOT}>
             {({location}) => <App location={location} /> }
         </Route>
     </Router>

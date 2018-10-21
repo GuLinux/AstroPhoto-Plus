@@ -1,13 +1,60 @@
 import React from 'react';
-import { Responsive } from 'semantic-ui-react';
+import { Menu, Sidebar, Grid, Responsive } from 'semantic-ui-react';
 
-import { DesktopNavbar } from './DesktopNavbar';
-import { ResponsiveNavbar } from './ResponsiveNavbar';
+
+import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';
+import { NavbarMenu } from './NavbarMenu';
 
 const TRIGGER_SIZE = 1400;
 
 
-const Navbar = ({location, children}) => (
+const SiteMenuHeader = (props) => <Menu.Item header {...props} content='StarQuew' />
+
+const DesktopNavbar = ({children}) => (
+    <Grid className='fullHeight'>
+        <Grid.Column width={3} className='fullHeight'>
+            <NavbarMenu vertical attached className='fullHeight' size='large'>
+                <SiteMenuHeader />
+                <NavbarMenuItemsContainer />
+            </NavbarMenu>
+        </Grid.Column>
+        <Grid.Column width={13}>
+            {children}
+        </Grid.Column>
+    </Grid>
+);
+
+class ResponsiveNavbar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { visible: false };
+    }
+
+    setVisible = (visible) => this.setState({...this.state, visible});
+
+    toggleVisible = () => this.setVisible(! this.state.visible);
+
+    render = () => {
+        const { children } = this.props;
+        return (
+            <Sidebar.Pushable className='starquew-sidebar'>
+                <Sidebar as={NavbarMenu} vertical attached animation='overlay' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>
+                    <SiteMenuHeader onClick={() => this.setVisible(false)} />
+                    <NavbarMenuItemsContainer onClick={() => this.setVisible(false)} />
+                </Sidebar>
+                <Sidebar.Pusher style={{overflow: 'initial'}}>
+                    <Menu inverted size='small' attached>
+                        <SiteMenuHeader as='a' icon='sidebar' onClick={() => this.setVisible(true)} />
+                    </Menu>
+                    {children}
+                </Sidebar.Pusher>
+            </Sidebar.Pushable>
+        )
+    }
+}
+
+
+export const Navbar = ({location, children}) => (
      <React.Fragment>
         <Responsive maxWidth={TRIGGER_SIZE}>
              <ResponsiveNavbar children={children} />
@@ -18,4 +65,3 @@ const Navbar = ({location, children}) => (
      </React.Fragment>
 )
 
-export default Navbar;

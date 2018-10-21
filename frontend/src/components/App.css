@@ -98,3 +98,15 @@ html, body, .App, #root, #root > div > div {
 }
 
 
+.sectionMenu .item {
+    color: #ffffff!important;
+}
+
+.sectionMenu .item:hover {
+    color: #ffffff66!important;
+}
+.sectionMenu .item.disabled {
+    color: #ffffff66!important;
+}
+
+

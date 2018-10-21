@@ -1,9 +1,10 @@
 import React from 'react';
-import { Dropdown, Container, Button, Table, Label } from 'semantic-ui-react'
+import { Menu, Dropdown, Container, Button, Table, Label } from 'semantic-ui-react'
 import AddSequenceModalContainer from './AddSequenceModalContainer';
 import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
 import { Link } from 'react-router-dom';
 import ImportSequenceContainer from './ImportSequenceContainer';
+import { NavbarSectionMenu, NavItem } from '../Navigation/NavbarMenu';
 
 const GearDescription = ({gear}) => {
     let elements = [];
@@ -16,114 +17,101 @@ const GearDescription = ({gear}) => {
 
 const uriFor = sequence => '/sequences/' + sequence.id;
 
-class SequencesList extends React.Component {
-    componentDidMount = () => this.props.onMount({
-        section: 'Sequences',
-        navItems: [
-            { icon: 'add', content: 'new sequence', openModal: AddSequenceModalContainer },
-            { icon: 'upload', content: 'import sequence', openModal: ImportSequenceContainer },
-        ],
-    });
+export const SequencesListSectionMenu = () => (
+    <NavbarSectionMenu sectionName='Sequences'>
+        <AddSequenceModalContainer trigger={<Menu.Item icon='add' content='new sequence' />} />
+        <ImportSequenceContainer trigger={<Menu.Item icon='upload' content='import sequence' />} />
+    </NavbarSectionMenu>
+);
 
-    componentWillUnmount = () => this.props.onUnmount();
+export const SequencesList = ({sequences, gear, onSequenceDelete, startSequence, duplicateSequence, stopSequence, resetSequence}) => (
+    <Container>
+        <Table stackable selectable striped basic="very">
+            <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell><Label content='Name' /></Table.HeaderCell>
+                    <Table.HeaderCell><Label content='Gear' /></Table.HeaderCell>
+                    <Table.HeaderCell><Label content='Jobs'/></Table.HeaderCell>
+                    <Table.HeaderCell><Label content='State'/></Table.HeaderCell>
+                    <Table.HeaderCell><Label content='Action' /></Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+            {sequences.map(sequence => (
+                <Table.Row key={sequence.id}>
+                    <Table.Cell verticalAlign='middle'>
+                        <Link to={uriFor(sequence)}>
+                            {sequence.name}
+                        </Link>
+                    </Table.Cell>
+                    <Table.Cell verticalAlign='middle'><GearDescription gear={gear[sequence.id]} /></Table.Cell>
+                    <Table.Cell verticalAlign='middle'>{sequence.sequenceJobs.length}</Table.Cell>
+                    <Table.Cell verticalAlign='middle'>{sequence.status}</Table.Cell>
+                    <Table.Cell>
+                        <Button.Group icon compact size='mini'>
+                            <Button as={Link} to={uriFor(sequence)} title="Open" icon='folder open' />
+                            <AddSequenceModalContainer trigger={<Button title="Edit" icon='edit' />} sequence={sequence} />
+                            <Button title="Start" disabled={!sequence.canStart(gear[sequence.id])}  onClick={() => startSequence(sequence)} icon='play' />
+                            <Button title="Stop" disabled={!sequence.canStop} onClick={() => stopSequence(sequence)} icon='stop'/>
 
-    render = () => {
-        const {sequences, gear, onSequenceDelete, startSequence, duplicateSequence, stopSequence, resetSequence} = this.props;
-        return (
-            <Container>
-
-                <Table stackable selectable striped basic="very">
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell><Label content='Name' /></Table.HeaderCell>
-                            <Table.HeaderCell><Label content='Gear' /></Table.HeaderCell>
-                            <Table.HeaderCell><Label content='Jobs'/></Table.HeaderCell>
-                            <Table.HeaderCell><Label content='State'/></Table.HeaderCell>
-                            <Table.HeaderCell><Label content='Action' /></Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                    {sequences.map(sequence => (
-                        <Table.Row key={sequence.id}>
-                            <Table.Cell verticalAlign='middle'>
-                                <Link to={uriFor(sequence)}>
-                                    {sequence.name}
-                                </Link>
-                            </Table.Cell>
-                            <Table.Cell verticalAlign='middle'><GearDescription gear={gear[sequence.id]} /></Table.Cell>
-                            <Table.Cell verticalAlign='middle'>{sequence.sequenceJobs.length}</Table.Cell>
-                            <Table.Cell verticalAlign='middle'>{sequence.status}</Table.Cell>
-                            <Table.Cell>
-                                <Button.Group icon compact size='mini'>
-                                    <Button as={Link} to={uriFor(sequence)} title="Open" icon='folder open' />
-                                    <AddSequenceModalContainer trigger={<Button title="Edit" icon='edit' />} sequence={sequence} />
-                                    <Button title="Start" disabled={!sequence.canStart(gear[sequence.id])}  onClick={() => startSequence(sequence)} icon='play' />
-                                    <Button title="Stop" disabled={!sequence.canStop} onClick={() => stopSequence(sequence)} icon='stop'/>
-
-                                    <Button as='div'>
-                                        <Dropdown text='more...' closeOnChange={true}>
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item text="Duplicate" onClick={() => duplicateSequence(sequence)} icon='copy' />
-                                                <ConfirmFlagsDialog
-                                                    trigger={
-                                                        // TODO: disable when running 
-                                                        <Dropdown.Item text="Remove" icon='remove' />
-                                                    }
-                                                    content='Do you really want to remove this sequence?'
-                                                    header='Confirm sequence removal'
-                                                    cancelButton='No'
-                                                    resetState={true}
-                                                    confirmButton='Yes'
-                                                    onConfirm={(flags) => onSequenceDelete(sequence.id, flags)}
-                                                    size='mini'
-                                                    basic
-                                                    centered={false}
-                                                    flags={[
-                                                        {
-                                                            name: 'remove_files',
-                                                            label: 'Also remove all fits files',
-                                                        },
-                                                    ]}
-                                                />
-                                                <ConfirmFlagsDialog
-                                                    trigger={
-                                                        <Dropdown.Item text="Reset" disabled={!sequence.canReset} icon='redo'/>
-                                                    }
-                                                    content='This will reset the status of all jobs in this sequence. Are you sure?'
-                                                    header='Confirm sequence reset'
-                                                    cancelButton='No'
-                                                    confirmButton='Yes'
-                                                    onConfirm={(flags) => resetSequence(sequence, flags)}
-                                                    resetState={true}
-                                                    size='mini'
-                                                    basic
-                                                    centered={false}
-                                                    flags={[
-                                                        {
-                                                            name: 'remove_files',
-                                                            label: 'Also remove all fits files',
-                                                        },
-                                                    ]}
-                                               />
+                            <Button as='div'>
+                                <Dropdown text='more...' closeOnChange={true}>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item text="Duplicate" onClick={() => duplicateSequence(sequence)} icon='copy' />
+                                        <ConfirmFlagsDialog
+                                            trigger={
+                                                // TODO: disable when running 
+                                                <Dropdown.Item text="Remove" icon='remove' />
+                                            }
+                                            content='Do you really want to remove this sequence?'
+                                            header='Confirm sequence removal'
+                                            cancelButton='No'
+                                            resetState={true}
+                                            confirmButton='Yes'
+                                            onConfirm={(flags) => onSequenceDelete(sequence.id, flags)}
+                                            size='mini'
+                                            basic
+                                            centered={false}
+                                            flags={[
+                                                {
+                                                    name: 'remove_files',
+                                                    label: 'Also remove all fits files',
+                                                },
+                                            ]}
+                                        />
+                                        <ConfirmFlagsDialog
+                                            trigger={
+                                                <Dropdown.Item text="Reset" disabled={!sequence.canReset} icon='redo'/>
+                                            }
+                                            content='This will reset the status of all jobs in this sequence. Are you sure?'
+                                            header='Confirm sequence reset'
+                                            cancelButton='No'
+                                            confirmButton='Yes'
+                                            onConfirm={(flags) => resetSequence(sequence, flags)}
+                                            resetState={true}
+                                            size='mini'
+                                            basic
+                                            centered={false}
+                                            flags={[
+                                                {
+                                                    name: 'remove_files',
+                                                    label: 'Also remove all fits files',
+                                                },
+                                            ]}
+                                       />
 
 
-                                                <Dropdown.Item text="Export" as='a' href={`/api/sequences/${sequence.id}/export`} icon='save' />
+                                        <Dropdown.Item text="Export" as='a' href={`/api/sequences/${sequence.id}/export`} icon='save' />
 
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </Button>
-                                </Button.Group>
-                            </Table.Cell>
-                        </Table.Row>
-                    ))}
-                    </Table.Body>
-                </Table>
-            </Container>
-        )
-    }
-}
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </Button>
+                        </Button.Group>
+                    </Table.Cell>
+                </Table.Row>
+            ))}
+            </Table.Body>
+        </Table>
+    </Container>
+)
 
-
-                            //<Button onClick={e => onSequenceDelete(sequence.id)} size="xmini"><Glyphicon glyph="minus" /></Button>
-
-export default SequencesList;
