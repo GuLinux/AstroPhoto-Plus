@@ -7,26 +7,9 @@ import { Route } from "react-router-dom";
 import { SequencesListSectionMenu } from '../Sequences/SequencesList';
 import { SequenceSectionMenuContainer } from '../Sequences/SequenceContainer';
 import { SequenceJobImagesContainer } from '../SequenceJobs/ImagesContainer';
+import { CameraSectionMenuContainer } from '../Camera/CameraContainer';
 import { NavItem } from './NavbarMenu';
 
-
-const pageNavItem = (item, index, Component) => {
-    const overrideProps = { className: 'pageNavItem' };
-    if(item.openModal) {
-        const { openModal: ModalClass, modalProps = {}, ...props } = item;
-        return <ModalClass trigger={<Component {...props} {...overrideProps} />} {...modalProps} key={index}/>
-    }
-    return <Component {...item} {...overrideProps} key={index} />
-}
-
-const pageMenuItems = (sectionMenu, itemComponent) => {
-    let children = [];
-    if(sectionMenu.navItems) {
-        const menuItems = sectionMenu.navItems.map((item, index) => pageNavItem(item, index, itemComponent));
-        children = children.concat(menuItems);
-    }
-    return children;
-}
 
 export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, onClick = () => true}) => (
     <React.Fragment>
@@ -41,6 +24,7 @@ export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, onC
         <Route path={Routes.SEQUENCE_JOB_IMAGES} exact={true} render={
             ({match}) => <SequenceJobImagesContainer sequenceJob={match.params.itemId} />
         } />
+        <Route exact path={Routes.CAMERA_PAGE} component={CameraSectionMenuContainer} />
     </React.Fragment>
 )
 

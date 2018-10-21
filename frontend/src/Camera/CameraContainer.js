@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Camera from './Camera';
+import { Camera, CameraSectionMenu } from './Camera';
 import { getConnectedCameraEntities, getConnectedFilterWheelEntities } from '../Gear/selectors';
 import { getCurrentCamera, getCurrentFilterWheel } from './selectors';
 import Actions from '../actions';
@@ -24,10 +24,14 @@ const mapDispatchToProps = dispatch => ({
     resetCrop: () => dispatch(Actions.Camera.resetCrop()),
 })
 
-const CameraContainer = connect(
+export const CameraContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Camera)
 
+export const CameraSectionMenuContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CameraSectionMenu)
 
-export default CameraContainer;
+

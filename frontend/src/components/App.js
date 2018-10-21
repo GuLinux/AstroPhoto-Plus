@@ -5,7 +5,7 @@ import SequencesPage from '../Sequences/SequencesPage';
 import INDIServerContainer from '../INDI-Server/INDIServerContainer';
 import NotificationsContainer from '../Notifications/NotificationsContainer';
 import ErrorPageContainer from '../Errors/ErrorPageContainer';
-import CameraContainer from '../Camera/CameraContainer';
+import { CameraContainer } from '../Camera/CameraContainer';
 import SettingsContainer from '../Settings/SettingsContainer';
 import ImageContainer from '../Image/ImageContainer';
 
