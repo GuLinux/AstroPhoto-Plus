@@ -76,7 +76,7 @@ html, body, .App, #root, #root > div > div {
 }
 
 .starquew-sidebar {
-    min-height: 100vh;
+    min-height: 100%;
 }
 
 .number-steps button {
@@ -85,18 +85,6 @@ html, body, .App, #root, #root > div > div {
     padding-top: 0px!important;
     padding-bottom: 0px!important;
 }
-
-.pageNavItem {
-    color: #ffffff!important;
-}
-
-.pageNavItem:hover {
-    color: #ffffff66!important;
-}
-.pageNavItem.disabled {
-    color: #ffffff66!important;
-}
-
 
 .sectionMenu .item {
     color: #ffffff!important;

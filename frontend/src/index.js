@@ -12,7 +12,7 @@ import { Routes } from './routes'
 // import 'forest-themes-css/dist/bootswatch/semantic.darkly.min.css';
 //import './semantic-ui-themes/bootswatch/semantic.solar.min.css'
 //import './themes/semantic-ui/semantic.material.min.css'
-import './themes/bootswatch/semantic.slate.min.css'
+import './themes/bootswatch-v3/semantic.slate.min.css'
 
 import { starQuewReducer } from './reducers'
 import App from './components/App'
