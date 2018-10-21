@@ -11,5 +11,5 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({})
 
 
-export const NavbarMenuItemsContainer = connect(mapStateToProps, mapDispatchToProps)(NavbarMenuItems);
+export const NavbarMenuItemsContainer = connect(mapStateToProps, mapDispatchToProps, null, { pure: false })(NavbarMenuItems);
 
