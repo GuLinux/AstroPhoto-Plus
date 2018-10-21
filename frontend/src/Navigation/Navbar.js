@@ -46,7 +46,9 @@ class ResponsiveNavbar extends React.Component {
                     <Menu inverted size='small' attached>
                         <SiteMenuHeader as='a' icon='sidebar' onClick={() => this.setVisible(true)} />
                     </Menu>
-                    {children}
+                    <div className='responsive-content'>
+                        {children}
+                    </div>
                 </Sidebar.Pusher>
             </Sidebar.Pushable>
         )

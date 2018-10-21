@@ -21,6 +21,10 @@ html, body, .App, #root, #root > div > div {
     margin-left: 30rem;
 }
 
+.responsive-content {
+    overflow: auto;
+}
+
 #root {
     overflow: auto;
 }
