@@ -5,7 +5,7 @@ import { Container, Sticky, Menu, Sidebar, Grid, Responsive } from 'semantic-ui-
 import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';
 import { NavbarMenu } from './NavbarMenu';
 
-const TRIGGER_SIZE = 1400;
+const TRIGGER_SIZE = 1200;
 
 
 const SiteMenuHeader = (props) => <Menu.Item header {...props} content='StarQuew' />
@@ -13,7 +13,7 @@ const SiteMenuHeader = (props) => <Menu.Item header {...props} content='StarQuew
 const DesktopNavbar = ({children}) => (
     <React.Fragment>
         <div className='fullHeight desktop-sidebar'>
-            <NavbarMenu vertical attached className='fullHeight' size='large'>
+            <NavbarMenu vertical attached className='fullHeight' size='small' fluid>
                 <SiteMenuHeader />
                 <NavbarMenuItemsContainer />
             </NavbarMenu>
@@ -38,7 +38,7 @@ class ResponsiveNavbar extends React.Component {
         const { children } = this.props;
         return (
             <Sidebar.Pushable className='starquew-sidebar'>
-                <Sidebar as={NavbarMenu} vertical attached animation='overlay' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>
+                <Sidebar as={NavbarMenu} vertical animation='overlay' size='small' width='wide' direction='left' visible={this.state.visible} onHide={() => this.setVisible(false)}>
                     <SiteMenuHeader onClick={() => this.setVisible(false)} />
                     <NavbarMenuItemsContainer onClick={() => this.setVisible(false)} />
                 </Sidebar>

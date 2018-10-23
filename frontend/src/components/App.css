@@ -9,7 +9,7 @@ html, body, .App, #root, #root > div > div {
 }
 
 .desktop-sidebar {
-    width: 29rem;
+    width: 21rem;
     position: fixed;
     top: 0;
     left: 0;
@@ -18,7 +18,7 @@ html, body, .App, #root, #root > div > div {
 }
 
 .desktop-content {
-    margin-left: 30rem;
+    margin-left: 22rem;
 }
 
 .responsive-content {
