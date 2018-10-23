@@ -1,7 +1,7 @@
 import React from 'react';
 import AddSequenceJobModal from '../SequenceJobs/AddSequenceJobModal'
 import SequenceJobsContainer from '../SequenceJobs/SequenceJobsContainer';
-import { Table, Label, Container, Header, Card, Icon } from 'semantic-ui-react';
+import { Menu, Table, Label, Container, Header, Card, Icon } from 'semantic-ui-react';
 import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
 import INDILight from '../INDI-Server/INDILight';
 import { withRouter } from 'react-router';
@@ -11,6 +11,8 @@ import LastCapturedSequenceImageContainer from './LastCapturedSequenceImageConta
 import { NotFoundPage } from '../components/NotFoundPage';
 import { secs2time } from '../utils';
 import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
+import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
+import { Routes } from '../routes';
 
 // TODO: refactor Gear pages out of this
 
@@ -129,79 +131,59 @@ const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, t
     }} />
 ))
 
-class Sequence extends React.Component {
 
-    updateMenu = () => {
-        const { startSequence, stopSequence, resetSequence, sequence, onMount, gear } = this.props;
-        if(sequence === null)
-            return;
-        onMount({
-            section: 'Sequence',
-            sectionText: sequence.name,
-            navItems: [
-                { icon: 'play', onClick: () => startSequence(), disabled: !sequence.canStart(gear), content: 'start' },
-                { icon: 'stop', onClick: () => stopSequence(), disabled: !sequence.canStop, content: 'stop' },
-                { openModal: ConfirmFlagsDialog, modalProps: {
-                        content: 'This will reset the status of all jobs in this sequence. Are you sure?',
-                        header: 'Confirm sequence reset',
-                        cancelButton: 'No',
-                        confirmButton: 'Yes',
-                        flags: [
-                            {
-                                name: 'remove_files',
-                                label: 'Also remove all fits files',
-                            },
-                        ],
-                        onConfirm: (flags) => resetSequence(flags),
-                        resetState: true,
-                        size: 'mini',
-                        basic: true,
-                        centered: false,
-                    },
-                    icon: 'redo', disabled: !sequence.canReset, content: 'reset' },
-                { openModal: AddSequenceJob, modalProps: {
-                        onCreateSequenceJob: this.props.onCreateSequenceJob,
-                        sequenceId: sequence.id,
-                        hasFilterWheel: sequence.filterWheel && sequence.filterWheel !== 'none',
-                    },
-                    icon: 'add', disabled: !sequence.canEdit(gear), content: 'new job' },
-                { icon: 'arrow left', as: Link, to: "/sequences/all", content: 'back to sequences' },
-            ],
-        });
-    }
+export const SequenceSectionMenu = ({ sequence, startSequence, stopSequence, resetSequence, onCreateSequenceJob, gear }) => sequence && (
+    <NavbarSectionMenu sectionName='Sequence' sectionText={sequence.name}>
+        <Menu.Item onClick={startSequence} icon='play' content='start' disabled={!sequence.canStart(gear)} />
+        <Menu.Item onClick={stopSequence} icon='stop' content='stop' disabled={!sequence.canStart(gear)} />
+        <ConfirmFlagsDialog
+            content='This will reset the status of all jobs in this sequence. Are you sure?'
+            header='Confim sequence reset'
+            cancelButton='No'
+            confirmButton='Yes'
+            flags={[
+                {
+                    name: 'remove_files',
+                    label: 'Also remove all fits files',
+                },
+            ]}
+            onConfirm={(flags) => resetSequence(flags)}
+            resetState={true}
+            size={'mini'}
+            basic={true}
+            centered={false}
+            trigger={<Menu.Item icon='redo' disabled={!sequence.canReset} content='reset' />}
+        />
+        <AddSequenceJob
+            onCreateSequenceJob={onCreateSequenceJob}
+            sequenceId={sequence.id}
+            hasFilterWheel={sequence.filterWheel && sequence.filterQueel !== 'none'}
+            trigger={<Menu.Item icon='add' disabled={!sequence.canEdit(gear)} content='new job' />}
+        />
+        <Menu.Item as={Link} to={Routes.SEQUENCES_LIST} content='back to sequences' icon='arrow left' />
+    </NavbarSectionMenu>
+)
 
-    componentDidMount = () => this.updateMenu();
-    componentDidUpdate = () => this.updateMenu();
-    componentWillUnmount = () => this.props.onUnmount();
+export const Sequence = ({ sequence, camera, filterWheel, gear }) => sequence === null ?
+    <NotFoundPage
+        title='Sequence not found'
+        message='The requested sequence was not found on the server. It might have been deleted, or it might not be synchronized yet.'
+        backButtonText='Back to sequences list'
+        backToUrl='/sequences/all'
+    /> : (
+    <Container>
+        <Header size="medium">{sequence.name}</Header>
 
 
-    render = () => {
-        const {sequence, camera, filterWheel, gear} = this.props;
-        if(sequence === null)
-            return <NotFoundPage
-                        title='Sequence not found'
-                        message='The requested sequence was not found on the server. It might have been deleted, or it might not be synchronized yet.'
-                        backButtonText='Back to sequences list'
-                        backToUrl='/sequences/all'
-                    />;
-        return (
-        <Container>
-            <Header size="medium">{sequence.name}</Header>
+        <SequenceJobsContainer canEdit={sequence.canEdit(gear)} sequenceId={sequence.id} />
 
+        <Card.Group>
+            <ExposuresPage sequenceJobs={sequence.sequenceJobs} sequenceJobEntities={sequence.sequenceJobEntities} />
+            <CameraDetailsPage camera={camera} />
+            <FilterWheelDetailsPage filterWheel={filterWheel} />
+        </Card.Group>
 
-            <SequenceJobsContainer canEdit={sequence.canEdit(gear)} sequenceId={sequence.id} />
+        <LastCapturedSequenceImageContainer sequence={sequence.id} />
+    </Container>
+);
 
-            <Card.Group>
-                <ExposuresPage sequenceJobs={sequence.sequenceJobs} sequenceJobEntities={sequence.sequenceJobEntities} />
-                <CameraDetailsPage camera={camera} />
-                <FilterWheelDetailsPage filterWheel={filterWheel} />
-            </Card.Group>
-
-            <LastCapturedSequenceImageContainer sequence={sequence.id} />
-        </Container>
-    )}
-}
-
-    
-
-export default Sequence

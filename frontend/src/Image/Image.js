@@ -1,7 +1,9 @@
 import React from 'react';
-import { Message, Image, Segment, Form, Container, Grid, Header, Button, Loader } from 'semantic-ui-react';
+import { Divider, Menu, Message, Image, Segment, Form, Container, Grid, Header, Button, Loader } from 'semantic-ui-react';
 import ImageViewOptions from '../Image/ImageViewOptions';
 import fetch from 'isomorphic-fetch'
+import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
+import { Link } from 'react-router-dom';
 
 export class ImageComponent extends React.Component {
     componentDidUpdate = (prevProps) => this.props.uri !== prevProps.uri && this.props.onImageLoading && this.props.onImageLoading();
@@ -69,23 +71,20 @@ export class ImageLoader extends React.Component {
     componentWillUnmount = () => this.exiting = true;
 }
 
-const ImagePage  = ({id, type, url, options, setOption, history, imageLoading, onImageLoaded}) => url ? (
+export const ImageSectionMenu = ({url, id, options, setOption, history, imageLoading, onImageLoaded}) => url && (
+    <NavbarSectionMenu sectionName='Image'>
+        <Form>
+            <Header size='tiny' content='View Options' textAlign='center' />
+            <ImageViewOptions options={options} setOption={setOption} />
+        </Form>
+        <Divider />
+        <Menu.Item onClick={() => history.goBack() } content='back' icon='arrow left' />
+    </NavbarSectionMenu>
+);
+
+export const ImagePage  = ({id, type, url, options }) => url ? (
     <Container fluid>
-        <Grid stackable columns={16}>
-            <Grid.Column width={4}>
-                <Segment>
-                    <Form>
-                        <Button fluid content='back' primary size='tiny' onClick={() => history.goBack() } />
-                        <Header size='tiny' content='View Options' textAlign='center' />
-                        <ImageViewOptions options={options} setOption={setOption} />
-                    </Form>
-                </Segment>
-            </Grid.Column>
-            <Grid.Column width={12} className='image-viewer'>
-                <ImageLoader id={id} type={type} uri={url} fitScreen={!!options.fitToScreen} />
-            </Grid.Column>
-        </Grid>
+        <ImageLoader id={id} type={type} uri={url} fitScreen={!!options.fitToScreen} />
     </Container>
 ) : null;
 
-export default ImagePage;

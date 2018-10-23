@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import Images from './Images'
+import { Images, ImagesSectionMenu } from './Images'
 import { searchImages } from '../middleware/api';
 import { Actions } from '../actions';
 
@@ -10,20 +10,28 @@ const mapStateToProps = (state, ownProps) => {
     return {
         images: sequenceJob.saved_images,
         sequence: sequenceJob.sequence,
+        previews: state.sequenceJobs.imagesPreview
     };
 }
 
 
 const mapDispatchToProps = dispatch => ({
     fetchImages: (ids, onFetched) => searchImages(dispatch, 'main', { ids }, onFetched),
-    onMount: (items) => dispatch(Actions.Navigation.setRightMenu(items)),
-    onUnmount: () => dispatch(Actions.Navigation.resetRightMenu()),
+    setImagesPreview: (imagesPreview) => dispatch(Actions.SequenceJobs.setImagesPreview(imagesPreview)),
 })
 
-const ImagesContainer = connect(
+export const ImagesContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
+  null,
+  { pure: false }
 )(Images)
 
-export default ImagesContainer 
+export const SequenceJobImagesContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  null,
+  { pure: false }
+)(ImagesSectionMenu)
+
 

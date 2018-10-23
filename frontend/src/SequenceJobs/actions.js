@@ -60,7 +60,7 @@ export const SequenceJobs = {
         return duplicateSequenceJobAPI(dispatch, sequenceJob, (data) => dispatch(Actions.Sequences.updated(data)));
     },
 
-
+    setImagesPreview: (imagesPreview) => ({ type: 'SEQUENCE_JOB_IMAGES_PREVIEW', imagesPreview }),
 }
 
 export default SequenceJobs;
