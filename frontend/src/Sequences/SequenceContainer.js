@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Sequence from './Sequence';
+import { Sequence, SequenceSectionMenu } from './Sequence';
 import Actions from '../actions';
 import { getSequencesGears } from '../Gear/selectors';
 import { getSequenceEntitiesWithJobs } from './selectors';
@@ -23,8 +23,6 @@ const mapDispatchToProps = (dispatch, props) => ({
     onCreateSequenceJob: (type, sequenceId) => {
         dispatch(Actions.SequenceJobs.newPending(type, sequenceId));
     },
-    onMount: (items) => dispatch(Actions.Navigation.setRightMenu(items)),
-    onUnmount: () => dispatch(Actions.Navigation.resetRightMenu()),
     resetSequence: (sequence, options) => dispatch(Actions.Sequences.reset(sequence, options)),
 })
 
@@ -38,10 +36,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     resetSequence: (options) => dispatchProps.resetSequence(stateProps.sequence, options),
 })
 
-const SequenceContainer = connect(
+export const SequenceContainer = connect(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps
 )(Sequence)
 
-export default SequenceContainer
+export const SequenceSectionMenuContainer = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps
+)(SequenceSectionMenu)
+

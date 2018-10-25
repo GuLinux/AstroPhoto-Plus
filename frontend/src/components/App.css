@@ -8,6 +8,27 @@ html, body, .App, #root, #root > div > div {
     padding-bottom: 0px!important;
 }
 
+.desktop-sidebar {
+    width: 21rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    background-color: rgb(113, 121, 126);
+}
+
+.desktop-content {
+    margin-left: 22rem;
+}
+
+.responsive-content {
+    overflow: auto;
+}
+
+#root {
+    overflow: auto;
+}
+
 .loadingOverlay {
     width: 100%;
     height: 100%;
@@ -76,7 +97,7 @@ html, body, .App, #root, #root > div > div {
 }
 
 .starquew-sidebar {
-    min-height: 100vh;
+    min-height: 100%;
 }
 
 .number-steps button {
@@ -86,14 +107,14 @@ html, body, .App, #root, #root > div > div {
     padding-bottom: 0px!important;
 }
 
-.pageNavItem {
+.sectionMenu .item {
     color: #ffffff!important;
 }
 
-.pageNavItem:hover {
+.sectionMenu .item:hover {
     color: #ffffff66!important;
 }
-.pageNavItem.disabled {
+.sectionMenu .item.disabled {
     color: #ffffff66!important;
 }
 

@@ -79,11 +79,11 @@ class Settings:
 
     @property
     def indi_service(self):
-        return self.json_map.get('indi_service', 'True') == 'True'
+        return self.__get_bool('indi_service', True)
 
     @property
     def sequence_async(self):
-        return self.json_map.get('sequence_async', 'True') == 'True'
+        return self.__get_bool('sequence_async', True)
 
     @property
     def log_level(self):
@@ -115,6 +115,8 @@ class Settings:
             logger.setLevel(log_levels[settings_level])
 
 
+    def __get_bool(self, name, default_value=False):
+        return str(self.json_map.get(name, 'true' if default_value else 'false')).lower() == 'true'
 
     def __build_path(self, components, root=None, isdir=False):
         path = os.path.join(root if root else os.environ['HOME'], *components)

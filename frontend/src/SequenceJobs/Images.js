@@ -1,8 +1,11 @@
 import React from 'react';
-import { Table, Button, Container, Image, Header, Pagination } from 'semantic-ui-react';
+import { Menu, Table, Button, Container, Image, Header, Pagination } from 'semantic-ui-react';
 import Filesize from '../components/Filesize';
 import DateTime from '../components/DateTime';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
+import { Routes } from '../routes';
+
 
 const ImageRow = ({index, imageData, previews}) => imageData ? (
     <Table.Row>
@@ -27,25 +30,19 @@ const ImageRow = ({index, imageData, previews}) => imageData ? (
 
 const PAGE_SIZE = 10;
 
-class Images extends React.Component {
+export const ImagesSectionMenu = ({sequence, setImagesPreview, previews}) => (
+    <NavbarSectionMenu sectionName='Images'>
+        <Menu.Item content='previews' icon='image' onClick={() => setImagesPreview(!previews)} />
+        <Menu.Item content='back' icon='arrow left' to={Routes.SEQUENCE_PAGE.format(sequence)} as={Link} />
+    </NavbarSectionMenu>
+)
+
+export class Images extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { imagesData: {}, previews: false, startIndex: 0 };
+        this.state = { imagesData: {}, startIndex: 0 };
     }
-
-    updateMenu = () => this.props.onMount({
-        section: 'Images',
-        navItems: [
-            { content: 'previews', icon: 'image', active: this.state.previews, onClick: () => this.togglePreviews(), },
-            { content: 'back', icon: 'arrow left', to: `/sequences/${this.props.sequence}`, as: Link }
-        ],
-    });
-
-
-    componentDidMount = () => {
-        this.getImages();
-        this.updateMenu();
-    }
+    componentDidMount = () => this.getImages();
 
     componentDidUpdate = (prevProps) => {
         if(prevProps.images !== this.props.images) {
@@ -59,14 +56,12 @@ class Images extends React.Component {
             }, 1000);
 
         }
-        this.updateMenu();
     }
 
     componentWillUnmount = () => {
         if(this.__getImagesTimeout) {
             clearTimeout(this.__getImagesTimeout);
         }
-        this.props.onUnmount();
     }
 
     getImages = () => {
@@ -74,8 +69,6 @@ class Images extends React.Component {
             return;
         this.props.fetchImages( this.props.images, (imagesData) => this.setState({...this.state, imagesData}));
     }
-
-    togglePreviews = () => this.setState({...this.state, previews: !this.state.previews});
 
     setPage = (activePage) => {
         const startIndex = (activePage - 1) * PAGE_SIZE;
@@ -103,7 +96,7 @@ class Images extends React.Component {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell />
-                            {this.state.previews && <Table.HeaderCell>Preview</Table.HeaderCell> }
+                            {this.props.previews && <Table.HeaderCell>Preview</Table.HeaderCell> }
                             <Table.HeaderCell>Filename</Table.HeaderCell>
                             <Table.HeaderCell>Resolution</Table.HeaderCell>
                             <Table.HeaderCell>Size</Table.HeaderCell>
@@ -114,7 +107,7 @@ class Images extends React.Component {
                     <Table.Body>
                         { images
                             .filter( (image, index) => index >= this.state.startIndex && index < this.state.startIndex + PAGE_SIZE)
-                            .map( (image, index) => <ImageRow index={index + this.state.startIndex} imageData={this.state.imagesData[image]} previews={this.state.previews} key={image} />)
+                            .map( (image, index) => <ImageRow index={index + this.state.startIndex} imageData={this.state.imagesData[image]} previews={this.props.previews} key={image} />)
                         }
                     </Table.Body>
                 </Table>
@@ -125,4 +118,3 @@ class Images extends React.Component {
     }
 }
 
-export default withRouter(Images);
