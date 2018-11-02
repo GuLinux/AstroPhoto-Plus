@@ -1,3 +1,4 @@
 *.rdb
 build
 *.code-workspace
+.DS_Store
