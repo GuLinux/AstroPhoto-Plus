@@ -1,11 +1,11 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore, applyMiddleware, compose } from 'redux'
-import { createLogger } from 'redux-logger'
-import { Actions } from './actions'
-import thunkMiddleware from 'redux-thunk'
-import { Routes } from './routes'
+import React from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { createLogger } from 'redux-logger';
+import { Actions } from './actions';
+import thunkMiddleware from 'redux-thunk';
+import { Routes } from './routes';
 
 //import 'semantic-ui-css/semantic.min.css';
 // TODO: restore when it is working again
@@ -14,8 +14,8 @@ import { Routes } from './routes'
 //import './themes/semantic-ui/semantic.material.min.css'
 import './themes/bootswatch-v3/semantic.slate.min.css'
 
-import { starQuewReducer } from './reducers'
-import App from './components/App'
+import { starQuewReducer } from './reducers';
+import App from './components/App';
 
 import 'react-image-crop/dist/ReactCrop.css';
 

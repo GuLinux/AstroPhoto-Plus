@@ -10,7 +10,7 @@ import SettingsContainer from '../Settings/SettingsContainer';
 import { ImageContainer } from '../Image/ImageContainer';
 
 import './App.css';
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect } from "react-router";
 import { Routes } from '../routes';
 
 const App = ({location}) => (
