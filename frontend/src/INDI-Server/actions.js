@@ -12,7 +12,6 @@ const fetchGear = dispatch => {
 
 
 export const INDIServer = {
-
     serverConnectionNotify: (state, dispatch) => {
         dispatch(INDIServer.receivedServerState(state.payload, dispatch));
         if(state.is_error) {

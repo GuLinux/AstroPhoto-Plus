@@ -446,6 +446,12 @@ def retrieve_image_histogram(type, image):
 def get_telescopes():
     return [x.to_map() for x in controller.indi_server.telescopes()]
 
+# astrometry module
+@app.route('/api/astrometry', methods=['GET'])
+@json_api
+@indi_connected
+def get_astrometry():
+    return [x.to_map() for x in controller.indi_server.astrometry_drivers()]
 
 
 # filesystem
