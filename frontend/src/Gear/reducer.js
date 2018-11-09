@@ -5,6 +5,8 @@ const defaultState = {
     cameraEntities: {},
     filterWheels: [],
     filterWheelEntities: {},
+    telescopes: [],
+    telescopesEntities: {},
 }
 
 const deviceRemoved = (state, device) => {
@@ -24,6 +26,8 @@ const gear = (state = defaultState, action) => {
             return deviceRemoved(action.device);
         case 'RECEIVED_SERVER_STATE':
             return action.state.connected ? state : {...defaultState}
+        case 'RECEIVED_TELESCOPES':
+            return {...state, telescopes: action.telescopes.map(c => c.id), telescopesEntities: list2object(action.telescopes, 'id')};
         default:
             return state;
     }

@@ -6,8 +6,7 @@ const fetchGear = dispatch => {
     clearTimeout(fetchGearTimerId);
     fetchGearTimerId = setTimeout( () => {
         fetchGearTimerId = null;
-        dispatch(Actions.Gear.fetchCameras())
-        dispatch(Actions.Gear.fetchFilterWheels())
+        Actions.Gear.fetchAll(dispatch);
     }, 1000);
 }
 
