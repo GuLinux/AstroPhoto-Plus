@@ -12,11 +12,12 @@ import { ImageSectionMenuContainer } from '../Image/ImageContainer';
 import { NavItem } from './NavbarMenu';
 
 
-export const NavbarMenuItems = ({disabled, hasConnectedCameras, sectionMenu, onClick = () => true}) => (
+export const NavbarMenuItems = ({disabled, onClick = () => true}) => (
     <React.Fragment>
         <NavItem icon='list' content='Sequences' to={Routes.SEQUENCES_PAGE} disabled={disabled} onClick={onClick} />
         <NavItem icon='computer' content='INDI Server' to={Routes.INDI_PAGE} disabled={disabled} onClick={onClick} />
-        <NavItem icon='camera' content='Camera' to={Routes.CAMERA_PAGE} disabled={disabled || ! hasConnectedCameras} onClick={onClick}/>
+        <NavItem icon='camera' content='Camera' to={Routes.CAMERA_PAGE} disabled={disabled} onClick={onClick}/>
+        <NavItem icon='target' content='Plate Solving' to={Routes.PLATE_SOLVING_PAGE} disabled={disabled} onClick={onClick}/>
         <NavItem icon='settings' content='System & Settings' to={Routes.SETTINGS_PAGE} disabled={disabled} onClick={onClick} />
         <Route exact path={Routes.SEQUENCES_LIST} component={SequencesListSectionMenu} />
         <Route path={Routes.SEQUENCE_PAGE.route} exact={true} render={

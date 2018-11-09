@@ -103,7 +103,12 @@ export const CameraSectionMenu = ({
 
 export const Camera = ({options, cameras}) => {
     if(cameras.length === 0)
-        return <NotFoundPage backToUrl='/indi/server' message='Camera not found. Perhaps you need to connect to your INDI server?' backButtonText='INDI server page' />
+        return <NotFoundPage
+            backToUrl='/indi/server'
+            title='No camera found'
+            message='Camera not found. Please double check that your INDI server is connected, with at least one connected camera.'
+            backButtonText='INDI server page'
+        />
     return (
         <Container fluid>
             <AutoExposureContainer />
