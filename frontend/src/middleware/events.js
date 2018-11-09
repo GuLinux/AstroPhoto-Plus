@@ -29,8 +29,7 @@ const indiserverEvents = (event, dispatch) => {
         case 'indi_property_updated':
             dispatch(Actions.INDIServer.propertyUpdated(eventObject.payload));
             if(eventObject.payload.name === 'CONNECTION') {
-                dispatch(Actions.Gear.fetchCameras())
-                dispatch(Actions.Gear.fetchFilterWheels())
+                Actions.Gear.fetchAll(dispatch);
             }
             break;
         case 'indi_property_added':

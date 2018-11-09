@@ -77,5 +77,7 @@ export const getConnectedFilterWheelEntities = createSelector([getConnectedFilte
 export const getConnectedFilterWheelsObjects = createSelector([getConnectedFilterWheels, getGear, getDeviceEntities, getDevicesProperties],
     (connectedFilterWheels, gear, deviceEntities, deviceProperties) => connectedFilterWheels.map(c => buildFilterWheel(deviceEntities, deviceProperties, c) ));
 
-export const hasConnectedFilterWheels = createSelector([getConnectedFilterWheels], (connectedFilterWheels) => connectedFilterWheels.length > 0)
+export const getConnectedAstrometry = createSelector([getGear], (gear) => gear.astrometry.filter(c => gear.astrometryEntities[c].connected));
+export const getConnectedAstrometryEntities = createSelector([getConnectedAstrometry, getGear], (connectedAstrometry, gear) =>
+    connectedAstrometry.map(c => gear.astrometryEntities[c]));
 
