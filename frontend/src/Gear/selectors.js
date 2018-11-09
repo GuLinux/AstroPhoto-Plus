@@ -67,8 +67,6 @@ export const getSequencesGears = createSelector([getDeviceEntities, getDevicesPr
 export const getConnectedCameras = createSelector([getGear], (gear) => gear.cameras.filter(c => gear.cameraEntities[c].connected));
 export const getConnectedCameraEntities = createSelector([getConnectedCameras, getGear], (connectedCameras, gear) => connectedCameras.map(c => gear.cameraEntities[c]));
 
-export const hasConnectedCameras = createSelector([getConnectedCameras], (connectedCameras) => connectedCameras.length > 0)
-
 export const getConnectedCameraObjects = createSelector([getConnectedCameras, getGear, getDeviceEntities, getDevicesProperties],
     (connectedCameras, gear, deviceEntities, deviceProperties) => connectedCameras.map(c => buildCamera(deviceEntities, deviceProperties, c) ));
 

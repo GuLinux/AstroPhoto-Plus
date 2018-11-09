@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { hasConnectedCameras } from '../Gear/selectors';
 import { NavbarMenuItems } from './NavbarMenuItems';
 
 const mapStateToProps = state => ({
