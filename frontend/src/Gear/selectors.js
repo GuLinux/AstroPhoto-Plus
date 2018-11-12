@@ -1,5 +1,6 @@
 import { getDeviceEntities, getDevicesProperties, getDevicesConnectionState } from '../INDI-Server/selectors'
 import { createSelector } from 'reselect'
+import { list2object } from '../utils';
 
 export const getSequences = state => state.sequences;
 
@@ -30,6 +31,16 @@ const buildCamera = (deviceEntities, devicesProperties, cameraID) => {
         camera.abortExposureProperty = devicesProperties[cameraID].CCD_ABORT_EXPOSURE;
     }
     return camera
+}
+
+const buildTelescope = (deviceEntities, deviceProperties, telescopeId) => {
+    let telescope = buildBaseObject(deviceEntities, deviceProperties, telescopeId);
+    return telescope;
+}
+
+const buildAstrometry = (deviceEntities, deviceProperties, astrometryId) => {
+    let astrometry = buildBaseObject(deviceEntities, deviceProperties, astrometryId);
+    return astrometry;
 }
 
 const buildFilterWheel = (deviceEntities, devicesProperties, filterWheelID) => {
@@ -67,17 +78,26 @@ export const getSequencesGears = createSelector([getDeviceEntities, getDevicesPr
 export const getConnectedCameras = createSelector([getGear], (gear) => gear.cameras.filter(c => gear.cameraEntities[c].connected));
 export const getConnectedCameraEntities = createSelector([getConnectedCameras, getGear], (connectedCameras, gear) => connectedCameras.map(c => gear.cameraEntities[c]));
 
-export const getConnectedCameraObjects = createSelector([getConnectedCameras, getGear, getDeviceEntities, getDevicesProperties],
-    (connectedCameras, gear, deviceEntities, deviceProperties) => connectedCameras.map(c => buildCamera(deviceEntities, deviceProperties, c) ));
+export const getConnectedCameraObjects = createSelector([getConnectedCameras, getDeviceEntities, getDevicesProperties],
+    (connectedCameras, deviceEntities, deviceProperties) => connectedCameras.map(c => buildCamera(deviceEntities, deviceProperties, c) ));
 
 
 
 export const getConnectedFilterWheels = createSelector([getGear], (gear) => gear.filterWheels.filter(c => gear.filterWheelEntities[c].connected));
 export const getConnectedFilterWheelEntities = createSelector([getConnectedFilterWheels, getGear], (connectedFilterWheels, gear) => connectedFilterWheels.map(c => gear.filterWheelEntities[c]));
-export const getConnectedFilterWheelsObjects = createSelector([getConnectedFilterWheels, getGear, getDeviceEntities, getDevicesProperties],
-    (connectedFilterWheels, gear, deviceEntities, deviceProperties) => connectedFilterWheels.map(c => buildFilterWheel(deviceEntities, deviceProperties, c) ));
+export const getConnectedFilterWheelsObjects = createSelector([getConnectedFilterWheels, getDeviceEntities, getDevicesProperties],
+    (connectedFilterWheels, deviceEntities, deviceProperties) => connectedFilterWheels.map(c => buildFilterWheel(deviceEntities, deviceProperties, c) ));
 
 export const getConnectedAstrometry = createSelector([getGear], (gear) => gear.astrometry.filter(c => gear.astrometryEntities[c].connected));
-export const getConnectedAstrometryEntities = createSelector([getConnectedAstrometry, getGear], (connectedAstrometry, gear) =>
-    connectedAstrometry.map(c => gear.astrometryEntities[c]));
+export const getConnectedAstrometryEntities = createSelector([getConnectedAstrometry, getDeviceEntities, getDevicesProperties],
+    (connectedAstrometry, entities, properties) => 
+        list2object(connectedAstrometry.map(c => buildAstrometry(entities, properties, c)), 'id')
+);
+
+export const getConnectedTelescopes= createSelector([getGear], (gear) => gear.telescopes.filter(c => gear.telescopeEntities[c].connected));
+export const getConnectedTelescopeEntities = createSelector([getConnectedTelescopes, getDeviceEntities, getDevicesProperties],
+    (connectedTelescopes, entities, properties) => 
+        list2object(connectedTelescopes.map(c => buildTelescope(entities, properties, c)), 'id')
+);
+
 

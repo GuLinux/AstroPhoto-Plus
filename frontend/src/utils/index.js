@@ -20,7 +20,7 @@ export const filterChildren = (object, filter) => {
     return copy;
 }
 
-export const list2object = (list, keyField) => list.reduce( (acc, current) => ({...acc, [current[keyField]]: current}), {});
+export const list2object = (list, keyField) => list && list.reduce( (acc, current) => ({...acc, [current[keyField]]: current}), {});
 
 export const imageUrlBuilder = (id, options) =>
     `/api/images/${options.type}/${id}?maxwidth=${options.maxWidth || 0}&stretch=${options.stretch ? 1 : 0}` +

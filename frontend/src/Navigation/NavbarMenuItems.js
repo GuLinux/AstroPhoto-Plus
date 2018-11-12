@@ -10,6 +10,7 @@ import { SequenceJobImagesContainer } from '../SequenceJobs/ImagesContainer';
 import { CameraSectionMenuContainer } from '../Camera/CameraContainer';
 import { ImageSectionMenuContainer } from '../Image/ImageContainer';
 import { NavItem } from './NavbarMenu';
+import { PlateSolvingSectionMenuContainer } from '../PlateSolving/PlateSolvingContainer';
 
 
 export const NavbarMenuItems = ({disabled, onClick = () => true}) => (
@@ -27,6 +28,7 @@ export const NavbarMenuItems = ({disabled, onClick = () => true}) => (
             ({match}) => <SequenceJobImagesContainer sequenceJob={match.params.itemId} />
         } />
         <Route exact path={Routes.CAMERA_PAGE} component={CameraSectionMenuContainer} />
+        <Route exact path={Routes.PLATE_SOLVING_PAGE} component={PlateSolvingSectionMenuContainer} />
         <Route path={Routes.IMAGE_PAGE} render={({match}) => <ImageSectionMenuContainer id={match.params.id} type={match.params.type} />} />
     </React.Fragment>
 )
