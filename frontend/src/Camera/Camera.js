@@ -13,10 +13,10 @@ const FilterWheelSection = ({filterWheels, currentFilterWheel, setCurrentFilterW
     <React.Fragment>
         <Header size='tiny' content='FilterWheel' textAlign='center' />
         <Button.Group vertical size='mini' fluid basic>
-        { filterWheels.map(c => <Button
+        { filterWheels.all.map(c => <Button
             toggle
             active={currentFilterWheel && currentFilterWheel.id === c.id}
-            key={c.id} content={c.device.name}
+            key={c.id} content={c.name}
             onClick={() => setCurrentFilterWheel(c.id)}
         />) }
         </Button.Group>
@@ -48,10 +48,10 @@ export const CameraSectionMenu = ({
     <Form size='tiny'>
         <Header size='tiny' content='Camera' textAlign='center' />
         <Button.Group vertical size='mini' fluid basic>
-        { cameras.map(c => <Button
+        { cameras.all.map(c => <Button
             toggle
             active={currentCamera && currentCamera.id === c.id}
-            key={c.id} content={c.device.name}
+            key={c.id} content={c.name}
             onClick={() => setCurrentCamera(c.id)}
         />) }
         </Button.Group>
@@ -102,7 +102,7 @@ export const CameraSectionMenu = ({
 
 
 export const Camera = ({options, cameras}) => {
-    if(cameras.length === 0)
+    if(cameras.all.length === 0)
         return <NotFoundPage
             backToUrl='/indi/server'
             title='No camera found'

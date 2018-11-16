@@ -1,17 +1,13 @@
 import { connect } from 'react-redux';
 import SelectFilter from './SelectFilter';
-import { getConnectedFilterWheelEntities, getConnectedFilterWheelsObjects } from '../Gear/selectors';
+import { connectedFilterWheelsSelector } from '../Gear/selectors';
 import Actions from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
     const currentFilterWheel = state.camera.currentFilterWheel;
-    const filterWheelObject = getConnectedFilterWheelsObjects(state).find(f => f.id === currentFilterWheel);
-    const filterWheelEntity = getConnectedFilterWheelEntities(state).find(f => f.id === currentFilterWheel);
+    const filterWheel = connectedFilterWheelsSelector(state).get(currentFilterWheel);
     return {
-        filterWheelEntity,
-        currentFilter: filterWheelObject.currentFilter,
-        availableFilters: filterWheelObject.filters,
-        filterSlotProperty: filterWheelObject.filterSlotProperty,
+        filterWheel,
         isPending: !!state.camera.pendingFilter,
     };
 }

@@ -1,18 +1,16 @@
 import { connect } from 'react-redux';
 import { PlateSolvingPage, PlateSolvingSectionMenu } from './PlateSolvingPage';
 import {
-  getConnectedAstrometry,
-  getConnectedAstrometryEntities,
-  getConnectedTelescopes,
-  getConnectedTelescopeEntities
+  connectedAstrometrySelector,
+  connectedTelescopesSelector,
+  connectedCamerasSelector,
 } from '../Gear/selectors';
 import Actions from '../actions';
 
 const mapStateToProps = (state, ownProps) => ({
-    astrometryDrivers: getConnectedAstrometry(state),
-    astrometryDriverEntities: getConnectedAstrometryEntities(state),
-    telescopes: getConnectedTelescopes(state),
-    telescopeEntities: getConnectedTelescopeEntities(state),
+    astrometryDrivers: connectedAstrometrySelector(state),
+    telescopes: connectedTelescopesSelector(state),
+    cameras: connectedCamerasSelector(state),
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 import { Camera, CameraSectionMenu } from './Camera';
-import { getConnectedCameraEntities, getConnectedFilterWheelEntities } from '../Gear/selectors';
+import { connectedCamerasSelector, connectedFilterWheelsSelector } from '../Gear/selectors';
 import { getCurrentCamera, getCurrentFilterWheel } from './selectors';
 import Actions from '../actions';
 
 const mapStateToProps = (state, ownProps) => ({
-    cameras: getConnectedCameraEntities(state),
-    filterWheels: getConnectedFilterWheelEntities(state),
+    cameras: connectedCamerasSelector(state),
+    filterWheels: connectedFilterWheelsSelector(state),
     currentCamera: getCurrentCamera(state),
     currentFilterWheel: getCurrentFilterWheel(state),
     options: state.camera.options,
