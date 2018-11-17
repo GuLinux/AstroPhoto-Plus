@@ -1,15 +1,16 @@
 import { connect } from 'react-redux';
-import ImportSequenceDialog from './ImportSequenceDialog';
+import UploadFileDialog from '../components/UploadFileDialog';
 import Actions from '../actions';
 
 
 const mapStateToProps = state => ({
+    title: 'Import Sequence',
 });
 
 const mapDispatchToProps = dispatch => ({
-    importSequence: (data) => dispatch(Actions.Sequences.import(data)),
+    onFileUploaded: (data) => dispatch(Actions.Sequences.import(data)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ImportSequenceDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(UploadFileDialog);
 
 

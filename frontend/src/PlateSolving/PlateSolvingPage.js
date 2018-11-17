@@ -1,15 +1,14 @@
 import React from 'react';
 import { NotFoundPage } from '../components/NotFoundPage';
-import { Form, Container, Header} from 'semantic-ui-react';
+import { Form, Container, Header, Button} from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
+import UploadFileDialog from '../components/UploadFileDialog';
 
 const { Options } = PlateSolvingActions;
 
-export const PlateSolvingSectionMenu = ({astrometryDrivers}) => astrometryDrivers.length > 0 && (
-    <Form size='tiny'>
-    </Form>
-);
+// TODO: possibly move some driver selection in the menu
+export const PlateSolvingSectionMenu = ({astrometryDrivers}) => null;
 
 class PlateSolving extends React.Component {
 
@@ -28,7 +27,7 @@ class PlateSolving extends React.Component {
         <CheckButton active={this.props.options[option] === value} onClick={() => this.props.setOption(option, value)} {...props} />
 
     render = () => {
-        const { astrometryDrivers, telescopes, cameras } = this.props;
+        const { astrometryDrivers, telescopes } = this.props;
         return (
         <Container>
             <Form>
@@ -42,8 +41,12 @@ class PlateSolving extends React.Component {
                     </Form.Field>
                     <Form.Field>
                         <Header content='Listen on camera'/>
-                            {this.optionButton(Options.camera, 'off', {content: 'Off'})}
-                            { cameras.all.map(d => this.optionButton(Options.camera, d.id, { content: d.name, key: d.id })) }
+                            {this.optionButton(Options.camera, false, {content: 'Off'})}
+                            {this.optionButton(Options.camera, true, {content: 'On'})}
+                    </Form.Field>
+                    <Form.Field>
+                        <Header content='Upload' />
+                        <UploadFileDialog trigger={<Button icon='upload' content='Upload FITS' title='Upload FITS'/>} />
                     </Form.Field>
                     
             </Form>

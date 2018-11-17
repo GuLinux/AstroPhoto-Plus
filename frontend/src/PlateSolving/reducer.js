@@ -1,5 +1,7 @@
+import { PlateSolving as Actions } from './actions'; 
 const defaultState = {
     options: {
+        [Actions.Options.camera]: false,
     },
 };
 
