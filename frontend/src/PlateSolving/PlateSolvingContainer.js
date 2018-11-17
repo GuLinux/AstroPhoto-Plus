@@ -11,9 +11,11 @@ const mapStateToProps = (state, ownProps) => ({
     astrometryDrivers: connectedAstrometrySelector(state),
     telescopes: connectedTelescopesSelector(state),
     cameras: connectedCamerasSelector(state),
+    options: state.plateSolving.options,
 })
 
 const mapDispatchToProps = dispatch => ({
+  setOption: (option, value) => dispatch(Actions.PlateSolving.setOption(option, value)),
 })
 
 export const PlateSolvingContainer = connect(

@@ -11,9 +11,10 @@ import settings from './Settings/reducer';
 import image from './Image/reducer';
 import navigation from './Navigation/reducer';
 import commands from './Commands/reducer';
+import { plateSolving } from './PlateSolving/reducer';
 
 const network = (state = { fetching: false }, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'REQUEST_SESSIONS':
         case 'REQUEST_ADD_SESSION':
         case 'REQUEST_ADD_SEQUENCE':
@@ -29,8 +30,8 @@ const network = (state = { fetching: false }, action) => {
         case 'REQUEST_SAVE_SEQUENCE_ITEM':
         case 'FETCH_INDI_SERVICE':
         case 'UPDATE_SETTINGS':
-//        case 'COMMIT_PENDING_PROPERTIES':
-            return {...state, fetching: true };
+            //        case 'COMMIT_PENDING_PROPERTIES':
+            return { ...state, fetching: true };
         case 'RECEIVE_SESSIONS':
         case 'SESSION_CREATED':
         case 'SEQUENCE_CREATED':
@@ -46,22 +47,38 @@ const network = (state = { fetching: false }, action) => {
         case 'REQUEST_SAVE_SEQUENCE_ITEM_ERROR':
         case 'RECEIVED_INDI_SERVICE':
         case 'SETTINGS_UPDATED':
-//        case 'COMMITTED_PENDING_PROPERTIES':
-            return {...state, fetching: false};
+            //        case 'COMMITTED_PENDING_PROPERTIES':
+            return { ...state, fetching: false };
         default:
             return state;
     }
 }
 
 const version = (state = {}, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'BACKEND_VERSION_FETCHED':
-            return {...state, ...action.version};
+            return { ...state, ...action.version };
         default:
             return state;
     }
 }
 
 
-export const starQuewReducer = combineReducers({version, sequenceJobs, sequences, network, indiserver, notifications, errors, gear, indiservice, camera, settings, image, navigation, commands});
+export const starQuewReducer = combineReducers({
+    version,
+    sequenceJobs,
+    sequences,
+    network,
+    indiserver,
+    notifications,
+    errors,
+    gear,
+    indiservice,
+    camera,
+    settings,
+    image,
+    navigation,
+    commands,
+    plateSolving,
+});
 
