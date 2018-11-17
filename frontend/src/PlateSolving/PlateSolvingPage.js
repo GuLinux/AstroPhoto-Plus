@@ -60,7 +60,7 @@ class PlateSolving extends React.Component {
                         />
                     </Form.Field>
             </Form>
-            </Container> 
+            </Container>
         );
         // TODO: manual upload
     }

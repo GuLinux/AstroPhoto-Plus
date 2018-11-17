@@ -232,3 +232,9 @@ export const searchImages = (dispatch, type, params, onSuccess) => fetchJSON(dis
 
 export const fetchCommandsAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/commands', {}, json => onSuccess(normalize(json, commandsSchema)));
 
+export const solveFieldAPI = (dispatch, onSuccess,options) => fetchJSON(dispatch, '/api/plateSolving/solveField', {
+    method: 'POST',
+    body: JSON.stringify(options),
+    headers: { 'Content-Type': 'application/json'},
+}, onSuccess);
+

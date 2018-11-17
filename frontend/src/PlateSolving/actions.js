@@ -1,3 +1,5 @@
+import { solveFieldAPI } from "../middleware/api";
+
 export const PlateSolving = {
     Options: {
         camera: 'CAMERA',
@@ -8,5 +10,6 @@ export const PlateSolving = {
     solveField: options => dispatch => {
         console.log(options);
         dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD' });
+        return solveFieldAPI(dispatch, (r) => console.log(r), options);
     },
 };
