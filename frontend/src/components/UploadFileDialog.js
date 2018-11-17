@@ -17,7 +17,7 @@ class UploadFileDialog extends React.Component {
                 <Modal.Content>
                     <Grid columns={1}>
                         <Grid.Row centered textAlign='center' verticalAlign='middle'>
-                            <Dropzone accept='application/json' disablePreview={true} multiple={false} onDrop={ (acceptedFiles) => {
+                            <Dropzone accept={this.props.acceptMimeType} disablePreview={true} multiple={false} onDrop={ (acceptedFiles) => {
                                 this.setState({...this.state, file: acceptedFiles && acceptedFiles.length === 1 ? acceptedFiles[0] : null });
                             }}
                             >
@@ -49,10 +49,10 @@ class UploadFileDialog extends React.Component {
         this.setState({});
         const reader = new FileReader();
         reader.onload = () => {
-            const fileString = reader.result;
-            this.props.onFileUploaded(fileString);
+            const fileBuffer = reader.result;
+            this.props.onFileUploaded(fileBuffer);
         }
-        reader.readAsBinaryString(file);
+        this.props.readAsDataURL ? reader.readAsDataURL(file) : reader.readAsArrayBuffer(file);
     }
 }
 

@@ -46,9 +46,19 @@ class PlateSolving extends React.Component {
                     </Form.Field>
                     <Form.Field>
                         <Header content='Upload' />
-                        <UploadFileDialog trigger={<Button icon='upload' content='Upload FITS' title='Upload FITS'/>} />
+                        <UploadFileDialog
+                            trigger={<Button icon='upload' content='Upload FITS' title='Upload FITS'/>}
+                            acceptMimeType='image/fits'
+                            readAsDataURL={true}
+                            onFileUploaded={fileBuffer => {
+                                this.props.solveField({
+                                    ...this.props.options,
+                                    fileBuffer,
+                                    })
+                                }
+                            }
+                        />
                     </Form.Field>
-                    
             </Form>
             </Container> 
         );

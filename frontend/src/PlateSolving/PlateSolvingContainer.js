@@ -14,6 +14,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
   setOption: (option, value) => dispatch(Actions.PlateSolving.setOption(option, value)),
+  solveField: options => dispatch(Actions.PlateSolving.solveField(options)),
 })
 
 export const PlateSolvingContainer = connect(
