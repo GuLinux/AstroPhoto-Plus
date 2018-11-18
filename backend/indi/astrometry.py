@@ -25,4 +25,5 @@ class Astrometry:
             'connected': self.device.connected(),
         }
 
-
+    def solve_field(self, options):
+        logger.debug(options.keys())
