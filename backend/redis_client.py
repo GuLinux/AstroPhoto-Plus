@@ -133,6 +133,7 @@ class RedisClient:
         self.set_version()
 
     def __prefix_cmd(self, obj, cmd, key, *args, **kwargs):
+        logger.debug('{}.{}: - key={}, args={}, kwargs={}'.format(obj, cmd, key, str(args), str(kwargs)))
         return getattr(obj, cmd)(RedisClient.PREFIX + key, *args, **kwargs)
 
     def __prefix_client(self, cmd, key, *args, **kwargs):

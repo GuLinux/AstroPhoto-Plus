@@ -51,6 +51,8 @@ class Settings:
         map_object = {}
         for prop in props:
             map_object[prop] = getattr(self, prop)
+            if type(map_object[prop]) == bool:
+                map_object[prop] = int(map_object[prop])
         return map_object
 
     @property
