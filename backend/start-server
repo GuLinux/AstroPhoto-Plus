@@ -32,39 +32,6 @@ requirements_checksum="$( md5sum requirements.txt | cut -d' ' -f1 )"
 if [ "$requirements_checksum" != "$( cat "$VENV_HOME/requirements_checksum" 2>/dev/null )" ]; then
     pip install wheel # prerequisite for installing other packages
     pip install -r requirements.txt || exit $?
-    # Patch pyindi-client until a version with this patch is released (0.2.3?)
-    (
-        cd /tmp
-        mkdir pyindi_client_patch
-        cd pyindi_client_patch
-        curl https://files.pythonhosted.org/packages/3d/2c/66e96ab58e2cb5137986c53d8747edc8fb3001340120c62a4dab998f0a2b/pyindi-client-0.2.2.tar.gz -o pyindi-client-0.2.2.tar.gz
-        tar xf pyindi-client-0.2.2.tar.gz
-        cd pyindi-client-0.2.2
-        patch -p0 <<'EOF'
-Index: indiclientpython.i
-===================================================================
---- indiclientpython.i  (revision 55)
-+++ indiclientpython.i  (working copy)
-@@ -94,3 +94,16 @@
-     return result;
-   }
-  }
-+
-+%extend INDI::BaseClient {
-+%typemap(in) (char *data, long len) {
-+  $1 = PyBytes_AsString($input);
-+  $2 = PyBytes_Size($input);
-+}
-+
-+
-+public:
-+  void sendOneBlobFromBuffer(const char *name, const char *type, char *data, long len) {
-+    $self->sendOneBlob(name, len, type, (void*)(data));
-+  }
-+}
-EOF
-        python setup.py install
-    )
 fi
 echo "$requirements_checksum" > "$VENV_HOME/requirements_checksum"
 
