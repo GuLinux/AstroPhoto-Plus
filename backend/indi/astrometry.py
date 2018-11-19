@@ -37,20 +37,22 @@ class Astrometry:
             data = base64.b64decode(options['fileBuffer'][options['fileBuffer'].find(Astrometry.DATAURL_SEPARATOR) + len(Astrometry.DATAURL_SEPARATOR):])
 
         self.__set_enabled(True)
-        self.__set_astrometry_options(options)
-        self.__upload_blob(data)
-        logger.debug('Waiting for solver to finish')
-        while self.__solver_status() != 'BUSY':
-            logger.debug('wait_for_busy: {}'.format(self.__solver_status()))
-            time.sleep(1)
-        while self.__solver_status() == 'BUSY':
-            logger.debug('wait_for_not_busy: {}'.format(self.__solver_status()))
-            time.sleep(1)
+        try:
+            self.__set_astrometry_options(options)
+            self.__upload_blob(data)
+            logger.debug('Waiting for solver to finish')
+            while self.__solver_status() != 'BUSY':
+                time.sleep(1)
+            while self.__solver_status() == 'BUSY':
+                time.sleep(1)
 
-        logger.debug('final status: {}'.format(self.__solver_status()))
-
-        self.__set_enabled(False)
-        logger.debug('Solver finished, disabled')
+            final_status = self.__solver_status()
+            if final_status == 'OK':
+                return { 'status': 'OK', 'solution': self.device.get_property('ASTROMETRY_RESULTS').to_map() }
+            else:
+                raise FailedMethodError('Plate solving failed, check astrometry driver log')
+        finally:
+            self.__set_enabled(False)
 
     def __solver_status(self):
         return self.device.get_property('ASTROMETRY_SOLVER').to_map()['state']

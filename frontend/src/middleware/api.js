@@ -4,11 +4,13 @@ import Actions from '../actions'
 import { normalize } from 'normalizr'
 import { commandsSchema, sequenceSchema, sequenceListSchema, sequenceJobSchema } from './schemas'
 
+const isJSON = response => response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
+
 export const apiFetch = async (url, options) => {
     const response = await fetch(url, options);
-    const isJSON = response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
+
     let reply = { response };
-    if(isJSON) {
+    if(isJSON(response)) {
         reply.json = await response.json();
     } else {
         reply.text = await response.text();
@@ -24,7 +26,7 @@ const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
     }
 
     let errorHandler = response => {
-        if(! onError || ! onError(response))
+        if(! onError || ! onError(response, isJSON(response)))
             dispatchError(response);
     }
     return fetch(url, options)
@@ -232,9 +234,9 @@ export const searchImages = (dispatch, type, params, onSuccess) => fetchJSON(dis
 
 export const fetchCommandsAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/commands', {}, json => onSuccess(normalize(json, commandsSchema)));
 
-export const solveFieldAPI = (dispatch, onSuccess, astrometryDriver,options) => fetchJSON(dispatch, `/api/astrometry/${astrometryDriver}/solveField`, {
+export const solveFieldAPI = (dispatch, onSuccess, onError, astrometryDriver,options) => fetchJSON(dispatch, `/api/astrometry/${astrometryDriver}/solveField`, {
     method: 'POST',
     body: JSON.stringify(options),
     headers: { 'Content-Type': 'application/json'},
-}, onSuccess);
+}, onSuccess, onError);
 

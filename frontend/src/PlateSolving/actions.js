@@ -1,4 +1,5 @@
 import { solveFieldAPI } from "../middleware/api";
+import Actions from '../actions';
 
 export const PlateSolving = {
     Options: {
@@ -11,6 +12,15 @@ export const PlateSolving = {
     solveField: ({astrometryDriver, ...options}) => dispatch => {
         console.log(astrometryDriver, options);
         dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD' });
-        return solveFieldAPI(dispatch, (r) => console.log(r), astrometryDriver, options);
+        return solveFieldAPI(dispatch, result => {
+            dispatch(Actions.Notifications.add('Platesolving successful', '', 'success', 5000));
+        }, async (error, isJSON) => {
+            if(!isJSON) {
+                return false;
+            }
+            const { error_message } = await error.json();
+            dispatch(Actions.Notifications.add('Platesolving failed', error_message, 'warning', 5000));
+            return true;
+        }, astrometryDriver, options);
     },
 };
