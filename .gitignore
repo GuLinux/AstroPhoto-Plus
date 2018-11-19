@@ -1,4 +1,5 @@
 *.rdb
+.DS_store
 build
 *.code-workspace
 .vscode

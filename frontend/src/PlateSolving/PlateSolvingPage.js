@@ -15,6 +15,9 @@ class PlateSolving extends React.Component {
     componentDidMount = () => {
         this.setDefaultDevice(Options.telescope, this.props.telescopes);
         this.setDefaultDevice(Options.astrometryDriver, this.props.astrometryDrivers);
+        if(! this.props.options[Options.fov]) {
+            this.props.setOption(Options.fov, false);
+        }
     }
 
     setDefaultDevice = (option, devices) => {
@@ -57,7 +60,6 @@ class PlateSolving extends React.Component {
                         <UploadFileDialog
                             title='Upload FITS'
                             trigger={<Button icon='upload' content='Upload FITS'/>}
-                            acceptMimeType='image/fits'
                             readAsDataURL={true}
                             onFileUploaded={fileBuffer => {
                                 this.props.solveField({
@@ -71,7 +73,6 @@ class PlateSolving extends React.Component {
             </Form>
             </Container>
         );
-        // TODO: manual upload
     }
 }
 
