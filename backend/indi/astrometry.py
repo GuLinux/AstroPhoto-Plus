@@ -41,7 +41,8 @@ class Astrometry:
             self.__set_astrometry_options(options)
             self.__upload_blob(data)
             logger.debug('Waiting for solver to finish')
-            while self.__solver_status() != 'BUSY':
+            started = time.time()
+            while self.__solver_status() != 'BUSY' and time.time() - started < 5:
                 time.sleep(1)
             while self.__solver_status() == 'BUSY':
                 time.sleep(1)
