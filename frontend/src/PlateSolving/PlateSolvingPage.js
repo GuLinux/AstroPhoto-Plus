@@ -8,7 +8,7 @@ import UploadFileDialog from '../components/UploadFileDialog';
 const { Options } = PlateSolvingActions;
 
 // TODO: possibly move some driver selection in the menu
-export const PlateSolvingSectionMenu = ({astrometryDrivers}) => null;
+export const PlateSolvingSectionMenu = ({}) => null;
 
 class PlateSolving extends React.Component {
 
@@ -27,7 +27,7 @@ class PlateSolving extends React.Component {
         <CheckButton active={this.props.options[option] === value} onClick={() => this.props.setOption(option, value)} {...props} />
 
     render = () => {
-        const { astrometryDrivers, telescopes } = this.props;
+        const { astrometryDrivers, telescopes, cameras } = this.props;
         return (
         <Container>
             <Form>
@@ -44,6 +44,14 @@ class PlateSolving extends React.Component {
                             {this.optionButton(Options.camera, false, {content: 'Off'})}
                             {this.optionButton(Options.camera, true, {content: 'On'})}
                     </Form.Field>
+                    <Form.Field>
+                        <Header content='Options'/>
+                        <Header size='small' content='Field of View' />
+                            {this.optionButton(Options.fov, false, {content: 'Off'})}
+                            {this.optionButton(Options.fov, 'manual', {content: 'Manual'})}
+                        { cameras.length > 0 && cameras.all.map(c => this.optionButton(Options.fov, c.id, {content: c.name, key: c.id}))}
+                    </Form.Field>
+
                     <Form.Field>
                         <Header content='Upload' />
                         <UploadFileDialog

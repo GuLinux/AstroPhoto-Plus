@@ -3,12 +3,14 @@ import { PlateSolvingPage, PlateSolvingSectionMenu } from './PlateSolvingPage';
 import {
   connectedAstrometrySelector,
   connectedTelescopesSelector,
+  connectedCamerasSelector,
 } from '../Gear/selectors';
 import Actions from '../actions';
 
 const mapStateToProps = (state, ownProps) => ({
     astrometryDrivers: connectedAstrometrySelector(state),
     telescopes: connectedTelescopesSelector(state),
+    cameras: connectedCamerasSelector(state),
     options: state.plateSolving.options,
 })
 
