@@ -5,6 +5,7 @@ import {
   connectedTelescopesSelector,
   connectedCamerasSelector,
 } from '../Gear/selectors';
+import { getMessages } from '../INDI-Server/selectors';
 import Actions from '../actions';
 
 const mapStateToProps = (state, ownProps) => ({
@@ -12,6 +13,7 @@ const mapStateToProps = (state, ownProps) => ({
     telescopes: connectedTelescopesSelector(state),
     cameras: connectedCamerasSelector(state),
     options: state.plateSolving.options,
+    messages: getMessages(state)[state.plateSolving.options.astrometryDriver],
 })
 
 const mapDispatchToProps = dispatch => ({

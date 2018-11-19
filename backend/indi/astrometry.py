@@ -31,6 +31,7 @@ class Astrometry:
         }
 
     def solve_field(self, options):
+        logger.debug(options.keys())
         # TODO also read from filesystem
         if 'fileBuffer' in options:
             data = base64.b64decode(options['fileBuffer'][options['fileBuffer'].find(Astrometry.DATAURL_SEPARATOR) + len(Astrometry.DATAURL_SEPARATOR):])
@@ -38,8 +39,21 @@ class Astrometry:
         self.__set_enabled(True)
         self.__set_astrometry_options(options)
         self.__upload_blob(data)
+        logger.debug('Waiting for solver to finish')
+        while self.__solver_status() != 'BUSY':
+            logger.debug('wait_for_busy: {}'.format(self.__solver_status()))
+            time.sleep(1)
+        while self.__solver_status() == 'BUSY':
+            logger.debug('wait_for_not_busy: {}'.format(self.__solver_status()))
+            time.sleep(1)
 
-        logger.debug(options.keys())
+        logger.debug('final status: {}'.format(self.__solver_status()))
+
+        self.__set_enabled(False)
+        logger.debug('Solver finished, disabled')
+
+    def __solver_status(self):
+        return self.device.get_property('ASTROMETRY_SOLVER').to_map()['state']
 
     def __set_enabled(self, enabled):
         self.device.get_property('ASTROMETRY_SOLVER').set_values({'ASTROMETRY_SOLVER_ENABLE': enabled, 'ASTROMETRY_SOLVER_DISABLE': not enabled})

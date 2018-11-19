@@ -4,6 +4,7 @@ import { Form, Container, Header, Button} from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import UploadFileDialog from '../components/UploadFileDialog';
+import INDIMessagesPanel from '../INDI-Server/INDIMessagesPanel';
 
 const { Options } = PlateSolvingActions;
 
@@ -30,7 +31,7 @@ class PlateSolving extends React.Component {
         <CheckButton active={this.props.options[option] === value} onClick={() => this.props.setOption(option, value)} {...props} />
 
     render = () => {
-        const { astrometryDrivers, telescopes, cameras } = this.props;
+        const { astrometryDrivers, telescopes, cameras, messages} = this.props;
         return (
         <Container>
             <Form>
@@ -71,6 +72,7 @@ class PlateSolving extends React.Component {
                         />
                     </Form.Field>
             </Form>
+                {messages && <INDIMessagesPanel messages={messages} />}
             </Container>
         );
     }
