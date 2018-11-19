@@ -7,6 +7,7 @@ export const PlateSolving = {
         telescope: 'telescope',
         astrometryDriver: 'astrometryDriver',
         fov: 'fov',
+        fovSource: 'fovSource',
     },
     setOption: (option, value) => ({ type: 'PLATESOLVING_SET_OPTION', option, value }),
 

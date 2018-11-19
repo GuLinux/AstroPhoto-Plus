@@ -29,12 +29,16 @@ const buildCamera = (deviceEntities, devicesProperties, cameraID) => {
     if(camera.connected) {
         camera.exposureProperty = devicesProperties[cameraID].CCD_EXPOSURE;
         camera.abortExposureProperty = devicesProperties[cameraID].CCD_ABORT_EXPOSURE;
+        camera.ccdInformation = list2object(devicesProperties[cameraID].CCD_INFO.values, 'name');
     }
     return camera
 }
 
 const buildTelescope = (deviceEntities, deviceProperties, telescopeId) => {
     let telescope = buildBaseObject(deviceEntities, deviceProperties, telescopeId);
+    if(telescope.connected) {
+        telescope.info = list2object(deviceProperties[telescopeId].TELESCOPE_INFO.values, 'name');
+    }
     return telescope;
 }
 
