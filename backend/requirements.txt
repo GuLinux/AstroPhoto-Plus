@@ -1,4 +1,4 @@
-pyindi-client
+# pyindi-client #TODO add back when 0.2.3 is released
 astropy
 flask
 gunicorn
