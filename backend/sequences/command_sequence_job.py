@@ -3,6 +3,7 @@ import time
 import shlex
 import os
 from app import logger
+from utils.cleanup_venv import clean_environment
 
 
 class CommandSequenceJob:
@@ -24,7 +25,7 @@ class CommandSequenceJob:
                 out.write(cmd_description)
                 err.write(cmd_description)
 
-                result = subprocess.run(shlex.split(self.command), stdout=out, stderr=err)
+                result = subprocess.run(shlex.split(self.command), stdout=out, stderr=err, env=clean_environment())
 
             if result.returncode != 0:
                 raise RuntimeError('Error running command {}'.format(self.command))
