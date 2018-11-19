@@ -13,10 +13,14 @@ export const plateSolvingContainerSelector = createSelector([
     connectedCamerasSelector,
     getMessages,
     state => state.plateSolving.options,
-], (astrometryDrivers, telescopes, cameras, messages, options) => ({
+    state => state.plateSolving.solution,
+    state => state.plateSolving.loading,
+], (astrometryDrivers, telescopes, cameras, messages, options, solution, loading) => ({
     astrometryDrivers,
     telescopes,
     cameras,
     messages: messages[options.astrometryDriver],
     options,
+    solution,
+    loading,
 }));

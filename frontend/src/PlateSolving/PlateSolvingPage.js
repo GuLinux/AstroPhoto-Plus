@@ -1,11 +1,12 @@
 import React from 'react';
 import { NotFoundPage } from '../components/NotFoundPage';
-import { Form, Grid, Container, Header, Button} from 'semantic-ui-react';
+import { Dimmer, Loader, Label, Grid, Container, Header, Button} from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import UploadFileDialog from '../components/UploadFileDialog';
 import INDIMessagesPanel from '../INDI-Server/INDIMessagesPanel';
 import { NumericInput } from '../components/NumericInput';
+import { formatDecimalNumber } from '../utils';
 
 const { Options } = PlateSolvingActions;
 
@@ -28,6 +29,50 @@ class SetCameraFOV extends React.Component {
     render = () => null;
 }
 
+const toSexagesimal = value => {
+    const degrees = parseInt(value);
+    let remainder = 60 * (value - degrees);
+    const minutes = parseInt(remainder);
+    remainder = 60 * (remainder - minutes);
+    const seconds = parseInt(remainder);
+    return { degrees, minutes, seconds, fractionalSeconds: remainder };
+}
+
+const formatDegrees = degrees => {
+    const sexagesimal = toSexagesimal(degrees);
+    return `${sexagesimal.degrees}\u00B0 ${sexagesimal.minutes}' ${formatDecimalNumber('%0.2f', sexagesimal.fractionalSeconds)}"`;
+}
+
+const formatRA = degrees => {
+    const hours = degrees * (24.0/360.0);
+    const sexagesimal = toSexagesimal(hours);
+    return `${sexagesimal.degrees}:${sexagesimal.minutes}:${formatDecimalNumber('%0.2f', sexagesimal.fractionalSeconds)}`;
+}
+
+const SolutionField = ({field, width=11, format = v => v}) => ( <React.Fragment>
+    <Grid.Column width={3}><Label content={field.label} /></Grid.Column>
+    <Grid.Column width={width}>{format(field.value)}</Grid.Column>
+</React.Fragment> );
+
+
+const SolutionPanel = ({solution}) => (
+    <React.Fragment>
+        <Header content='Solution' />
+        <Grid stackable>
+            <Grid.Row>
+                <SolutionField width={5} field={solution.ASTROMETRY_RESULTS_RA} format={formatRA} />
+                <SolutionField width={5} field={solution.ASTROMETRY_RESULTS_DE} format={formatDegrees} />
+            </Grid.Row>
+            <Grid.Row>
+                <SolutionField width={5} field={solution.ASTROMETRY_RESULTS_PIXSCALE} format={v => formatDecimalNumber('%0.2f', v)} />
+            </Grid.Row>
+            <Grid.Row>
+                <SolutionField width={5} field={solution.ASTROMETRY_RESULTS_ORIENTATION} format={v => formatDecimalNumber('%0.2f', v)} />
+            </Grid.Row>
+        </Grid>
+    </React.Fragment>
+)
+
 class PlateSolving extends React.Component {
 
     componentDidMount = () => {
@@ -45,15 +90,16 @@ class PlateSolving extends React.Component {
     }
 
     optionButton = (option, value, props={}) => 
-        <CheckButton size='mini' active={this.props.options[option] === value} onClick={() => this.props.setOption(option, value)} {...props} />
+        <CheckButton disabled={ props.disabled || this.props.loading} size='mini' active={this.props.options[option] === value} onClick={() => this.props.setOption(option, value)} {...props} />
 
     render = () => {
-        const { astrometryDrivers, telescopes, cameras, messages, options, setOption} = this.props;
+        const { astrometryDrivers, telescopes, cameras, messages, options, setOption, solution, loading} = this.props;
         const setFOV = (valueObject) => setOption(Options.fov, {...options[Options.fov], ...valueObject});
         const isManualFOV = options[Options.fovSource] === 'manual';
 
         return (
         <Container>
+            <Header content='Plate Solver options' />
             <Grid stackable>
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Astrometry driver' /></Grid.Column>
@@ -83,8 +129,8 @@ class PlateSolving extends React.Component {
                         { cameras.ids.includes(options[Options.fovSource]) && <SetCameraFOV camera={cameras.get(options[Options.fovSource])} telescope={telescopes.get(options[Options.telescope])} setOption={setOption} /> }
                         { options[Options.fovSource] && (
                         <Grid.Row>
-                            <Grid.Column width={8}><NumericInput label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV} disabled={!isManualFOV} value={options[Options.fov].minimumWidth} onChange={v => setFOV({minimumWidth: v})}/></Grid.Column>
-                            <Grid.Column width={8}><NumericInput label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV} disabled={!isManualFOV} value={options[Options.fov].maximumWidth} onChange={v => setFOV({maximumWidth: v})}/></Grid.Column>
+                            <Grid.Column width={8}><NumericInput label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={options[Options.fov].minimumWidth} onChange={v => setFOV({minimumWidth: v})}/></Grid.Column>
+                            <Grid.Column width={8}><NumericInput label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={options[Options.fov].maximumWidth} onChange={v => setFOV({maximumWidth: v})}/></Grid.Column>
                         </Grid.Row>
                         )}
                     </Grid.Column>
@@ -94,7 +140,7 @@ class PlateSolving extends React.Component {
                         <Grid.Column width={16} textAlign='center'>
                             <UploadFileDialog
                                 title='Upload FITS'
-                                trigger={<Button icon='upload' content='Upload FITS' primary size='mini'/>}
+                                trigger={<Button disabled={loading} icon='upload' content='Upload FITS' primary size='mini'/>}
                                 readAsDataURL={true}
                                 onFileUploaded={fileBuffer => {
                                     this.props.solveField({
@@ -106,8 +152,16 @@ class PlateSolving extends React.Component {
                             />
                         </Grid.Column>
                     </Grid.Row>
-                )}
+               )}
+                { loading && (<Grid.Row>
+                    <Grid.Column width={16} textAlign='center'>
+                        <Loader active inline />
+                    </Grid.Column>
+                </Grid.Row>)}
             </Grid>
+
+
+            { solution && <SolutionPanel solution={solution} /> }
             {messages && <INDIMessagesPanel messages={messages} />}
         </Container>
         );
