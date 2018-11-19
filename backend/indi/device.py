@@ -57,7 +57,7 @@ class Device:
         return [indi_property.Property(self.client, self.logger, indi_property=p) for p in self.indi_device.get_properties()]
 
     def get_property(self, property_name):
-        properties = [x for x in self.properties if x.name == property_name]
+        properties = [x for x in self.properties() if x.name == property_name]
         return properties[0] if properties else None
 
 
