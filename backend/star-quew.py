@@ -465,8 +465,7 @@ def lookup_astrometry(id):
 @json_api
 @indi_connected
 def astrometry_solve_field(astrometry_id, json):
-    lookup_astrometry(astrometry_id).solve_field(json)
-    return { 'status': 'solving' }
+    return lookup_astrometry(astrometry_id).solve_field(json)
 
 
 # filesystem
