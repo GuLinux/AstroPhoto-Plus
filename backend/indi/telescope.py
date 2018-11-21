@@ -32,3 +32,12 @@ class Telescope:
         if indi_device:
             return indi_device.values('TELESCOPE_INFO', 'number')
         return {}
+    
+    def sync(self, coordinates):
+        sync_property = self.device.get_property('ON_COORD_SET')
+        sync_property.set_values({'SYNC': True})
+        self.device.get_property('EQUATORIAL_EOD_COORD').set_values({
+            'RA': coordinates['ra'],
+            'DEC': coordinates['dec'],
+        })
+

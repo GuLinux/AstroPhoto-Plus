@@ -8,6 +8,7 @@ export const PlateSolving = {
         astrometryDriver: 'astrometryDriver',
         fov: 'fov',
         fovSource: 'fovSource',
+        syncTelescope: 'syncTelescope',
     },
     setOption: (option, value) => ({ type: 'PLATESOLVING_SET_OPTION', option, value }),
 

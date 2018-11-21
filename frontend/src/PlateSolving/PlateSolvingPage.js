@@ -101,16 +101,27 @@ class PlateSolving extends React.Component {
         <Container>
             <Header content='Plate Solver options' />
             <Grid stackable>
+            { astrometryDrivers.length > 1 && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Astrometry driver' /></Grid.Column>
                     <Grid.Column width={11}>
                         { astrometryDrivers.all.map(d => this.optionButton(Options.astrometryDriver, d.id, { content: d.name, key: d.id})) }
                     </Grid.Column>
                 </Grid.Row>
+            )}
+            { telescopes.length > 1 && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Telescope' /></Grid.Column>
                     <Grid.Column width={11}>
                         { telescopes.all.map(d => this.optionButton(Options.telescope, d.id, { content: d.name, key: d.id })) }
+                    </Grid.Column>
+                </Grid.Row>
+            )}
+                <Grid.Row>
+                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Sync telescope on solve'/></Grid.Column>
+                    <Grid.Column width={11}>
+                        {this.optionButton(Options.syncTelescope, false, {content: 'Off'})}
+                        {this.optionButton(Options.syncTelescope, true, {content: 'On'})}
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
