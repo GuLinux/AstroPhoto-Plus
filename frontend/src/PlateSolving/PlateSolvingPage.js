@@ -64,6 +64,10 @@ const SolutionPanel = ({solution}) => (
                 <SolutionField width={5} field={solution.ASTROMETRY_RESULTS_DE} format={formatDegrees} />
             </Grid.Row>
             <Grid.Row>
+                <SolutionField width={5} field={solution.ASTROMETRY_RESULTS_WIDTH} format={formatDegrees} />
+                <SolutionField width={5} field={solution.ASTROMETRY_RESULTS_HEIGHT} format={formatDegrees} />
+            </Grid.Row>
+            <Grid.Row>
                 <SolutionField width={5} field={solution.ASTROMETRY_RESULTS_PIXSCALE} format={v => formatDecimalNumber('%0.2f', v)} />
             </Grid.Row>
             <Grid.Row>

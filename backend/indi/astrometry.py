@@ -4,6 +4,8 @@ from errors import NotFoundError, FailedMethodError
 import base64
 import time
 import os
+from astropy.io import fits
+from io import BytesIO
 
 class Astrometry:
 
@@ -34,6 +36,7 @@ class Astrometry:
     def solve_field(self, options):
         logger.debug(options.keys())
         data = None
+        fits_file = None
         # TODO also read from filesystem
         if 'fileBuffer' in options:
             data = base64.b64decode(options['fileBuffer'][options['fileBuffer'].find(Astrometry.DATAURL_SEPARATOR) + len(Astrometry.DATAURL_SEPARATOR):])
@@ -42,6 +45,9 @@ class Astrometry:
                 data = f.read()
         else:
             raise BadRequestError('You must pass either a fileBuffer object (data-uri formatted) or a filePath argument')
+        fits_file = fits.open(BytesIO(data))
+        resolution = fits_file[0].data.shape
+
 
         self.__set_enabled(True)
         try:
@@ -57,8 +63,11 @@ class Astrometry:
             final_status = self.__solver_status()
             if final_status == 'OK':
                 solution_property = self.device.get_property('ASTROMETRY_RESULTS').to_map()
+                solution_values = dict([ (v['name'], v['value']) for v in solution_property['values'] ])
+                solution_property['values'].append({ 'label': 'Field width', 'name': 'ASTROMETRY_RESULTS_WIDTH', 'value': resolution[1] * solution_values['ASTROMETRY_RESULTS_PIXSCALE'] / 3600. })
+                solution_property['values'].append({ 'label': 'Field height', 'name': 'ASTROMETRY_RESULTS_HEIGHT', 'value': resolution[0] * solution_values['ASTROMETRY_RESULTS_PIXSCALE'] / 3600. })
                 if options['syncTelescope']:
-                    solution_values = dict([ (v['name'], v['value']) for v in solution_property['values'] ])
+
                     logger.debug(solution_values)
                     telescope = [t for t in self.server.telescopes() if t.id == options['telescope']]
                     if not telescope:
