@@ -1,5 +1,7 @@
 import { solveFieldAPI } from "../middleware/api";
 import Actions from '../actions';
+import { solveFromCameraSelector } from './selectors';
+
 
 export const PlateSolving = {
     Options: {
@@ -30,4 +32,12 @@ export const PlateSolving = {
             return true;
         }, astrometryDriver, options);
     },
+
+    solveCameraImage: filePath => (dispatch, getState) => {
+        const { options } = solveFromCameraSelector(getState());
+        if(!options.camera || ! options.astrometryDriver || ! options.telescope)
+            return;
+        dispatch({ type: 'PLATESOLVING_SOLVING_CAMERAFILE'});
+        dispatch(Actions.PlateSolving.solveField({ filePath, ...options }));
+    }
 };

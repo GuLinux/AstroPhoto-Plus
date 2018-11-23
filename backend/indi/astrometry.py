@@ -3,6 +3,7 @@ from app import logger
 from errors import NotFoundError, FailedMethodError
 import base64
 import time
+import os
 
 class Astrometry:
 
@@ -32,9 +33,15 @@ class Astrometry:
 
     def solve_field(self, options):
         logger.debug(options.keys())
+        data = None
         # TODO also read from filesystem
         if 'fileBuffer' in options:
             data = base64.b64decode(options['fileBuffer'][options['fileBuffer'].find(Astrometry.DATAURL_SEPARATOR) + len(Astrometry.DATAURL_SEPARATOR):])
+        elif 'filePath' in options and os.path.isfile(options['filePath']):
+            with open(options['filePath'], 'rb') as f:
+                data = f.read()
+        else:
+            raise BadRequestError('You must pass either a fileBuffer object (data-uri formatted) or a filePath argument')
 
         self.__set_enabled(True)
         try:

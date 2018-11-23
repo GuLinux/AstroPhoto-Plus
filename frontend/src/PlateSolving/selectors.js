@@ -7,12 +7,15 @@ import {
 } from '../Gear/selectors';
 import { getMessages } from '../INDI-Server/selectors';
 
+
+const getPlateSolvingOptions = state => state.plateSolving.options;
+
 export const plateSolvingContainerSelector = createSelector([
     connectedAstrometrySelector,
     connectedTelescopesSelector,
     connectedCamerasSelector,
     getMessages,
-    state => state.plateSolving.options,
+    getPlateSolvingOptions,
     state => state.plateSolving.solution,
     state => state.plateSolving.loading,
 ], (astrometryDrivers, telescopes, cameras, messages, options, solution, loading) => ({
@@ -24,3 +27,6 @@ export const plateSolvingContainerSelector = createSelector([
     solution,
     loading,
 }));
+
+export const solveFromCameraSelector = createSelector([getPlateSolvingOptions], options => ({options}));
+

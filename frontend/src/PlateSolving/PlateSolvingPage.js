@@ -146,7 +146,7 @@ class PlateSolving extends React.Component {
                         )}
                     </Grid.Column>
                 </Grid.Row>
-                { options[Options.camera] || (
+                { !options[Options.camera] && (
                     <Grid.Row>
                         <Grid.Column width={16} textAlign='center'>
                             <UploadFileDialog

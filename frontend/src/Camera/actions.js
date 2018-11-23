@@ -51,6 +51,7 @@ const Camera = {
 
     shotFinished: (payload, continuous) => dispatch => {
         dispatch({ type: 'CAMERA_SHOT_FINISHED', payload });
+        dispatch(Actions.PlateSolving.solveCameraImage(payload.filename));
         if(!continuous)
             dispatch(Actions.Notifications.add('Image acquired', 'Image was successfully acquired.', 'success', 5000));
     },

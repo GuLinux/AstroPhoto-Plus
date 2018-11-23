@@ -16,12 +16,8 @@ export const plateSolving = (state = defaultState, action) => {
             return {...state, solution: undefined, loading: false };
         case 'PLATESOLVING_SOLVED':
             return {...state, solution: list2object(action.payload.solution.values, 'name'), loading: false };
-        case 'CAMERA_SHOT_FINISHED':
-            return {...state, cameraFile: action.filename };
         case 'FETCH_PLATESOLVING_SOLVE_FIELD':
             return {...state, loading: true };
-        case 'PLATESOLVING_SOLVING_CAMERAFILE':
-            return {...state, cameraFile: undefined };
         default:
         return state;
     }
