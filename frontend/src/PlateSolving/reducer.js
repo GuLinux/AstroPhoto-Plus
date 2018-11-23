@@ -5,6 +5,7 @@ const defaultState = {
         [Actions.Options.camera]: false,
         [Actions.Options.fov]: {},
         [Actions.Options.syncTelescope]: true,
+        [Actions.Options.downsample]: 2,
     },
 };
 

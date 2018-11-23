@@ -98,9 +98,11 @@ class Astrometry:
 
 
     def __build_astrometry_options(self, options):
-        cli_options = '--no-verify --no-plots --resort --downsample 2 -O'
+        cli_options = ['--no-verify', '--no-plots', '--resort', '-O']
         if 'fov' in options:
             fov = options['fov']
             if 'minimumWidth' in fov and 'maximumWidth' in fov and fov['minimumWidth'] < fov['maximumWidth']:
-                cli_options += ' -L {} -H {} -u arcminwidth'.format(fov['minimumWidth'], fov['maximumWidth'])
-        return cli_options
+                cli_options.extend(['-L', fov['minimumWidth'], '-H', fov['maximumWidth'], '-u', 'arcminwidth'])
+        if 'downsample' in options:
+            cli_options.extend(['--downsample', options['downsample']])
+        return ' '.join([str(x) for x in cli_options])

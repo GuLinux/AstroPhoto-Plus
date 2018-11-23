@@ -11,6 +11,7 @@ export const PlateSolving = {
         fov: 'fov',
         fovSource: 'fovSource',
         syncTelescope: 'syncTelescope',
+        downsample: 'downsample',
     },
     setOption: (option, value) => ({ type: 'PLATESOLVING_SET_OPTION', option, value }),
 
