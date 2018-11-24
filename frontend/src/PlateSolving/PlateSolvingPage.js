@@ -58,10 +58,10 @@ const SolutionField = ({field, width=11, format = v => v}) => ( <React.Fragment>
 const formatAladinParams = (solution) => {
     const ra = toSexagesimal(solution.ASTROMETRY_RESULTS_RA.value * (24.0 / 360.0));
     const dec = toSexagesimal(solution.ASTROMETRY_RESULTS_DE.value);
-    const decSign = dec.degrees >= 0 ? '+' : ''
+    const decSign = dec.degrees >= 0 ? '%2B' : ''
     return 'target=' +
-        encodeURI(`${ra.degrees} ${ra.minutes} ${formatDecimalNumber('%0.3f', ra.fractionalSeconds)}` +
-        `${decSign}${dec.degrees} ${dec.minutes} ${formatDecimalNumber('%0.2f', dec.fractionalSeconds)}`) +
+        encodeURI(`${ra.degrees} ${ra.minutes} ${formatDecimalNumber('%0.3f', ra.fractionalSeconds)}`) +
+        decSign + encodeURI(`${dec.degrees} ${dec.minutes} ${formatDecimalNumber('%0.2f', dec.fractionalSeconds)}`) +
         '&fov=' + encodeURI(formatDecimalNumber('%0.2f', solution.ASTROMETRY_RESULTS_WIDTH.value * 5));
 }
 

@@ -34,10 +34,9 @@ class Astrometry:
         }
 
     def solve_field(self, options):
-        logger.debug(options.keys())
         data = None
         fits_file = None
-        # TODO also read from filesystem
+        logger.debug('Solve field options: {}'.format(['{}: {}'.format(key, '<blob>' if key == 'fileBuffer' else value)  for key, value in options.items()]))
         if 'fileBuffer' in options:
             data = base64.b64decode(options['fileBuffer'][options['fileBuffer'].find(Astrometry.DATAURL_SEPARATOR) + len(Astrometry.DATAURL_SEPARATOR):])
         elif 'filePath' in options and os.path.isfile(options['filePath']):
