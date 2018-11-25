@@ -1,10 +1,14 @@
 import { createSelector } from 'reselect'
-import { getGear, connectedCamerasSelector, connectedFilterWheelsSelector } from '../Gear/selectors'
+import { connectedCamerasSelector, connectedFilterWheelsSelector } from '../Gear/selectors'
 
-const getCurrentCameraId = (state) => state.camera.currentCamera;
-const getCurrentFilterWheelId = (state) => state.camera.currentFilterWheel;
-const getOptions = (state) => state.camera.options;
-const getROI = (state) => state.camera.crop;
+const getCurrentCameraId = state => state.camera.currentCamera;
+const getCurrentFilterWheelId = state => state.camera.currentFilterWheel;
+const getOptions = state => state.camera.options;
+const getROI = state => state.camera.crop;
+const getIsShooting = state => state.camera.isShooting;
+const getCrop = state => state.camera.crop;
+const getCurrentImage = state => state.camera.currentImage;
+const getImageLoading = state => state.camera.imageLoading;
 
 export const getCurrentCamera = createSelector([getCurrentCameraId, connectedCamerasSelector], (currentCameraId, connectedCameras) => {
     if(! currentCameraId || ! connectedCameras.ids.includes(currentCameraId)) {
@@ -30,3 +34,55 @@ export const getShotParameters = createSelector([getCurrentCamera, getOptions, g
         roi: roi && roi.pixel && roi.pixel,
     }
 });
+
+export const cameraContainerSelector = createSelector([getOptions, connectedCamerasSelector], (options, cameras) => ({
+    options,
+    cameras,
+}));
+
+export const cameraShootingSectionMenuEntriesSelector = createSelector([
+    getOptions,
+    connectedCamerasSelector,
+    connectedFilterWheelsSelector,
+    getCurrentCamera,
+    getCurrentFilterWheel,
+    getIsShooting,
+], (
+    options,
+    cameras,
+    filterWheels,
+    currentCamera,
+    currentFilterWheel,
+    isShooting,
+) => ({
+    options,
+    cameras,
+    filterWheels,
+    currentCamera,
+    currentFilterWheel,
+    isShooting,
+}));
+
+const getCanCrop = createSelector([getIsShooting, getCurrentImage, getImageLoading], (isShooting, currentImage, imageLoading) => {
+    return !isShooting && !imageLoading && currentImage;
+})
+
+export const cameraImageOptionsSectionMenuEntriesSelector = createSelector([
+    getOptions,
+    connectedCamerasSelector,
+    getCrop,
+    getIsShooting,
+    getCurrentImage,
+    getImageLoading,
+    getCanCrop,
+], (
+    options,
+    cameras,
+    crop,
+    canCrop,
+) => ({
+    options,
+    cameras,
+    canCrop,
+    crop,
+}));

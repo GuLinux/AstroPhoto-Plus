@@ -1,17 +1,22 @@
 import React from 'react';
 import { NotFoundPage } from '../components/NotFoundPage';
-import { Dimmer, Loader, Label, Grid, Container, Header, Button} from 'semantic-ui-react';
+import { Dimmer, Loader, Label, Grid, Container, Header, Button, Form} from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import UploadFileDialog from '../components/UploadFileDialog';
 import INDIMessagesPanel from '../INDI-Server/INDIMessagesPanel';
 import { NumericInput } from '../components/NumericInput';
 import { formatDecimalNumber } from '../utils';
+import { CameraShootingSectionMenuEntriesContaner } from '../Camera/CameraSectionMenuEntriesContainer';
 
 const { Options } = PlateSolvingActions;
 
 // TODO: possibly move some driver selection in the menu
-export const PlateSolvingSectionMenu = ({}) => null;
+export const PlateSolvingSectionMenu = ({listenToCamera}) => listenToCamera && (
+    <Form size='tiny'>
+        <CameraShootingSectionMenuEntriesContaner />
+    </Form>
+);
 
 class SetCameraFOV extends React.Component {
     componentDidMount = () => this.setFOV();

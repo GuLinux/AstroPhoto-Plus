@@ -6,6 +6,7 @@ import {
   connectedCamerasSelector,
 } from '../Gear/selectors';
 import { getMessages } from '../INDI-Server/selectors';
+import { PlateSolving } from './actions';
 
 
 const getPlateSolvingOptions = state => state.plateSolving.options;
@@ -27,6 +28,10 @@ export const plateSolvingContainerSelector = createSelector([
     solution,
     loading,
 }));
+
+export const plateSolvingSectionMenuSelector = createSelector([getPlateSolvingOptions], options => ({
+    listenToCamera: options[PlateSolving.Options.camera],
+}))
 
 export const solveFromCameraSelector = createSelector([getPlateSolvingOptions], options => ({options}));
 
