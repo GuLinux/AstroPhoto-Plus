@@ -7,6 +7,7 @@
  - Allow to edit sequence after creation (name, camera, filter wheel, directory)
  - allow to stop and resume sequences.
  - import/export sequences to JSON files
+ - Plate solving (please update nginx config file)
 
 ### Improvements
 
