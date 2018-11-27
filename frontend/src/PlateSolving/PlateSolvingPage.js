@@ -110,7 +110,10 @@ const SolutionPanel = ({solution}) => {
                         <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_ORIENTATION} format={v => formatDecimalNumber('%0.2f', v)} />
                     </Grid.Row>
                     <Grid.Row>
-                        <a href={`http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`} target='_blank'>Aladin solution</a>
+                        <Grid.Column width={4}><Label content='Link to Aladin' /></Grid.Column>
+                        <Grid.Column width={5}>
+                            <a href={`http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`} target='_blank'>click here</a>
+                        </Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Container>
