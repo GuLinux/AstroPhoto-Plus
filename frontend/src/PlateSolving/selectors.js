@@ -11,13 +11,15 @@ import { PlateSolving } from './actions';
 
 const getPlateSolvingOptions = state => state.plateSolving.options;
 
+const getSolution = state => state.plateSolving.solution;
+
 export const plateSolvingContainerSelector = createSelector([
     connectedAstrometrySelector,
     connectedTelescopesSelector,
     connectedCamerasSelector,
     getMessages,
     getPlateSolvingOptions,
-    state => state.plateSolving.solution,
+    getSolution,
     state => state.plateSolving.loading,
 ], (astrometryDrivers, telescopes, cameras, messages, options, solution, loading) => ({
     astrometryDrivers,

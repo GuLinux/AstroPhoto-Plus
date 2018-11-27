@@ -12,15 +12,7 @@ import { PlateSolvingContainer } from '../PlateSolving/PlateSolvingContainer';
 import './App.css';
 import { Route, Redirect } from "react-router-dom";
 import { Routes } from '../routes';
-import { CelestialComponent } from '../components/Celestial';
-
-const celestialConfig = {
-  center: [65, -1],
-  adaptable: true,
-  stars: {
-    colors: false,
-  },
-};
+import { Celestial } from '../components/Celestial';
 
 const App = ({location}) => (
   <div className="App">
@@ -34,11 +26,6 @@ const App = ({location}) => (
             <Route path={Routes.PLATE_SOLVING_PAGE} component={PlateSolvingContainer} />
             <Route path={Routes.SETTINGS_PAGE} component={SettingsContainer} />
             <Route path={Routes.IMAGE_PAGE} render={({match, location}) => <ImageContainer id={match.params.id} type={match.params.type} />} />
-            <Route path='/celestial' render={() => (
-              <CelestialComponent config={celestialConfig}>
-                <CelestialComponent.Point ra={12.5} dec={-10} name='Hello!'/>
-              </CelestialComponent>)
-              } />
         </ErrorPageContainer>
         <LoadingContainer />
     </Navbar>

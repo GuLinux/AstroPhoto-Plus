@@ -1,6 +1,6 @@
 import React from 'react';
 import { NotFoundPage } from '../components/NotFoundPage';
-import { Dimmer, Loader, Label, Grid, Container, Header, Button, Form} from 'semantic-ui-react';
+import { Loader, Label, Grid, Container, Header, Button, Form} from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import UploadFileDialog from '../components/UploadFileDialog';
@@ -8,6 +8,8 @@ import INDIMessagesPanel from '../INDI-Server/INDIMessagesPanel';
 import { NumericInput } from '../components/NumericInput';
 import { formatDecimalNumber } from '../utils';
 import { CameraShootingSectionMenuEntriesContaner } from '../Camera/CameraSectionMenuEntriesContainer';
+import { Celestial, hour2CelestialDegree } from '../components/Celestial';
+import { CelestialControls } from '../components/CelestialControls';
 
 const { Options } = PlateSolvingActions;
 
@@ -48,8 +50,10 @@ const formatDegrees = degrees => {
     return `${sexagesimal.degrees}\u00B0 ${sexagesimal.minutes}' ${formatDecimalNumber('%0.2f', sexagesimal.fractionalSeconds)}"`;
 }
 
+
+const deg2hours = deg => deg * (24.0 / 360.0);
 const formatRA = degrees => {
-    const hours = degrees * (24.0/360.0);
+    const hours = deg2hours(degrees);
     const sexagesimal = toSexagesimal(hours);
     return `${sexagesimal.degrees}:${sexagesimal.minutes}:${formatDecimalNumber('%0.2f', sexagesimal.fractionalSeconds)}`;
 }
@@ -70,30 +74,63 @@ const formatAladinParams = (solution) => {
         '&fov=' + encodeURI(formatDecimalNumber('%0.2f', solution.ASTROMETRY_RESULTS_WIDTH.value * 5));
 }
 
-const SolutionPanel = ({solution}) => (
-    <Container text>
-        <Header content='Solution' />
-        <Grid stackable>
-            <Grid.Row>
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_RA} format={formatRA} />
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_DE} format={formatDegrees} />
-            </Grid.Row>
-            <Grid.Row>
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_WIDTH} format={formatDegrees} />
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_HEIGHT} format={formatDegrees} />
-            </Grid.Row>
-            <Grid.Row>
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_PIXSCALE} format={v => formatDecimalNumber('%0.2f', v)} />
-            </Grid.Row>
-            <Grid.Row>
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_ORIENTATION} format={v => formatDecimalNumber('%0.2f', v)} />
-            </Grid.Row>
-            <Grid.Row>
-                <a href={`http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`} target='_blank'>Aladin solution</a>
-            </Grid.Row>
-        </Grid>
-    </Container>
-)
+const buildCelestialConfig = (ra, dec) => {
+    const celestialRA = hour2CelestialDegree(deg2hours(ra));
+    const center = [celestialRA, dec];
+    return {
+        center,
+        adaptable: true,
+        stars: {
+            colors: false,
+        },
+    };
+};
+
+
+const SolutionPanel = ({solution}) => {
+    const celestialConfig = buildCelestialConfig(solution.ASTROMETRY_RESULTS_RA.value, solution.ASTROMETRY_RESULTS_DE.value);
+    const celestialCenter = { ra: deg2hours(solution.ASTROMETRY_RESULTS_RA.value), dec: solution.ASTROMETRY_RESULTS_DE.value };
+    return (
+        <Container fluid>
+            <Container text>
+                <Header content='Solution' />
+                <Grid stackable>
+                    <Grid.Row>
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_RA} format={formatRA} />
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_DE} format={formatDegrees} />
+                    </Grid.Row>
+                    <Grid.Row>
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_WIDTH} format={formatDegrees} />
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_HEIGHT} format={formatDegrees} />
+                    </Grid.Row>
+                    <Grid.Row>
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_PIXSCALE} format={v => formatDecimalNumber('%0.2f', v)} />
+                    </Grid.Row>
+                    <Grid.Row>
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_ORIENTATION} format={v => formatDecimalNumber('%0.2f', v)} />
+                    </Grid.Row>
+                    <Grid.Row>
+                        <a href={`http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`} target='_blank'>Aladin solution</a>
+                    </Grid.Row>
+                </Grid>
+            </Container>
+            <Celestial config={celestialConfig} zoom={4}>
+                <Celestial.FeaturesCollection
+                    objectsClass='plateSolving'
+                    symbolStyle={{ stroke: '#FF1133', fill: '#FFFFFF22'}}
+                    textStyle={{
+                        fill: '#FF5555',
+                        font: "bold 15px Helvetica, Arial, sans-serif",
+                        align: "left", 
+                        baseline: "bottom" 
+                    }}
+                >
+                    <Celestial.Point ra={celestialCenter.ra} dec={celestialCenter.dec} size={500} name='Plate Solving solution'/>
+                </Celestial.FeaturesCollection>
+            </Celestial>
+        </Container>
+    );
+}
 
 class PlateSolving extends React.Component {
 
