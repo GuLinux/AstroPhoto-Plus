@@ -12,7 +12,6 @@ import { PlateSolvingContainer } from '../PlateSolving/PlateSolvingContainer';
 import './App.css';
 import { Route, Redirect } from "react-router-dom";
 import { Routes } from '../routes';
-import { Celestial } from '../components/Celestial';
 
 const App = ({location}) => (
   <div className="App">

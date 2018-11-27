@@ -8,8 +8,7 @@ import INDIMessagesPanel from '../INDI-Server/INDIMessagesPanel';
 import { NumericInput } from '../components/NumericInput';
 import { formatDecimalNumber } from '../utils';
 import { CameraShootingSectionMenuEntriesContaner } from '../Camera/CameraSectionMenuEntriesContainer';
-import { Celestial, hour2CelestialDegree } from '../components/Celestial';
-import { CelestialControls } from '../components/CelestialControls';
+import { Celestial, hour2CelestialDegree } from 'd3-celestial-react';
 
 const { Options } = PlateSolvingActions;
 
@@ -78,6 +77,7 @@ const buildCelestialConfig = (ra, dec) => {
     const celestialRA = hour2CelestialDegree(deg2hours(ra));
     const center = [celestialRA, dec];
     return {
+        datapath: '/celestial',
         center,
         adaptable: true,
         stars: {

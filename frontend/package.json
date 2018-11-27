@@ -1,36 +1,43 @@
 {
-    "dependencies": {
-        "d3-celestial": "^0.6.7",
-        "event-source-polyfill": "0.0.12",
-        "isomorphic-fetch": "^2.2.1",
-        "normalizr": "^3.2.4",
-        "npm": "^6.4.0",
-        "printj": "^1.1.2",
-        "react": "^16.4.0",
-        "react-dom": "^16.4.0",
-        "react-dropzone": "^5.0.1",
-        "react-image-crop": "^4.0.1",
-        "react-redux": "^5.0.6",
-        "react-router": "^4.3.1",
-        "react-router-dom": "^4.3.1",
-        "react-scripts": "^1.1.4",
-        "recharts": "^1.2.0",
-        "redux": "^3.7.2",
-        "redux-logger": "^3.0.6",
-        "redux-thunk": "^2.2.0",
-        "reselect": "^3.0.1",
-        "semantic-ui-css": "^2.4.1",
-        "semantic-ui-react": "^0.83.0"
-    },
-    "name": "StarQuew-frontend",
-    "private": true,
-    "scripts": {
-        "clean-themes": "rm -rf src/themes",
-        "copy-themes": "mkdir -p src/themes && cp -a forest-themes/dist/* src/themes/ && cp -a node_modules/semantic-ui-css/themes src/themes/bootswatch-v3/ && cp -a node_modules/semantic-ui-css/themes src/themes/bootswatch-v4/",
-        "build": "npm run clean-themes && npm run copy-themes && react-scripts build",
-        "eject": "react-scripts eject",
-        "start": "npm run clean-themes && npm run copy-themes && react-scripts start",
-        "test": "react-scripts test --env=jsdom"
-    },
-    "version": "0.1.2"
+  "dependencies": {
+    "d3-celestial-react": "GuLinux/d3-celestial-react",
+    "event-source-polyfill": "0.0.12",
+    "isomorphic-fetch": "^2.2.1",
+    "normalizr": "^3.2.4",
+    "npm": "^6.4.0",
+    "printj": "^1.2.1",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "react-dropzone": "^5.0.1",
+    "react-image-crop": "^4.0.1",
+    "react-redux": "^5.0.6",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "^2.1.1",
+    "recharts": "^1.2.0",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.83.0"
+  },
+  "name": "StarQuew-frontend",
+  "private": true,
+  "scripts": {
+    "copy-themes": "rm -rf src/themes && mkdir -p src/themes && cp -a forest-themes/dist/* src/themes/ && cp -a node_modules/semantic-ui-css/themes src/themes/bootswatch-v3/ && cp -a node_modules/semantic-ui-css/themes src/themes/bootswatch-v4/",
+    "copy:celestial": "mkdir -p public/celestial && cp -av node_modules/d3-celestial-react/assets/* public/celestial",
+    "copy:assets": "npm run copy:celestial && npm run copy:celestial",
+    "build": "npm run copy:assets && react-scripts build",
+    "eject": "react-scripts eject",
+    "start": "npm run copy:assets && react-scripts start",
+    "test": "react-scripts test --env=jsdom"
+  },
+  "version": "0.1.2",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
