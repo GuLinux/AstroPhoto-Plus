@@ -5,6 +5,10 @@ const defaultState = {
     cameraEntities: {},
     filterWheels: [],
     filterWheelEntities: {},
+    telescopes: [],
+    telescopeEntities: {},
+    astrometry: [],
+    astrometryEntities: {},
 }
 
 const deviceRemoved = (state, device) => {
@@ -14,12 +18,23 @@ const deviceRemoved = (state, device) => {
     return newState
 }
 
+const receivedGear = (state, {payload}, idsField, entitiesField) => ({
+    ...state,
+    [idsField]: payload.map(c => c.id),
+    [entitiesField]: list2object(payload, 'id'),
+});
+
+
 const gear = (state = defaultState, action) => {
     switch(action.type) {
         case 'RECEIVED_CAMERAS':
-            return {...state, cameras: action.cameras.map(c => c.id), cameraEntities: list2object(action.cameras, 'id')};
+            return receivedGear(state, action, 'cameras', 'cameraEntities');
         case 'RECEIVED_FILTER_WHEELS':
-            return {...state, filterWheels: action.filterWheels.map(c => c.id), filterWheelEntities: list2object(action.filterWheels, 'id')};
+            return receivedGear(state, action, 'filterWheels', 'filterWheelEntities');
+        case 'RECEIVED_TELESCOPES':
+            return receivedGear(state, action, 'telescopes', 'telescopeEntities');
+        case 'RECEIVED_ASTROMETRY_DRIVERS':
+            return receivedGear(state, action, 'astrometry', 'astrometryEntities');
         case 'INDI_DEVICE_REMOVED':
             return deviceRemoved(action.device);
         case 'RECEIVED_SERVER_STATE':

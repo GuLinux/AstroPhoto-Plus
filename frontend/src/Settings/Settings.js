@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown, Menu, Grid, Form, Container, Button, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
 import { CommandsContainer } from '../Commands/CommandsContainer';
+import { CheckButton } from '../components/CheckButton';
 
 const valueOrDefault = (value, defaultValue) => value ? value : defaultValue;
 
@@ -16,7 +17,7 @@ const isChanged = (settings, key) => key in settings.pending && settings.pending
 const displayTextValue = (settings, key) => displayValue(settings, key, (v) => v && v !== '', '')
 
 const SettingButton = ({settings, setting, value, onUpdate, ...props}) => (
-    <Button icon={settings.current[setting] === value && 'check'} active={settings.current[setting] === value} onClick={() => onUpdate(setting, value)} {...props} />
+    <CheckButton active={settings.current[setting] === value} onClick={() => onUpdate(setting, value)} {...props} />
 )
 
 

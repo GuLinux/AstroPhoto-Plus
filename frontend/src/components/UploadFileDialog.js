@@ -4,7 +4,7 @@ import { ModalDialog } from '../Modals/ModalDialog';
 import Dropzone from 'react-dropzone';
 
 
-class ImportSequenceDialog extends React.Component {
+class UploadFileDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -13,11 +13,11 @@ class ImportSequenceDialog extends React.Component {
     render = () => {
         return (
             <ModalDialog trigger={this.props.trigger} basic size='mini' centered={false}>
-                <Modal.Header>Import Sequence</Modal.Header>
+                <Modal.Header>{this.props.title}</Modal.Header>
                 <Modal.Content>
                     <Grid columns={1}>
                         <Grid.Row centered textAlign='center' verticalAlign='middle'>
-                            <Dropzone accept='application/json' disablePreview={true} multiple={false} onDrop={ (acceptedFiles) => {
+                            <Dropzone accept={this.props.acceptMimeType} disablePreview={true} multiple={false} onDrop={ (acceptedFiles) => {
                                 this.setState({...this.state, file: acceptedFiles && acceptedFiles.length === 1 ? acceptedFiles[0] : null });
                             }}
                             >
@@ -38,7 +38,7 @@ class ImportSequenceDialog extends React.Component {
                 </Modal.Content>
                 <Modal.Actions>
                     <ModalDialog.CloseButton content='Cancel' />
-                    <ModalDialog.CloseButton content='Import' icon='upload' onClose={() => this.upload()} disabled={!this.state.file}/>
+                    <ModalDialog.CloseButton content='Upload' icon='upload' onClose={() => this.upload()} disabled={!this.state.file}/>
                 </Modal.Actions>
             </ModalDialog>
         )
@@ -49,11 +49,11 @@ class ImportSequenceDialog extends React.Component {
         this.setState({});
         const reader = new FileReader();
         reader.onload = () => {
-            const fileString = reader.result;
-            this.props.importSequence(fileString);
+            const fileBuffer = reader.result;
+            this.props.onFileUploaded(fileBuffer);
         }
-        reader.readAsBinaryString(file);
+        this.props.readAsDataURL ? reader.readAsDataURL(file) : reader.readAsArrayBuffer(file);
     }
 }
 
-export default ImportSequenceDialog;
+export default UploadFileDialog;

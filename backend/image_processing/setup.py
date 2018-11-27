@@ -2,15 +2,29 @@ from setuptools import setup, Extension
 import pkgconfig
 import os
 
-if not pkgconfig.exists('opencv'):
+
+opencv_names = ['opencv', 'opencv3', 'opencv4', 'opencv2']
+opencv = None
+
+for name in opencv_names:
+    if not opencv and pkgconfig.exists(name):
+        opencv = name
+
+if not opencv:
     raise RuntimeError('Opencv not found')
 
-opencv_cflags = pkgconfig.cflags('opencv')
-opencv_ldflags = pkgconfig.libs('opencv')
+opencv_cflags = pkgconfig.cflags(opencv)
+opencv_ldflags = pkgconfig.libs(opencv)
 
-library_dirs = set('/usr/lib')
+include_dirs = [x[2:] for x in opencv_cflags.split(' ') if x.startswith('-I')]
+include_dirs.append('/usr/include/CCfits')
+ 
 
+library_dirs = set(['/usr/lib'])
 libraries=['CCfits']
+
+
+cflags = [x for x in opencv_cflags.split(' ') if not x.startswith('-I')]
 
 def parse_lib(lib):
     global library_dirs
@@ -27,14 +41,20 @@ def parse_lib(lib):
 
 libraries.extend([parse_lib(x) for x in opencv_ldflags.split(' ')])
 libraries = set(libraries)
-print(libraries)
+
+print(' - libraries: `{}`'.format(libraries))
+print(' - cflats: `{}`'.format(cflags))
+print(' - library_dirs: `{}`'.format(library_dirs))
+print(' - include_dirs: `{}`'.format(include_dirs))
+ 
 
 native_module = Extension('_image_processing',
-                    sources = ['image_processing.cpp', 'image_processing_wrap.cxx'],
-                    libraries = list(libraries),
-                    library_dirs = list(library_dirs),
-            extra_compile_args=['-std=c++14', '-I/usr/include/CCfits', opencv_cflags],
-        )
+    sources = ['image_processing.cpp', 'image_processing_wrap.cxx'],
+    libraries = list(libraries),
+    library_dirs = list(library_dirs),
+    extra_compile_args=['-std=c++14', '-I/usr/include/CCfits', opencv_cflags],
+    include_dirs=include_dirs
+)
 
 setup (name = 'ImageProcessing',
        version = '0.1.0',

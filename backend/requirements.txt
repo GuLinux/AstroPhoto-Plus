@@ -1,4 +1,4 @@
-pyindi-client
+pyindi-client>=0.2.3
 astropy
 flask
 gunicorn
