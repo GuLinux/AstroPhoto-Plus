@@ -21,7 +21,6 @@ export const plateSolving = (state = defaultState, action) => {
     switch(action.type) {
         case 'PLATESOLVING_SET_OPTION':
             return setOption(state, action);
-            return {...state, options: {...state.options, [action.option]: action.value }};
         case 'PLATESOLVING_FAILED':
             return {...state, solution: undefined, loading: false };
         case 'PLATESOLVING_SOLVED':
@@ -29,6 +28,6 @@ export const plateSolving = (state = defaultState, action) => {
         case 'FETCH_PLATESOLVING_SOLVE_FIELD':
             return {...state, loading: true, solution: undefined };
         default:
-        return state;
+            return state;
     }
 }
