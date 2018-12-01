@@ -111,7 +111,7 @@ const SolutionPanel = ({solution}) => {
                     </Grid.Row>
                 </Grid>
             </Container>
-            <CelestialPage marker={celestialMarker} zoom={4} />
+            <CelestialPage dsosLimit={10} dsosNameLimit={10} marker={celestialMarker} zoom={4} />
         </Container>
     );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Celestial } from 'd3-celestial-react/index.dev';
-import { Form } from 'semantic-ui-react';
+import { Form, Container } from 'semantic-ui-react';
 import { get, set } from 'lodash';
 
 const dataFiles = [
@@ -51,12 +51,18 @@ const buildConfig = (config) => {
 export class CelestialPage extends React.Component {
     constructor(props) {
         super(props);
+        const config = {
+            ...defaultConfig,
+            center: props.marker && [props.marker.ra, props.marker.dec] || [0,0],
+        };
+
+        props.starsLimit && set(config, 'stars.limit', props.starsLimit);
+        props.dsosLimit && set(config, 'dsos.limit', props.dsosLimit);
+        props.dsosNameLimit && set(config, 'dsos.namelimit', props.dsosNameLimit);
+
         this.state = {
             zoom: props.zoom,
-            config: buildConfig({
-                ...defaultConfig,
-                center: props.marker && [props.marker.ra, props.marker.dec],
-            }),
+            config: buildConfig(config),
         };
     }
 
@@ -68,7 +74,7 @@ export class CelestialPage extends React.Component {
 
     render = () => {
         const { config, zoom } = this.state;
-        const { marker } = this.props;
+        const { marker, form } = this.props;
         return (
             <React.Fragment>
                 <Celestial config={config} zoom={zoom}>
@@ -87,18 +93,20 @@ export class CelestialPage extends React.Component {
                         </Celestial.FeaturesCollection>
                     )}
                 </Celestial>
-                <Form>
-                    <Form.Group inline>
-                        <Form.Field inline>
-                            <label>Stars magnitude</label>
-                            <input type='range' min={0} max={14} step={0.5} value={config.stars.limit} onChange={e => this.setConfig('stars.limit', parseFloat(e.target.value))} />
-                        </Form.Field>
-                        <Form.Field inline>
-                            <label>DSOs magnitude</label>
-                            <input type='range' min={0} max={20} step={0.5} value={config.dsos.limit} onChange={e => this.setConfig('dsos.limit', parseFloat(e.target.value))} />
-                        </Form.Field>
-                    </Form.Group>
-                </Form>
+                { form && (
+                    <Form>
+                        <Form.Group inline>
+                            <Form.Field inline>
+                                <label>Stars magnitude</label>
+                                <input type='range' min={0} max={14} step={0.5} value={config.stars.limit} onChange={e => this.setConfig('stars.limit', parseFloat(e.target.value))} />
+                            </Form.Field>
+                            <Form.Field inline>
+                                <label>DSOs magnitude</label>
+                                <input type='range' min={0} max={20} step={0.5} value={config.dsos.limit} onChange={e => this.setConfig('dsos.limit', parseFloat(e.target.value))} />
+                            </Form.Field>
+                        </Form.Group>
+                    </Form>
+                )}
             </React.Fragment>
         );
     }
