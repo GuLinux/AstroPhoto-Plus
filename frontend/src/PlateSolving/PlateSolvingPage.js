@@ -8,7 +8,7 @@ import INDIMessagesPanel from '../INDI-Server/INDIMessagesPanel';
 import { NumericInput } from '../components/NumericInput';
 import { formatDecimalNumber } from '../utils';
 import { CameraShootingSectionMenuEntriesContaner } from '../Camera/CameraSectionMenuEntriesContainer';
-import { Celestial, hour2CelestialDegree } from 'd3-celestial-react';
+import { CelestialPage } from '../components/CelestialPage';
 
 const { Options } = PlateSolvingActions;
 
@@ -73,23 +73,17 @@ const formatAladinParams = (solution) => {
         '&fov=' + encodeURI(formatDecimalNumber('%0.2f', solution.ASTROMETRY_RESULTS_WIDTH.value * 5));
 }
 
-const buildCelestialConfig = (ra, dec) => {
-    const celestialRA = hour2CelestialDegree(deg2hours(ra));
-    const center = [celestialRA, dec];
-    return {
-        datapath: '/celestial',
-        center,
-        adaptable: true,
-        stars: {
-            colors: false,
-        },
-    };
-};
-
-
 const SolutionPanel = ({solution}) => {
-    const celestialConfig = buildCelestialConfig(solution.ASTROMETRY_RESULTS_RA.value, solution.ASTROMETRY_RESULTS_DE.value);
-    const celestialCenter = { ra: deg2hours(solution.ASTROMETRY_RESULTS_RA.value), dec: solution.ASTROMETRY_RESULTS_DE.value };
+    const celestialMarker = {
+        center: true,
+        symbolFill: '#FF113322',
+        symbolStroke: '#FF1111',
+        textFill: '#FF5555',
+        ra: deg2hours(solution.ASTROMETRY_RESULTS_RA.value),
+        dec: solution.ASTROMETRY_RESULTS_DE.value,
+        name: '  Plate Solving solution',
+        size: 500,
+    };
     return (
         <Container fluid>
             <Container text>
@@ -117,20 +111,7 @@ const SolutionPanel = ({solution}) => {
                     </Grid.Row>
                 </Grid>
             </Container>
-            <Celestial config={celestialConfig} zoom={4}>
-                <Celestial.FeaturesCollection
-                    objectsClass='plateSolving'
-                    symbolStyle={{ stroke: '#FF1133', fill: '#FFFFFF22'}}
-                    textStyle={{
-                        fill: '#FF5555',
-                        font: "bold 15px Helvetica, Arial, sans-serif",
-                        align: "left", 
-                        baseline: "bottom" 
-                    }}
-                >
-                    <Celestial.Point ra={celestialCenter.ra} dec={celestialCenter.dec} size={500} name='Plate Solving solution'/>
-                </Celestial.FeaturesCollection>
-            </Celestial>
+            <CelestialPage marker={celestialMarker} zoom={4} />
         </Container>
     );
 }
