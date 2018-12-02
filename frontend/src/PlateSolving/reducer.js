@@ -71,7 +71,7 @@ const defaultState = {
         [Actions.Options.syncTelescope]: true,
         [Actions.Options.downsample]: 2,
     },
-    solution: testSolution,
+    //solution: testSolution,
 };
 
 const setOption = (state, {option, value}) => {

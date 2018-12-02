@@ -1,6 +1,6 @@
 import React from 'react';
 import { NotFoundPage } from '../components/NotFoundPage';
-import { Loader, Label, Grid, Container, Header, Button, Form} from 'semantic-ui-react';
+import { Loader, Label, Grid, Container, Header, Button, Form, Divider} from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import UploadFileDialog from '../components/UploadFileDialog';
@@ -85,7 +85,7 @@ const SolutionPanel = ({solution}) => {
         size: 500,
     };
     return (
-        <Container fluid>
+        <Container>
             <Container text>
                 <Header content='Solution' />
                 <Grid stackable>
@@ -111,7 +111,8 @@ const SolutionPanel = ({solution}) => {
                     </Grid.Row>
                 </Grid>
             </Container>
-            <CelestialPage dsosLimit={10} dsosNameLimit={10} marker={celestialMarker} zoom={4} />
+            <Divider hidden />
+            <CelestialPage form={true} dsosLimit={9} dsosNameLimit={6} marker={celestialMarker} zoom={5} />
         </Container>
     );
 }
@@ -215,17 +216,15 @@ class PlateSolving extends React.Component {
                             />
                         </Grid.Column>
                     </Grid.Row>
-               )}
+            )}
                 { loading && (<Grid.Row>
                     <Grid.Column width={16} textAlign='center'>
                         <Loader active inline />
                     </Grid.Column>
                 </Grid.Row>)}
             </Grid>
-
-
             { solution && <SolutionPanel solution={solution} /> }
-            {messages && <INDIMessagesPanel messages={messages} />}
+            {messages && <INDIMessagesPanel messages={messages} /> }
         </Container>
         );
     }
