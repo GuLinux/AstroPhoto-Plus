@@ -111,7 +111,7 @@ const Settings = ({settings, onChange, reset, update, showCommands, version='N/A
                     </Form.Group>
                     <Divider hidden />
 
-                    <Form.Checkbox label='Asynchronous file saving' toggle checked={settings.current && settings.current.sequence_async} onChange={(e, data) => update('sequence_async', data.checked)} />
+                    <Form.Checkbox label='Asynchronous file saving' toggle checked={settings.current && settings.current.sequence_async!==0} onChange={(e, data) => update('sequence_async', data.checked)} />
                     <Message>If enabled (default), will use memory buffering to improve sequences speed, saving a file while taking the next shot. Disable if you run on a low memory system</Message>
 
                 </Segment>
