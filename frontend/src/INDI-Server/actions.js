@@ -115,10 +115,13 @@ export const INDIServer = {
     deviceMessage: (device, message) => ({ type: 'INDI_DEVICE_MESSAGE', device, message }),
     propertyUpdated: property => dispatch => {
         if(property.name === 'CONNECTION') {
-            if(property.values.find(v => v.name === 'CONNECT' && v.value))
+            if(property.values.find(v => v.name === 'CONNECT' && v.value)) {
                 dispatch({type: 'INDI_DEVICE_CONNECTED', device: property.device})
-            else
+            }
+            else {
                 dispatch({type: 'INDI_DEVICE_DISCONNECTED', device: property.device})
+            }
+            Actions.Gear.fetchAll(dispatch);
         }
         dispatch({ type: 'INDI_PROPERTY_UPDATED', property })
     },
