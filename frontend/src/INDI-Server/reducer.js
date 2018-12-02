@@ -8,6 +8,7 @@ const defaultState = {
     deviceEntities: {},
     devices: [],
     properties: {},
+    values: {},
     pendingValues: {},
     messages: [],
 };
@@ -23,31 +24,45 @@ const receivedServerState = (state, action) => {
     return nextState;
 }
 
+const valueKey = (property, value) => `${property.name}/${value.name}`;
 
-const receivedDeviceProperties = (state, device, deviceProperties) => {
-    let properties = {...state.properties}
-
-    deviceProperties.forEach(property => {
-        properties[property.id] = property
-    })
-
-    return {...state, properties};
+const propertyUpdated = ({values, ...rest}, state) => {
+    const prevProp = state.properties[rest.id];
+    const property = {...rest, values: values.map(v => valueKey(rest, v)) };
+    if(JSON.stringify(property) !== JSON.stringify(prevProp)) {
+        state = {...state, properties: {...state.properties, [property.id]: property} };
+    }
+    values.forEach(v => state = valueUpdated(property, v, state));
+    return state;
 }
 
-const indiPropertyUpdated = (state, property) => {
-    return {...state, properties: {...state.properties, [property.id]: property } }
-};
+const valueUpdated = (property, value, state) => {
+    const key = valueKey(property, value);
+    const prevValue = state.values[key];
+    if(JSON.stringify(value) === JSON.stringify(prevValue))
+        return state;
+    return {...state, values: {...state.values, [key]: value}};
+}
 
-const indiPropertyAdded = (state, property) => {
-    return {...state, properties: {...state.properties, [property.id]: property} };
-};
+
+const receivedDeviceProperties = (state, device, deviceProperties) => {
+    deviceProperties.forEach(property => {
+        state = propertyUpdated(property, state);
+    })
+
+    return state;
+}
+
+const indiPropertyUpdated = (state, property) => propertyUpdated(property, state);
+
+const indiPropertyAdded = (state, property) => propertyUpdated(property, state);
 
 const indiPropertyRemoved = (state, property) => {
     let properties = {...state.properties};
-//    let values = {...state.values};
-    // TODO: remove also values?
+    let values = {...state.values};
     delete properties[property.id]
-    return {...state, properties}
+    property.values.forEach(v => delete values[valueKey(property, v)]);
+    return {...state, properties, values}
 };
 
 const addPendingValues = (state, property, pendingValues) => {
