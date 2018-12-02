@@ -1,6 +1,6 @@
 import React from 'react';
 import { NotFoundPage } from '../components/NotFoundPage';
-import { Dimmer, Loader, Label, Grid, Container, Header, Button, Form} from 'semantic-ui-react';
+import { Loader, Label, Grid, Container, Header, Button, Form, Divider} from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import UploadFileDialog from '../components/UploadFileDialog';
@@ -8,6 +8,8 @@ import INDIMessagesPanel from '../INDI-Server/INDIMessagesPanel';
 import { NumericInput } from '../components/NumericInput';
 import { formatDecimalNumber } from '../utils';
 import { CameraShootingSectionMenuEntriesContaner } from '../Camera/CameraSectionMenuEntriesContainer';
+import { CelestialPage } from '../components/CelestialPage';
+import { get } from 'lodash';
 
 const { Options } = PlateSolvingActions;
 
@@ -48,8 +50,10 @@ const formatDegrees = degrees => {
     return `${sexagesimal.degrees}\u00B0 ${sexagesimal.minutes}' ${formatDecimalNumber('%0.2f', sexagesimal.fractionalSeconds)}"`;
 }
 
+
+const deg2hours = deg => deg * (24.0 / 360.0);
 const formatRA = degrees => {
-    const hours = degrees * (24.0/360.0);
+    const hours = deg2hours(degrees);
     const sexagesimal = toSexagesimal(hours);
     return `${sexagesimal.degrees}:${sexagesimal.minutes}:${formatDecimalNumber('%0.2f', sexagesimal.fractionalSeconds)}`;
 }
@@ -70,30 +74,49 @@ const formatAladinParams = (solution) => {
         '&fov=' + encodeURI(formatDecimalNumber('%0.2f', solution.ASTROMETRY_RESULTS_WIDTH.value * 5));
 }
 
-const SolutionPanel = ({solution}) => (
-    <Container text>
-        <Header content='Solution' />
-        <Grid stackable>
-            <Grid.Row>
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_RA} format={formatRA} />
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_DE} format={formatDegrees} />
-            </Grid.Row>
-            <Grid.Row>
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_WIDTH} format={formatDegrees} />
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_HEIGHT} format={formatDegrees} />
-            </Grid.Row>
-            <Grid.Row>
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_PIXSCALE} format={v => formatDecimalNumber('%0.2f', v)} />
-            </Grid.Row>
-            <Grid.Row>
-                <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_ORIENTATION} format={v => formatDecimalNumber('%0.2f', v)} />
-            </Grid.Row>
-            <Grid.Row>
-                <a href={`http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`} target='_blank'>Aladin solution</a>
-            </Grid.Row>
-        </Grid>
-    </Container>
-)
+const SolutionPanel = ({solution}) => {
+    const celestialMarker = {
+        center: true,
+        symbolFill: '#FF113322',
+        symbolStroke: '#FF1111',
+        textFill: '#FF5555',
+        ra: deg2hours(solution.ASTROMETRY_RESULTS_RA.value),
+        dec: solution.ASTROMETRY_RESULTS_DE.value,
+        name: '  Plate Solving solution',
+        size: 500,
+    };
+    return (
+        <Container>
+            <Container text>
+                <Header content='Solution' />
+                <Grid stackable>
+                    <Grid.Row>
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_RA} format={formatRA} />
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_DE} format={formatDegrees} />
+                    </Grid.Row>
+                    <Grid.Row>
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_WIDTH} format={formatDegrees} />
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_HEIGHT} format={formatDegrees} />
+                    </Grid.Row>
+                    <Grid.Row>
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_PIXSCALE} format={v => formatDecimalNumber('%0.2f', v)} />
+                    </Grid.Row>
+                    <Grid.Row>
+                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_ORIENTATION} format={v => formatDecimalNumber('%0.2f', v)} />
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column width={4}><Label content='Link to Aladin' /></Grid.Column>
+                        <Grid.Column width={5}>
+                            <a href={`http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`} rel='noopener noreferrer' target='_blank'>click here</a>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Container>
+            <Divider hidden />
+            <CelestialPage form={true} dsosLimit={9} dsosNameLimit={6} marker={celestialMarker} zoom={5} />
+        </Container>
+    );
+}
 
 class PlateSolving extends React.Component {
 
@@ -171,8 +194,8 @@ class PlateSolving extends React.Component {
                         { cameras.ids.includes(options[Options.fovSource]) && <SetCameraFOV camera={cameras.get(options[Options.fovSource])} telescope={telescopes.get(options[Options.telescope])} setOption={setOption} /> }
                         { options[Options.fovSource] && (
                         <Grid.Row>
-                            <Grid.Column width={8}><NumericInput label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={options[Options.fov].minimumWidth} onChange={v => setFOV({minimumWidth: v})}/></Grid.Column>
-                            <Grid.Column width={8}><NumericInput label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={options[Options.fov].maximumWidth} onChange={v => setFOV({maximumWidth: v})}/></Grid.Column>
+                            <Grid.Column width={8}><NumericInput min={0} label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'minimumWidth'], 0)} onChange={v => setFOV({minimumWidth: v})}/></Grid.Column>
+                            <Grid.Column width={8}><NumericInput min={get(options, [Options.fov, 'maximumWidth'], 0)} label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'maximumWidth'], 0)} onChange={v => setFOV({maximumWidth: v})}/></Grid.Column>
                         </Grid.Row>
                         )}
                     </Grid.Column>
@@ -194,17 +217,15 @@ class PlateSolving extends React.Component {
                             />
                         </Grid.Column>
                     </Grid.Row>
-               )}
+            )}
                 { loading && (<Grid.Row>
                     <Grid.Column width={16} textAlign='center'>
                         <Loader active inline />
                     </Grid.Column>
                 </Grid.Row>)}
             </Grid>
-
-
             { solution && <SolutionPanel solution={solution} /> }
-            {messages && <INDIMessagesPanel messages={messages} />}
+            {messages && <INDIMessagesPanel messages={messages} /> }
         </Container>
         );
     }

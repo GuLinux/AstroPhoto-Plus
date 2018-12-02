@@ -26,7 +26,6 @@ import listenToEvents from './middleware/events';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
-
 const loggerMiddleware = createLogger()
 
 const createMiddleware = () => {
