@@ -1,4 +1,4 @@
-find_program(NPM npm)
+find_program(YARN yarn)
 file(
     COPY ${CMAKE_CURRENT_SOURCE_DIR}
     DESTINATION ${CMAKE_BINARY_DIR}
@@ -12,14 +12,14 @@ configure_file(${CMAKE_SOURCE_DIR}/config/prod-webserver-conf/nginx/starquew.con
 configure_file(${CMAKE_SOURCE_DIR}/config/prod-webserver-conf/apache2/starquew.conf ${CMAKE_CURRENT_BINARY_DIR}/webserver-conf/apache2/starquew.conf)
 
 add_custom_target(
-    npm-dependencies
-    COMMAND npm i
+    yarn-dependencies
+    COMMAND yarn install
 )
 
 add_custom_target(
     frontend-bundle ALL
-    COMMAND npm run build
-    DEPENDS npm-dependencies
+    COMMAND yarn run build
+    DEPENDS yarn-dependencies
 )
 
 install(
