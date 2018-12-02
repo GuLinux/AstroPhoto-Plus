@@ -63,17 +63,13 @@ export const cameraShootingSectionMenuEntriesSelector = createSelector([
     isShooting,
 }));
 
-const getCanCrop = createSelector([getIsShooting, getCurrentImage, getImageLoading], (isShooting, currentImage, imageLoading) => {
-    return !isShooting && !imageLoading && currentImage;
-})
+const getCanCrop = createSelector([getIsShooting, getCurrentImage, getImageLoading], (isShooting, currentImage, imageLoading) =>
+    (!isShooting) && (!imageLoading) && !!currentImage);
 
 export const cameraImageOptionsSectionMenuEntriesSelector = createSelector([
     getOptions,
     connectedCamerasSelector,
     getCrop,
-    getIsShooting,
-    getCurrentImage,
-    getImageLoading,
     getCanCrop,
 ], (
     options,
@@ -83,6 +79,6 @@ export const cameraImageOptionsSectionMenuEntriesSelector = createSelector([
 ) => ({
     options,
     cameras,
-    canCrop,
     crop,
+    canCrop,
 }));
