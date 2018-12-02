@@ -1,9 +1,8 @@
 import React from 'react';
-import { Divider, Menu, Message, Image, Segment, Form, Container, Grid, Header, Button, Loader } from 'semantic-ui-react';
+import { Divider, Menu, Message, Image, Form, Container, Header, Loader } from 'semantic-ui-react';
 import ImageViewOptions from '../Image/ImageViewOptions';
 import fetch from 'isomorphic-fetch'
 import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
-import { Link } from 'react-router-dom';
 
 export class ImageComponent extends React.Component {
     componentDidUpdate = (prevProps) => this.props.uri !== prevProps.uri && this.props.onImageLoading && this.props.onImageLoading();

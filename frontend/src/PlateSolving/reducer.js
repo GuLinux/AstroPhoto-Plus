@@ -5,6 +5,7 @@ import { list2object } from '../utils';
 
 // Orion nebula - test solution to avoid having to do an actual plateSolving to display the solution panel
 // Just set `solution: testSolution` in defaultState.
+// eslint-disable-next-line
 const testSolution = {
     ASTROMETRY_RESULTS_PIXSCALE: {
       format: '%g',
@@ -86,7 +87,6 @@ export const plateSolving = (state = defaultState, action) => {
     switch(action.type) {
         case 'PLATESOLVING_SET_OPTION':
             return setOption(state, action);
-            return {...state, options: {...state.options, [action.option]: action.value }};
         case 'PLATESOLVING_FAILED':
             return {...state, solution: undefined, loading: false };
         case 'PLATESOLVING_SOLVED':

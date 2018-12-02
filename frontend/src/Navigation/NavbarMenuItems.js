@@ -1,5 +1,4 @@
 import React from 'react';
-import { Menu, Dropdown, Header } from 'semantic-ui-react';
 import { Routes } from '../routes';
 import { Route } from "react-router-dom";
 

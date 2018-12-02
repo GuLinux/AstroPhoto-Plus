@@ -107,7 +107,7 @@ const SolutionPanel = ({solution}) => {
                     <Grid.Row>
                         <Grid.Column width={4}><Label content='Link to Aladin' /></Grid.Column>
                         <Grid.Column width={5}>
-                            <a href={`http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`} target='_blank'>click here</a>
+                            <a href={`http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`} rel='noopener noreferrer' target='_blank'>click here</a>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

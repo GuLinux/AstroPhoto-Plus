@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Button, Header, Label, Grid } from 'semantic-ui-react'
+import { Button, Label, Grid } from 'semantic-ui-react'
 
 const INDIServicePage = ({serverFound, serverRunning, onServerStopStart, startStopPending, lastError, dismissError}) => {
     if(! serverFound)

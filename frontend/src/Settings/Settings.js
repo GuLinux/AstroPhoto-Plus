@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, Menu, Grid, Form, Container, Button, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
+import { Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
 import { CommandsContainer } from '../Commands/CommandsContainer';
 import { CheckButton } from '../components/CheckButton';

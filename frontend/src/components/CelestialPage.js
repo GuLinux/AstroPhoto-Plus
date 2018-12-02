@@ -1,7 +1,7 @@
 import React from 'react';
 //import { Celestial } from 'd3-celestial-react/index.dev';
 import { Celestial } from 'd3-celestial-react';
-import { Form, Container, Label, Button } from 'semantic-ui-react';
+import { Form, Label, Button } from 'semantic-ui-react';
 import { get, set } from 'lodash';
 import { NumericInput } from './NumericInput';
 
@@ -55,7 +55,7 @@ export class CelestialPage extends React.Component {
         super(props);
         const config = {
             ...defaultConfig,
-            center: props.marker && [props.marker.ra, props.marker.dec] || [0,0],
+            center: [get(props, 'marker.ra', 0), get(props, 'marker.dec', 0)],
         };
 
         props.starsLimit && set(config, 'stars.limit', props.starsLimit);
