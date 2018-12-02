@@ -8,7 +8,7 @@ import { SequenceSectionMenuContainer } from '../Sequences/SequenceContainer';
 import { SequenceJobImagesContainer } from '../SequenceJobs/ImagesContainer';
 import { ImageSectionMenuContainer } from '../Image/ImageContainer';
 import { NavItem } from './NavbarMenu';
-import { PlateSolvingSectionMenuContainer } from '../PlateSolving/PlateSolvingContainer';
+import { PlateSolvingSectionMenuContainer } from '../PlateSolving/PlateSolvingPageContainer';
 import { CameraSectionMenu } from '../Camera/Camera';
 
 

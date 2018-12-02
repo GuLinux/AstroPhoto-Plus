@@ -29,6 +29,7 @@ export const plateSolvingContainerSelector = createSelector([
     options,
     solution,
     loading,
+    isManualFOV: options[PlateSolving.Options.fovSource] === 'manual',
 }));
 
 export const plateSolvingSectionMenuSelector = createSelector([getPlateSolvingOptions], options => ({
@@ -36,4 +37,9 @@ export const plateSolvingSectionMenuSelector = createSelector([getPlateSolvingOp
 }))
 
 export const solveFromCameraSelector = createSelector([getPlateSolvingOptions], options => ({options}));
+
+export const plateSolvingPageContainerSelector = createSelector([connectedAstrometrySelector, connectedTelescopesSelector], (astrometryDrivers, telescopes) => ({
+    hasAstrometry: astrometryDrivers.all.length > 0,
+    hasTelescopes: telescopes.all.length > 0,
+}));
 
