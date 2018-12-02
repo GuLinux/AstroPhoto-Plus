@@ -116,7 +116,7 @@ export class CelestialPage extends React.Component {
                             { get(this.state, ['pending', 'dsos.namelimit'], 0) > 12 && 
                                 <Label color='red' content='Warning: displaying DSOs names with magnitude greater than 12 might slow down the application.' /> }
                         </div>
-                        <Form.Group >
+                        <Form.Group>
                             <Form.Field inline>
                                 <Button.Group size='mini'>
                                     <Button content='+' onClick={() => this.celestial.current.zoom(1.10)} />
@@ -129,11 +129,11 @@ export class CelestialPage extends React.Component {
                             </Form.Field>
                             <Form.Field inline>
                                 <label>DSOs magnitude</label>
-                                <NumericInput size='mini' min={0} max={14} step={0.5} value={this.getCfg('dsos.limit')} onChange={v => this.setPending('dsos.limit', v)} />
+                                <NumericInput size='mini' min={0} max={20} step={0.5} value={this.getCfg('dsos.limit')} onChange={v => this.setPending('dsos.limit', v)} />
                             </Form.Field>
                             <Form.Field inline> 
                                 <label>DSOs labels magnitude</label>
-                                <NumericInput size='mini' min={0} max={14} step={0.5} value={this.getCfg('dsos.namelimit')} onChange={v => this.setPending('dsos.namelimit', v)} />
+                                <NumericInput size='mini' min={0} max={20} step={0.5} value={this.getCfg('dsos.namelimit')} onChange={v => this.setPending('dsos.namelimit', v)} />
                             </Form.Field>
                             <Form.Button size='mini' disabled={Object.keys(this.state.pending).length === 0} content='apply' onClick={() => this.apply()} />
                         </Form.Group>

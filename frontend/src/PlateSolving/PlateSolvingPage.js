@@ -9,6 +9,7 @@ import { NumericInput } from '../components/NumericInput';
 import { formatDecimalNumber } from '../utils';
 import { CameraShootingSectionMenuEntriesContaner } from '../Camera/CameraSectionMenuEntriesContainer';
 import { CelestialPage } from '../components/CelestialPage';
+import { get } from 'lodash';
 
 const { Options } = PlateSolvingActions;
 
@@ -193,8 +194,8 @@ class PlateSolving extends React.Component {
                         { cameras.ids.includes(options[Options.fovSource]) && <SetCameraFOV camera={cameras.get(options[Options.fovSource])} telescope={telescopes.get(options[Options.telescope])} setOption={setOption} /> }
                         { options[Options.fovSource] && (
                         <Grid.Row>
-                            <Grid.Column width={8}><NumericInput label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={options[Options.fov].minimumWidth} onChange={v => setFOV({minimumWidth: v})}/></Grid.Column>
-                            <Grid.Column width={8}><NumericInput label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={options[Options.fov].maximumWidth} onChange={v => setFOV({maximumWidth: v})}/></Grid.Column>
+                            <Grid.Column width={8}><NumericInput min={0} label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'minimumWidth'], 0)} onChange={v => setFOV({minimumWidth: v})}/></Grid.Column>
+                            <Grid.Column width={8}><NumericInput min={get(options, [Options.fov, 'maximumWidth'], 0)} label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'maximumWidth'], 0)} onChange={v => setFOV({maximumWidth: v})}/></Grid.Column>
                         </Grid.Row>
                         )}
                     </Grid.Column>
