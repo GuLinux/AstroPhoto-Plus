@@ -1,7 +1,7 @@
 import React from 'react';
 //import NumericInput from 'react-numeric-input';
 
-import PRINTJ from 'printj'
+import { sprintf } from 'printj'
 import { formatDecimalNumber } from '../utils';
 import { NumericInput } from '../components/NumericInput';
 
@@ -25,33 +25,33 @@ const sex2string = (format, value) => {
 
     /* form the whole part; "negative 0" is a special case */
     if (isNegative && d === 0)
-        out += PRINTJ.sprintf("%*s-0", width - 2, "");
+        out += sprintf("%*s-0", width - 2, "");
     else
-        out += PRINTJ.sprintf("%*d", width, isNegative ? -d : d);
+        out += sprintf("%*d", width, isNegative ? -d : d);
 
     /* do the rest */
     switch (fracBase) {
         case 60: /* dd:mm */
             m = f / (fracBase / 60);
-            out += PRINTJ.sprintf(":%02d", m);
+            out += sprintf(":%02d", m);
             break;
         case 600: /* dd:mm.m */
-            out += PRINTJ.sprintf(":%02d.%1d", f / 10, f % 10);
+            out += sprintf(":%02d.%1d", f / 10, f % 10);
             break;
         case 3600: /* dd:mm:ss */
             m = f / (fracBase / 60);
             s = f % (fracBase / 60);
-            out += PRINTJ.sprintf(":%02d:%02d", m, s);
+            out += sprintf(":%02d:%02d", m, s);
             break;
         case 36000: /* dd:mm:ss.s*/
             m = f / (fracBase / 60);
             s = f % (fracBase / 60);
-            out += PRINTJ.sprintf(":%02d:%02d.%1d", m, s / 10, s % 10);
+            out += sprintf(":%02d:%02d.%1d", m, s / 10, s % 10);
             break;
         case 360000: /* dd:mm:ss.ss */
             m = f / (fracBase / 60);
             s = f % (fracBase / 60);
-            out += PRINTJ.sprintf(":%02d:%02d.%02d", m, s / 100, s % 100);
+            out += sprintf(":%02d:%02d.%02d", m, s / 100, s % 100);
             break;
         default:
             return value;

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Checkbox } from 'semantic-ui-react'
+import { Checkbox } from 'semantic-ui-react'
+import { CheckButton } from '../components/CheckButton';
 
 
 const onButtonClick = (property, value, displayValue, addPendingValues) => {
@@ -22,13 +23,12 @@ const INDISwitch = ({property, value, displayValue, editMode, addPendingValues})
     switch(property.rule) {
         case "ONE_OF_MANY":
         case "AT_MOST_ONE":
-            return ( <Button
+            return ( <CheckButton
                         size='mini'
                         key={value.name}
                         active={displayValue}
                         onClick={e => onButtonClick(property, value, displayValue, addPendingValues)}
                         disabled={!editMode}
-                        icon={displayValue && 'check'}
                         content={value.label} />
                     )
         case "ANY":

@@ -7,15 +7,8 @@ import { Actions } from './actions';
 import thunkMiddleware from 'redux-thunk';
 import { Routes } from './routes';
 
-//import 'semantic-ui-css/semantic.min.css';
-// TODO: restore when it is working again
-// import 'forest-themes-css/dist/bootswatch/semantic.darkly.min.css';
-//import './semantic-ui-themes/bootswatch/semantic.solar.min.css'
-//import './themes/semantic-ui/semantic.material.min.css'
-import './themes/bootswatch-v3/semantic.slate.min.css'
-
-import { starQuewReducer } from './reducers';
-import App from './components/App';
+import { starQuewReducer } from './reducers'
+import App from './components/App'
 
 import 'react-image-crop/dist/ReactCrop.css';
 
@@ -25,7 +18,6 @@ import registerServiceWorker from './registerServiceWorker';
 import listenToEvents from './middleware/events';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-
 
 const loggerMiddleware = createLogger()
 

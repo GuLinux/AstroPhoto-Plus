@@ -9,6 +9,7 @@ import Settings from './Settings/actions';
 import Image from './Image/actions';
 import Navigation from './Navigation/actions';
 import Commands from './Commands/actions';
+import { PlateSolving } from './PlateSolving/actions';
 import { fetchBackendVersion } from './middleware/api';
 
 export const Actions = {
@@ -24,6 +25,7 @@ export const Actions = {
     Image,
     Navigation,
     Commands,
+    PlateSolving,
     fetchBackendVersion: () => dispatch => fetchBackendVersion(dispatch, version => dispatch({ type: 'BACKEND_VERSION_FETCHED', version })), 
 }
 

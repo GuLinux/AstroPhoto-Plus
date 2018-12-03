@@ -8,7 +8,7 @@ import ErrorPageContainer from '../Errors/ErrorPageContainer';
 import { CameraContainer } from '../Camera/CameraContainer';
 import SettingsContainer from '../Settings/SettingsContainer';
 import { ImageContainer } from '../Image/ImageContainer';
-
+import { PlateSolvingContainer } from '../PlateSolving/PlateSolvingContainer';
 import './App.css';
 import { Route, Redirect } from "react-router";
 import { Routes } from '../routes';
@@ -22,6 +22,7 @@ const App = ({location}) => (
             <Route path={Routes.SEQUENCES_PAGE} component={SequencesPage} />
             <Route path={Routes.INDI_PAGE} component={INDIServerContainer} />
             <Route path={Routes.CAMERA_PAGE} component={CameraContainer} />
+            <Route path={Routes.PLATE_SOLVING_PAGE} component={PlateSolvingContainer} />
             <Route path={Routes.SETTINGS_PAGE} component={SettingsContainer} />
             <Route path={Routes.IMAGE_PAGE} render={({match, location}) => <ImageContainer id={match.params.id} type={match.params.type} />} />
         </ErrorPageContainer>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Sticky, Menu, Sidebar, Grid, Responsive } from 'semantic-ui-react';
+import { Menu, Sidebar, Responsive } from 'semantic-ui-react';
 
 
 import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';

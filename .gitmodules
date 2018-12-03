@@ -1,6 +1,3 @@
 [submodule "backend/indi-lite-tools"]
 	path = backend/indi-lite-tools
 	url = https://github.com/GuLinux/indi-lite-tools
-[submodule "frontend/forest-themes"]
-	path = frontend/forest-themes
-	url = https://github.com/semantic-ui-forest/forest-themes

@@ -1,6 +1,8 @@
 import os
 import subprocess
 from utils.threads import start_thread
+from app import logger
+from utils.cleanup_venv import clean_environment
 
 
 class Service:
@@ -32,15 +34,18 @@ class Service:
         exit_code = self.exit_code()
         return exit_code != None and exit_code != 0
 
-    def start(self, command, arguments, on_started=None, on_exit=None):
+    def start(self, command, arguments, on_started=None, on_exit=None, env=None):
         if self.is_running():
             raise RuntimeError('Process is already running.')
         args = [command]
         args.extend(arguments)
+        if env is None:
+            env = clean_environment()
+           
         def run_process():
             with open(self.stdout_path, 'w') as stdout_fd:
                 with open(self.stderr_path, 'w') as stderr_fd:
-                    self.process = subprocess.Popen(args, stdout=stdout_fd, stderr=stderr_fd)
+                    self.process = subprocess.Popen(args, stdout=stdout_fd, stderr=stderr_fd, env=env)
                     if on_started:
                         on_started(self)
                     self.process.wait()

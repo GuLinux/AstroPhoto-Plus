@@ -2,6 +2,7 @@ from models import id_by_properties, with_attrs
 from . import device
 from errors import NotFoundError
 import functools
+from app import logger
 
 
 def with_indi_property(f):

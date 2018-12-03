@@ -12,7 +12,7 @@ import thunkMiddleware from 'redux-thunk';
 import { Routes } from './routes';
 import { starQuewReducer } from './reducers';
 import registerServiceWorker from './registerServiceWorker';
-import listenToEvents from './middleware/events';
+//import listenToEvents from './middleware/events';
 import { NativeRouter as Router, Route } from 'react-router-native'
 
 
@@ -32,7 +32,7 @@ let store = createStore(
     createMiddleware()
 );
 
-listenToEvents(store.dispatch);
+//listenToEvents(store.dispatch);
 
 const renderIndex = () => (
     <Provider store={store}>

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Dropdown, Menu, Grid, Form, Container, Button, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
+import { Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
 import { CommandsContainer } from '../Commands/CommandsContainer';
+import { CheckButton } from '../components/CheckButton';
 
 const valueOrDefault = (value, defaultValue) => value ? value : defaultValue;
 
@@ -16,7 +17,7 @@ const isChanged = (settings, key) => key in settings.pending && settings.pending
 const displayTextValue = (settings, key) => displayValue(settings, key, (v) => v && v !== '', '')
 
 const SettingButton = ({settings, setting, value, onUpdate, ...props}) => (
-    <Button icon={settings.current[setting] === value && 'check'} active={settings.current[setting] === value} onClick={() => onUpdate(setting, value)} {...props} />
+    <CheckButton active={settings.current[setting] === value} onClick={() => onUpdate(setting, value)} {...props} />
 )
 
 
@@ -110,7 +111,7 @@ const Settings = ({settings, onChange, reset, update, showCommands, version='N/A
                     </Form.Group>
                     <Divider hidden />
 
-                    <Form.Checkbox label='Asynchronous file saving' toggle checked={settings.current && settings.current.sequence_async} onChange={(e, data) => update('sequence_async', data.checked)} />
+                    <Form.Checkbox label='Asynchronous file saving' toggle checked={settings.current && settings.current.sequence_async!==0} onChange={(e, data) => update('sequence_async', data.checked)} />
                     <Message>If enabled (default), will use memory buffering to improve sequences speed, saving a file while taking the next shot. Disable if you run on a low memory system</Message>
 
                 </Segment>

@@ -1,4 +1,4 @@
-import PRINTJ from 'printj'
+import { sprintf } from 'printj'
 
 
 export const sanitizePath = (name) => name.replace('/', '-');
@@ -20,7 +20,7 @@ export const filterChildren = (object, filter) => {
     return copy;
 }
 
-export const list2object = (list, keyField) => list.reduce( (acc, current) => ({...acc, [current[keyField]]: current}), {});
+export const list2object = (list, keyField) => list && list.reduce( (acc, current) => ({...acc, [current[keyField]]: current}), {});
 
 export const imageUrlBuilder = (id, options) =>
     `/api/images/${options.type}/${id}?maxwidth=${options.maxWidth || 0}&stretch=${options.stretch ? 1 : 0}` +
@@ -30,8 +30,8 @@ export const imageUrlBuilder = (id, options) =>
 const getMinimumDisplayValue = (format, maxDigits=6) => {
     for(let i=maxDigits; i>0; i--) {
         const value = Math.pow(10, -1 * i);
-        const formatValue = PRINTJ.sprintf(format, value).trim();
-        const referenceValue = PRINTJ.sprintf('%0.*f', i, value);
+        const formatValue = sprintf(format, value).trim();
+        const referenceValue = sprintf('%0.*f', i, value);
         if( formatValue === referenceValue)
             return value;
     }
@@ -44,5 +44,5 @@ export const formatDecimalNumber = (format, value) => {
         if(value < minimumFormatValue)
             minFormat = '%f';
     }
-    return PRINTJ.sprintf(minFormat, value).trim();
+    return sprintf(minFormat, value).trim();
 }

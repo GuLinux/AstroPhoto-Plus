@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import INDIDevicePage from './INDIDevicePage'
-import { getVisibleGroups } from './selectors';
+import { getVisibleGroups, getMessages } from './selectors';
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -9,7 +9,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
         device,
         groups,
-        messages: state.indiserver.messages.filter(m => m.device === device),
+        messages: getMessages(state)[device],
     }
 }
 

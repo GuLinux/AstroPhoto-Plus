@@ -39,3 +39,13 @@ export const getDevicesConnectionState = createSelector([getDevicesProperties], 
         [id]: 'CONNECTION' in devicesProperties[id] && !! devicesProperties[id].CONNECTION.values.find(v => v.name === 'CONNECT' && v.value)
     }), {})
 )
+
+export const getMessages = createSelector([state => state.indiserver.messages], (messages) => messages.reduce( (acc, message) => {
+    const { device } = message;
+    const currentDeviceMessages = acc[device] || [];
+    return {
+        ...acc,
+        [device]: [message, ...currentDeviceMessages],
+    };
+}, {})); 
+
