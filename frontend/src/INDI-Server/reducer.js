@@ -10,6 +10,7 @@ const defaultState = {
     deviceEntities: {},
     devices: [],
     properties: {},
+    groups: {},
     values: {},
     messages: [],
 };
@@ -27,7 +28,12 @@ const receivedServerState = (state, action) => {
 const propertyUpdated = (property, state) => {
     const prevProp = state.properties[property.id];
     if(JSON.stringify(property) !== JSON.stringify(prevProp)) {
-        state = {...state, properties: {...state.properties, [property.id]: property} };
+        let groups = state.groups;
+        const propertyGroups = get(groups, property.device, []);
+        if(!propertyGroups.includes(property.group)) {
+            groups = {...groups, [property.device]: [...propertyGroups, property.group] };
+        }
+        state = {...state, properties: {...state.properties, [property.id]: property}, groups };
     }
     return state;
 }
@@ -48,7 +54,13 @@ const indiPropertyAdded = (state, property) => propertyUpdated(property, state);
 const indiPropertyRemoved = (state, property) => {
     let properties = {...state.properties};
     delete properties[property.id]
-    return {...state, properties}
+    let groups = state.groups;
+    let remainingGroups = Object.keys(properties).filter(p => properties[p].device === property.device).map(p => properties[p].group);
+    remainingGroups = remainingGroups.filter( (group, index) => remainingGroups.indexOf(group) === index);
+    if(!remainingGroups.includes(property.group)) {
+        groups = {...groups, [property.device]: remainingGroups };
+    }
+    return {...state, properties, groups}
 };
 
 const changePropertyValues = (state, {property}) => {
@@ -90,7 +102,9 @@ const indiDeviceRemoved = (state, device) => {
     let devices = state.devices.filter(d => d !== device.id);
     let deviceEntities = {...state.deviceEntities};
     delete deviceEntities[device.id];
-    return {...state, deviceEntities, devices};
+    let groups = {...state.groups};
+    delete groups[device.id];
+    return {...state, deviceEntities, devices, groups};
 }
 
 const indiserver = (state = defaultState, action) => {

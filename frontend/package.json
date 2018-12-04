@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@welldone-software/why-did-you-render": "^2.3.2",
     "d3-celestial-react": "GuLinux/d3-celestial-react",
     "event-source-polyfill": "0.0.12",
     "forest-themes": "semantic-ui-forest/forest-themes#7f472cfbcc2093bb8c90cc56fba18ca8e3818028",
@@ -21,8 +22,7 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.83.0",
-    "why-did-you-update": "^1.0.6"
+    "semantic-ui-react": "^0.83.0"
   },
   "name": "StarQuew-frontend",
   "private": true,

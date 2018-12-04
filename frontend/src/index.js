@@ -19,6 +19,11 @@ import listenToEvents from './middleware/events';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
+if (process.env.NODE_ENV !== 'production') {
+  const whyDidYouRender = require('@welldone-software/why-did-you-render');
+  whyDidYouRender(React);
+}
+
 const loggerMiddleware = createLogger()
 
 const createMiddleware = () => {

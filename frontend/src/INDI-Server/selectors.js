@@ -16,13 +16,12 @@ const getVisibleDeviceProperties = createSelector([getProperties, getVisibleDevi
     Object.keys(properties).map(p => properties[p]).filter(p => p.device === visibleDevice)
 )
 
-export const getVisibleGroups = createSelector([getVisibleDeviceProperties], properties => {
-    let groups = properties.map(p => p.group);
-    groups = groups.filter((group, index) => groups.indexOf(group) === index)
-    return groups;
-});
 
-
+export const getVisibleGroups = createSelector([
+    getVisibleDevice,
+    state => state.indiserver.groups,
+], (device, groups) => get(groups, device, []));
+ 
 export const getDevicesProperties = createSelector([getDeviceIds, getProperties], (devices, properties) =>
     Object.keys(properties).reduce( (mapping, id) => {
         let property = properties[id];
