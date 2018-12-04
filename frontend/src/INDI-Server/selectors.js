@@ -8,11 +8,6 @@ export const getDeviceEntities = state => state.indiserver.deviceEntities;
 
 const getVisibleDevice = (state, {device}) => device;
 
-
-const getValues = (state) => state.indiserver.values;
-const getDeviceValues = (state, {device}) => get(state.indiserver.values, device, {});
-const getPropertyValues = (state, {device, property}) => get(state.indiserver.values, [device, property], {});
-
 export const getDeviceNames = createSelector([getDeviceIds, getDeviceEntities], (deviceIds, devices) => {
     return deviceIds.map(id => ({ id, name: devices[id].name }))
 })
@@ -62,8 +57,6 @@ export const getVisibleProperties = createSelector([
 );
 
 
-const propertyWithValues = (property, values) => ({...property, values: property.values.map(k => get(values, k))});
-
 export const indiDeviceGroupSelector = createSelector([getPropsGroup, getVisibleProperties], (group, properties) => {
     return {
         group,
@@ -73,12 +66,11 @@ export const indiDeviceGroupSelector = createSelector([getPropsGroup, getVisible
 
 
 export const indiPropertySelector = () => createSelector([
-    (state, {propertyId, readOnly}) => ({propertyId, readOnly}),
+    (state, {propertyId, readOnly}) => ({ propertyId, readOnly}),
     getProperties,
-    getValues,
     getDeviceEntities,
-], ({propertyId, readOnly}, properties, values, deviceEntities) => {
-    const property = propertyWithValues(properties[propertyId], values);
+], ({propertyId, readOnly}, properties, deviceEntities) => {
+    const property = properties[propertyId];
     return {
         property,
         device: deviceEntities[property.device],

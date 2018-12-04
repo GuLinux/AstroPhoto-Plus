@@ -24,26 +24,12 @@ const receivedServerState = (state, action) => {
     return nextState;
 }
 
-const valueKey = (property, value) => `${property.device}.${property.name}.${value.name}`;
-
-const propertyUpdated = ({values, ...rest}, state) => {
-    const prevProp = state.properties[rest.id];
-    const property = {...rest, values: values && values.map(v => valueKey(rest, v)) };
+const propertyUpdated = (property, state) => {
+    const prevProp = state.properties[property.id];
     if(JSON.stringify(property) !== JSON.stringify(prevProp)) {
         state = {...state, properties: {...state.properties, [property.id]: property} };
     }
-    values && values.forEach(v => state = valueUpdated(property, v, state));
     return state;
-}
-
-const valueUpdated = (property, value, state) => {
-    const key = valueKey(property, value);
-    const prevValue = get(state.values, key);
-    if(JSON.stringify(value) === JSON.stringify(prevValue))
-        return state;
-    const values = {...state.values};
-    set(values, key, value);
-    return {...state, values };
 }
 
 
@@ -61,10 +47,8 @@ const indiPropertyAdded = (state, property) => propertyUpdated(property, state);
 
 const indiPropertyRemoved = (state, property) => {
     let properties = {...state.properties};
-    let values = {...state.values};
     delete properties[property.id]
-    property.values.forEach(v => delete values[valueKey(property, v)]);
-    return {...state, properties, values}
+    return {...state, properties}
 };
 
 const changePropertyValues = (state, {property}) => {
