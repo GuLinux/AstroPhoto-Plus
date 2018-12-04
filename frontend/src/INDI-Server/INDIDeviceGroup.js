@@ -6,13 +6,13 @@ import INDILight from './INDILight';
 const getPropertyComponent = property => {
     switch(property.type) {
         case "text":
-            return ( <INDITextPropertyContainer key={property.id} property={property} /> );
+            return ( <INDITextPropertyContainer   key={property.id} propertyId={property.id} /> );
         case "number":
-            return ( <INDINumberPropertyContainer key={property.id} property={property} /> );
+            return ( <INDINumberPropertyContainer key={property.id} propertyId={property.id} /> );
         case "switch":
-            return ( <INDISwitchPropertyContainer key={property.id} property={property} /> );
+            return ( <INDISwitchPropertyContainer key={property.id} propertyId={property.id} /> );
         case "light":
-            return ( <INDILightPropertyContainer key={property.id} property={property} /> );
+            return ( <INDILightPropertyContainer  key={property.id} propertyId={property.id} /> );
         default:
             // TODO: render blob in some way?
             return ( <span key={property.id}>Unsupported {property.type} property {property.label} ({property.name})</span> );

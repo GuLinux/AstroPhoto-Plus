@@ -1,21 +1,26 @@
 import { createSelector } from 'reselect'
+import { get } from 'lodash';
 
-export const getProperties = state => state.indiserver.properties;
-export const getDeviceIds = state => state.indiserver.devices;
+const getProperties = state => state.indiserver.properties;
+const getDeviceIds = state => state.indiserver.devices;
+
+const getPendingValues = state => state.indiserver.pendingValues;
+
 export const getDeviceEntities = state => state.indiserver.deviceEntities;
-export const getVisibleDevice = (state, {device}) => device;
-export const getVisibleGroup = (state, {group}) => group;
+
+const getVisibleDevice = (state, {device}) => device;
+
+
+const getValues = (state) => state.indiserver.values;
+const getDeviceValues = (state, {device}) => get(state.indiserver.values, device, {});
+const getPropertyValues = (state, {device, property}) => get(state.indiserver.values, [device, property], {});
 
 export const getDeviceNames = createSelector([getDeviceIds, getDeviceEntities], (deviceIds, devices) => {
     return deviceIds.map(id => ({ id, name: devices[id].name }))
 })
 
-export const getVisibleDeviceProperties = createSelector([getProperties, getVisibleDevice], (properties, visibleDevice) =>
+const getVisibleDeviceProperties = createSelector([getProperties, getVisibleDevice], (properties, visibleDevice) =>
     Object.keys(properties).map(p => properties[p]).filter(p => p.device === visibleDevice)
-)
-
-export const getVisibleProperties = createSelector([getVisibleDeviceProperties, getVisibleGroup], (properties, visibleGroup) =>
-    properties.filter(p => p.group === visibleGroup)
 )
 
 export const getVisibleGroups = createSelector([getVisibleDeviceProperties], properties => {
@@ -48,4 +53,44 @@ export const getMessages = createSelector([state => state.indiserver.messages], 
         [device]: [message, ...currentDeviceMessages],
     };
 }, {})); 
+
+
+const getPropsGroup = (state, {group}) => group;
+export const getVisibleProperties = createSelector([
+    getVisibleDeviceProperties,
+    getPropsGroup,
+], (properties, group) =>
+    group && properties.filter(p => p.group === group)
+);
+
+
+const propertyWithValues = (property, values) => ({...property, values: property.values.map(k => get(values, k))});
+
+export const indiDeviceGroupSelector = createSelector([getPropsGroup, getVisibleProperties], (group, properties) => {
+    return {
+        group,
+        properties,
+    };
+})
+
+
+export const indiPropertySelector = () => createSelector([
+    (state, {propertyId, readOnly}) => ({propertyId, readOnly}),
+    getProperties,
+    getValues,
+    getPendingValues,
+    getDeviceEntities,
+], ({propertyId, readOnly}, properties, values, allPendingValues, deviceEntities) => {
+    const property = propertyWithValues(properties[propertyId], values);
+    const pendingValues = get(allPendingValues, property.id, {});
+    const displayValues = {};
+    property.values.forEach(v => displayValues[v.name] = get(pendingValues, v.name, v.value));
+    return {
+        property,
+        device: deviceEntities[property.device],
+        pendingValues,
+        displayValues,
+        isWriteable: property.perm_write && property.state !== 'CHANGED_BUSY' && ! readOnly,
+    };
+});
 

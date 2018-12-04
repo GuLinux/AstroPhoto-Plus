@@ -1,23 +1,10 @@
 import { connect } from 'react-redux'
 import INDIDeviceGroup from './INDIDeviceGroup'
-import { getVisibleProperties } from './selectors';
-
-
-const mapStateToProps = (state, ownProps) => {
-    let group = ownProps.group;
-    let properties;
-    if(group) {
-        properties = getVisibleProperties(state, ownProps);
-    }
-    return {
-        group,
-        properties,
-    }
-}
+import { indiDeviceGroupSelector } from './selectors';
 
 
 const INDIDeviceGroupContainer = connect(
-  mapStateToProps,
+  indiDeviceGroupSelector,
 )(INDIDeviceGroup)
 
 export default INDIDeviceGroupContainer

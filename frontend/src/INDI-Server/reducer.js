@@ -1,4 +1,6 @@
 import { list2object } from '../utils';
+import { get, set } from 'lodash';
+
 const defaultState = {
         state: {
         connected: false,
@@ -24,24 +26,26 @@ const receivedServerState = (state, action) => {
     return nextState;
 }
 
-const valueKey = (property, value) => `${property.name}/${value.name}`;
+const valueKey = (property, value) => `${property.device}.${property.name}.${value.name}`;
 
 const propertyUpdated = ({values, ...rest}, state) => {
     const prevProp = state.properties[rest.id];
-    const property = {...rest, values: values.map(v => valueKey(rest, v)) };
+    const property = {...rest, values: values && values.map(v => valueKey(rest, v)) };
     if(JSON.stringify(property) !== JSON.stringify(prevProp)) {
         state = {...state, properties: {...state.properties, [property.id]: property} };
     }
-    values.forEach(v => state = valueUpdated(property, v, state));
+    values && values.forEach(v => state = valueUpdated(property, v, state));
     return state;
 }
 
 const valueUpdated = (property, value, state) => {
     const key = valueKey(property, value);
-    const prevValue = state.values[key];
+    const prevValue = get(state.values, key);
     if(JSON.stringify(value) === JSON.stringify(prevValue))
         return state;
-    return {...state, values: {...state.values, [key]: value}};
+    const values = {...state.values};
+    set(values, key, value);
+    return {...state, values };
 }
 
 

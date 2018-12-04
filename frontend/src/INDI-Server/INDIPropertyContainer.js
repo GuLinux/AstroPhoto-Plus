@@ -3,6 +3,7 @@ import INDISwitchProperty from './INDISwitchProperty'
 import INDILightProperty from './INDILightProperty'
 import { INDINumberProperty, INDITextProperty } from './INDIInputProperty'
 import Actions from '../actions'
+import { indiPropertySelector } from './selectors';
 
 
 export const displayValue = (value, pendingValues) => {
@@ -12,21 +13,6 @@ export const displayValue = (value, pendingValues) => {
 export const pendingProperty = (property, value, newValue) => ({valueName: value.name, currentValue: value.value, newValue});
 
 
-
-const mapStateToProps = (state, ownProps) => {
-    let property = ownProps.property;
-    let device = state.indiserver.deviceEntities[property.device];
-    let pendingValues = property.id in state.indiserver.pendingValues ? state.indiserver.pendingValues[property.id] : {};
-    let displayValues = property.values.reduce( (displayValues, value) => ({...displayValues, [value.name]: value.value}), {});
-    Object.keys(pendingValues).forEach(name => displayValues[name] = pendingValues[name]);
-    return {
-        device,
-        property,
-        isWriteable: property.perm_write && property.state !== 'CHANGED_BUSY' && ! ownProps.readOnly,
-        pendingValues,
-        displayValues,
-    }
-}
 
 const mapDispatchToProps = dispatch => ({
     addPendingValues: (device, property, pendingValues, autoApply) => dispatch(Actions.INDIServer.addPendingValues(device, property, pendingValues, autoApply)),
@@ -40,9 +26,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     commitPendingValues: () => dispatchProps.commitPendingValues(stateProps.device, stateProps.property, stateProps.pendingValues),
 })
 
-export const INDILightPropertyContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(INDILightProperty)
-export const INDISwitchPropertyContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(INDISwitchProperty)
-export const INDINumberPropertyContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(INDINumberProperty)
-export const INDITextPropertyContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(INDITextProperty)
+export const INDILightPropertyContainer  = connect(indiPropertySelector, mapDispatchToProps, mergeProps)(INDILightProperty)
+export const INDISwitchPropertyContainer = connect(indiPropertySelector, mapDispatchToProps, mergeProps)(INDISwitchProperty)
+export const INDINumberPropertyContainer = connect(indiPropertySelector, mapDispatchToProps, mergeProps)(INDINumberProperty)
+export const INDITextPropertyContainer   = connect(indiPropertySelector, mapDispatchToProps, mergeProps)(INDITextProperty)
 
 
