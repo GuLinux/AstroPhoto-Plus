@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import INDIDevicePage from './INDIDevicePage'
+import { INDIDevicePage } from './INDIDevicePage'
 import { getVisibleGroups, getMessages } from './selectors';
 
 
@@ -13,11 +13,8 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 
-const mapDispatchToProps = dispatch => ({})
-
-const INDIDeviceContainer = connect(
+export const INDIDeviceContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  null,
 )(INDIDevicePage)
 
-export default INDIDeviceContainer

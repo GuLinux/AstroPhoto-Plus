@@ -3,7 +3,7 @@ import { Menu, Dropdown, Container, Button, Table, Label } from 'semantic-ui-rea
 import AddSequenceModalContainer from './AddSequenceModalContainer';
 import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
 import { Link } from 'react-router-dom';
-import ImportSequenceContainer from './ImportSequenceContainer';
+import { ImportSequenceContainer } from './ImportSequenceContainer';
 import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
 
 const GearDescription = ({gear}) => {

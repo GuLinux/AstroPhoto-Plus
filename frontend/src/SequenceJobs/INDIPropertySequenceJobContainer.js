@@ -8,11 +8,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 
-const mapDispatchToProps = dispatch => ({})
-
 const INDIPropertySequenceJobContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
 )(INDIPropertySequenceJob)
 
 export default INDIPropertySequenceJobContainer 

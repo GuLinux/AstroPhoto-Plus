@@ -10,8 +10,7 @@ const states = {
 }
 
 
-const INDILight = ({state, text}) => (
+export const INDILight = ({state, text}) => (
     <Label color={states[state].color} icon={states[state].icon} content={text ? text : states[state].text} />
 )
 
-export default INDILight

@@ -12,21 +12,15 @@ const mapStateToProps = (state, ownProps) => ({
     lastError: state.indiservice.lastError,
 })
 
-const mapDispatchToProps = dispatch => ({
-    startService: (devices) => dispatch(Actions.INDIService.startService(devices)),
-    stopService: (disconnect) => dispatch(Actions.INDIService.stopService(disconnect)),
-    dismissError: () => dispatch(Actions.INDIService.dismissError()),
-})
+const mapDispatchToProps = {
+    startService: Actions.INDIService.startService,
+    stopService: Actions.INDIService.stopService,
+    dismissError: Actions.INDIService.dismissError,
+};
 
 const INDIServiceContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-  (stateProps, dispatchProps, ownProps) => ({
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    onServerStopStart: () => stateProps.serverRunning ? dispatchProps.stopService(stateProps.serverConnected) : dispatchProps.startService(stateProps.drivers),
-  })
 )(INDIServicePage)
 
 export default INDIServiceContainer

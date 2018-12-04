@@ -3,17 +3,16 @@ import React from 'react';
 import Actions from '../actions';
 import { getShotParameters } from './selectors';
 
-
-
+// TODO: remove this component by using getState in actions
 const mapStateToProps = (state) => ({
     shotParameters: getShotParameters(state),
     shouldAutostart: state.camera.shouldAutostart,
 });
 
 
-const mapDispatchToProps = dispatch => ({
-    shoot: (shotParameters) => dispatch(Actions.Camera.shoot(shotParameters)),
-});
+const mapDispatchToProps = {
+    shoot: Actions.Camera.shoot,
+};
 
 class AutoExposure extends React.Component {
     render = () => null;

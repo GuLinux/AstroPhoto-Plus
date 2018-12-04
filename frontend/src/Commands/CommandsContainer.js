@@ -20,9 +20,11 @@ const mapStateToProps = (state, ownProps) => {
     };
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    onError: (title, message) => dispatch(Actions.Notifications.add(title, message, 'error')),
-    refresh: () => dispatch(Actions.Commands.get()),
-});
+const addErrorNotification = (title, message) => Actions.Notifications.add(title, message, 'error');
+
+const mapDispatchToProps = {
+    onError: addErrorNotification,
+    refresh: Actions.Commands.get,
+};
 
 export const CommandsContainer = connect(mapStateToProps, mapDispatchToProps)(Commands);

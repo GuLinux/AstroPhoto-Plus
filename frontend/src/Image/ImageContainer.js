@@ -28,9 +28,8 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    const setOption = (option) => dispatch(Actions.Image.setOption(option));
-    return { setOption };
+const mapDispatchToProps = {
+    setOption: Actions.Image.setOption,
 };
 
 

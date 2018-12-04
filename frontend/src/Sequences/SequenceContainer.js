@@ -17,34 +17,21 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 
-const mapDispatchToProps = (dispatch, props) => ({
-    startSequence: (sequence) => dispatch(Actions.Sequences.start(sequence)),
-    stopSequence: (sequence) => dispatch(Actions.Sequences.stop(sequence)),
-    onCreateSequenceJob: (type, sequenceId) => {
-        dispatch(Actions.SequenceJobs.newPending(type, sequenceId));
-    },
-    resetSequence: (sequence, options) => dispatch(Actions.Sequences.reset(sequence, options)),
-})
+const mapDispatchToProps = {
+    startSequence: Actions.Sequences.start,
+    stopSequence: Actions.Sequences.stop,
+    onCreateSequenceJob: Actions.SequenceJobs.newPending,
+    resetSequence: Actions.Sequences.reset,
+}
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => ({
-    ...stateProps,
-    ...ownProps,
-    ...dispatchProps,
-    onCreateSequenceJob: type => dispatchProps.onCreateSequenceJob(type, stateProps.sequence.id),
-    startSequence: () => dispatchProps.startSequence(stateProps.sequence),
-    stopSequence: () => dispatchProps.stopSequence(stateProps.sequence),
-    resetSequence: (options) => dispatchProps.resetSequence(stateProps.sequence, options),
-})
 
 export const SequenceContainer = connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
 )(Sequence)
 
 export const SequenceSectionMenuContainer = connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
 )(SequenceSectionMenu)
 

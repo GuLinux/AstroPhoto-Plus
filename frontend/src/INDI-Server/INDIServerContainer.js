@@ -7,11 +7,9 @@ const mapStateToProps = (state, ownProps) => ({
     hasLocalServer: state.indiservice.server_found && state.indiserver.state.host === 'localhost',
 })
 
-const mapDispatchToProps = dispatch => ({ })
-
 const INDIServerContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  null, 
 )(INDIServerPage)
 
 export default INDIServerContainer

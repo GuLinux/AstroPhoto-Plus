@@ -3,7 +3,7 @@ import AddSequenceJobModal from '../SequenceJobs/AddSequenceJobModal'
 import SequenceJobsContainer from '../SequenceJobs/SequenceJobsContainer';
 import { Menu, Table, Label, Container, Header, Card, Icon } from 'semantic-ui-react';
 import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
-import INDILight from '../INDI-Server/INDILight';
+import { INDILight } from '../INDI-Server/INDILight';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { formatDecimalNumber } from '../utils';
@@ -80,7 +80,7 @@ const CameraDetailsPage = ({camera}) => {
         return null;
     let exposureAbortPropertyComponent = null;
     if(camera.abortExposureProperty)
-        exposureAbortPropertyComponent = <INDISwitchPropertyContainer property={camera.abortExposureProperty} />
+        exposureAbortPropertyComponent = <INDISwitchPropertyContainer propertyId={camera.abortExposureProperty.id} />
     return (
         <Card>
             <Card.Content>
@@ -132,37 +132,48 @@ const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, t
 ))
 
 
-export const SequenceSectionMenu = ({ sequence, startSequence, stopSequence, resetSequence, onCreateSequenceJob, gear }) => sequence && (
-    <NavbarSectionMenu sectionName='Sequence' sectionText={sequence.name}>
-        <Menu.Item onClick={startSequence} icon='play' content='start' disabled={!sequence.canStart(gear)} />
-        <Menu.Item onClick={stopSequence} icon='stop' content='stop' disabled={!sequence.canStart(gear)} />
-        <ConfirmFlagsDialog
-            content='This will reset the status of all jobs in this sequence. Are you sure?'
-            header='Confim sequence reset'
-            cancelButton='No'
-            confirmButton='Yes'
-            flags={[
-                {
-                    name: 'remove_files',
-                    label: 'Also remove all fits files',
-                },
-            ]}
-            onConfirm={(flags) => resetSequence(flags)}
-            resetState={true}
-            size={'mini'}
-            basic={true}
-            centered={false}
-            trigger={<Menu.Item icon='redo' disabled={!sequence.canReset} content='reset' />}
-        />
-        <AddSequenceJob
-            onCreateSequenceJob={onCreateSequenceJob}
-            sequenceId={sequence.id}
-            hasFilterWheel={sequence.filterWheel && sequence.filterQueel !== 'none'}
-            trigger={<Menu.Item icon='add' disabled={!sequence.canEdit(gear)} content='new job' />}
-        />
-        <Menu.Item as={Link} to={Routes.SEQUENCES_LIST} content='back to sequences' icon='arrow left' />
-    </NavbarSectionMenu>
-)
+export class SequenceSectionMenu extends React.PureComponent {
+
+    startSequence = () => this.props.startSequence(this.props.sequence);
+    stopSequence = () => this.props.stopSequence(this.props.sequence);
+    resetSequence = (flags) => this.props.resetSequence(this.props.sequence, flags);
+    onCreateSequenceJob = (type) => this.props.onCreateSequenceJob(type, this.props.sequence.id);
+
+    render = () => {
+        const { sequence, startSequence, stopSequence, resetSequence, onCreateSequenceJob, gear } = this.props;
+        return sequence && (
+            <NavbarSectionMenu sectionName='Sequence' sectionText={sequence.name}>
+                <Menu.Item onClick={this.startSequence} icon='play' content='start' disabled={!sequence.canStart(gear)} />
+                <Menu.Item onClick={this.stopSequence} icon='stop' content='stop' disabled={!sequence.canStart(gear)} />
+                <ConfirmFlagsDialog
+                    content='This will reset the status of all jobs in this sequence. Are you sure?'
+                    header='Confim sequence reset'
+                    cancelButton='No'
+                    confirmButton='Yes'
+                    flags={[
+                        {
+                            name: 'remove_files',
+                            label: 'Also remove all fits files',
+                        },
+                    ]}
+                    onConfirm={this.resetSequence}
+                    resetState={true}
+                    size={'mini'}
+                    basic={true}
+                    centered={false}
+                    trigger={<Menu.Item icon='redo' disabled={!sequence.canReset} content='reset' />}
+                />
+                <AddSequenceJob
+                    onCreateSequenceJob={this.onCreateSequenceJob}
+                    sequenceId={sequence.id}
+                    hasFilterWheel={sequence.filterWheel && sequence.filterQueel !== 'none'}
+                    trigger={<Menu.Item icon='add' disabled={!sequence.canEdit(gear)} content='new job' />}
+                />
+                <Menu.Item as={Link} to={Routes.SEQUENCES_LIST} content='back to sequences' icon='arrow left' />
+            </NavbarSectionMenu>
+        )
+    }
+}
 
 export const Sequence = ({ sequence, camera, filterWheel, gear }) => sequence === null ?
     <NotFoundPage

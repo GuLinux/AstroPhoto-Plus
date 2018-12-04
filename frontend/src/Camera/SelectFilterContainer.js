@@ -12,10 +12,10 @@ const mapStateToProps = (state, ownProps) => {
     };
 }
 
-const mapDispatchToProps = dispatch => ({
-    onFilterSelected: (filterNumber, filterWheelDevice, filterProperty) =>
-        dispatch(Actions.Camera.changeFilter(filterWheelDevice, filterProperty, { FILTER_SLOT_VALUE: filterNumber })),
-})
+const onFilterSelected = (filterNumber, filterWheelDevice, filterProperty) => Actions.Camera.changeFilter(filterWheelDevice, filterProperty, { FILTER_SLOT_VALUE: filterNumber });
+
+
+const mapDispatchToProps = {onFilterSelected};
 
 const SelectFilterContainer = connect(
   mapStateToProps,

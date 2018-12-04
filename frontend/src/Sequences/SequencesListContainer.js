@@ -9,14 +9,12 @@ const mapStateToProps = state => ({
     gear: getSequencesGears(state),
 })
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onSequenceDelete: (sequenceId, options) => dispatch(Actions.Sequences.remove(sequenceId, options)),
-    startSequence: (sequence) => dispatch(Actions.Sequences.start(sequence)),
-    duplicateSequence: (sequence) => dispatch(Actions.Sequences.duplicate(sequence)),
-    stopSequence: (sequence) => dispatch(Actions.Sequences.stop(sequence)),
-    resetSequence: (sequence, options) => dispatch(Actions.Sequences.reset(sequence, options)),
-  }
+const mapDispatchToProps = {
+    onSequenceDelete: Actions.Sequences.remove,
+    startSequence: Actions.Sequences.start,
+    duplicateSequence: Actions.Sequences.duplicate,
+    stopSequence: Actions.Sequences.stop,
+    resetSequence: Actions.Sequences.reset,
 }
 
 const SequencesListContainer = connect(

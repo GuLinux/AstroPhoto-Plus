@@ -1,5 +1,5 @@
 import React from 'react';
-import INDILight from './INDILight'
+import { INDILight } from './INDILight'
 
 export const INDILightProperty = ({property}) => (
     <span>

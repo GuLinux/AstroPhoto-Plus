@@ -14,7 +14,7 @@ const mapStateToProps = (state, ownProps) => {
     };
 }
 
-
+// TODO: try to rewrite this performance wise
 const mapDispatchToProps = dispatch => ({
     fetchImages: (ids, onFetched) => searchImages(dispatch, 'main', { ids }, onFetched),
     setImagesPreview: (imagesPreview) => dispatch(Actions.SequenceJobs.setImagesPreview(imagesPreview)),

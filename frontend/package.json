@@ -21,7 +21,8 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.83.0"
+    "semantic-ui-react": "^0.83.0",
+    "why-did-you-update": "^1.0.6"
   },
   "name": "StarQuew-frontend",
   "private": true,

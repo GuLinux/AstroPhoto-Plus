@@ -31,9 +31,9 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 
-const mapDispatchToProps = (dispatch, props) => ({
-    toggleShowLastImage: (showLastImage) => dispatch(Actions.Sequences.toggleShowLastImage(showLastImage)),
-})
+const mapDispatchToProps = {
+    toggleShowLastImage: Actions.Sequences.toggleShowLastImage,
+}
 
 
 const LastCapturedSequenceImageContainer = connect(

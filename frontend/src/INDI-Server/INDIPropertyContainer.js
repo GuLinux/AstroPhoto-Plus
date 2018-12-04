@@ -5,11 +5,10 @@ import { INDINumberProperty, INDITextProperty } from './INDIInputProperty'
 import Actions from '../actions'
 import { indiPropertySelector } from './selectors';
 
+const mapDispatchToProps = {
+    setPropertyValues: Actions.INDIServer.setPropertyValues
+};
 
-
-const mapDispatchToProps = dispatch => ({
-    setPropertyValues: (device, property, values) => dispatch(Actions.INDIServer.setPropertyValues(device, property, values)),
-})
 
 export const INDILightPropertyContainer  = connect(indiPropertySelector, mapDispatchToProps)(INDILightProperty)
 export const INDISwitchPropertyContainer = connect(indiPropertySelector, mapDispatchToProps)(INDISwitchProperty)

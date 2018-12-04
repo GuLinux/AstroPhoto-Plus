@@ -114,20 +114,27 @@ const CurrentValue = ({value, format, ...args}) => (
     />
 )
 
-export const INDINumber = ({value, displayValue, onChange, editMode}) => {
-    if(editMode) {
-        return (
-            <EditableInput
-                min={value.min} max={value.max} step={value.step}
-                label={value.label}
-                format={value.format}
-                value={displayValue}
-                fluid
-                onChange={onChange.bind(this, value.name)}
-            />
+export class INDINumber extends React.PureComponent {
 
-        )
+    onChange = (value) => this.props.onChange(this.props.value.name, value);
+
+    render = () => {
+        const {value, displayValue, editMode} = this.props;
+        if(editMode) {
+            return (
+                <EditableInput
+                    min={value.min} max={value.max} step={value.step}
+                    label={value.label}
+                    format={value.format}
+                    value={displayValue}
+                    fluid
+                    onChange={this.onChange}
+                />
+
+            )
+        }
+        return <CurrentValue format={value.format} label={value.label} value={value.value} fluid />
     }
-    return <CurrentValue format={value.format} label={value.label} value={value.value} fluid />
 }
+
 

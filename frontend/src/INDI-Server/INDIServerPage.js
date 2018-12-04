@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu, Container, Grid, Header } from 'semantic-ui-react';
 import INDIServerDetailsContainer from './INDIServerDetailsContainer';
-import INDIDeviceContainer from './INDIDeviceContainer';
+import { INDIDeviceContainer } from './INDIDeviceContainer';
 import INDIServiceContainer from '../INDI-Service/INDIServiceContainer';
 import INDIServiceDriversContainer from '../INDI-Service/INDIServiceDriversContainer';
 import INDIServiceProfilesContainer from '../INDI-Service/INDIServiceProfilesContainer';
@@ -34,7 +34,7 @@ const INDISettingsPage = ({hasLocalServer}) => {
     )
 }
 
-class INDIServerPage extends React.Component {
+class INDIServerPage extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = { lastRoute: 'server' };

@@ -5,8 +5,7 @@ const mapStateToProps = state => ({
     disabled: state.errors.isError,
 })
 
-const mapDispatchToProps = dispatch => ({})
 
 
-export const NavbarMenuItemsContainer = connect(mapStateToProps, mapDispatchToProps, null, { pure: false })(NavbarMenuItems);
+export const NavbarMenuItemsContainer = connect(mapStateToProps, null, null, { pure: false })(NavbarMenuItems);
 

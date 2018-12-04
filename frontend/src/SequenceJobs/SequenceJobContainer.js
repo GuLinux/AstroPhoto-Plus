@@ -12,11 +12,9 @@ const mapStateToProps = (state, ownProps) => {
     return {sequenceJob}
 }
 
-const mapDispatchToProps = (dispatch, props) => ({})
 
 const SequenceJobContainer = connect(
     mapStateToProps,
-    mapDispatchToProps
 )(SequenceJob)
 
 export default SequenceJobContainer

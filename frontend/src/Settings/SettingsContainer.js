@@ -8,12 +8,13 @@ const mapStateToProps = (state) => ({
     showCommands: state.commands.ids.length > 0 || state.commands.fetching,
 });
 
+const update = (key, value) => Actions.Settings.update({ [key]: value });
 
-const mapDispatchToProps = (dispatch, props) => ({
-    onChange: (key, value) => dispatch(Actions.Settings.setPending(key, value)),
-    reset: (key) => dispatch(Actions.Settings.resetPending(key)),
-    update: (key, value) => dispatch(Actions.Settings.update({ [key]: value })),
-})
+const mapDispatchToProps = {
+    onChange: Actions.Settings.setPending,
+    reset: Actions.Settings.resetPending,
+    update,
+}
 
 const SettingsContainer = connect(
     mapStateToProps,

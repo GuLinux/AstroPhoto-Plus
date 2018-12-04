@@ -1,10 +1,9 @@
 import { connect } from 'react-redux'
-import INDIDeviceGroup from './INDIDeviceGroup'
+import { INDIDeviceGroup } from './INDIDeviceGroup'
 import { indiDeviceGroupSelector } from './selectors';
 
 
-const INDIDeviceGroupContainer = connect(
+export const INDIDeviceGroupContainer = connect(
   indiDeviceGroupSelector,
 )(INDIDeviceGroup)
 
-export default INDIDeviceGroupContainer

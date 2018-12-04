@@ -15,11 +15,12 @@ const mapStateToProps = (state) => {
     }
 };
 
+const onExposureChanged = exposure => Actions.Camera.setOption({exposure});
 
-const mapDispatchToProps = dispatch => ({
-    onExposureChanged: (exposure) => dispatch(Actions.Camera.setOption({exposure})),
-    onShoot: (shotParameters) => dispatch(Actions.Camera.shoot(shotParameters)),
-});
+const mapDispatchToProps = {
+    onExposureChanged,
+    onShoot: Actions.Camera.shoot,
+};
 
 
 const ExposureInputContainer = connect(

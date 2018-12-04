@@ -3,10 +3,10 @@ import { PlateSolving } from './PlateSolving';
 import Actions from '../actions';
 import { plateSolvingContainerSelector } from './selectors';
 
-const mapDispatchToProps = dispatch => ({
-  setOption: (option, value) => dispatch(Actions.PlateSolving.setOption(option, value)),
-  solveField: options => dispatch(Actions.PlateSolving.solveField(options)),
-})
+const mapDispatchToProps = {
+  setOption: Actions.PlateSolving.setOption,
+  solveField: Actions.PlateSolving.solveField,
+}
 
 export const PlateSolvingContainer = connect(
   plateSolvingContainerSelector,

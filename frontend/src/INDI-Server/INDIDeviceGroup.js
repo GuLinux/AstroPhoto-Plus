@@ -1,7 +1,7 @@
 import React from 'react';
 import { INDITextPropertyContainer, INDINumberPropertyContainer, INDISwitchPropertyContainer, INDILightPropertyContainer } from './INDIPropertyContainer';
 import { Grid, Label} from 'semantic-ui-react'
-import INDILight from './INDILight';
+import { INDILight } from './INDILight';
 
 const getPropertyComponent = property => {
     switch(property.type) {
@@ -29,7 +29,7 @@ const INDIPropertyRow = ({property, children}) => (
     </Grid.Row>
 )
 
-const INDIDeviceGroup = ({group, properties}) => (
+export const INDIDeviceGroup = ({group, properties}) => (
     <Grid container stackable>
         {
             properties.map(
@@ -43,4 +43,3 @@ const INDIDeviceGroup = ({group, properties}) => (
     </Grid>
 )
 
-export default INDIDeviceGroup

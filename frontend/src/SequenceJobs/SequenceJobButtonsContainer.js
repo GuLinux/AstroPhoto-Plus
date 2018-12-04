@@ -3,17 +3,14 @@ import Actions from '../actions'
 import SequenceJobButtons from './SequenceJobButtons'
 
 
-const mapStateToProps = (state) => ({})
 
-const mapDispatchToProps = (dispatch, props) => {
-    return {
-        onSave: (sequenceJob, onSaved) => dispatch(Actions.SequenceJobs.saveSequenceJob(sequenceJob, onSaved)),
-    }
+const mapDispatchToProps = {
+    onSave: Actions.SequenceJobs.saveSequenceJob,
 }
 
 
 const SequenceJobButtonsContainer = connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps,
 )(SequenceJobButtons)
 

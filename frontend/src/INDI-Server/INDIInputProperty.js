@@ -33,16 +33,20 @@ class INDIInputProperty extends React.Component {
         this.cancelEdit();
     }
 
+    renderInputComponent = (value, index) => {
+        const { InputComponent } = this.props;
+        return <InputComponent key={index} value={value} onChange={this.onValueChange} displayValue={this.displayValue(value.name)} editMode={this.props.editMode} />
+    }
+
+
     render = () => {
-        const { InputComponent, property, isWriteable } = this.props;
+        const { property, isWriteable } = this.props;
         const { editMode } = this.state;
 
         return (
             <Grid>
                 <Grid.Column width={11}>
-                    {property.values.map( (value, index) =>
-                        <InputComponent key={index} value={value} onChange={this.onValueChange} displayValue={this.displayValue(value.name)} editMode={editMode} />
-                    )}
+                    {property.values.map(this.renderInputComponent)}
                 </Grid.Column>
                 <Grid.Column width={5} verticalAlign='middle'>
                     { isWriteable && (
