@@ -6,3 +6,6 @@ const getLandingPath = (state, props) => getLandingPaths(state)[props.route] || 
 
 export const makeHistoryLandingSelector = () => createSelector([getLandingPath], landingPath => ({ landingPath }));
 
+export const navbarMenuItemsSelector = createSelector([
+    state => state.errors.isError,
+], (isError) => ({ disabled: isError }));

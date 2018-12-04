@@ -20,6 +20,7 @@ const getPropertyComponent = property => {
 }
 
 const INDIPropertyRow = ({property, children}) => (
+
     <Grid.Row>
         <Grid.Column verticalAlign="middle" width={2}><INDILight state={property.state} /></Grid.Column>
         <Grid.Column verticalAlign="middle" width={2}><Label content={property.label} /></Grid.Column>
@@ -29,17 +30,20 @@ const INDIPropertyRow = ({property, children}) => (
     </Grid.Row>
 )
 
-export const INDIDeviceGroup = ({group, properties}) => (
-    <Grid container stackable>
-        {
-            properties.map(
-                property => (
-                    <INDIPropertyRow key={property.id} property={property}>
-                        {getPropertyComponent(property)}
-                    </INDIPropertyRow>
-                )
-            )
-        }
-    </Grid>
-)
+export class INDIDeviceGroup extends React.PureComponent {
+    renderPropertyRow = (property) => (
+        <INDIPropertyRow key={property.id} property={property}>
+            {getPropertyComponent(property)}
+        </INDIPropertyRow>
+    )
+
+    render = () => {
+        const {group, properties} = this.props;
+        return (
+            <Grid container stackable>
+                { properties.map(this.renderPropertyRow) }
+            </Grid>
+        );
+    }
+}
 

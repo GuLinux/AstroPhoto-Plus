@@ -1,11 +1,6 @@
 import { connect } from 'react-redux';
 import { NavbarMenuItems } from './NavbarMenuItems';
+import { navbarMenuItemsSelector } from './selectors';
 
-const mapStateToProps = state => ({
-    disabled: state.errors.isError,
-})
-
-
-
-export const NavbarMenuItemsContainer = connect(mapStateToProps, null, null, { pure: false })(NavbarMenuItems);
+export const NavbarMenuItemsContainer = connect(navbarMenuItemsSelector, null, null, { pure: false })(NavbarMenuItems);
 
