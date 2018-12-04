@@ -157,9 +157,9 @@ export const getAstrometryDriversAPI = (dispatch, onSuccess, onError) => fetchJS
 
 export const getINDIDevicePropertiesAPI = (dispatch, device, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties`, {}, onSuccess);
 
-export const setINDIValuesAPI = (dispatch, device, property, pendingValues, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties/${property.name}`, {
+export const setINDIValuesAPI = (dispatch, device, property, values, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties/${property.name}`, {
         method: 'PUT',
-        body: JSON.stringify(pendingValues),
+        body: JSON.stringify(values),
         headers: {
             'Content-Type': 'application/json'
         }

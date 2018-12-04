@@ -11,7 +11,6 @@ const defaultState = {
     devices: [],
     properties: {},
     values: {},
-    pendingValues: {},
     messages: [],
 };
 
@@ -21,7 +20,6 @@ const receivedServerState = (state, action) => {
         nextState.devices = [];
         nextState.deviceEntities = {}
         nextState.properties = {};
-        nextState.pendingValues = {};
     }
     return nextState;
 }
@@ -69,24 +67,9 @@ const indiPropertyRemoved = (state, property) => {
     return {...state, properties, values}
 };
 
-const addPendingValues = (state, property, pendingValues) => {
-    let currentPendingValues = property.id in state.pendingValues ? state.pendingValues[property.id] : {}
-    let mergedPendingValues = {...currentPendingValues, ...pendingValues};
-
-    Object.keys(mergedPendingValues).forEach(name => {
-        if(mergedPendingValues[name] === property.values.filter(v => v.name === name)[0].value)
-            delete mergedPendingValues[name]
-    });
-
-    return {...state, pendingValues: {...pendingValues, [property.id]: mergedPendingValues } };
-}
-
-const commitPendingValues = (state, property, pendingValues) => {
+const changePropertyValues = (state, {property}) => {
     return {
             ...state,
-            pendingValues: {
-                ...state.pendingValues, [property.id]: {}
-           },
            properties: {
                 ...state.properties, [property.id]: {
                     ...state.properties[property.id], state: 'CHANGED_BUSY'
@@ -134,10 +117,8 @@ const indiserver = (state = defaultState, action) => {
             return receivedINDIDevices(state, action.devices);
         case 'RECEIVED_DEVICE_PROPERTIES':
             return receivedDeviceProperties(state, action.device, action.properties)
-        case 'ADD_PENDING_VALUES':
-            return addPendingValues(state, action.property, action.pendingValues);
-        case 'COMMIT_PENDING_VALUES':
-            return commitPendingValues(state, action.property, action.pendingValues);
+        case 'INDI_REQUEST_SET_PROPERTY_VALUES':
+            return changePropertyValues(state, action);
         case 'INDI_DEVICE_MESSAGE':
             return {...state, messages: [...state.messages, { device: action.device.id, message: action.message}]}
         case 'INDI_PROPERTY_UPDATED':

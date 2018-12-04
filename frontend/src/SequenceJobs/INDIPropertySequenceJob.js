@@ -2,9 +2,9 @@ import React from 'react';
 import { Menu, Divider, Container, Grid, Form } from 'semantic-ui-react'
 import SequenceJobButtonsContainer from './SequenceJobButtonsContainer'
 
-import INDIText from '../INDI-Server/INDIText';
-import INDINumber from '../INDI-Server/INDINumber';
-import INDISwitch from '../INDI-Server/INDISwitch';
+import { INDIText } from '../INDI-Server/INDIText';
+import { INDINumber } from '../INDI-Server/INDINumber';
+import { INDISwitch } from '../INDI-Server/INDISwitch';
 
 class INDIPropertySequenceJob extends React.Component {
     constructor(props) {
@@ -50,10 +50,9 @@ class INDIPropertySequenceJob extends React.Component {
         if( this.state.sequenceJob.property === '')
             return null;
         let property = this.getProperties()[this.state.sequenceJob.property];
-        let displayValues = this.state.sequenceJob.values
-        let addPendingValues = (values) => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, values: {...this.state.sequenceJob.values, ...values} } });
+        let onChange = (values) => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, values: {...this.state.sequenceJob.values, ...values} } });
         return property.values.map( (value, index) => {
-            let props = { key: index, value, property, displayValue: displayValues[value.name], addPendingValues, editMode: true }
+            let props = { key: index, value, property, onChange, editMode: true }
             switch(property.type) {
                 case 'switch':
                     return <INDISwitch {...props} />;

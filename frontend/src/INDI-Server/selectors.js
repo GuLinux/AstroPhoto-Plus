@@ -4,8 +4,6 @@ import { get } from 'lodash';
 const getProperties = state => state.indiserver.properties;
 const getDeviceIds = state => state.indiserver.devices;
 
-const getPendingValues = state => state.indiserver.pendingValues;
-
 export const getDeviceEntities = state => state.indiserver.deviceEntities;
 
 const getVisibleDevice = (state, {device}) => device;
@@ -78,18 +76,12 @@ export const indiPropertySelector = () => createSelector([
     (state, {propertyId, readOnly}) => ({propertyId, readOnly}),
     getProperties,
     getValues,
-    getPendingValues,
     getDeviceEntities,
-], ({propertyId, readOnly}, properties, values, allPendingValues, deviceEntities) => {
+], ({propertyId, readOnly}, properties, values, deviceEntities) => {
     const property = propertyWithValues(properties[propertyId], values);
-    const pendingValues = get(allPendingValues, property.id, {});
-    const displayValues = {};
-    property.values.forEach(v => displayValues[v.name] = get(pendingValues, v.name, v.value));
     return {
         property,
         device: deviceEntities[property.device],
-        pendingValues,
-        displayValues,
         isWriteable: property.perm_write && property.state !== 'CHANGED_BUSY' && ! readOnly,
     };
 });

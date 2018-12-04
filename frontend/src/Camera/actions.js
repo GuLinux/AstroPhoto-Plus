@@ -69,7 +69,7 @@ const Camera = {
     },
     changeFilter: (wheelDevice, filterProperty, value) => dispatch => {
         dispatch({ type: 'CAMERA_CHANGE_FILTER', device: wheelDevice.id, property: filterProperty.id, value });
-        dispatch(Actions.INDIServer.commitPendingValues(wheelDevice, filterProperty, value));
+        dispatch(Actions.INDIServer.setPropertyValues(wheelDevice, filterProperty, value));
     },
 };
 

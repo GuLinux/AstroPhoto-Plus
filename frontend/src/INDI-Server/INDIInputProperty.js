@@ -1,8 +1,9 @@
 import React from 'react';
-import INDINumber from './INDINumber'
-import INDIText from './INDIText';
+import { INDINumber } from './INDINumber'
+import { INDIText } from './INDIText';
 
 import { Button, Grid } from 'semantic-ui-react'
+import { get } from 'lodash';
 
 class INDIInputProperty extends React.Component {
     constructor(props) {
@@ -10,23 +11,37 @@ class INDIInputProperty extends React.Component {
         this.state = {};
     }
 
-    editMode = (mode) => this.props.isWriteable && this.setState({...this.state, editMode: mode});
+    editMode = mode => this.props.isWriteable && mode;
 
+    displayValue = name => get(this.state, ['pendingValues', name], this.props.property.values.find(p => p.name === name).value);
+    onValueChange = (name, value) => this.setState({...this.state, pendingValues: {...this.state.pendingValues, [name]: value } });
+    enterEditMode = () => this.setState({...this.state, editMode: this.editMode(true)});
+    cancelEdit = () => {
+        this.setState({
+            ...this.state,
+            pendingValues: {},
+            editMode: this.editMode(false),
+        });
+    }
 
-    commitPendingValues = args => {
-        this.props.commitPendingValues();
-        this.editMode(false);
+    commit = () => {
+        this.props.setPropertyValues(
+            this.props.device,
+            this.props.property,
+            this.state.pendingValues,
+        );
+        this.cancelEdit();
     }
 
     render = () => {
-        const { InputComponent, property, isWriteable, displayValues, addPendingValues } = this.props;
+        const { InputComponent, property, isWriteable } = this.props;
         const { editMode } = this.state;
 
         return (
             <Grid>
                 <Grid.Column width={11}>
                     {property.values.map( (value, index) =>
-                        <InputComponent key={index} value={value} addPendingValues={addPendingValues} displayValue={displayValues[value.name]} editMode={editMode} />
+                        <InputComponent key={index} value={value} onChange={this.onValueChange} displayValue={this.displayValue(value.name)} editMode={editMode} />
                     )}
                 </Grid.Column>
                 <Grid.Column width={5} verticalAlign='middle'>
@@ -34,11 +49,11 @@ class INDIInputProperty extends React.Component {
                         <Button.Group size='mini'>
                         { editMode ? (
                             <React.Fragment>
-                                <Button onClick={() => this.commitPendingValues()} content='set' icon='check' />
-                                <Button onClick={() => this.editMode(false)} content='cancel' icon='cancel' />
+                                <Button onClick={this.commit} content='set' icon='check' />
+                                <Button onClick={this.cancelEdit} content='cancel' icon='cancel' />
                             </React.Fragment>
                             ) :
-                            <Button onClick={() => this.editMode(true)} primary content='edit' icon='edit' />
+                            <Button onClick={this.enterEditMode} primary content='edit' icon='edit' />
                         }
                         </Button.Group>
                     )}

@@ -24,12 +24,10 @@ const CurrentValue = ({value, ...args}) => (
     />
 )
 
-const INDIText = ({value, editMode, displayValue, addPendingValues}) => {
-    const onChange = text => addPendingValues({ [value.name]: text})
+export const INDIText = ({value, editMode, displayValue, onChange}) => {
     if(editMode)
-        return <EditableInput label={value.label} value={displayValue} onChange={onChange} fluid />
+        return <EditableInput label={value.label} value={displayValue} onChange={onChange.bind(this, value.name)} fluid />
     return <CurrentValue label={value.label} value={value.value} fluid />
 }
 
 
-export default INDIText

@@ -3,31 +3,31 @@ import { Checkbox } from 'semantic-ui-react'
 import { CheckButton } from '../components/CheckButton';
 
 
-const onButtonClick = (property, value, displayValue, addPendingValues) => {
-    if(displayValue)
+const onButtonClick = (property, value, onChange) => {
+    if(value.value)
         return;
-    let newPendingValues = { [value.name]: true }
+    const newValues = { [value.name]: true }
     if(property.rule === 'ONE_OF_MANY') {
-        property.values.filter(v => v.name !== value.name).forEach(v => newPendingValues[v.name] = false);
+        property.values.filter(v => v.name !== value.name).forEach(v => newValues[v.name] = false);
     }
-    addPendingValues(newPendingValues, true)
+    onChange(newValues);
 }
 
-const onCheckbox = (property, value, displayValue, addPendingValues) => {
-    let newState = ! displayValue;
-    addPendingValues({[value.name]: newState}, true)
+const onCheckbox = (property, value, onChange) => {
+    let newState = ! value.value;
+    onChange({[value.name]: newState});
 }
 
 
-const INDISwitch = ({property, value, displayValue, editMode, addPendingValues}) => {
+export const INDISwitch = ({property, value, editMode, onChange}) => {
     switch(property.rule) {
         case "ONE_OF_MANY":
         case "AT_MOST_ONE":
             return ( <CheckButton
                         size='mini'
                         key={value.name}
-                        active={displayValue}
-                        onClick={e => onButtonClick(property, value, displayValue, addPendingValues)}
+                        active={value.value}
+                        onClick={onButtonClick.bind(this, property, value, onChange)}
                         disabled={!editMode}
                         content={value.label} />
                     )
@@ -36,10 +36,10 @@ const INDISwitch = ({property, value, displayValue, editMode, addPendingValues})
                 <Checkbox
                     className='indi-one-of-many-switch'
                     slider
-                    checked={displayValue}
+                    checked={value.value}
                     label={value.label}
                     readOnly={!editMode}
-                    onChange={e => onCheckbox(property, value, displayValue, addPendingValues)}
+                    onChange={onCheckbox.bind(this, property, value, onChange)}
                 />
             )
         default:
@@ -47,4 +47,3 @@ const INDISwitch = ({property, value, displayValue, editMode, addPendingValues})
     }
 }
 
-export default INDISwitch

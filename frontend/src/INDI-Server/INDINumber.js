@@ -114,9 +114,7 @@ const CurrentValue = ({value, format, ...args}) => (
     />
 )
 
-const INDINumber = ({value, displayValue, addPendingValues, editMode}) => {
-    const onChange= (numValue, stringValue) => addPendingValues({ [value.name]: numValue })
-
+export const INDINumber = ({value, displayValue, onChange, editMode}) => {
     if(editMode) {
         return (
             <EditableInput
@@ -125,7 +123,7 @@ const INDINumber = ({value, displayValue, addPendingValues, editMode}) => {
                 format={value.format}
                 value={displayValue}
                 fluid
-                onChange={onChange}
+                onChange={onChange.bind(this, value.name)}
             />
 
         )
@@ -133,4 +131,3 @@ const INDINumber = ({value, displayValue, addPendingValues, editMode}) => {
     return <CurrentValue format={value.format} label={value.label} value={value.value} fluid />
 }
 
-export default INDINumber

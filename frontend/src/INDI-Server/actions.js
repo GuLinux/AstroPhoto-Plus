@@ -89,15 +89,6 @@ export const INDIServer = {
         }
     },
 
-    addPendingValues: (device, property, pendingValues, autoApply) => {
-        return dispatch => {
-            dispatch({ type: 'ADD_PENDING_VALUES', device, property, pendingValues, autoApply })
-            if(autoApply) {
-                dispatch(INDIServer.commitPendingValues(device, property, pendingValues));
-            }
-        }
-    },
-
     autoloadConfig: (device) => dispatch => {
         return autoloadConfigurationAPI(dispatch, device.name, json => {
             if(json.result)
@@ -105,10 +96,10 @@ export const INDIServer = {
         });
     },
 
-    commitPendingValues: (device, property, pendingValues) => {
+    setPropertyValues: (device, property, values) => {
         return dispatch => {
-            setINDIValuesAPI(dispatch, device, property, pendingValues, json => {});
-            dispatch({ type: 'COMMIT_PENDING_VALUES', property, pendingValues })
+            setINDIValuesAPI(dispatch, device, property, values, json => {});
+            dispatch({ type: 'INDI_REQUEST_SET_PROPERTY_VALUES', property, values})
         }
     },
 
