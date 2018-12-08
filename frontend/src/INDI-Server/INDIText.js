@@ -24,9 +24,11 @@ const CurrentValue = ({value, ...args}) => (
     />
 )
 
+const getDisplayValue = (displayValue, value) => displayValue || value.value;
+
 export const INDIText = ({value, editMode, displayValue, onChange}) => {
     if(editMode)
-        return <EditableInput label={value.label} value={displayValue} onChange={onChange.bind(this, value.name)} fluid />
+        return <EditableInput label={value.label} value={getDisplayValue(displayValue, value)} onChange={onChange.bind(this, value.name)} fluid />
     return <CurrentValue label={value.label} value={value.value} fluid />
 }
 

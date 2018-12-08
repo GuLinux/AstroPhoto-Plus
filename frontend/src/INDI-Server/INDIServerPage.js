@@ -40,25 +40,31 @@ class INDIServerPage extends React.PureComponent {
         this.state = { lastRoute: 'server' };
     }
 
+    renderDevice = ({match, location}) => <INDIDeviceContainer location={location} deviceId={match.params.deviceId} />;
+    renderSettingsPage = () => <INDISettingsPage hasLocalServer={this.props.hasLocalServer} />;
+
+    renderDeviceMenuItem = device => (
+        <Menu.Item
+            as={NavLink}
+            key={device.id}
+            to={'/indi/' + device.id}
+        >
+            {device.name}
+        </Menu.Item>
+    );
+
+
     render = () => (
         <Container>
             <Menu stackable>
                 <Menu.Item as={NavLink} exact={true} to="/indi/server">INDI Server</Menu.Item>
-                { this.props.devices.map( device =>
-                    <Menu.Item
-                        as={NavLink}
-                        key={device.id}
-                        to={'/indi/' + device.id}
-                    >
-                        {device.name}
-                    </Menu.Item>
-                )}
+                { this.props.devices.map(this.renderDeviceMenuItem)}
             </Menu>
             <HistoryLandingContainer route='/indi' defaultLandingPath='/indi/server'>
-                <Route path='/indi/server' exact={true} render={() => <INDISettingsPage hasLocalServer={this.props.hasLocalServer} />} />
-                <Route path='/indi/:deviceId' render={({match, location}) => <INDIDeviceContainer location={location} device={match.params.deviceId} />} />
+                <Route path='/indi/server' exact={true} render={this.renderSettingsPage} />
+                <Route path='/indi/:deviceId' render={this.renderDevice} />
             </HistoryLandingContainer>
-            </Container>
+        </Container>
     )
 }
 

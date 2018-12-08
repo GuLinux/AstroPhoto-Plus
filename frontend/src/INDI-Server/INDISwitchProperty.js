@@ -1,28 +1,24 @@
 import React from 'react';
-import { INDISwitch } from './INDISwitch'
-
+import { INDISwitchContainer } from './INDIValueContainer';
 
 export class INDISwitchProperty extends React.PureComponent {
 
     setPropertyValues = v => this.props.setPropertyValues(this.props.device, this.props.property, v);
 
     renderSwitch = (value, index) => (
-        <INDISwitch
+        <INDISwitchContainer
             key={index}
             property={this.props.property}
-            value={value}
+            valueId={value}
             editMode={this.props.isWriteable}
             onChange={this.setPropertyValues}
         />
     );
 
-    render = () => {
-        const {device, property, isWriteable} = this.props;
-        return (
-            <span>
-                {this.props.property.values.map(this.renderSwitch)}
-            </span>
-        );
-    }
+    render = () => (
+        <span>
+            {this.props.property.values.map(this.renderSwitch)}
+        </span>
+    );
 }
 

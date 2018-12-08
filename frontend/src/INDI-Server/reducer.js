@@ -1,5 +1,25 @@
 import { list2object } from '../utils';
-import { get, set } from 'lodash';
+import { get, getOr, set, omit } from 'lodash/fp';
+import { getValueId, getGroupId } from './utils';
+
+const devicesDefaultState = {
+    devices: {
+        ids: [],
+        entities: {},
+    },
+    groups: {
+        ids: [],
+        entities: {},
+    },
+    properties: {
+        ids: [],
+        entities: {},
+    },
+    values: {
+        ids: [],
+        entities: {},
+    },
+};
 
 const defaultState = {
         state: {
@@ -7,34 +27,75 @@ const defaultState = {
         host: '',
         port: '',
     },
-    deviceEntities: {},
-    devices: [],
-    properties: {},
-    groups: {},
-    values: {},
+    ...devicesDefaultState,
     messages: [],
 };
 
-const receivedServerState = (state, action) => {
-    let nextState = {...state, state: {connected: action.state.connected, host: action.state.host, port: action.state.port.toString()}};
-    if(! nextState.state.connected) {
-        nextState.devices = [];
-        nextState.deviceEntities = {}
-        nextState.properties = {};
+const receivedServerState = (state, {state: {connected, host, port}}) => {
+    const indiState = { connected, host, port: port.toString() };
+    if(connected) {
+        return {...state, state: indiState };
     }
-    return nextState;
+    return {...state, ...devicesDefaultState, state: indiState};
 }
 
-const propertyUpdated = (property, state) => {
-    const prevProp = state.properties[property.id];
-    if(JSON.stringify(property) !== JSON.stringify(prevProp)) {
-        let groups = state.groups;
-        const propertyGroups = get(groups, property.device, []);
-        if(!propertyGroups.includes(property.group)) {
-            groups = {...groups, [property.device]: [...propertyGroups, property.group] };
-        }
-        state = {...state, properties: {...state.properties, [property.id]: property}, groups };
+
+const addGroupsToDevice = (property, prevState) => {
+    const groupId = getGroupId(property);
+    const groups = getOr([], `devices.entities.${property.device}.groups`, prevState);
+    if(groups.includes(groupId)) {
+        return prevState;
     }
+    let state = set(`devices.entities.${property.device}.groups`, [...groups, groupId], prevState);
+    state = set('groups.ids', [...prevState.groups.ids, groupId], state);
+    return set(`groups.entities.${groupId}`, {
+        id: groupId,
+        name: property.group,
+        device: property.device,
+        properties: [],
+    }, state);
+}
+
+const addPropertyToGroup = (property, prevState) => {
+    const groupId = getGroupId(property);
+    const groupProperties = getOr([], `groups.entities.${groupId}.properties`, prevState);
+    if(groupProperties.includes(property.id)) {
+        return prevState;
+    }
+    let state = set(`groups.entities.${groupId}.properties`, [...groupProperties, property.id], prevState);
+    return set(`properties.ids`, [...prevState.properties.ids, property.id], state);
+}
+
+const updatePropertyEntity = (property, prevState, values) => {
+    const prevProperty = getOr({}, `properties.entities.${property.id}`, prevState);
+    if(JSON.stringify(prevProperty) === JSON.stringify(property)) {
+        return prevState;
+    }
+    return set(`properties.entities.${property.id}`, property, prevState);
+}
+
+const addValueToState = (property, value, prevState) => {
+    const id = getValueId(property, value);
+    const prevValue = get(`values.entities.${id}`, prevState);
+    const valueIds = get('values.ids', prevState);
+    let state = prevState;
+    if(!valueIds.includes(id)) {
+        state = set('values.ids', [...valueIds, id], state);
+    }
+    if(JSON.stringify(prevValue) !== JSON.stringify(value)) {
+        state = set(`values.entities.${id}`, value, state);
+    }
+    return state;
+}
+
+const propertyUpdated = ({values, ...property}, prevState) => {
+    property = set('values', values ? values.map(v => getValueId(property, v)) : [], property);
+    let state = addGroupsToDevice(property, prevState);
+    state = addPropertyToGroup(property, state);
+    state = updatePropertyEntity(property, state);
+    values && values.forEach(v => {
+        state = addValueToState(property, v, state)
+    });
     return state;
 }
 
@@ -43,7 +104,6 @@ const receivedDeviceProperties = (state, device, deviceProperties) => {
     deviceProperties.forEach(property => {
         state = propertyUpdated(property, state);
     })
-
     return state;
 }
 
@@ -51,60 +111,46 @@ const indiPropertyUpdated = (state, property) => propertyUpdated(property, state
 
 const indiPropertyAdded = (state, property) => propertyUpdated(property, state);
 
-const indiPropertyRemoved = (state, property) => {
-    let properties = {...state.properties};
-    delete properties[property.id]
-    let groups = state.groups;
-    let remainingGroups = Object.keys(properties).filter(p => properties[p].device === property.device).map(p => properties[p].group);
-    remainingGroups = remainingGroups.filter( (group, index) => remainingGroups.indexOf(group) === index);
-    if(!remainingGroups.includes(property.group)) {
-        groups = {...groups, [property.device]: remainingGroups };
+const indiPropertyRemoved = (prevState, property) => {
+    let { devices, groups, properties } = prevState;
+    let group = groups.entities[getGroupId(property)];
+    group = set('properties', group.properties.filter(id => id !== property.id), group);
+    if(group.properties.length === 0) {
+        groups = {
+            ids: groups.ids.filter(id => id !== group.id),
+            entities: omit(group.id, groups.entities),
+        };
+        devices = set(['entities', property.device, 'groups'], devices.entities[property.device].groups.filter(id => id !== group.id), devices);
+    } else {
+        groups = set(['entities', group.id], group, groups);
     }
-    return {...state, properties, groups}
-};
+    return {
+        ...prevState,
+        properties: {
+            ids: properties.ids.filter(id => id !== property.id),
+            entities: omit(property.id, properties.entities),
+        },
+        groups,
+        devices,
+    };
+}
 
 const changePropertyValues = (state, {property}) => {
-    return {
-            ...state,
-           properties: {
-                ...state.properties, [property.id]: {
-                    ...state.properties[property.id], state: 'CHANGED_BUSY'
-                }
-            }
-    };
+    return set(['properties', 'entities', property.id, 'state'], 'CHANGED_BUSY', state);
 }
 
 const receivedINDIDevices = (state, devices) => ({
     ...state,
-    deviceEntities: list2object(devices, 'id'),
-    devices: devices.map(d => d.id),
+    devices: {
+        entities: list2object(devices.map(d => ({...d, groups: []})), 'id'),
+        ids: devices.map(d => d.id),
+    },
 })
 
-const indiDeviceConnected = (state, device) => ({
-    ...state,
-    deviceEntities: {...state.deviceEntities, [device]: {...state.deviceEntities[device], lastConnected: Date.now(), configAutoloaded: false } },
-});
-
-const indiConfigAutoloaded = (state, device) => ({
-    ...state,
-    deviceEntities: {...state.deviceEntities, [device]: {...state.deviceEntities[device], configAutoloaded: true } },
-});
-
-
-
-const indiDeviceDisconnected = (state, device) => ({
-    ...state,
-    deviceEntities: {...state.deviceEntities, [device]: {...state.deviceEntities[device], lastDisConnected: Date.now() } },
-});
-
-
 const indiDeviceRemoved = (state, device) => {
-    let devices = state.devices.filter(d => d !== device.id);
-    let deviceEntities = {...state.deviceEntities};
-    delete deviceEntities[device.id];
-    let groups = {...state.groups};
-    delete groups[device.id];
-    return {...state, deviceEntities, devices, groups};
+    state = set(['devices', 'ids'], state.devices.ids.filter(id => id !== device.id), state);
+    state = omit(['devices', 'entities', device.id], state);
+    return state;
 }
 
 const indiserver = (state = defaultState, action) => {
@@ -130,11 +176,8 @@ const indiserver = (state = defaultState, action) => {
         case 'INDI_DEVICE_REMOVED':
             return indiDeviceRemoved(state, action.device);
         case 'INDI_DEVICE_CONNECTED':
-            return indiDeviceConnected(state, action.device);
         case 'INDI_DEVICE_DISCONNECTED':
-            return indiDeviceDisconnected(state, action.device);
         case 'INDI_CONFIG_AUTOLOADED':
-            return indiConfigAutoloaded(state, action.device);
         default:
             return state;
     }

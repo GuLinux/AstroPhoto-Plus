@@ -3,7 +3,7 @@ import { INDISwitchProperty } from './INDISwitchProperty'
 import { INDILightProperty } from './INDILightProperty'
 import { INDINumberProperty, INDITextProperty } from './INDIInputProperty'
 import Actions from '../actions'
-import { indiPropertySelector } from './selectors';
+import { indiPropertySelector } from './selectors-redo';
 
 const mapDispatchToProps = {
     setPropertyValues: Actions.INDIServer.setPropertyValues

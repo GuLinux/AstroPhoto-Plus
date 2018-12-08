@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { get } from 'lodash';
 
-const getProperties = state => state.indiserver.properties;
+const getPropertyEntities = state => state.indiserver.propertyEntities;
 const getDeviceIds = state => state.indiserver.devices;
 
 export const getDeviceEntities = state => state.indiserver.deviceEntities;
@@ -12,7 +12,7 @@ export const getDeviceNames = createSelector([getDeviceIds, getDeviceEntities], 
     return deviceIds.map(id => ({ id, name: devices[id].name }))
 })
 
-const getVisibleDeviceProperties = createSelector([getProperties, getVisibleDevice], (properties, visibleDevice) =>
+const getVisibleDeviceProperties = createSelector([getPropertyEntities, getVisibleDevice], (properties, visibleDevice) =>
     Object.keys(properties).map(p => properties[p]).filter(p => p.device === visibleDevice)
 )
 
@@ -22,7 +22,7 @@ export const getVisibleGroups = createSelector([
     state => state.indiserver.groups,
 ], (device, groups) => get(groups, device, []));
  
-export const getDevicesProperties = createSelector([getDeviceIds, getProperties], (devices, properties) =>
+export const getDevicesProperties = createSelector([getDeviceIds, getPropertyEntities], (devices, properties) =>
     Object.keys(properties).reduce( (mapping, id) => {
         let property = properties[id];
         let deviceID = property.device;
@@ -56,7 +56,7 @@ export const getVisibleProperties = createSelector([
 );
 
 
-export const indiDeviceGroupSelector = createSelector([getPropsGroup, getVisibleProperties], (group, properties) => {
+export const indiDeviceGroupSelector = () => createSelector([getPropsGroup, getVisibleProperties], (group, properties) => {
     return {
         group,
         properties,
@@ -66,7 +66,7 @@ export const indiDeviceGroupSelector = createSelector([getPropsGroup, getVisible
 
 export const indiPropertySelector = () => createSelector([
     (state, {propertyId, readOnly}) => ({ propertyId, readOnly}),
-    getProperties,
+    getPropertyEntities,
     getDeviceEntities,
 ], ({propertyId, readOnly}, properties, deviceEntities) => {
     const property = properties[propertyId];

@@ -1,9 +1,10 @@
 import React from 'react';
-import { INDINumber } from './INDINumber'
-import { INDIText } from './INDIText';
 
 import { Button, Grid } from 'semantic-ui-react'
-import { get } from 'lodash';
+import { get, set } from 'lodash/fp';
+import { transform } from 'lodash';
+import { INDINumberContainer, INDITextContainer } from './INDIValueContainer';
+import { getValueId } from './utils';
 
 class INDIInputProperty extends React.Component {
     constructor(props) {
@@ -13,8 +14,8 @@ class INDIInputProperty extends React.Component {
 
     editMode = mode => this.props.isWriteable && mode;
 
-    displayValue = name => get(this.state, ['pendingValues', name], this.props.property.values.find(p => p.name === name).value);
-    onValueChange = (name, value) => this.setState({...this.state, pendingValues: {...this.state.pendingValues, [name]: value } });
+    displayValue = name => get(['pendingValues', name, 'value'], this.state);
+    onValueChange = (name, value) => this.setState(set(['pendingValues', getValueId(this.props.property, {name})], {name, value}, this.state));
     enterEditMode = () => this.setState({...this.state, editMode: this.editMode(true)});
     cancelEdit = () => {
         this.setState({
@@ -25,17 +26,18 @@ class INDIInputProperty extends React.Component {
     }
 
     commit = () => {
+        const pendingValues = transform(this.state.pendingValues, (acc, val, key) => acc[val.name] = val.value, {});
         this.props.setPropertyValues(
             this.props.device,
             this.props.property,
-            this.state.pendingValues,
+            pendingValues,
         );
         this.cancelEdit();
     }
 
     renderInputComponent = (value, index) => {
         const { InputComponent } = this.props;
-        return <InputComponent key={index} value={value} onChange={this.onValueChange} displayValue={this.displayValue(value.name)} editMode={this.props.editMode} />
+        return <InputComponent key={index} valueId={value} onChange={this.onValueChange} displayValue={this.displayValue(value)} editMode={this.state.editMode} />
     }
 
 
@@ -67,6 +69,6 @@ class INDIInputProperty extends React.Component {
     }
 }
 
-export const INDINumberProperty = (props) => <INDIInputProperty {...props} InputComponent={INDINumber} />
-export const INDITextProperty = (props) => <INDIInputProperty {...props} InputComponent={INDIText} />
+export const INDINumberProperty = (props) => <INDIInputProperty {...props} InputComponent={INDINumberContainer} />
+export const INDITextProperty = (props) => <INDIInputProperty {...props} InputComponent={INDITextContainer} />
 

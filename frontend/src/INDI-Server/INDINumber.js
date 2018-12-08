@@ -116,6 +116,8 @@ const CurrentValue = ({value, format, ...args}) => (
 
 export class INDINumber extends React.PureComponent {
 
+    getDisplayValue = () => this.props.displayValue || this.props.value.value;
+
     onChange = (value) => this.props.onChange(this.props.value.name, value);
 
     render = () => {
@@ -126,7 +128,7 @@ export class INDINumber extends React.PureComponent {
                     min={value.min} max={value.max} step={value.step}
                     label={value.label}
                     format={value.format}
-                    value={displayValue}
+                    value={this.getDisplayValue()}
                     fluid
                     onChange={this.onChange}
                 />
