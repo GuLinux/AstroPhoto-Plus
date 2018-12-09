@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect'
-import { get } from 'lodash';
 import { getGroupId, getValueId } from './utils';
 
 export const getDevices = state => state.indiserver.devices;

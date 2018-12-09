@@ -21,7 +21,7 @@ export class INDIDevicePage extends React.PureComponent {
 
 
     render = () => {
-        const {device, groups, messages} = this.props;
+        const {device, messages} = this.props;
         if(! device)
             return <NotFoundPage backToUrl='/indi/server' message='INDI Device not found. Perhaps you need to connect to your INDI server?' backButtonText='INDI server page' />
         return (

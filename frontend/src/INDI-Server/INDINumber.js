@@ -121,7 +121,7 @@ export class INDINumber extends React.PureComponent {
     onChange = (value) => this.props.onChange(this.props.value.name, value);
 
     render = () => {
-        const {value, displayValue, editMode} = this.props;
+        const {value, editMode} = this.props;
         if(editMode) {
             return (
                 <EditableInput

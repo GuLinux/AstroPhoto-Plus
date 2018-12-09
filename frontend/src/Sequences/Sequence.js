@@ -140,7 +140,7 @@ export class SequenceSectionMenu extends React.PureComponent {
     onCreateSequenceJob = (type) => this.props.onCreateSequenceJob(type, this.props.sequence.id);
 
     render = () => {
-        const { sequence, startSequence, stopSequence, resetSequence, onCreateSequenceJob, gear } = this.props;
+        const { sequence, gear } = this.props;
         return sequence && (
             <NavbarSectionMenu sectionName='Sequence' sectionText={sequence.name}>
                 <Menu.Item onClick={this.startSequence} icon='play' content='start' disabled={!sequence.canStart(gear)} />

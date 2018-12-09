@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Dropdown, Container, Button, Table, Label } from 'semantic-ui-react'
+import { Dropdown, Button, Table } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
 import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
 import AddSequenceModalContainer from './AddSequenceModalContainer';

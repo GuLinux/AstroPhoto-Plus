@@ -6,7 +6,7 @@ class INDIServicePage extends React.PureComponent {
     onServerStopStart = () => this.props.serverRunning ? this.props.stopService(this.props.serverConnected) : this.props.startService(this.props.drivers);
 
     render = () => {
-        const {serverFound, serverRunning, startStopPending, lastError, dismissError} = this.props;
+        const {serverFound, serverRunning, startStopPending } = this.props;
 
         if(! serverFound)
             return null;

@@ -60,18 +60,15 @@ class ResponsiveNavbar extends React.Component {
 
 
 export class Navbar extends React.PureComponent {
-    render = () => {
-        const {location, children} = this.props;
-        return (
-             <React.Fragment>
-                <Responsive maxWidth={TRIGGER_SIZE}>
-                     <ResponsiveNavbar children={children} />
-                </Responsive>
-                <Responsive minWidth={TRIGGER_SIZE + 1}>
-                    <DesktopNavbar children={children} />
-                </Responsive>
-             </React.Fragment>
-        );
-    }
+    render = () => (
+         <React.Fragment>
+            <Responsive maxWidth={TRIGGER_SIZE}>
+                 <ResponsiveNavbar children={this.props.children} />
+            </Responsive>
+            <Responsive minWidth={TRIGGER_SIZE + 1}>
+                <DesktopNavbar children={this.props.children} />
+            </Responsive>
+         </React.Fragment>
+    );
 }
 

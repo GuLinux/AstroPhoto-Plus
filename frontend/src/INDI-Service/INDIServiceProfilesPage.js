@@ -64,8 +64,6 @@ class INDIServiceProfilesPage extends React.Component{
 
     renderProfileMenuItem = p => {
         const {
-            profiles,
-            selectedDrivers,
             driversAreSelected,
         } = this.props;
 
@@ -87,7 +85,6 @@ class INDIServiceProfilesPage extends React.Component{
     render = () => {
         const {
             profiles,
-            selectedDrivers,
             driversAreSelected,
         } = this.props;
         return (

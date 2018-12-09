@@ -1,13 +1,11 @@
 import { createSelector } from 'reselect';
-import { transform, get} from 'lodash';
 import {
     filterDevices,
     getConnectedAstrometry,
     getConnectedCameras,
     getConnectedTelescopes,
 } from '../Gear/selectors';
-import { getMessages, getDevices, getValues, indiValueSelectorByPath } from '../INDI-Server/selectors';
-import { getValueId } from '../INDI-Server/utils';
+import { getMessages, getDevices, indiValueSelectorByPath } from '../INDI-Server/selectors';
 import { PlateSolving } from './actions';
 
 

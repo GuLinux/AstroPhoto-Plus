@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { list2object, filterChildren } from '../utils'; 
 import { getDevices } from '../INDI-Server/selectors';
 
 const getSequenceIds = state => state.sequences.ids;

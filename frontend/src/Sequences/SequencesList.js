@@ -1,13 +1,10 @@
 import React from 'react';
-import { Menu, Dropdown, Container, Button, Table, Label } from 'semantic-ui-react'
+import { Menu, Container, Table, Label } from 'semantic-ui-react'
 import AddSequenceModalContainer from './AddSequenceModalContainer';
-import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
-import { Link } from 'react-router-dom';
 import { ImportSequenceContainer } from './ImportSequenceContainer';
 import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
 import { SequenceListItemContainer } from './SequenceListItemContainer';
 
-const uriFor = sequence => '/sequences/' + sequence.id;
 
 export const SequencesListSectionMenu = () => (
     <NavbarSectionMenu sectionName='Sequences'>
