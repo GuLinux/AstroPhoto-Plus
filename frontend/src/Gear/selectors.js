@@ -1,5 +1,5 @@
 import { getDeviceEntities, getDevicesProperties, getDevicesConnectionState } from '../INDI-Server/selectors'
-import { getDevices, getProperties, getValues } from '../INDI-Server/selectors-redo';
+import { getDevices, getProperties, getValues } from '../INDI-Server/selectors';
 import { createSelector } from 'reselect'
 import { list2object } from '../utils';
 import { transform , get } from 'lodash';

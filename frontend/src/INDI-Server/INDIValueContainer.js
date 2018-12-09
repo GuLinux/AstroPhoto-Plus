@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { indiValueSelector } from './selectors-redo';
+import { indiValueSelector } from './selectors';
 import { INDISwitch } from './INDISwitch';
 import { INDIText } from './INDIText';
 import { INDINumber } from './INDINumber';

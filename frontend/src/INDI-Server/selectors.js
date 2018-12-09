@@ -1,41 +1,19 @@
 import { createSelector } from 'reselect'
 import { get } from 'lodash';
+import { getGroupId, getValueId } from './utils';
 
-const getPropertyEntities = state => state.indiserver.propertyEntities;
-const getDeviceIds = state => state.indiserver.devices;
+export const getDevices = state => state.indiserver.devices;
+export const getProperties = state => state.indiserver.properties;
+export const getValues = state => state.indiserver.values;
+const getServerState = state => state.indiserver.state;
+const getServiceServerFound = state => state.indiservice.server_found;
 
-export const getDeviceEntities = state => state.indiserver.deviceEntities;
-
-const getVisibleDevice = (state, {device}) => device;
-
-export const getDeviceNames = createSelector([getDeviceIds, getDeviceEntities], (deviceIds, devices) => {
-    return deviceIds.map(id => ({ id, name: devices[id].name }))
-})
-
-const getVisibleDeviceProperties = createSelector([getPropertyEntities, getVisibleDevice], (properties, visibleDevice) =>
-    Object.keys(properties).map(p => properties[p]).filter(p => p.device === visibleDevice)
-)
+const getGroups = state => state.indiserver.groups;
 
 
-export const getVisibleGroups = createSelector([
-    getVisibleDevice,
-    state => state.indiserver.groups,
-], (device, groups) => get(groups, device, []));
- 
-export const getDevicesProperties = createSelector([getDeviceIds, getPropertyEntities], (devices, properties) =>
-    Object.keys(properties).reduce( (mapping, id) => {
-        let property = properties[id];
-        let deviceID = property.device;
-        return {...mapping, [deviceID]: {...mapping[deviceID], [property.name]: property } }
-    } , {})
-)
+// Own props
+const getDeviceProp = (state, {deviceId}) => deviceId;
 
-export const getDevicesConnectionState = createSelector([getDevicesProperties], (devicesProperties) =>
-    Object.keys(devicesProperties).reduce( (mapping, id) => ({
-        ...mapping,
-        [id]: 'CONNECTION' in devicesProperties[id] && !! devicesProperties[id].CONNECTION.values.find(v => v.name === 'CONNECT' && v.value)
-    }), {})
-)
 
 export const getMessages = createSelector([state => state.indiserver.messages], (messages) => messages.reduce( (acc, message) => {
     const { device } = message;
@@ -47,33 +25,61 @@ export const getMessages = createSelector([state => state.indiserver.messages], 
 }, {})); 
 
 
-const getPropsGroup = (state, {group}) => group;
-export const getVisibleProperties = createSelector([
-    getVisibleDeviceProperties,
-    getPropsGroup,
-], (properties, group) =>
-    group && properties.filter(p => p.group === group)
+
+export const indiServerContainerSelector = createSelector([getDevices, getServerState, getServiceServerFound],
+    (devices, serverState, serviceServerFound) => ({
+        devices: devices.ids.map(id => devices.entities[id]),
+        hasLocalServer: serviceServerFound && serverState.host === 'localhost',
+    })
 );
 
 
-export const indiDeviceGroupSelector = () => createSelector([getPropsGroup, getVisibleProperties], (group, properties) => {
-    return {
-        group,
-        properties,
-    };
-})
+const getCurrentDevice = createSelector([getDeviceProp, getDevices], (deviceId, devices) => devices.entities[deviceId]);
 
+export const indiDeviceContainerSelector = createSelector([getCurrentDevice, getGroups, getMessages],
+    (device, groups, messages) => ({
+        device,
+        groups,
+        messages,
+    })
+);
 
-export const indiPropertySelector = () => createSelector([
-    (state, {propertyId, readOnly}) => ({ propertyId, readOnly}),
-    getPropertyEntities,
-    getDeviceEntities,
-], ({propertyId, readOnly}, properties, deviceEntities) => {
-    const property = properties[propertyId];
-    return {
-        property,
-        device: deviceEntities[property.device],
-        isWriteable: property.perm_write && property.state !== 'CHANGED_BUSY' && ! readOnly,
-    };
-});
+const getCurrentGroupProp = (state, {deviceId, groupName}) => getGroupId({device: deviceId, group: groupName});
+const getCurrentGroup = createSelector([getCurrentGroupProp, getGroups], (groupId, groups) => groups.entities[groupId]);
 
+export const indiDeviceGroupSelector = createSelector([getCurrentGroup], (group) => ({
+    group,
+}));
+
+const getCurrentPropertyProp = (state, {propertyId}) => propertyId;
+
+export const indiPropertyRowSelector = () => createSelector([getCurrentPropertyProp, getProperties], (propertyId, properties) => ({
+    property: properties.entities[propertyId],
+}));
+
+    
+const getReadOnlyProperty = (state, {readOnly}) => readOnly;
+
+export const indiPropertySelector = () => createSelector(
+    [getDevices, getProperties, getCurrentPropertyProp, getReadOnlyProperty],
+    (devices, properties, propertyId, readOnly) => {
+        const property = properties.entities[propertyId];
+        return {
+            property,
+            device: devices.entities[property.device],
+            isWriteable: property.perm_write && property.state !== 'CHANGED_BUSY' && ! readOnly,
+        };
+    }
+);
+
+export const indiValueSelector = (valueId) => createSelector(
+    [getValues],
+    (values) => ({ value: values.entities[valueId] }),
+);
+
+export const indiValueSelectorByPath = (deviceId, propertyName, valueName) => indiValueSelector(getValueId({device: deviceId, name: propertyName}, {name: valueName}) );
+
+// TODO: remove
+const nullSelector = (...args) => console.log(args);
+export const getDevicesProperties = nullSelector;
+ 

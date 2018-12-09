@@ -6,7 +6,7 @@ import {
     getConnectedCameras,
     getConnectedTelescopes,
 } from '../Gear/selectors';
-import { getMessages, getDevices, getValues, indiValueSelectorByPath } from '../INDI-Server/selectors-redo';
+import { getMessages, getDevices, getValues, indiValueSelectorByPath } from '../INDI-Server/selectors';
 import { getValueId } from '../INDI-Server/utils';
 import { PlateSolving } from './actions';
 

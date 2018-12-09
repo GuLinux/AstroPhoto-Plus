@@ -11,7 +11,7 @@ import { get } from 'lodash';
 
 const { Options } = PlateSolvingActions;
 
-const MINIMUM_DRIVERS_CHOICE = 0;
+const MINIMUM_DRIVERS_CHOICE = 1;
 
 class SetCameraFOV extends React.PureComponent {
     componentDidMount = () => this.setFOV();

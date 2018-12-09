@@ -2,16 +2,6 @@ import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, 
 import Actions from '../actions';
 import { get } from 'lodash';
 
-let fetchGearTimerId;
-const fetchGear = dispatch => {
-    clearTimeout(fetchGearTimerId);
-    fetchGearTimerId = setTimeout( () => {
-        fetchGearTimerId = null;
-        Actions.Gear.fetchAll(dispatch);
-    }, 1000);
-}
-
-
 export const INDIServer = {
     serverConnectionNotify: (state, dispatch) => {
         dispatch(INDIServer.receivedServerState(state.payload, dispatch));
@@ -46,7 +36,6 @@ export const INDIServer = {
     },
 
     receivedDevices: (devices, dispatch) => {
-        fetchGear(dispatch);
         devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device)));
         return {
             type: 'RECEIVED_INDI_DEVICES',
@@ -127,7 +116,6 @@ export const INDIServer = {
     deviceAdded: device => {
         return dispatch => {
             dispatch({ type: 'INDI_DEVICE_ADDED', device })
-            fetchGear(dispatch);
         }
     },
     
