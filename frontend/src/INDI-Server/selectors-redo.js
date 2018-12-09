@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { get } from 'lodash';
-import { getGroupId } from './utils';
+import { getGroupId, getValueId } from './utils';
 
 export const getDevices = state => state.indiserver.devices;
 export const getProperties = state => state.indiserver.properties;
@@ -72,8 +72,9 @@ export const indiPropertySelector = () => createSelector(
     }
 );
 
-export const indiValueSelector = () => createSelector(
-    [getValues, (state, {valueId}) => valueId],
-    (values, valueId) => ({ value: values.entities[valueId] }),
+export const indiValueSelector = (valueId) => createSelector(
+    [getValues],
+    (values) => ({ value: values.entities[valueId] }),
 );
 
+export const indiValueSelectorByName = (property, valueName) => indiValueSelector(getValueId(property, valueName));

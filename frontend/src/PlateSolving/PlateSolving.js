@@ -17,12 +17,9 @@ class SetCameraFOV extends React.PureComponent {
     componentDidMount = () => this.setFOV();
     componentDidUpdate = (prevProps) => this.props.camera !== prevProps.camera && this.setFOV();
     setFOV = () => {
-        const { setOption, camera, telescope } = this.props;
-        const { ccdInformation } = camera;
-        const telescopeInformation = telescope.info;
-        const sensorWidth = (ccdInformation.CCD_MAX_X.value * ccdInformation.CCD_PIXEL_SIZE_X.value) / 1000;
-        const focalLength = telescopeInformation.TELESCOPE_FOCAL_LENGTH.value;
-        const fieldOfView = 60 * 2 * Math.atan(sensorWidth / (2 * focalLength) ) / (Math.PI / 180);
+        const { setOption, camera, telescopeFocalLength , ccdInfo } = this.props;
+        const sensorWidth = (ccdInfo.ccdMaxX * ccdInfo.ccdPixelSizeX) / 1000;
+        const fieldOfView = 60 * 2 * Math.atan(sensorWidth / (2 * telescopeFocalLength) ) / (Math.PI / 180);
         const fovRange = { minimumWidth: fieldOfView * 0.9, maximumWidth: fieldOfView * 1.1 };
         setOption(Options.fov, fovRange);
     }
@@ -198,8 +195,8 @@ export class PlateSolving extends React.PureComponent {
                         { cameras.length > 0 && cameras.ids.map(this.cameraButton)}
                         { cameras.ids.includes(options[Options.fovSource]) &&
                             <SetCameraFOV
-                                camera={this.driver('cameras', options[Options.fovSource])}
-                                telescope={this.driver('telescopes', options[Options.telescope])}
+                                ccdInfo={this.props.ccdInfo}
+                                telescopeFocalLength={this.props.telescopeFocalLength}
                                 setOption={setOption}
                             /> }
                         { options[Options.fovSource] && (
