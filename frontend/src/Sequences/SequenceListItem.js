@@ -23,7 +23,7 @@ export class SequenceListItem extends React.PureComponent {
     stopSequence = () => this.props.stopSequence(this.props.sequence);
     startSequence = () => this.props.startSequence(this.props.sequence);
     onSequenceDelete = (flags) => this.props.onSequenceDelete(this.props.sequence.id, flags);
-    resetSequence = (flags) => this.props.resetSequence(this.props.sequence.id, flags);
+    resetSequence = (flags) => this.props.resetSequence(this.props.sequence, flags);
 
     render = () => {
         const {sequence, gear, sequenceJobsLength, canStart, canStop, canReset, canEdit} = this.props;

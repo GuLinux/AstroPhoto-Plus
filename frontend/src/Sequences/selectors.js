@@ -20,6 +20,16 @@ const getSequenceGear = (sequenceId) => createSelector([getSequence(sequenceId),
         filterWheel: sequence.filterWheel && devices.entities[sequence.filterWheel],
 })); 
 
+
+const getSequenceStatus = (sequence, gear) => {
+    const gearConnected = gear.camera && gear.camera.connected && (!sequence.filterWheel || (gear.filterWheel && gear.filterWheel.connected));
+    const canStart = gearConnected && ['idle', 'stopped', 'error'].includes(sequence.status);
+    const canStop = sequence.status === 'running';
+    const canEdit = gearConnected && ['idle', 'error'].includes(sequence.status);
+    const canReset = sequence.status !== 'running';
+    return { canStart, canStop, canEdit, canReset };
+};
+
 export const getSequenceListItemSelector = (sequenceId) => createSelector([
     getSequence(sequenceId),
     getSequenceGear(sequenceId),
@@ -33,10 +43,7 @@ export const getSequenceListItemSelector = (sequenceId) => createSelector([
         sequence,
         gear,
         sequenceJobsLength,
-        canStart: gearConnected,
-        canStop,
-        canEdit,
-        canReset,
+        ...getSequenceStatus(sequence, gear),
     }
 });
 
