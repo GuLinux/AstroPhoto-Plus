@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import LastCapturedSequenceImage from './LastCapturedSequenceImage';
+import { LastCapturedSequenceImage } from './LastCapturedSequenceImage';
 import { lastCapturedSequenceImageSelector } from './selectors';
 import { imageUrlBuilder } from '../utils';
 import Actions from '../actions';
