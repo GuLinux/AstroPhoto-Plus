@@ -58,6 +58,6 @@ const mapDispatchToProps = {
 const SequenceJobsContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(SequenceJobsList)
+)( () => null /* SequenceJobsList */ )
 
 export default SequenceJobsContainer

@@ -1,20 +1,10 @@
 import { connect } from 'react-redux';
 import { Sequence, SequenceSectionMenu } from './Sequence';
 import Actions from '../actions';
-import { getSequencesGears } from '../Gear/selectors';
-import { getSequenceEntitiesWithJobs } from './selectors';
+import { sequenceSelector, sequenceSectionMenuSelector } from './selectors';
 
-const mapStateToProps = (state, ownProps) => {
-    let sequenceId = ownProps.sequenceId;
-    if(!(sequenceId in state.sequences.entities)) {
-        return { sequence: null }
-    }
-    const sequence = getSequenceEntitiesWithJobs(state)[sequenceId];
-    let gear = getSequencesGears(state)[sequenceId];
-
-    let properties = {sequence, camera: gear.camera, filterWheel: gear.filterWheel, gear};
-    return properties;
-}
+const sequenceMapStateToProps = (state, ownProps) => sequenceSelector(ownProps.sequenceId);
+const sequenceSectionMenuMapStateToProps = (state, ownProps) => sequenceSectionMenuSelector(ownProps.sequenceId);
 
 
 const mapDispatchToProps = {
@@ -26,12 +16,12 @@ const mapDispatchToProps = {
 
 
 export const SequenceContainer = connect(
-    mapStateToProps,
+    sequenceMapStateToProps,
     mapDispatchToProps,
 )(Sequence)
 
 export const SequenceSectionMenuContainer = connect(
-    mapStateToProps,
+    sequenceSectionMenuMapStateToProps,
     mapDispatchToProps,
 )(SequenceSectionMenu)
 
