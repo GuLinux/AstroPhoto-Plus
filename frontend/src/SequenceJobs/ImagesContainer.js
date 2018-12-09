@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { Images, ImagesSectionMenu } from './Images'
 import { searchImages } from '../middleware/api';
 import { Actions } from '../actions';
+import { withRouter } from 'react-router';
 
 const mapStateToProps = (state, ownProps) => {
     if(! (ownProps.sequenceJob in state.sequenceJobs))
@@ -20,18 +21,14 @@ const mapDispatchToProps = dispatch => ({
     setImagesPreview: (imagesPreview) => dispatch(Actions.SequenceJobs.setImagesPreview(imagesPreview)),
 })
 
-export const ImagesContainer = connect(
+export const ImagesContainer = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
-  null,
-  { pure: false }
-)(Images)
+)(Images));
 
-export const SequenceJobImagesContainer = connect(
+export const SequenceJobImagesContainer = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps,
-  null,
-  { pure: false }
-)(ImagesSectionMenu)
+)(ImagesSectionMenu))
 
 

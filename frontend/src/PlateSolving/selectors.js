@@ -1,11 +1,12 @@
-import { createSelector } from 'reselect'
-
+import { createSelector } from 'reselect';
+import { transform } from 'lodash';
 import {
-  connectedAstrometrySelector,
-  connectedTelescopesSelector,
-  connectedCamerasSelector,
+    filterDevices,
+    getConnectedAstrometry,
+    getConnectedCameras,
+    getConnectedTelescopes,
 } from '../Gear/selectors';
-import { getMessages } from '../INDI-Server/selectors';
+import { getMessages, getDevices } from '../INDI-Server/selectors-redo';
 import { PlateSolving } from './actions';
 
 
@@ -13,18 +14,26 @@ const getPlateSolvingOptions = state => state.plateSolving.options;
 
 const getSolution = state => state.plateSolving.solution;
 
+
+const getPlateSolvingDevices = createSelector([
+    getConnectedAstrometry,
+    getConnectedCameras,
+    getConnectedTelescopes,
+    getDevices,
+], (astrometryIds, camerasIds, telescopesIds, devices) => ({
+    astrometryDrivers: filterDevices(devices, astrometryIds),
+    telescopes: filterDevices(devices, telescopesIds),
+    cameras:    filterDevices(devices, camerasIds),
+}))
+
 export const plateSolvingContainerSelector = createSelector([
-    connectedAstrometrySelector,
-    connectedTelescopesSelector,
-    connectedCamerasSelector,
+    getPlateSolvingDevices,
     getMessages,
     getPlateSolvingOptions,
     getSolution,
     state => state.plateSolving.loading,
-], (astrometryDrivers, telescopes, cameras, messages, options, solution, loading) => ({
-    astrometryDrivers,
-    telescopes,
-    cameras,
+], (plateSolvingDevices, messages, options, solution, loading) => ({
+    ...plateSolvingDevices,
     messages: messages[options.astrometryDriver],
     options,
     solution,
@@ -38,8 +47,8 @@ export const plateSolvingSectionMenuSelector = createSelector([getPlateSolvingOp
 
 export const solveFromCameraSelector = createSelector([getPlateSolvingOptions], options => ({options}));
 
-export const plateSolvingPageContainerSelector = createSelector([connectedAstrometrySelector, connectedTelescopesSelector], (astrometryDrivers, telescopes) => ({
-    hasAstrometry: astrometryDrivers.all.length > 0,
-    hasTelescopes: telescopes.all.length > 0,
+export const plateSolvingPageContainerSelector = createSelector([getConnectedAstrometry, getConnectedTelescopes], (astrometryDrivers, telescopes) => ({
+    hasAstrometry: astrometryDrivers.length > 0,
+    hasTelescopes: telescopes.length > 0,
 }));
 

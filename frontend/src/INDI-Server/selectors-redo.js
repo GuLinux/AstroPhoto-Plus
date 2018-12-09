@@ -2,14 +2,14 @@ import { createSelector } from 'reselect'
 import { get } from 'lodash';
 import { getGroupId } from './utils';
 
-const getDevices = state => state.indiserver.devices;
+export const getDevices = state => state.indiserver.devices;
+export const getProperties = state => state.indiserver.properties;
+export const getValues = state => state.indiserver.values;
 const getServerState = state => state.indiserver.state;
 const getServiceServerFound = state => state.indiservice.server_found;
 
 const getGroups = state => state.indiserver.groups;
 
-const getProperties = state => state.indiserver.properties;
-const getValues = state => state.indiserver.values;
 
 // Own props
 const getDeviceProp = (state, {deviceId}) => deviceId;

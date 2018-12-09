@@ -11,6 +11,7 @@ import { get } from 'lodash';
 
 const { Options } = PlateSolvingActions;
 
+const MINIMUM_DRIVERS_CHOICE = 0;
 
 class SetCameraFOV extends React.PureComponent {
     componentDidMount = () => this.setFOV();
@@ -110,6 +111,7 @@ const SolutionPanel = ({solution}) => {
     );
 }
 
+
 export class PlateSolving extends React.PureComponent {
 
     componentDidMount = () => {
@@ -122,7 +124,7 @@ export class PlateSolving extends React.PureComponent {
 
     setDefaultDevice = (option, devices) => {
         if(!this.props.options[option] && devices.length === 1) {
-            this.props.setOption(option, devices.all[0].id);
+            this.props.setOption(option, devices.ids[0]);
         }
     }
 
@@ -132,9 +134,11 @@ export class PlateSolving extends React.PureComponent {
     setMinimumFOV = (value) => this.props.setOption(Options.fov, {...this.props.options[Options.fov], minimumWidth: value});
     setMaximumFOV = (value) => this.props.setOption(Options.fov, {...this.props.options[Options.fov], maximumWidth: value});
 
-    astrometryDriverButton = d => this.optionButton(Options.astrometryDriver, d.id, { content: d.name, key: d.id});
-    telescopeDriverButton = d => this.optionButton(Options.telescope, d.id, { content: d.name, key: d.id });
-    cameraButton = c => this.optionButton(Options.fovSource, c.id, {content: c.name, key: c.id});
+    driver = (type, id) => this.props[type].entities[id];
+
+    astrometryDriverButton = id => this.optionButton(Options.astrometryDriver, id, { content: this.driver('astrometryDrivers', id).name, key: id});
+    telescopeDriverButton = id => this.optionButton(Options.telescope, id, { content: this.driver('telescopes', id).name, key: id });
+    cameraButton = id => this.optionButton(Options.fovSource, id, {content: this.driver('cameras', id).name, key: id});
 
     onFileUploaded = fileBuffer => this.props.solveField({
         ...this.props.options,
@@ -147,19 +151,19 @@ export class PlateSolving extends React.PureComponent {
         <Container>
             <Header content='Plate Solver options' />
             <Grid stackable>
-            { astrometryDrivers.length > 1 && (
+            { astrometryDrivers.length > MINIMUM_DRIVERS_CHOICE && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Astrometry driver' /></Grid.Column>
                     <Grid.Column width={11}>
-                        { astrometryDrivers.all.map(this.astrometryDriverButton) }
+                        { astrometryDrivers.ids.map(this.astrometryDriverButton) }
                     </Grid.Column>
                 </Grid.Row>
             )}
-            { telescopes.length > 1 && (
+            { telescopes.length > MINIMUM_DRIVERS_CHOICE && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Telescope' /></Grid.Column>
                     <Grid.Column width={11}>
-                        { telescopes.all.map(this.telescopeDriverButton)}
+                        { telescopes.ids.map(this.telescopeDriverButton)}
                     </Grid.Column>
                 </Grid.Row>
             )}
@@ -191,8 +195,13 @@ export class PlateSolving extends React.PureComponent {
                     <Grid.Column width={11}>
                         {this.optionButton(Options.fovSource, false, {content: 'Off'})}
                         {this.optionButton(Options.fovSource, 'manual', {content: 'Manual'})}
-                        { cameras.length > 0 && cameras.all.map(this.cameraButton)}
-                        { cameras.ids.includes(options[Options.fovSource]) && <SetCameraFOV camera={cameras.get(options[Options.fovSource])} telescope={telescopes.get(options[Options.telescope])} setOption={setOption} /> }
+                        { cameras.length > 0 && cameras.ids.map(this.cameraButton)}
+                        { cameras.ids.includes(options[Options.fovSource]) &&
+                            <SetCameraFOV
+                                camera={this.driver('cameras', options[Options.fovSource])}
+                                telescope={this.driver('telescopes', options[Options.telescope])}
+                                setOption={setOption}
+                            /> }
                         { options[Options.fovSource] && (
                         <Grid.Row>
                             <Grid.Column width={8}><NumericInput min={0} label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'minimumWidth'], 0)} onChange={this.setMinimumFOV}/></Grid.Column>

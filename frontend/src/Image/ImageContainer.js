@@ -33,12 +33,10 @@ const mapDispatchToProps = {
 };
 
 
-export const ImageContainer = connect(
+export const ImageContainer = withRouter(connect(
     mapStateToProps,
     mapDispatchToProps,
-    null,
-    { pure: false }
-)(ImagePage);
+)(ImagePage));
 
 export const ImageSectionMenuContainer = connect(
     mapStateToProps,
