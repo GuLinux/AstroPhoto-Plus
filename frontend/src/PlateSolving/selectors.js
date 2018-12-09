@@ -6,12 +6,13 @@ import {
     getConnectedCameras,
     getConnectedTelescopes,
 } from '../Gear/selectors';
-import { getMessages, getDevices, indiValueSelectorByName, getValues } from '../INDI-Server/selectors-redo';
+import { getMessages, getDevices, getValues, indiValueSelectorByPath } from '../INDI-Server/selectors-redo';
 import { getValueId } from '../INDI-Server/utils';
 import { PlateSolving } from './actions';
 
 
 const getPlateSolvingOptions = state => state.plateSolving.options;
+const getOption = (state, option) => getPlateSolvingOptions(state)[option];
 
 const getSolution = state => state.plateSolving.solution;
 
@@ -28,16 +29,13 @@ const getPlateSolvingDevices = createSelector([
 }))
 
 
-const getCCDInfoSelector = (value) => createSelector([getPlateSolvingOptions, getValues], (options, values) => {
-    const fovSource = options[PlateSolving.Options.fovSource];
-    return fovSource && fovSource !== 'manual' && values.entities[getValueId({name: 'CCD_INFO', device: fovSource}, {name: value})].value;
-});
+const getCCDInfoSelector = (valueName) => createSelector([
+    state => indiValueSelectorByPath(getOption(state, PlateSolving.Options.fovSource), 'CCD_INFO', valueName)(state).value,
+], (valueEntity) => valueEntity && valueEntity.value);
 
-const getTelescopeFocalLength = createSelector([getPlateSolvingOptions, getValues], (options, values) => {
-    const telescope = options[PlateSolving.Options.telescope];
-    const valueId = getValueId({name: 'TELESCOPE_INFO', device: telescope}, {name: 'TELESCOPE_FOCAL_LENGTH'});
-    return telescope && values.entities[valueId].value;
-});
+const getTelescopeFocalLength = createSelector([
+    state => indiValueSelectorByPath(getOption(state, PlateSolving.Options.telescope), 'TELESCOPE_INFO', 'TELESCOPE_FOCAL_LENGTH')(state).value,
+], (telescopeFocalLength) => telescopeFocalLength && telescopeFocalLength.value);
 
 
 

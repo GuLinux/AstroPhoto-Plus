@@ -77,4 +77,4 @@ export const indiValueSelector = (valueId) => createSelector(
     (values) => ({ value: values.entities[valueId] }),
 );
 
-export const indiValueSelectorByName = (property, valueName) => indiValueSelector(getValueId(property, valueName));
+export const indiValueSelectorByPath = (deviceId, propertyName, valueName) => indiValueSelector(getValueId({device: deviceId, name: propertyName}, {name: valueName}) );
