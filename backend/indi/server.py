@@ -8,6 +8,7 @@ from .indi_property import Property
 import time
 from errors import NotFoundError
 from .blob_client import BLOBClient
+import threading
 
 
 class Server:
@@ -89,8 +90,17 @@ class Server:
     def __on_property_removed(self, indi_property):
         self.event_listener.on_indi_property_removed(self.property(indi_device_property=indi_property))
 
-    def __on_device_added(self, device):
-        self.event_listener.on_device_added(self.device(name=device.name))
+    def __on_device_added(self, indi_device):
+        def wait_for_interfaces():
+            device = None
+            started = time.time()
+            while time.time() - started < 5:
+                device = self.device(name=indi_device.name)
+                if device.to_map()['interfaces']:
+                    break
+                time.sleep(0.1)
+            self.event_listener.on_device_added(device)
+        threading.Thread(target=wait_for_interfaces).start()
 
     def __on_device_removed(self, device):
         self.event_listener.on_device_removed(self.device(name=device.name))
