@@ -103,6 +103,9 @@ const propertyUpdated = ({values, ...property}, prevState) => {
 const receivedDeviceProperties = (state, device, deviceProperties) => {
     deviceProperties.forEach(property => {
         state = propertyUpdated(property, state);
+        if(property.name === 'CONNECTION') {
+            state = set(['devices', 'entities', property.device, 'connected'], property.values.find(v => v.name === 'CONNECT').value, state);
+        }
     })
     return state;
 }
@@ -147,6 +150,11 @@ const receivedINDIDevices = (state, devices) => ({
     },
 })
 
+const indiDeviceAdded = (state, {device}) => {
+    state = set('devices.ids', [...state.devices.ids, device.id], state);
+    return set(['devices', 'entities', device.id], {...device, connected: false, groups: []}, state);
+}
+
 const indiDeviceRemoved = (state, device) => {
     state = set(['devices', 'ids'], state.devices.ids.filter(id => id !== device.id), state);
     state = omit(['devices', 'entities', device.id], state);
@@ -172,11 +180,13 @@ const indiserver = (state = defaultState, action) => {
         case 'INDI_PROPERTY_REMOVED':
             return indiPropertyRemoved(state, action.property);
         case 'INDI_DEVICE_ADDED':
-            return {...state, devices: [...state.devices, action.device.id], deviceEntities: {...state.deviceEntities, [action.device.id]: action.device}}
+            return indiDeviceAdded(state, action);
         case 'INDI_DEVICE_REMOVED':
             return indiDeviceRemoved(state, action.device);
         case 'INDI_DEVICE_CONNECTED':
+            return set(['devices', 'entities', action.device, 'connected'], true, state);
         case 'INDI_DEVICE_DISCONNECTED':
+            return set(['devices', 'entities', action.device, 'connected'], false, state);
         case 'INDI_CONFIG_AUTOLOADED':
         default:
             return state;
