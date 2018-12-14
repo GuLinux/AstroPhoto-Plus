@@ -1,8 +1,10 @@
-import 'eventsource'
 import { normalize } from 'normalizr'
 import { sequenceSchema } from './schemas'
 import Actions from '../actions';
-declare var EventSourcePolyfill: any;
+
+import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
+const EventSource = NativeEventSource || EventSourcePolyfill;
+
 
 
 

@@ -11,8 +11,8 @@ import { Actions } from './actions';
 import thunkMiddleware from 'redux-thunk';
 import { Routes } from './routes';
 import { starQuewReducer } from './reducers';
-import registerServiceWorker from './registerServiceWorker';
-//import listenToEvents from './middleware/events';
+//import registerServiceWorker from './registerServiceWorker';
+import listenToEvents from './middleware/events';
 import { NativeRouter as Router, Route } from 'react-router-native'
 
 

@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "d3-celestial-react": "GuLinux/d3-celestial-react",
-    "event-source-polyfill": "0.0.12",
+    "event-source-polyfill": "1.0.5",
     "forest-themes": "semantic-ui-forest/forest-themes#7f472cfbcc2093bb8c90cc56fba18ca8e3818028",
     "isomorphic-fetch": "^2.2.1",
     "normalizr": "^3.2.4",

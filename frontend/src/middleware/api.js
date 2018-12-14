@@ -1,7 +1,6 @@
-import fetch from 'isomorphic-fetch'
-import Actions from '../actions'
-
-import { normalize } from 'normalizr'
+import Actions from '../actions';
+import { fetch } from './polyfills';
+import { normalize } from 'normalizr';
 import { commandsSchema, sequenceSchema, sequenceListSchema, sequenceJobSchema } from './schemas'
 
 const isJSON = response => response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
