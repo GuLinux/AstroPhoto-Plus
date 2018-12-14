@@ -32,7 +32,7 @@ let store = createStore(
     createMiddleware()
 );
 
-//listenToEvents(store.dispatch);
+listenToEvents(store.dispatch);
 
 const renderIndex = () => (
     <Provider store={store}>
