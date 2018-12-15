@@ -1,7 +1,8 @@
 import { createSelector } from 'reselect';
-import { getDevices } from '../INDI-Server/selectors';
-import { getSequenceJobs, getJobsForSequence } from '../SequenceJobs/selectors';
-import { imageUrlBuilder } from '../utils';
+import { getDevices, getProperties, getValues } from '../INDI-Server/selectors';
+import { getJobsForSequence } from '../SequenceJobs/selectors';
+import { imageUrlBuilder, formatDecimalNumber } from '../utils';
+import { secs2time } from '../utils';
 
 const getSequenceIds = state => state.sequences.ids;
 export const getSequence = (sequenceId) => state => state.sequences.entities[sequenceId];
@@ -36,12 +37,10 @@ const getSequenceStatus = (sequence, gear) => {
 export const getSequenceListItemSelector = (sequenceId) => createSelector([
     getSequence(sequenceId),
     getSequenceGear(sequenceId),
-    state => getSequenceJobs(state).length
-], (sequence, gear, sequenceJobsLength) => {
+], (sequence, gear) => {
     return {
         sequence,
         gear,
-        sequenceJobsLength,
         ...getSequenceStatus(sequence, gear),
     }
 });
@@ -51,9 +50,11 @@ export const getSequenceListItemSelector = (sequenceId) => createSelector([
 
 export const sequenceSelector = (sequenceId) => createSelector([
     getSequence(sequenceId),
-], (sequence) => {
+    getSequenceGear(sequenceId),
+], (sequence, gear) => {
     return {
         sequence,
+        ...getSequenceStatus(sequence, gear),
     };
 });
 
@@ -96,3 +97,62 @@ export const lastCapturedSequenceImageSelector = (sequenceId) => createSelector(
 
     return { showLastImage, type, lastImage, lastImageId };
 });
+
+
+export const exposuresCardSelector = sequenceId => createSelector([getJobsForSequence(sequenceId)], sequenceJobs => {
+    const exposureSequenceJobs = sequenceJobs.filter(s => s.type === 'shots');
+    const remapped = exposureSequenceJobs.map(s => ({
+        count: s.count,
+        shot: s.progress,
+        remaining: s.count - s.progress,
+        totalTime: s.count * s.exposure,
+        elapsed: s.progress * s.exposure,
+        timeRemaining: s.exposure * (s.count - s.progress),
+    }));
+    const computeTotal = (prop) => remapped.reduce( (cur, val) => cur + val[prop], 0);
+    return {
+        exposureJobsCount: exposureSequenceJobs.length,
+        totalShots: computeTotal('count'),
+        totalTime: secs2time(computeTotal('totalTime')),
+        completedShots: computeTotal('shot'),
+        completedTime: secs2time(computeTotal('elapsed')),
+        remainingShots: computeTotal('remaining'),
+        remainingTime: secs2time(computeTotal('timeRemaining')),
+    }
+});
+
+
+const getSequenceCamera = sequenceId => createSelector([getSequenceGear(sequenceId)], gear => gear.camera);
+const getSequenceCameraExposureProperty = sequenceId => createSelector([
+    getSequenceCamera(sequenceId),
+    getProperties,
+],
+    (camera, properties) => {
+        if(!camera) {
+            return null;
+        }
+        const propertyId = properties.ids.find(id => properties.entities[id].device === camera.id && properties.entities[id].name === 'CCD_EXPOSURE');
+        return propertyId && properties.entities[propertyId];
+});
+
+const getSequenceCameraExposureValue = sequenceId => createSelector([
+    getSequenceCameraExposureProperty(sequenceId),
+    getValues,
+], (property, values) => {
+    if(!property) {
+        return null;
+    }
+    const valueId = property.values.find(id => values.entities[id].name === 'CCD_EXPOSURE_VALUE');
+    return values.entities[valueId];
+});
+
+export const cameraDetailsCardSelector = sequenceId => createSelector([
+    getSequenceCamera(sequenceId),
+    getSequenceCameraExposureProperty(sequenceId),
+    getSequenceCameraExposureValue(sequenceId),
+], (camera, property, value) => value ? {
+    state: property.state,
+    cameraConnected: camera.connected,
+    cameraName: camera.name,
+    value: formatDecimalNumber(value.format, value.value),
+}: {});

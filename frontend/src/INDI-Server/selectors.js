@@ -50,18 +50,16 @@ export const indiDeviceGroupSelector = createSelector([getCurrentGroup], (group)
     group,
 }));
 
-const getCurrentPropertyProp = (state, {propertyId}) => propertyId;
-
-export const indiPropertyRowSelector = () => createSelector([getCurrentPropertyProp, getProperties], (propertyId, properties) => ({
+export const indiPropertyRowSelector = (propertyId) => createSelector([getProperties], (properties) => ({
     property: properties.entities[propertyId],
 }));
 
     
 const getReadOnlyProperty = (state, {readOnly}) => readOnly;
 
-export const indiPropertySelector = () => createSelector(
-    [getDevices, getProperties, getCurrentPropertyProp, getReadOnlyProperty],
-    (devices, properties, propertyId, readOnly) => {
+export const indiPropertySelector = (propertyId) => createSelector(
+    [getDevices, getProperties, getReadOnlyProperty],
+    (devices, properties, readOnly) => {
         const property = properties.entities[propertyId];
         return {
             property,

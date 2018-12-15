@@ -26,7 +26,7 @@ export class SequenceListItem extends React.PureComponent {
     resetSequence = (flags) => this.props.resetSequence(this.props.sequence, flags);
 
     render = () => {
-        const {sequence, gear, sequenceJobsLength, canStart, canStop, canReset, canEdit} = this.props;
+        const {sequence, gear, canStart, canStop, canReset, canEdit} = this.props;
         return (
             <Table.Row key={sequence.id}>
                 <Table.Cell verticalAlign='middle'>
@@ -35,7 +35,7 @@ export class SequenceListItem extends React.PureComponent {
                     </Link>
                 </Table.Cell>
                 <Table.Cell verticalAlign='middle'><GearDescription gear={gear} /></Table.Cell>
-                <Table.Cell verticalAlign='middle'>{sequenceJobsLength}</Table.Cell>
+                <Table.Cell verticalAlign='middle'>{sequence.sequenceJobs.length}</Table.Cell>
                 <Table.Cell verticalAlign='middle'>{sequence.status}</Table.Cell>
                 <Table.Cell>
                     <Button.Group icon compact size='mini'>

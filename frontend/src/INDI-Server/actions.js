@@ -104,7 +104,6 @@ export const INDIServer = {
             else {
                 dispatch({type: 'INDI_DEVICE_DISCONNECTED', device: property.device})
             }
-            Actions.Gear.fetchAll(dispatch);
         }
         dispatch({ type: 'INDI_PROPERTY_UPDATED', property })
     },

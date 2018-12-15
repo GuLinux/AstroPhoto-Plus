@@ -1,5 +1,4 @@
 import React from 'react';
-import SequenceJobsContainer from '../SequenceJobs/SequenceJobsContainer';
 import { Menu, Container, Header, Card} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import LastCapturedSequenceImageContainer from './LastCapturedSequenceImageContainer';
@@ -9,6 +8,8 @@ import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
 import { Routes } from '../routes';
 import AddSequenceJobModal from '../SequenceJobs/AddSequenceJobModal'
 import { withRouter } from 'react-router';
+import { SequenceJobsList } from '../SequenceJobs/SequenceJobsList';
+import { ExposuresCardContainer, CameraDetailsCardContainer } from './SequenceStatusCardsContainer';
 
 export class SequenceSectionMenu extends React.PureComponent {
 
@@ -18,7 +19,7 @@ export class SequenceSectionMenu extends React.PureComponent {
     onCreateSequenceJob = (type) => this.props.onCreateSequenceJob(type, this.props.sequence.id);
 
     render = () => {
-        const { sequence, gear, canStart, canEdit, canReset, canStop} = this.props;
+        const { sequence, canStart, canEdit, canReset, canStop} = this.props;
         return sequence ? (
             <NavbarSectionMenu sectionName='Sequence' sectionText={sequence.name}>
                 <Menu.Item onClick={this.startSequence} icon='play' content='start' disabled={!canStart} />
@@ -53,8 +54,6 @@ export class SequenceSectionMenu extends React.PureComponent {
     }
 }
 
-const ExposuresPage = () => null;
-const CameraDetailsPage = () => null;
 const FilterWheelDetailsPage = () => null;
 
 const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, trigger, hasFilterWheel}) => (
@@ -65,16 +64,15 @@ const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, t
 ))
 
 
-export const Sequence = ({ sequence }) => sequence ? (
+export const Sequence = ({ sequence, canEdit }) => sequence ? (
     <Container>
         <Header size="medium">{sequence.name}</Header>
-        <SequenceJobsContainer sequenceId={sequence.id} />
+        <SequenceJobsList canEdit={canEdit} sequenceJobs={sequence.sequenceJobs} />
         <Card.Group>
-            <ExposuresPage sequenceJobs={sequence.sequenceJobs} sequenceJobEntities={sequence.sequenceJobEntities} />
-            <CameraDetailsPage camera={sequence.camera} />
+            <ExposuresCardContainer sequenceId={sequence.id} />
+            <CameraDetailsCardContainer sequenceId={sequence.id} />
             <FilterWheelDetailsPage filterWheel={sequence.filterWheel} />
         </Card.Group>
-
         <LastCapturedSequenceImageContainer sequenceId={sequence.id} />
     </Container>
 ) : <NotFoundPage
