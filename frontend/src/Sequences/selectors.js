@@ -1,11 +1,13 @@
 import { createSelector } from 'reselect';
+import createCachedSelector from 're-reselect';
+
 import { getDevices, getProperties, getValues } from '../INDI-Server/selectors';
 import { getJobsForSequence } from '../SequenceJobs/selectors';
 import { imageUrlBuilder, formatDecimalNumber } from '../utils';
 import { secs2time } from '../utils';
+import { getConnectedCameras, getConnectedFilterWheels } from '../Gear/selectors';
+import { getSequenceIds, getSequenceId, getSequence, getShowLastImage } from './inputSelectors';
 
-const getSequenceIds = state => state.sequences.ids;
-export const getSequence = (sequenceId) => state => state.sequences.entities[sequenceId];
 
 
 export const sequenceListSelector = createSelector([getSequenceIds], (sequences) => ({
@@ -13,13 +15,15 @@ export const sequenceListSelector = createSelector([getSequenceIds], (sequences)
 }));
 
 
-
-
-const getSequenceGear = (sequenceId) => createSelector([getSequence(sequenceId), getDevices],
+const getSequenceGear = createCachedSelector([
+    getSequence,
+    getDevices,
+],
     (sequence, devices) => sequence ? {
-        camera: devices.entities[sequence.camera],
-        filterWheel: sequence.filterWheel && devices.entities[sequence.filterWheel],
-} : {} ); 
+            camera: devices.entities[sequence.camera],
+            filterWheel: sequence.filterWheel && devices.entities[sequence.filterWheel],
+        } : {}
+)(getSequenceId); 
 
 
 const getSequenceStatus = (sequence, gear) => {
@@ -34,47 +38,45 @@ const getSequenceStatus = (sequence, gear) => {
     return { canStart, canStop, canEdit, canReset };
 };
 
-export const getSequenceListItemSelector = (sequenceId) => createSelector([
-    getSequence(sequenceId),
-    getSequenceGear(sequenceId),
+export const getSequenceListItemSelector = createCachedSelector([
+    getSequence,
+    getSequenceGear,
 ], (sequence, gear) => {
     return {
         sequence,
         gear,
         ...getSequenceStatus(sequence, gear),
     }
-});
+})(getSequenceId);
 
 
 
 
-export const sequenceSelector = (sequenceId) => createSelector([
-    getSequence(sequenceId),
-    getSequenceGear(sequenceId),
+export const sequenceSelector = createCachedSelector([
+    getSequence,
+    getSequenceGear,
 ], (sequence, gear) => {
     return {
         sequence,
         ...getSequenceStatus(sequence, gear),
     };
-});
+})(getSequenceId);
 
 
-export const sequenceSectionMenuSelector = (sequenceId) => createSelector([
-    getSequence(sequenceId),
-    getSequenceGear(sequenceId),
+export const sequenceSectionMenuSelector = createCachedSelector([
+    getSequence,
+    getSequenceGear,
 ], (sequence, gear) => {
     return {
         sequence,
         gear,
         ...getSequenceStatus(sequence, gear),
     };
-});
+})(getSequenceId);
 
 
-
-const getShowLastImage = state =>  state.sequences.showLastImage;
-export const lastCapturedSequenceImageSelector = (sequenceId) => createSelector([
-    getJobsForSequence(sequenceId),
+export const lastCapturedSequenceImageSelector = createCachedSelector([
+    getJobsForSequence,
     getShowLastImage,
 ], (sequenceJobs, showLastImage) => {
     if(!sequenceJobs) {
@@ -96,10 +98,10 @@ export const lastCapturedSequenceImageSelector = (sequenceId) => createSelector(
     }) : null;
 
     return { showLastImage, type, lastImage, lastImageId };
-});
+})(getSequenceId);
 
 
-export const exposuresCardSelector = sequenceId => createSelector([getJobsForSequence(sequenceId)], sequenceJobs => {
+export const exposuresCardSelector = createCachedSelector([getJobsForSequence], sequenceJobs => {
     const exposureSequenceJobs = sequenceJobs.filter(s => s.type === 'shots');
     const remapped = exposureSequenceJobs.map(s => ({
         count: s.count,
@@ -119,12 +121,12 @@ export const exposuresCardSelector = sequenceId => createSelector([getJobsForSeq
         remainingShots: computeTotal('remaining'),
         remainingTime: secs2time(computeTotal('timeRemaining')),
     }
-});
+})(getSequenceId);
 
 
-const getSequenceCamera = sequenceId => createSelector([getSequenceGear(sequenceId)], gear => gear.camera);
-const getSequenceCameraExposureProperty = sequenceId => createSelector([
-    getSequenceCamera(sequenceId),
+const getSequenceCamera = createCachedSelector([getSequenceGear], gear => gear.camera)(getSequenceId);
+const getSequenceCameraExposureProperty = createCachedSelector([
+    getSequenceCamera,
     getProperties,
 ],
     (camera, properties) => {
@@ -133,10 +135,10 @@ const getSequenceCameraExposureProperty = sequenceId => createSelector([
         }
         const propertyId = properties.ids.find(id => properties.entities[id].device === camera.id && properties.entities[id].name === 'CCD_EXPOSURE');
         return propertyId && properties.entities[propertyId];
-});
+})(getSequenceId);
 
-const getSequenceCameraExposureValue = sequenceId => createSelector([
-    getSequenceCameraExposureProperty(sequenceId),
+const getSequenceCameraExposureValue = createCachedSelector([
+    getSequenceCameraExposureProperty,
     getValues,
 ], (property, values) => {
     if(!property) {
@@ -144,15 +146,24 @@ const getSequenceCameraExposureValue = sequenceId => createSelector([
     }
     const valueId = property.values.find(id => values.entities[id].name === 'CCD_EXPOSURE_VALUE');
     return values.entities[valueId];
-});
+})(getSequenceId);
 
-export const cameraDetailsCardSelector = sequenceId => createSelector([
-    getSequenceCamera(sequenceId),
-    getSequenceCameraExposureProperty(sequenceId),
-    getSequenceCameraExposureValue(sequenceId),
+export const cameraDetailsCardSelector = createCachedSelector([
+    getSequenceCamera,
+    getSequenceCameraExposureProperty,
+    getSequenceCameraExposureValue,
 ], (camera, property, value) => value ? {
     state: property.state,
     cameraConnected: camera.connected,
     cameraName: camera.name,
     value: formatDecimalNumber(value.format, value.value),
-}: {});
+}: {})(getSequenceId);
+
+export const addSequenceModalSelector = createSelector([
+    getDevices,
+    getConnectedCameras,
+    getConnectedFilterWheels,
+], (devices, cameras, filterWheels) => ({
+    cameras: cameras.map(c => devices.entities[c]),
+    filterWheels: filterWheels.map(f => devices.entities[f]),
+}) );

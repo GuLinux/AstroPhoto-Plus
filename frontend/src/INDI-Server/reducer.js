@@ -46,9 +46,9 @@ const addGroupsToDevice = (property, prevState) => {
     if(groups.includes(groupId)) {
         return prevState;
     }
-    let state = set(`devices.entities.${property.device}.groups`, [...groups, groupId], prevState);
+    let state = set(['devices', 'entities', property.device, 'groups'], [...groups, groupId], prevState);
     state = set('groups.ids', [...prevState.groups.ids, groupId], state);
-    return set(`groups.entities.${groupId}`, {
+    return set(['groups', 'entities', groupId], {
         id: groupId,
         name: property.group,
         device: property.device,
@@ -62,7 +62,7 @@ const addPropertyToGroup = (property, prevState) => {
     if(groupProperties.includes(property.id)) {
         return prevState;
     }
-    let state = set(`groups.entities.${groupId}.properties`, [...groupProperties, property.id], prevState);
+    let state = set(['groups', 'entities', groupId, 'properties'], [...groupProperties, property.id], prevState);
     return set(`properties.ids`, [...prevState.properties.ids, property.id], state);
 }
 
@@ -71,7 +71,7 @@ const updatePropertyEntity = (property, prevState, values) => {
     if(JSON.stringify(prevProperty) === JSON.stringify(property)) {
         return prevState;
     }
-    return set(`properties.entities.${property.id}`, property, prevState);
+    return set(['properties', 'entities', property.id], property, prevState);
 }
 
 const addValueToState = (property, value, prevState) => {
@@ -83,7 +83,7 @@ const addValueToState = (property, value, prevState) => {
         state = set('values.ids', [...valueIds, id], state);
     }
     if(JSON.stringify(prevValue) !== JSON.stringify(value)) {
-        state = set(`values.entities.${id}`, value, state);
+        state = set(['values', 'entities', id], value, state);
     }
     return state;
 }

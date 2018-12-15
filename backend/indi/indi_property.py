@@ -1,4 +1,4 @@
-from models import id_by_properties, with_attrs
+from models import with_attrs
 from . import device
 from errors import NotFoundError
 import functools
@@ -50,7 +50,7 @@ class Property:
             self.__init_by_values(device, group, name, label, property_type)
         else:
             raise RuntimeError('Property initialization error')
-        self.id = id_by_properties([self.device, self.name])
+        self.id = '{}/{}'.format(self.device, self.name)
 
     @with_indi_property
     def to_map(self):

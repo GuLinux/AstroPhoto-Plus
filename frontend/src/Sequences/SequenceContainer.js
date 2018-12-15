@@ -3,9 +3,6 @@ import { Sequence, SequenceSectionMenu } from './Sequence';
 import Actions from '../actions';
 import { sequenceSelector, sequenceSectionMenuSelector } from './selectors';
 
-const sequenceMapStateToProps = (state, ownProps) => sequenceSelector(ownProps.sequenceId);
-const sequenceSectionMenuMapStateToProps = (state, ownProps) => sequenceSectionMenuSelector(ownProps.sequenceId);
-
 
 const mapDispatchToProps = {
     startSequence: Actions.Sequences.start,
@@ -16,12 +13,12 @@ const mapDispatchToProps = {
 
 
 export const SequenceContainer = connect(
-    sequenceMapStateToProps,
+    sequenceSelector,
     mapDispatchToProps,
 )(Sequence)
 
 export const SequenceSectionMenuContainer = connect(
-    sequenceSectionMenuMapStateToProps,
+    sequenceSectionMenuSelector,
     mapDispatchToProps,
 )(SequenceSectionMenu)
 

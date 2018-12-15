@@ -1,13 +1,7 @@
-import { connect } from 'react-redux'
-import AddSequenceModal from './AddSequenceModal'
-import Actions from '../actions'
-
-const mapStateToProps = state => {
-  return {
-    cameras: state.gear.cameras.map(id => state.gear.cameraEntities[id]),
-    filterWheels: state.gear.filterWheels.map(id => state.gear.filterWheelEntities[id]),
-  }
-}
+import { connect } from 'react-redux';
+import { addSequenceModalSelector } from './selectors';
+import AddSequenceModal from './AddSequenceModal';
+import Actions from '../actions';
 
 
 const mapDispatchToProps = {
@@ -16,7 +10,7 @@ const mapDispatchToProps = {
 }
 
 const AddSequenceModalContainer = connect(
-  mapStateToProps,
+  addSequenceModalSelector,
   mapDispatchToProps
 )(AddSequenceModal)
 

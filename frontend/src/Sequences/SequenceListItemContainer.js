@@ -3,8 +3,6 @@ import { SequenceListItem } from './SequenceListItem';
 import Actions from '../actions';
 import { getSequenceListItemSelector } from './selectors';
 
-const mapStateToProps = (state, { sequenceId }) => getSequenceListItemSelector(sequenceId)(state);
-
 const mapDispatchToProps = {
     onSequenceDelete: Actions.Sequences.remove,
     startSequence: Actions.Sequences.start,
@@ -13,4 +11,4 @@ const mapDispatchToProps = {
     resetSequence: Actions.Sequences.reset,
 }
 
-export const SequenceListItemContainer = connect(mapStateToProps, mapDispatchToProps)(SequenceListItem);
+export const SequenceListItemContainer = connect(getSequenceListItemSelector, mapDispatchToProps)(SequenceListItem);

@@ -87,7 +87,7 @@ class AddSequenceModal extends React.Component {
                             label='Primary camera'
                             id='newSequenceCamera'
                             placeholder='Select primary camera'
-                            options={this.props.cameras.map(c => ({ key: c.id, text: c.device.name, value: c.id }) )}
+                            options={this.props.cameras.map(c => ({ key: c.id, text: c.name, value: c.id }) )}
                             onChange={(e, data) => this.onPrimaryCameraChanged(data.value) }
                             value={this.state.camera}
                         />
@@ -102,7 +102,7 @@ class AddSequenceModal extends React.Component {
                             options={
                                 [
                                     {key: 'none', text: 'None', value: 'none'},
-                                    ...this.props.filterWheels.map(f => ({ key: f.id, text: f.device.name, value: f.id }) )
+                                    ...this.props.filterWheels.map(f => ({ key: f.id, text: f.name, value: f.id }) )
                                 ]
                             }
                             onChange={(e, data) => this.onFilterWheelChanged(data.value) }

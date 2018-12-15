@@ -1,4 +1,3 @@
-from models import id_by_properties
 from errors import NotFoundError
 import functools
 from . import indi_property
@@ -23,7 +22,7 @@ class Device:
             self.__init_by_value(name)
         else:
             raise RuntimeError('Device initialized without INDI device nor name')
-        self.id = id_by_properties(self.name)
+        self.id = self.name
     
     def __init_by_device(self, indi_device):
         self.indi_device = indi_device

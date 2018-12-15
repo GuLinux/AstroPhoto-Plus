@@ -1,13 +1,14 @@
 import { createSelector } from 'reselect';
-import { getSequence } from '../Sequences/selectors';
+import createCachedSelector from 're-reselect';
+import { getSequenceId, getSequence } from '../Sequences/inputSelectors';
 
 export const getSequenceJobs = state => state.sequenceJobs;
 export const getSequenceJob = (state, {sequenceJobId}) => state.sequenceJobs[sequenceJobId];
 
-export const getJobsForSequence = (sequenceId) => createSelector([
+export const getJobsForSequence = createCachedSelector([
     getSequenceJobs,
-    getSequence(sequenceId),
-], (sequenceJobs, sequence) => sequence ? sequence.sequenceJobs.map(job => sequenceJobs[job]) : []);
+    getSequence,
+], (sequenceJobs, sequence) => sequence ? sequence.sequenceJobs.map(job => sequenceJobs[job]) : [])((state, {sequenceId}) => sequenceId);
 
 
 /*
@@ -55,10 +56,10 @@ const getDescription = (state, sequenceJob) => {
 */
 
 
-export const sequenceJobsListSelector = (sequenceId) => createSelector([
-    getJobsForSequence(sequenceId),
+export const sequenceJobsListSelector = createCachedSelector([
+    getJobsForSequence,
 ], (sequenceJobs) => {
     return {
         sequenceJobs,
     };
-});
+})(getSequenceId);

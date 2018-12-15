@@ -1,5 +1,7 @@
-import { createSelector } from 'reselect'
+import { createSelector } from 'reselect';
+import createCachedSelector from 're-reselect';
 import { getGroupId, getValueId } from './utils';
+import { get } from 'lodash';
 
 export const getDevices = state => state.indiserver.devices;
 export const getProperties = state => state.indiserver.properties;
@@ -35,31 +37,32 @@ export const indiServerContainerSelector = createSelector([getDevices, getServer
 
 const getCurrentDevice = createSelector([getDeviceProp, getDevices], (deviceId, devices) => devices.entities[deviceId]);
 
-export const indiDeviceContainerSelector = createSelector([getCurrentDevice, getGroups, getMessages],
+export const indiDeviceContainerSelector = createCachedSelector([getCurrentDevice, getGroups, getMessages],
     (device, groups, messages) => ({
         device,
         groups,
         messages,
     })
-);
+)(getDeviceProp);
 
 const getCurrentGroupProp = (state, {deviceId, groupName}) => getGroupId({device: deviceId, group: groupName});
-const getCurrentGroup = createSelector([getCurrentGroupProp, getGroups], (groupId, groups) => groups.entities[groupId]);
+const getCurrentGroup = createCachedSelector([getCurrentGroupProp, getGroups], (groupId, groups) => groups.entities[groupId])(getCurrentGroupProp);
 
-export const indiDeviceGroupSelector = createSelector([getCurrentGroup], (group) => ({
+export const indiDeviceGroupSelector = createCachedSelector([getCurrentGroup], (group) => ({
     group,
-}));
+}))(getCurrentGroupProp);
 
-export const indiPropertyRowSelector = (propertyId) => createSelector([getProperties], (properties) => ({
+const getPropertyId = (state, {propertyId}) => propertyId;
+export const indiPropertyRowSelector = createCachedSelector([getPropertyId, getProperties], (propertyId, properties) => ({
     property: properties.entities[propertyId],
-}));
+}))(getPropertyId);
 
     
 const getReadOnlyProperty = (state, {readOnly}) => readOnly;
 
-export const indiPropertySelector = (propertyId) => createSelector(
-    [getDevices, getProperties, getReadOnlyProperty],
-    (devices, properties, readOnly) => {
+export const indiPropertySelector = createCachedSelector(
+    [getPropertyId, getDevices, getProperties, getReadOnlyProperty],
+    (propertyId, devices, properties, readOnly) => {
         const property = properties.entities[propertyId];
         return {
             property,
@@ -67,14 +70,19 @@ export const indiPropertySelector = (propertyId) => createSelector(
             isWriteable: property.perm_write && property.state !== 'CHANGED_BUSY' && ! readOnly,
         };
     }
-);
+)(getPropertyId);
 
-export const indiValueSelector = (valueId) => createSelector(
-    [getValues],
-    (values) => ({ value: values.entities[valueId] }),
-);
+const getValueIdProp = (state, {valueId}) => valueId;
+export const indiValueSelector = createCachedSelector(
+    [getValueIdProp, getValues],
+    (valueId, values) => ({ value: values.entities[valueId] }),
+)(getValueIdProp);
 
-export const indiValueSelectorByPath = (deviceId, propertyName, valueName) => indiValueSelector(getValueId({device: deviceId, name: propertyName}, {name: valueName}) );
+export const getValueInputSelector = (deviceId, propertyName, valueName) => state => {
+    const valueId = getValueId({device: deviceId, name: propertyName}, {name: valueName});
+    return get(getValues(state), ['entities', valueId]);
+}
+
 
 // TODO: remove
 const nullSelector = (...args) => console.log(args);
