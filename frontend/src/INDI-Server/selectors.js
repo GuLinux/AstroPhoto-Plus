@@ -76,15 +76,23 @@ export const indiPropertySelector = createCachedSelector(
 )(getPropertyId);
 
 const getValueIdProp = (state, {valueId}) => valueId;
-export const indiValueSelector = createCachedSelector(
-    [getValueIdProp, getValues],
-    (valueId, values) => ({ value: values.entities[valueId] }),
-)(getValueIdProp);
+
+export const getValueInputSelectorById = (state, {valueId}) => get(getValues(state), ['entities', valueId]);
 
 export const getValueInputSelector = (deviceId, propertyName, valueName, defaultValue) => state => {
     const valueId = getValueId({device: deviceId, name: propertyName}, {name: valueName});
-    return get(getValues(state), ['entities', valueId], defaultValue);
+    return getValueInputSelectorById(state, {valueId}) || defaultValue;
 }
+
+
+
+
+export const indiValueSelector = createCachedSelector(
+    [getValueInputSelectorById],
+    (value) => ({ value }),
+)(getValueIdProp);
+
+
 
 
 // TODO: remove

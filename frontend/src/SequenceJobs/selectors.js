@@ -4,7 +4,9 @@ import { getSequenceId, getSequence } from '../Sequences/inputSelectors';
 import { get } from 'lodash';
 import { getSequenceGear } from '../Sequences/selectors';
 import { getPropertyId, getValueId } from '../INDI-Server/utils';
-import { getValueInputSelector } from '../INDI-Server/selectors';
+import { getValueInputSelector, getValueInputSelectorById } from '../INDI-Server/selectors';
+import { getFilterWheelAvailableFiltersProperty } from '../Gear/selectors';
+
 
 export const getSequenceJobs = state => state.sequenceJobs;
 export const getSequenceJob = (state, {sequenceJobId}) => state.sequenceJobs[sequenceJobId];
@@ -60,15 +62,10 @@ const getDescription = (sequenceJob, filterName) => {
     }
 }
 
-const getSequenceJobFilterName = (state, {sequenceJobId}) => {
-    const sequenceJob = getSequenceJob(state, {sequenceJobId});
-    const sequence = getSequence(state, {sequenceId: get(sequenceJob, 'sequence')});
-    console.log(sequenceJob, sequence);
-}
+const getSequenceForJob = (state, {sequenceJob}) => getSequence(state, {sequenceId: sequenceJob.sequence});
 
 export const sequenceJobListItemSelector = createCachedSelector([
     getSequenceJob,
-    getSequenceJobFilterName,
 ], sequenceJob => ({
     sequenceJob: sequenceJob && sequenceJobViewModel(sequenceJob),
 }))(getSequenceJobId);    
@@ -82,10 +79,9 @@ export const sequenceJobsListSelector = createCachedSelector([
     };
 })(getSequenceId);
 
-const getSequenceJobProp = (state, {sequenceJob}) => sequenceJob;
 const getSequenceJobPropId = (state, {sequenceJob}) => sequenceJob && sequenceJob.id;
 
-const getSequenceForJob = (state, {sequenceJob}) => getSequence(state, {sequenceId: sequenceJob.sequence});
+
 const getExposureValue = (state, {sequenceJob}) => {
     const sequence = getSequenceForJob(state, {sequenceJob});
     return getValueInputSelector(sequence.camera, 'CCD_EXPOSURE', 'CCD_EXPOSURE_VALUE')(state);
@@ -99,3 +95,24 @@ export const exposureSequenceJobSelector = createCachedSelector([
     hasFilterWheel: !!filterWheel,
     exposureValue,
 }))( getSequenceJobPropId )
+
+
+const getFilterWheelAvailablePropertyForSequence = (state, {sequenceJob}) => {
+    const sequence = getSequenceForJob(state, {sequenceJob});
+    return getFilterWheelAvailableFiltersProperty(state, {filterWheelId: sequence.filterWheel});
+}
+
+export const filterWheelSequenceJobSelector = createCachedSelector([
+    getFilterWheelAvailablePropertyForSequence,
+], (availableFiltersProperty) => ({
+    filters: availableFiltersProperty && availableFiltersProperty.values,
+}))(getSequenceJobPropId);
+
+
+export const filterSequenceJobItemSelector = createCachedSelector(
+    [(state, {filterId}) => getValueInputSelectorById(state, {valueId: filterId})],
+filter => ({ 
+    filterName: filter.value,
+    filterNumber: parseInt(filter.name.replace('FILTER_SLOT_NAME_', ''), 10),
+})
+)( (state, {filterId}) => filterId );

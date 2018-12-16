@@ -27,9 +27,15 @@ export const getCameraExposureProperty = (state, {cameraId}) => getPropertyInput
 export const getFilterWheelCurrentFilter = (state, {filterWheelId}) =>
     getValueInputSelector(filterWheelId, 'FILTER_SLOT', 'FILTER_SLOT_VALUE')(state);
 
+export const getFilterWheelAvailableFiltersProperty = (state, {filterWheelId}) =>
+    getPropertyInputSelector(state, {propertyId: getPropertyId(filterWheelId, 'FILTER_NAME')});
+
+export const getFilterWheelFilterName = (state, {filterWheelId, filterNumber}) => 
+    getValueInputSelector(filterWheelId, 'FILTER_NAME', `FILTER_SLOT_NAME_${filterNumber}`)(state);
+
 export const getFilterWheelCurrentFilterName = (state, {filterWheelId}) => {
     const currentFilterNumber = getFilterWheelCurrentFilter(state, {filterWheelId});
-    return currentFilterNumber ? getValueInputSelector(filterWheelId, 'FILTER_NAME', `FILTER_SLOT_NAME_${currentFilterNumber.value}`)(state) : null;
+    return currentFilterNumber ? getFilterWheelFilterName(state, {filterWheelId, filterNumber: currentFilterNumber.value}) : null;
 }
 
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ExposureSequenceJobContainer } from './ExposureSequenceJobContainer'
 import CommandSequenceJob from './CommandSequenceJob'
-import FilterSequenceJobContainer from './FilterSequenceJobContainer'
+import { FilterSequenceJobContainer } from './FilterSequenceJobContainer'
 import INDIPropertySequenceJobContainer from './INDIPropertySequenceJobContainer'
 import { NotFoundPage } from '../components/NotFoundPage';
 import { get } from 'lodash';
@@ -14,11 +14,11 @@ const mapItemType = sequenceJob => {
         case 'filter':
             return <FilterSequenceJobContainer sequenceJob={sequenceJob} />;
         case 'command':
-            return <CommandSequenceJob sequenceJob={sequenceJob} />
+            return <CommandSequenceJob sequenceJob={sequenceJob} />;
         case 'property':
-            return <INDIPropertySequenceJobContainer sequenceJob={sequenceJob} />
+            return <INDIPropertySequenceJobContainer sequenceJob={sequenceJob} />;
         default:
-            return <NotFoundPage backToUrl='/sequences/all' message='Sequence job not found' />
+            return <NotFoundPage backToUrl='/sequences/all' message='Sequence job not found' />;
         }
 }
 

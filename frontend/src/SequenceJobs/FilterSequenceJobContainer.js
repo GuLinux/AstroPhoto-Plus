@@ -1,15 +1,9 @@
 import { connect } from 'react-redux'
-import FilterSequenceJob from './FilterSequenceJob' 
-import { getSequencesGears } from '../Gear/selectors'
+import {FilterSequenceJob } from './FilterSequenceJob' 
+import { filterWheelSequenceJobSelector } from './selectors'
 
-const mapStateToProps = (state, ownProps) => {
-    let gear = getSequencesGears(state)[ownProps.sequenceJob.sequence];
-    return { filters: gear.filterWheel.filters }
-}
-
-const FilterSequenceJobContainer = connect(
-    mapStateToProps,
+export const FilterSequenceJobContainer = connect(
+    filterWheelSequenceJobSelector,
 )(FilterSequenceJob)
 
-export default FilterSequenceJobContainer
 
