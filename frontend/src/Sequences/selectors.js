@@ -60,7 +60,6 @@ export const sequenceSelector = createCachedSelector([
 ], (sequence, gear) => {
     return {
         sequence,
-        gear,
         ...getSequenceStatus(sequence, gear),
     };
 })(getSequenceId);
@@ -160,3 +159,32 @@ export const addSequenceModalSelector = createSelector([
     cameras: cameras.map(c => devices.entities[c]),
     filterWheels: filterWheels.map(f => devices.entities[f]),
 }) );
+
+
+const getFilterWheelId = (state, {filterWheelId}) => filterWheelId;
+
+const getSequenceFilterWheelDevice = createCachedSelector([
+    (state, {filterWheelId}) => get(getDevices(state), ['entities', filterWheelId])
+], filterWheel => filterWheel)(getFilterWheelId);
+
+
+const getCurrentFilterNumber = (state, {filterWheelId}) => get(getValues(state),
+    ['entities', getValueId({device: filterWheelId, name: 'FILTER_SLOT'}, {name: 'FILTER_SLOT_VALUE'})],
+    { value: 'N/A'}
+).value;
+
+const getCurrentFilterName = (state, {filterWheelId}) => get(getValues(state),
+    ['entities', getValueId({device: filterWheelId, name: 'FILTER_NAME'}, { name: `FILTER_SLOT_NAME_${getCurrentFilterNumber(state, {filterWheelId})}` })],
+    { value: 'N/A'}
+).value;
+
+
+export const filterWheelCardSelector = createCachedSelector([
+    getSequenceFilterWheelDevice,
+    getCurrentFilterName,
+    getCurrentFilterNumber,
+], (filterWheel, filterName, filterNumber) => ({
+    filterWheel,
+    filterName,
+    filterNumber,
+}))(getFilterWheelId);

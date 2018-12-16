@@ -9,8 +9,7 @@ import { Routes } from '../routes';
 import AddSequenceJobModal from '../SequenceJobs/AddSequenceJobModal';
 import { withRouter } from 'react-router';
 import { SequenceJobsList } from '../SequenceJobs/SequenceJobsList';
-import { ExposuresCardContainer, CameraDetailsCardContainer } from './SequenceStatusCardsContainer';
-import { get } from 'lodash';
+import { ExposuresCardContainer, CameraDetailsCardContainer, FilterWheelDetailsCardContainer } from './SequenceStatusCardsContainer';
 
 export class SequenceSectionMenu extends React.PureComponent {
 
@@ -55,8 +54,6 @@ export class SequenceSectionMenu extends React.PureComponent {
     }
 }
 
-const FilterWheelDetailsPage = () => null;
-
 const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, trigger, hasFilterWheel}) => (
     <AddSequenceJobModal trigger={trigger} hasFilterWheel={hasFilterWheel} onAddSequenceJob={(...args) => {
         onCreateSequenceJob(...args);
@@ -65,14 +62,14 @@ const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, t
 ))
 
 
-export const Sequence = ({ sequence, canEdit, gear }) => sequence ? (
+export const Sequence = ({ sequence, canEdit }) => sequence ? (
     <Container>
         <Header size="medium">{sequence.name}</Header>
         <SequenceJobsList canEdit={canEdit} sequenceJobs={sequence.sequenceJobs} />
         <Card.Group>
             <ExposuresCardContainer sequenceId={sequence.id} />
-            <CameraDetailsCardContainer sequenceId={sequence.id} cameraId={get(gear, 'camera.id')} />
-            <FilterWheelDetailsPage filterWheel={sequence.filterWheel} />
+            <CameraDetailsCardContainer sequenceId={sequence.id} cameraId={sequence.camera} />
+            <FilterWheelDetailsCardContainer filterWheelId={sequence.filterWheel} />
         </Card.Group>
         <LastCapturedSequenceImageContainer sequenceId={sequence.id} />
     </Container>

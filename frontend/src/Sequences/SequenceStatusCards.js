@@ -67,18 +67,18 @@ export const CameraDetailsCard = ({camera, property, value}) => camera? (
     </Card>
 ) : null;
 
-const FilterWheelDetailsPage = ({filterWheel, filterNumber, filterName}) => {
+export const FilterWheelDetailsCard = ({filterWheel, filterNumber, filterName}) => {
     if(!filterWheel)
         return null;
     return (
         <Card>
             <Card.Content>
-                   <DeviceCardHeader device={filterWheel} />
+                   <DeviceCardHeader name={filterWheel.name} connected={filterWheel.connected} />
                     <Card.Description>
                         {filterWheel.connected && (
                             <Label.Group>
                                 <Label basic content='Current filter: '/>
-                                <Label content={`${filterWheel.currentFilter.name} (${filterWheel.currentFilter.number})`}/>
+                                <Label content={`${filterName} (${filterNumber})`}/>
                             </Label.Group>
                         )}
                     </Card.Description>
