@@ -6,10 +6,11 @@ import { NotFoundPage } from '../components/NotFoundPage';
 import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
 import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
 import { Routes } from '../routes';
-import AddSequenceJobModal from '../SequenceJobs/AddSequenceJobModal'
+import AddSequenceJobModal from '../SequenceJobs/AddSequenceJobModal';
 import { withRouter } from 'react-router';
 import { SequenceJobsList } from '../SequenceJobs/SequenceJobsList';
 import { ExposuresCardContainer, CameraDetailsCardContainer } from './SequenceStatusCardsContainer';
+import { get } from 'lodash';
 
 export class SequenceSectionMenu extends React.PureComponent {
 
@@ -64,13 +65,13 @@ const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, t
 ))
 
 
-export const Sequence = ({ sequence, canEdit }) => sequence ? (
+export const Sequence = ({ sequence, canEdit, gear }) => sequence ? (
     <Container>
         <Header size="medium">{sequence.name}</Header>
         <SequenceJobsList canEdit={canEdit} sequenceJobs={sequence.sequenceJobs} />
         <Card.Group>
             <ExposuresCardContainer sequenceId={sequence.id} />
-            <CameraDetailsCardContainer sequenceId={sequence.id} />
+            <CameraDetailsCardContainer sequenceId={sequence.id} cameraId={get(gear, 'camera.id')} />
             <FilterWheelDetailsPage filterWheel={sequence.filterWheel} />
         </Card.Group>
         <LastCapturedSequenceImageContainer sequenceId={sequence.id} />

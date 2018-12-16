@@ -52,15 +52,15 @@ export const ExposuresCard = ({exposureJobsCount, totalShots, totalTime, complet
     </Card>
 )
 
-export const CameraDetailsCard = ({state, value, cameraConnected, cameraName}) => value ? (
+export const CameraDetailsCard = ({camera, property, value}) => camera? (
     <Card>
         <Card.Content>
-            <DeviceCardHeader name={cameraName} connected={cameraConnected} />
+            <DeviceCardHeader name={camera.name} connected={camera.connected} />
                 <Card.Description>
                     <Label.Group>
                         <Label content='Current exposure: ' basic/>
                         <Label content={value} />
-                        <INDILight state={state} />
+                        {property && <INDILight state={property.state} />}
                     </Label.Group>
                 </Card.Description>
         </Card.Content>

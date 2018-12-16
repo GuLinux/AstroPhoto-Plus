@@ -7,6 +7,8 @@ import { imageUrlBuilder, formatDecimalNumber } from '../utils';
 import { secs2time } from '../utils';
 import { getConnectedCameras, getConnectedFilterWheels } from '../Gear/selectors';
 import { getSequenceIds, getSequenceId, getSequence, getShowLastImage } from './inputSelectors';
+import { getPropertyId, getValueId } from '../INDI-Server/utils';
+import { get } from 'lodash';
 
 
 
@@ -58,6 +60,7 @@ export const sequenceSelector = createCachedSelector([
 ], (sequence, gear) => {
     return {
         sequence,
+        gear,
         ...getSequenceStatus(sequence, gear),
     };
 })(getSequenceId);
@@ -124,40 +127,30 @@ export const exposuresCardSelector = createCachedSelector([getJobsForSequence], 
 })(getSequenceId);
 
 
-const getSequenceCamera = createCachedSelector([getSequenceGear], gear => gear.camera)(getSequenceId);
+const getCameraIdProp = (state, {cameraId}) => cameraId;
+
+const getSequenceCameraExposureDevice = createCachedSelector([
+    (state, {cameraId}) => get(getDevices(state), ['entities', cameraId]),
+], camera => camera)(getCameraIdProp);
+
 const getSequenceCameraExposureProperty = createCachedSelector([
-    getSequenceCamera,
-    getProperties,
-],
-    (camera, properties) => {
-        if(!camera) {
-            return null;
-        }
-        const propertyId = properties.ids.find(id => properties.entities[id].device === camera.id && properties.entities[id].name === 'CCD_EXPOSURE');
-        return propertyId && properties.entities[propertyId];
-})(getSequenceId);
+    (state, {cameraId}) => get(getProperties(state), ['entities', getPropertyId(cameraId, 'CCD_EXPOSURE')]),
+], property => property)(getCameraIdProp);
+
 
 const getSequenceCameraExposureValue = createCachedSelector([
-    getSequenceCameraExposureProperty,
-    getValues,
-], (property, values) => {
-    if(!property) {
-        return null;
-    }
-    const valueId = property.values.find(id => values.entities[id].name === 'CCD_EXPOSURE_VALUE');
-    return values.entities[valueId];
-})(getSequenceId);
+    (state, {cameraId}) => get(getValues(state), ['entities', getValueId({device: cameraId, name: 'CCD_EXPOSURE'}, {name: 'CCD_EXPOSURE_VALUE'})]),
+], (value) => value)(getSequenceId);
 
 export const cameraDetailsCardSelector = createCachedSelector([
-    getSequenceCamera,
+    getSequenceCameraExposureDevice,
     getSequenceCameraExposureProperty,
     getSequenceCameraExposureValue,
-], (camera, property, value) => value ? {
-    state: property.state,
-    cameraConnected: camera.connected,
-    cameraName: camera.name,
-    value: formatDecimalNumber(value.format, value.value),
-}: {})(getSequenceId);
+], (camera, property, value) => ({
+    camera,
+    property,
+    value: value ? formatDecimalNumber(value.format, value.value) : 'N/A',
+}))(getSequenceId);
 
 export const addSequenceModalSelector = createSelector([
     getDevices,
