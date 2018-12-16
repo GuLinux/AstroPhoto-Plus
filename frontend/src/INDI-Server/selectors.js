@@ -53,8 +53,11 @@ export const indiDeviceGroupSelector = createCachedSelector([getCurrentGroup], (
 }))(getCurrentGroupProp);
 
 const getPropertyId = (state, {propertyId}) => propertyId;
-export const indiPropertyRowSelector = createCachedSelector([getPropertyId, getProperties], (propertyId, properties) => ({
-    property: properties.entities[propertyId],
+
+export const getPropertyInputSelector = (state, {propertyId}) => get(getProperties(state), ['entities', propertyId]);
+
+export const indiPropertyRowSelector = createCachedSelector([getPropertyInputSelector], (property) => ({
+    property,
 }))(getPropertyId);
 
     
@@ -78,9 +81,9 @@ export const indiValueSelector = createCachedSelector(
     (valueId, values) => ({ value: values.entities[valueId] }),
 )(getValueIdProp);
 
-export const getValueInputSelector = (deviceId, propertyName, valueName) => state => {
+export const getValueInputSelector = (deviceId, propertyName, valueName, defaultValue) => state => {
     const valueId = getValueId({device: deviceId, name: propertyName}, {name: valueName});
-    return get(getValues(state), ['entities', valueId]);
+    return get(getValues(state), ['entities', valueId], defaultValue);
 }
 
 

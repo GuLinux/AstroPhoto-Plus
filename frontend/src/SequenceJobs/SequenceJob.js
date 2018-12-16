@@ -1,12 +1,14 @@
 import React from 'react';
-import ExposureSequenceJobContainer from './ExposureSequenceJobContainer'
+import { ExposureSequenceJobContainer } from './ExposureSequenceJobContainer'
 import CommandSequenceJob from './CommandSequenceJob'
 import FilterSequenceJobContainer from './FilterSequenceJobContainer'
 import INDIPropertySequenceJobContainer from './INDIPropertySequenceJobContainer'
 import { NotFoundPage } from '../components/NotFoundPage';
+import { get } from 'lodash';
+import { Container } from 'semantic-ui-react';
 
-const mapItemType = (sequenceJob) => {
-    switch(sequenceJob.type) {
+const mapItemType = sequenceJob => {
+    switch(get(sequenceJob, 'type')) {
         case 'shots':
             return <ExposureSequenceJobContainer sequenceJob={sequenceJob} />;
         case 'filter':
@@ -16,15 +18,13 @@ const mapItemType = (sequenceJob) => {
         case 'property':
             return <INDIPropertySequenceJobContainer sequenceJob={sequenceJob} />
         default:
-            return null;
+            return <NotFoundPage backToUrl='/sequences/all' message='Sequence job not found' />
         }
 }
 
-const SequenceJob = ({sequenceJob}) => {
-    if(sequenceJob) {
-        return <div className="container">{mapItemType(sequenceJob)}</div>
-    }
-    return <NotFoundPage backToUrl='/sequences/all' message='Sequence job not found' />
-}
+export const SequenceJob = ({sequenceJob}) => (
+    <Container>
+        {mapItemType(sequenceJob)}
+    </Container>
+)
 
-export default SequenceJob

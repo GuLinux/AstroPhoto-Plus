@@ -1,6 +1,7 @@
-import { getDevices } from '../INDI-Server/selectors';
+import { getDevices, getValueInputSelector, getPropertyInputSelector } from '../INDI-Server/selectors';
 import { createSelector } from 'reselect'
 import { transform } from 'lodash';
+import { getPropertyId } from '../INDI-Server/utils';
 
 const filterConnectedDevices = (devices, predicate) => devices.ids.filter(
     id => {
@@ -20,11 +21,20 @@ export const filterDevices = (devices, ids) => ({
     length: ids.length,
 });
 
+export const getCameraExposureValue = (state, {cameraId}) => getValueInputSelector(cameraId, 'CCD_EXPOSURE', 'CCD_EXPOSURE_VALUE')(state);
+export const getCameraExposureProperty = (state, {cameraId}) => getPropertyInputSelector(state, {propertyId: getPropertyId(cameraId, 'CCD_EXPOSURE')});
+
+export const getFilterWheelCurrentFilter = (state, {filterWheelId}) =>
+    getValueInputSelector(filterWheelId, 'FILTER_SLOT', 'FILTER_SLOT_VALUE')(state);
+
+export const getFilterWheelCurrentFilterName = (state, {filterWheelId}) => {
+    const currentFilterNumber = getFilterWheelCurrentFilter(state, {filterWheelId});
+    return currentFilterNumber ? getValueInputSelector(filterWheelId, 'FILTER_NAME', `FILTER_SLOT_NAME_${currentFilterNumber.value}`)(state) : null;
+}
+
 
 // TODO: remove
 const nullF = (...args) => console.log('TODO: remove', args);
-export const connectedAstrometrySelector = nullF;
 export const connectedCamerasSelector = nullF;
 export const connectedFilterWheelsSelector = nullF;
-export const connectedTelescopesSelector = nullF;
 export const getSequencesGears = nullF;

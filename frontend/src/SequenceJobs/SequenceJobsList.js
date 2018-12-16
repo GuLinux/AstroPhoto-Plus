@@ -1,9 +1,9 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
-import { SequenceJobListItem } from './SequenceJobListItem';
+import { SequenceJobsListItemContainer } from './SequenceJobListItemContainer';
 export class SequenceJobsList extends React.PureComponent {
 
-    renderSequenceJob = (id, index) => <SequenceJobListItem
+    renderSequenceJob = (id, index) => <SequenceJobsListItemContainer
         canEdit={this.props.canEdit}
         sequenceJobId={id} key={index}
         canMoveUp={index !== 0}

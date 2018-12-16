@@ -1,13 +1,13 @@
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
 
-import { getDevices, getProperties, getValues } from '../INDI-Server/selectors';
+import { getDevices, getProperties, getValues, getValueInputSelector } from '../INDI-Server/selectors';
 import { getJobsForSequence } from '../SequenceJobs/selectors';
 import { imageUrlBuilder, formatDecimalNumber } from '../utils';
 import { secs2time } from '../utils';
-import { getConnectedCameras, getConnectedFilterWheels } from '../Gear/selectors';
+import { getConnectedCameras, getConnectedFilterWheels, getCameraExposureValue, getCameraExposureProperty, getFilterWheelCurrentFilter, getFilterWheelCurrentFilterName } from '../Gear/selectors';
 import { getSequenceIds, getSequenceId, getSequence, getShowLastImage } from './inputSelectors';
-import { getPropertyId, getValueId } from '../INDI-Server/utils';
+import { getPropertyId} from '../INDI-Server/utils';
 import { get } from 'lodash';
 
 
@@ -132,19 +132,11 @@ const getSequenceCameraExposureDevice = createCachedSelector([
     (state, {cameraId}) => get(getDevices(state), ['entities', cameraId]),
 ], camera => camera)(getCameraIdProp);
 
-const getSequenceCameraExposureProperty = createCachedSelector([
-    (state, {cameraId}) => get(getProperties(state), ['entities', getPropertyId(cameraId, 'CCD_EXPOSURE')]),
-], property => property)(getCameraIdProp);
-
-
-const getSequenceCameraExposureValue = createCachedSelector([
-    (state, {cameraId}) => get(getValues(state), ['entities', getValueId({device: cameraId, name: 'CCD_EXPOSURE'}, {name: 'CCD_EXPOSURE_VALUE'})]),
-], (value) => value)(getSequenceId);
 
 export const cameraDetailsCardSelector = createCachedSelector([
     getSequenceCameraExposureDevice,
-    getSequenceCameraExposureProperty,
-    getSequenceCameraExposureValue,
+    getCameraExposureProperty,
+    getCameraExposureValue,
 ], (camera, property, value) => ({
     camera,
     property,
@@ -168,23 +160,12 @@ const getSequenceFilterWheelDevice = createCachedSelector([
 ], filterWheel => filterWheel)(getFilterWheelId);
 
 
-const getCurrentFilterNumber = (state, {filterWheelId}) => get(getValues(state),
-    ['entities', getValueId({device: filterWheelId, name: 'FILTER_SLOT'}, {name: 'FILTER_SLOT_VALUE'})],
-    { value: 'N/A'}
-).value;
-
-const getCurrentFilterName = (state, {filterWheelId}) => get(getValues(state),
-    ['entities', getValueId({device: filterWheelId, name: 'FILTER_NAME'}, { name: `FILTER_SLOT_NAME_${getCurrentFilterNumber(state, {filterWheelId})}` })],
-    { value: 'N/A'}
-).value;
-
-
 export const filterWheelCardSelector = createCachedSelector([
     getSequenceFilterWheelDevice,
-    getCurrentFilterName,
-    getCurrentFilterNumber,
-], (filterWheel, filterName, filterNumber) => ({
+    getFilterWheelCurrentFilterName,
+    getFilterWheelCurrentFilter,
+], (filterWheel, filterNameValue, filterNumberValue) => ({
     filterWheel,
-    filterName,
-    filterNumber,
+    filterName: get(filterNameValue, 'value', 'N/A'),
+    filterNumber: get(filterNumberValue, 'value', 'N/A'),
 }))(getFilterWheelId);

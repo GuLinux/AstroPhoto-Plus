@@ -1,20 +1,10 @@
 import { connect } from 'react-redux'
-import SequenceJob from './SequenceJob'
-
-
-const mapStateToProps = (state, ownProps) => {
-    let sequenceJobId = ownProps.sequenceJobId;
-    let hasSequenceJob = sequenceJobId in state.sequenceJobs;
-    if(!hasSequenceJob) {
-        return { sequenceJob: null }
-    }
-    let sequenceJob = state.sequenceJobs[sequenceJobId];
-    return {sequenceJob}
-}
+import { SequenceJob } from './SequenceJob'
+import { sequenceJobSelector } from './selectors';
 
 
 const SequenceJobContainer = connect(
-    mapStateToProps,
+    sequenceJobSelector,
 )(SequenceJob)
 
 export default SequenceJobContainer

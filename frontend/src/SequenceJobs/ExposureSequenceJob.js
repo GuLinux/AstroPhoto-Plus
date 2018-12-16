@@ -5,7 +5,7 @@ import SequenceJobButtonsContainer from './SequenceJobButtonsContainer'
 import { formatDecimalNumber } from '../utils';
 import { NumericInput } from '../components/NumericInput';
 
-class ExposureSequenceJob extends React.Component {
+export class ExposureSequenceJob extends React.Component {
     constructor(props) {
         super(props)
         this.initialSequenceJob =
@@ -63,8 +63,7 @@ class ExposureSequenceJob extends React.Component {
     }
 
     updateShootingParams(key, value) {
-        const { exposureProperty } = this.props.camera;
-        const exposureValue = exposureProperty.values[0];
+        const { exposureValue } = this.props;
         const { min, max } = exposureValue;
 
         let newState = this.buildSequenceJobState({[key]: value});
@@ -110,8 +109,7 @@ class ExposureSequenceJob extends React.Component {
     }
 
     render() {
-        const { exposureProperty } = this.props.camera;
-        const exposureValue = exposureProperty.values[0];
+        const { exposureValue } = this.props;
         return (
             <Form>
                 <Form.Input
@@ -200,4 +198,3 @@ class ExposureSequenceJob extends React.Component {
     }
 }
 
-export default ExposureSequenceJob;

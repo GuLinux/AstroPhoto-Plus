@@ -1,22 +1,32 @@
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
 import { getSequenceId, getSequence } from '../Sequences/inputSelectors';
+import { get } from 'lodash';
+import { getSequenceGear } from '../Sequences/selectors';
+import { getPropertyId, getValueId } from '../INDI-Server/utils';
+import { getValueInputSelector } from '../INDI-Server/selectors';
 
 export const getSequenceJobs = state => state.sequenceJobs;
 export const getSequenceJob = (state, {sequenceJobId}) => state.sequenceJobs[sequenceJobId];
+const getSequenceJobId = (state, {sequenceJobId}) => sequenceJobId;
 
 export const getJobsForSequence = createCachedSelector([
     getSequenceJobs,
     getSequence,
-], (sequenceJobs, sequence) => sequence ? sequence.sequenceJobs.map(job => sequenceJobs[job]) : [])((state, {sequenceId}) => sequenceId);
+], (sequenceJobs, sequence) => sequence ? sequence.sequenceJobs.map(job => sequenceJobs[job]) : [])(getSequenceId);
+
+export const sequenceJobSelector = createCachedSelector([
+    getSequenceJob,
+], (sequenceJob) => ({
+    sequenceJob,
+}))(getSequenceJobId);
 
 
-/*
 
-const sequenceJobViewModel = (state, sequenceJob) => ({
+const sequenceJobViewModel = (sequenceJob) => ({
     ...sequenceJob,
     typeLabel: getTypeLabel(sequenceJob.type),
-    description: getDescription(state, sequenceJob),
+    description: getDescription(sequenceJob),
 })
 
 
@@ -35,15 +45,12 @@ const getTypeLabel = type => {
     }
 }
 
-const getDescription = (state, sequenceJob) => {
+const getDescription = (sequenceJob, filterName) => {
     switch(sequenceJob.type) {
         case 'shots':
             return `${sequenceJob.count} shots of ${sequenceJob.exposure} seconds, ${sequenceJob.count * sequenceJob.exposure} seconds total`;
         case 'filter':
-            let gear = getSequencesGears(state)[sequenceJob.sequence];
-            if(gear.filterWheel.connected)
-                return `Set filter wheel to filter ${gear.filterWheel.numbers2names[sequenceJob.filterNumber]} (${sequenceJob.filterNumber})`
-            return `Set filter wheel to filter ${sequenceJob.filterNumber}`
+            return filterName ? `Set filter wheel to filter ${filterName} (${sequenceJob.filterNumber})` : `Set filter wheel to filter ${sequenceJob.filterNumber}`
         case 'command':
             return `Run command: ${sequenceJob.command}`
         case 'property':
@@ -53,7 +60,18 @@ const getDescription = (state, sequenceJob) => {
     }
 }
 
-*/
+const getSequenceJobFilterName = (state, {sequenceJobId}) => {
+    const sequenceJob = getSequenceJob(state, {sequenceJobId});
+    const sequence = getSequence(state, {sequenceId: get(sequenceJob, 'sequence')});
+    console.log(sequenceJob, sequence);
+}
+
+export const sequenceJobListItemSelector = createCachedSelector([
+    getSequenceJob,
+    getSequenceJobFilterName,
+], sequenceJob => ({
+    sequenceJob: sequenceJob && sequenceJobViewModel(sequenceJob),
+}))(getSequenceJobId);    
 
 
 export const sequenceJobsListSelector = createCachedSelector([
@@ -63,3 +81,21 @@ export const sequenceJobsListSelector = createCachedSelector([
         sequenceJobs,
     };
 })(getSequenceId);
+
+const getSequenceJobProp = (state, {sequenceJob}) => sequenceJob;
+const getSequenceJobPropId = (state, {sequenceJob}) => sequenceJob && sequenceJob.id;
+
+const getSequenceForJob = (state, {sequenceJob}) => getSequence(state, {sequenceId: sequenceJob.sequence});
+const getExposureValue = (state, {sequenceJob}) => {
+    const sequence = getSequenceForJob(state, {sequenceJob});
+    return getValueInputSelector(sequence.camera, 'CCD_EXPOSURE', 'CCD_EXPOSURE_VALUE')(state);
+}
+
+
+export const exposureSequenceJobSelector = createCachedSelector([
+    getSequenceForJob,
+    getExposureValue,
+], ({filterWheel}, exposureValue) => ({
+    hasFilterWheel: !!filterWheel,
+    exposureValue,
+}))( getSequenceJobPropId )
