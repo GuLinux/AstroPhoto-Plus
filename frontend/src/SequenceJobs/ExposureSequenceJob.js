@@ -4,6 +4,7 @@ import { sanitizePath, secs2time } from '../utils'
 import SequenceJobButtonsContainer from './SequenceJobButtonsContainer'
 import { formatDecimalNumber } from '../utils';
 import { NumericInput } from '../components/NumericInput';
+import { NotFoundPage } from '../components/NotFoundPage';
 
 export class ExposureSequenceJob extends React.Component {
     constructor(props) {
@@ -108,9 +109,9 @@ export class ExposureSequenceJob extends React.Component {
         return secs2time(time);
     }
 
-    render() {
+    render = () => {
         const { exposureValue } = this.props;
-        return (
+        return exposureValue ? (
             <Form>
                 <Form.Input
                     type='text'
@@ -194,7 +195,7 @@ export class ExposureSequenceJob extends React.Component {
                 <Divider section />
                 <SequenceJobButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceJob={this.state.sequenceJob} />
             </Form>
-        );
+        ) : <NotFoundPage />;
     }
 }
 
