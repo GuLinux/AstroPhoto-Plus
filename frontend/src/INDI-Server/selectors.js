@@ -4,12 +4,13 @@ import { getGroupId, getValueId } from './utils';
 import { get } from 'lodash';
 
 export const getDevices = state => state.indiserver.devices;
+export const getGroups = state => state.indiserver.groups;
 export const getProperties = state => state.indiserver.properties;
 export const getValues = state => state.indiserver.values;
 const getServerState = state => state.indiserver.state;
 const getServiceServerFound = state => state.indiservice.server_found;
 
-const getGroups = state => state.indiserver.groups;
+
 
 
 // Own props

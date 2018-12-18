@@ -4,7 +4,7 @@ import { getSequenceId, getSequence } from '../Sequences/inputSelectors';
 import { get } from 'lodash';
 import { getSequenceGear } from '../Sequences/selectors';
 import { getPropertyId, getValueId } from '../INDI-Server/utils';
-import { getValueInputSelector, getValueInputSelectorById } from '../INDI-Server/selectors';
+import { getValueInputSelector, getValueInputSelectorById, getDevices, getGroups, getProperties } from '../INDI-Server/selectors';
 import { getFilterWheelAvailableFiltersProperty } from '../Gear/selectors';
 
 
@@ -102,11 +102,11 @@ const getFilterWheelAvailablePropertyForSequence = (state, {sequenceJob}) => {
     return getFilterWheelAvailableFiltersProperty(state, {filterWheelId: sequence.filterWheel});
 }
 
-export const filterWheelSequenceJobSelector = createCachedSelector([
+export const filterWheelSequenceJobSelector = createSelector([
     getFilterWheelAvailablePropertyForSequence,
 ], (availableFiltersProperty) => ({
     filters: availableFiltersProperty && availableFiltersProperty.values,
-}))(getSequenceJobPropId);
+}));
 
 
 export const filterSequenceJobItemSelector = createCachedSelector(
@@ -116,3 +116,40 @@ filter => ({
     filterNumber: parseInt(filter.name.replace('FILTER_SLOT_NAME_', ''), 10),
 })
 )( (state, {filterId}) => filterId );
+
+export const indiPropertySequenceJobSelector = createSelector([
+    getDevices,
+], (devices) => ({
+    devices: devices.ids.map(id => devices.entities[id]),
+}));
+
+
+const getSelectedDevice = (state, {deviceId}) => getDevices(state).entities[deviceId];
+export const indiPropertySequenceJobDeviceMenuSelector = createSelector([
+    getSelectedDevice,
+],
+(device) => ({
+    device,
+}));
+
+
+const getSelectedGroup = (state, {groupId}) => getGroups(state).entities[groupId];
+export const indiPropertySequenceJobGroupItemSelector = createCachedSelector([
+    getSelectedGroup,
+], ({name: label, id}) => ({
+    id,
+    label,
+}))( (state, {groupId}) => groupId);
+
+export const indiPropertySequenceJobDeviceGroupMenuSelector = createSelector([
+    getSelectedGroup,
+], group => ({ group }));
+
+const getSelectedProperty = (state, {propertyId}) => getProperties(state).entities[propertyId];
+export const indiPropertySequenceJobPropertyItemSelector = createCachedSelector([
+    getSelectedProperty,
+], ({label, id}) => ({
+    id,
+    label,
+}))( (state, {propertyId}) => propertyId);
+

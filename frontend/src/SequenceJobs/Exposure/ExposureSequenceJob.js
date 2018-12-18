@@ -1,10 +1,10 @@
 import React from 'react';
 import { Form, Label, Divider } from 'semantic-ui-react';
-import { sanitizePath, secs2time } from '../utils'
-import SequenceJobButtonsContainer from './SequenceJobButtonsContainer'
-import { formatDecimalNumber } from '../utils';
-import { NumericInput } from '../components/NumericInput';
-import { NotFoundPage } from '../components/NotFoundPage';
+import { sanitizePath, secs2time } from '../../utils'
+import { SequenceJobButtonsContainer } from '../SequenceJobButtonsContainer'
+import { formatDecimalNumber } from '../../utils';
+import { NumericInput } from '../../components/NumericInput';
+import { NotFoundPage } from '../../components/NotFoundPage';
 
 export class ExposureSequenceJob extends React.Component {
     constructor(props) {

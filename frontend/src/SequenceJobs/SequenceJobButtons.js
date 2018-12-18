@@ -3,7 +3,7 @@ import { Button } from 'semantic-ui-react';
 import { ConfirmDialog } from '../Modals/ModalDialog';
 import { withRouter } from 'react-router';
 
-const SequenceJobButtons = ({isValid, isChanged, onSave, sequenceJob, history }) => {
+export const SequenceJobButtons = ({isValid, isChanged, onSave, sequenceJob, history }) => {
 
     const navigateBack = () => {
         history.push(`/sequences/${sequenceJob.sequence}`)
@@ -40,4 +40,4 @@ const SequenceJobButtons = ({isValid, isChanged, onSave, sequenceJob, history })
         <Button primary disabled={ ! canSave } onClick={onSaveClicked}>Save</Button>
     </React.Fragment>
 )}
-export default withRouter(SequenceJobButtons);
+

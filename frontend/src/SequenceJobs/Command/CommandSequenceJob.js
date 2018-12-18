@@ -1,9 +1,9 @@
 import React from 'react';
 import { Form, Label, Divider } from 'semantic-ui-react';
-import SequenceJobButtonsContainer from './SequenceJobButtonsContainer'
+import { SequenceJobButtonsContainer } from '../SequenceJobButtonsContainer'
 import { get } from 'lodash';
 
-class CommandSequenceJob extends React.Component {
+export class CommandSequenceJob extends React.Component {
     constructor(props) {
         super(props)
         this.state = { sequenceJob: {command: '', ...props.sequenceJob }}
@@ -39,5 +39,3 @@ class CommandSequenceJob extends React.Component {
         )
     }
 }
-
-export default CommandSequenceJob

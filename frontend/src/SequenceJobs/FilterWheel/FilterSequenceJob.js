@@ -1,9 +1,9 @@
 import React from 'react';
-import SequenceJobButtonsContainer from './SequenceJobButtonsContainer';
+import { SequenceJobButtonsContainer } from '../SequenceJobButtonsContainer';
 import { Form, Divider } from 'semantic-ui-react';
 import { FilterSequenceJobItemContainer } from './FilterSequenceJobItemContainer';
 import { get } from 'lodash';
-import { NotFoundPage } from '../components/NotFoundPage';
+import { NotFoundPage } from '../../components/NotFoundPage';
 
 const DEFAULT_FILTER_NUMBER = 1;
 export class FilterSequenceJob extends React.Component {

@@ -1,18 +1,18 @@
 import React from 'react';
-import { ExposureSequenceJobContainer } from './ExposureSequenceJobContainer'
-import CommandSequenceJob from './CommandSequenceJob'
-import { FilterSequenceJobContainer } from './FilterSequenceJobContainer'
-import INDIPropertySequenceJobContainer from './INDIPropertySequenceJobContainer'
+import { ExposureSequenceJobContainer } from './Exposure/ExposureSequenceJobContainer'
 import { NotFoundPage } from '../components/NotFoundPage';
 import { get } from 'lodash';
 import { Container } from 'semantic-ui-react';
+import { FilterSequenceJobItemContainer } from './FilterWheel/FilterSequenceJobItemContainer';
+import { CommandSequenceJob } from './Command/CommandSequenceJob';
+import { INDIPropertySequenceJobContainer } from './INDIProperty/INDIPropertySequenceJobContainer';
 
 const mapItemType = sequenceJob => {
     switch(get(sequenceJob, 'type')) {
         case 'shots':
             return <ExposureSequenceJobContainer sequenceJob={sequenceJob} />;
         case 'filter':
-            return <FilterSequenceJobContainer sequenceJob={sequenceJob} />;
+            return <FilterSequenceJobItemContainer sequenceJob={sequenceJob} />;
         case 'command':
             return <CommandSequenceJob sequenceJob={sequenceJob} />;
         case 'property':

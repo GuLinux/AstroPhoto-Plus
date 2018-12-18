@@ -1,17 +1,14 @@
 import { connect } from 'react-redux'
 import Actions from '../actions'
-import SequenceJobButtons from './SequenceJobButtons'
-
-
+import { SequenceJobButtons } from './SequenceJobButtons'
+import { withRouter } from 'react-router';
 
 const mapDispatchToProps = {
     onSave: Actions.SequenceJobs.saveSequenceJob,
 }
 
-
-const SequenceJobButtonsContainer = connect(
+export const SequenceJobButtonsContainer = withRouter(connect(
     null,
     mapDispatchToProps,
-)(SequenceJobButtons)
+)(SequenceJobButtons))
 
-export default SequenceJobButtonsContainer
