@@ -3,7 +3,7 @@ import { Menu, Divider, Container, Grid, Form } from 'semantic-ui-react';
 import { SequenceJobButtonsContainer } from '../SequenceJobButtonsContainer';
 import { INDIPropertySequenceJobDeviceMenuContainer, INDIPropertySequenceJobGroupMenuContainer, INDIPropertySequenceJobValuesMenuContainer } from './INDIPropertySequenceJobMenuContainer';
 import { getPropertyName, getPropertyId } from '../../INDI-Server/utils';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 
 export class INDIPropertySequenceJob extends React.Component {
     constructor(props) {
@@ -11,13 +11,9 @@ export class INDIPropertySequenceJob extends React.Component {
         this.state = { sequenceJob: {device: '', group: '', property: '', wait: -1, ...props.sequenceJob }}
     }
 
-    isValid() {
-        return this.state.sequenceJob.device !== '' && this.state.sequenceJob.property !== '' && Object.keys(this.state.sequenceJob.values).length !== 0;
-    }
+    isValid =() => this.state.sequenceJob.device !== '' && this.state.sequenceJob.property !== '' && Object.keys(this.state.sequenceJob.values).length !== 0;
 
-    isChanged() {
-        return true;
-    }
+    isChanged = () => !isEqual(this.props.sequenceJob, this.state.sequenceJob);
 
     onDeviceChanged = device => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, device, group: '', property: ''} });
 
