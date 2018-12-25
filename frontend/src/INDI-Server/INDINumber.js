@@ -115,10 +115,11 @@ const CurrentValue = ({value, format, ...args}) => (
 )
 
 export class INDINumber extends React.PureComponent {
+    componentDidMount = () => this.props.onMount && this.props.onMount(this.props.value);
 
     getDisplayValue = () => this.props.displayValue || this.props.value.value;
 
-    onChange = (value) => this.props.onChange(this.props.value.name, value);
+    onChange = (value) => this.props.onChange({[this.props.value.name]: value});
 
     render = () => {
         const {value, editMode} = this.props;

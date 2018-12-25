@@ -1,6 +1,9 @@
 import React from 'react';
-import { Grid, Menu } from 'semantic-ui-react';
+import { Menu } from 'semantic-ui-react';
 import { INDIPropertySequenceJobGroupItemContainer, INDIPropertySequenceJobPropertyItemContainer } from './INDIPropertySequenceJobMenuItem';
+import { INDISwitchContainer, INDITextContainer, INDINumberContainer } from '../../INDI-Server/INDIValueContainer';
+import { get } from 'lodash';
+import { getValueName, switchValues } from '../../INDI-Server/utils';
 
 
 
@@ -35,24 +38,43 @@ export class INDIPropertySequenceJobGroupMenu extends React.PureComponent {
         onSelected={this.props.onPropertySelected}
     />
 }
-/*
-    getValuesForm() {
-        if( this.state.sequenceJob.property === '')
-            return null;
-        let property = this.getProperties()[this.state.sequenceJob.property];
-        let onChange = (values) => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, values: {...this.state.sequenceJob.values, ...values} } });
-        return property.values.map( (value, index) => {
-            let props = { key: index, value, property, onChange, editMode: true }
-            switch(property.type) {
-                case 'switch':
-                    return <INDISwitch {...props} />;
-                case 'number':
-                    return <INDINumber {...props} />
-                case 'text':
-                    return <INDIText {...props} />
-                default:
-                    return null
-            }
-        })
+
+
+export class INDIPropertySequenceJobValues extends React.PureComponent {
+    onValueChanged = (value) => {
+        if(this.props.property.type === 'switch') {
+            value = switchValues(value, this.props.property);
+        }
+        this.props.onValueChanged(value);
     }
-*/
+
+    onMount = (value) => this.props.onValueChanged({
+        [value.name]: value.value,
+    });
+
+    renderValue = valueId => {
+        const props = {
+            key: valueId,
+            valueId,
+            editMode: true,
+            onChange: this.onValueChanged,
+            displayValue: get(this.props, ['values', getValueName(valueId)]),
+            property: this.props.property
+        };
+        switch(this.props.property.type) {
+            case 'switch':
+                return <INDISwitchContainer onMount={this.onMount} {...props} />;
+            case 'text':
+                return <INDITextContainer onMount={this.onMount} {...props} />;
+            case 'number':
+                return <INDINumberContainer onMount={this.onMount} {...props} />;
+            default:
+                return null;
+        }
+    }
+    render = () => this.props.property ?(
+        <React.Fragment>
+            {this.props.property.values.map(this.renderValue)}
+        </React.Fragment>
+    ) : null;
+}

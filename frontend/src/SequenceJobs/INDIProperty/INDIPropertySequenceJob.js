@@ -1,7 +1,9 @@
 import React from 'react';
 import { Menu, Divider, Container, Grid, Form } from 'semantic-ui-react';
 import { SequenceJobButtonsContainer } from '../SequenceJobButtonsContainer';
-import { INDIPropertySequenceJobDeviceMenuContainer, INDIPropertySequenceJobGroupMenuContainer } from './INDIPropertySequenceJobMenuContainer';
+import { INDIPropertySequenceJobDeviceMenuContainer, INDIPropertySequenceJobGroupMenuContainer, INDIPropertySequenceJobValuesMenuContainer } from './INDIPropertySequenceJobMenuContainer';
+import { getPropertyName, getPropertyId } from '../../INDI-Server/utils';
+import { get } from 'lodash';
 
 export class INDIPropertySequenceJob extends React.Component {
     constructor(props) {
@@ -18,7 +20,6 @@ export class INDIPropertySequenceJob extends React.Component {
     }
 
     isChanged() {
-        //this.state.sequenceJob.device !== this.props.sequenceJob.device && this.state.sequenceJob.property !== this.props.sequenceJob.property;
         return true;
     }
 
@@ -26,7 +27,18 @@ export class INDIPropertySequenceJob extends React.Component {
 
     onGroupChanged = group => this.setState({...this.state, group, sequenceJob: {...this.state.sequenceJob, property: ''} });
 
-    onPropertyChanged = property => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, property, values:{} } });
+    onPropertyChanged = property => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, property: getPropertyName(property), values:{} } });
+
+    onValueChanged = (values) => this.setState( prevState => ({
+        ...prevState,
+        sequenceJob: {
+            ...prevState.sequenceJob,
+            values: {
+                ...prevState.sequenceJob.values,
+                ...values,
+            }
+        }
+    }));
 
     onWaitChanged = (checked) => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, wait: checked ? -1 : 0} });
 
@@ -57,10 +69,15 @@ export class INDIPropertySequenceJob extends React.Component {
                         <INDIPropertySequenceJobGroupMenuContainer
                             groupId={this.state.group}
                             onPropertySelected={this.onPropertyChanged}
-                            propertyId={this.state.sequenceJob.property}
+                            propertyId={getPropertyId(this.state.sequenceJob.device, this.state.sequenceJob.property)}
                         />
                     </Grid.Column>
                     <Grid.Column width={12}>
+                        <INDIPropertySequenceJobValuesMenuContainer
+                            propertyId={getPropertyId(this.state.sequenceJob.device, this.state.sequenceJob.property)}
+                            onValueChanged={this.onValueChanged}
+                            values={get(this.state, 'sequenceJob.values')}
+                        />
                     </Grid.Column>
                 </Grid>
 

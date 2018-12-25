@@ -3,7 +3,7 @@ import { ExposureSequenceJobContainer } from './Exposure/ExposureSequenceJobCont
 import { NotFoundPage } from '../components/NotFoundPage';
 import { get } from 'lodash';
 import { Container } from 'semantic-ui-react';
-import { FilterSequenceJobItemContainer } from './FilterWheel/FilterSequenceJobItemContainer';
+import { FilterSequenceJobContainer } from './FilterWheel/FilterSequenceJobContainer';
 import { CommandSequenceJob } from './Command/CommandSequenceJob';
 import { INDIPropertySequenceJobContainer } from './INDIProperty/INDIPropertySequenceJobContainer';
 
@@ -12,7 +12,7 @@ const mapItemType = sequenceJob => {
         case 'shots':
             return <ExposureSequenceJobContainer sequenceJob={sequenceJob} />;
         case 'filter':
-            return <FilterSequenceJobItemContainer sequenceJob={sequenceJob} />;
+            return <FilterSequenceJobContainer sequenceJob={sequenceJob} />;
         case 'command':
             return <CommandSequenceJob sequenceJob={sequenceJob} />;
         case 'property':

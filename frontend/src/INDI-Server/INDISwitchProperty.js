@@ -1,9 +1,13 @@
 import React from 'react';
 import { INDISwitchContainer } from './INDIValueContainer';
+import { switchValues } from './utils';
 
 export class INDISwitchProperty extends React.PureComponent {
 
-    setPropertyValues = v => this.props.setPropertyValues(this.props.device, this.props.property, v);
+    setPropertyValues = value => {
+        value = switchValues(value, this.props.property);
+        this.props.setPropertyValues(this.props.device, this.props.property, value);
+    }
 
     renderSwitch = (value, index) => (
         <INDISwitchContainer

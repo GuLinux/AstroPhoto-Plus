@@ -1,49 +1,50 @@
 import React from 'react';
 import { Checkbox } from 'semantic-ui-react'
 import { CheckButton } from '../components/CheckButton';
+import { getPropertyInputSelector } from './selectors';
 
+export class INDISwitch extends React.PureComponent{
+    
+    componentDidMount = () => this.props.onMount && this.props.onMount(this.props.value);
 
-const onButtonClick = (property, value, onChange) => {
-    if(value.value)
-        return;
-    const newValues = { [value.name]: true }
-    if(property.rule === 'ONE_OF_MANY') {
-        property.values.filter(v => v.name !== value.name).forEach(v => newValues[v.name] = false);
+    onCheckbox = () => {
+        let newState = ! this.props.value.value;
+        this.props.onChange({[this.props.value.name]: newState});
     }
-    onChange(newValues);
-}
-
-const onCheckbox = (property, value, onChange) => {
-    let newState = ! value.value;
-    onChange({[value.name]: newState});
-}
-
-
-export const INDISwitch = ({property, value, editMode, onChange}) => {
-    switch(property.rule) {
-        case "ONE_OF_MANY":
-        case "AT_MOST_ONE":
-            return ( <CheckButton
-                        size='mini'
-                        key={value.name}
-                        active={value.value}
-                        onClick={onButtonClick.bind(this, property, value, onChange)}
-                        disabled={!editMode}
-                        content={value.label} />
-                    )
-        case "ANY":
-            return (
-                <Checkbox
-                    className='indi-one-of-many-switch'
-                    slider
-                    checked={value.value}
-                    label={value.label}
-                    readOnly={!editMode}
-                    onChange={onCheckbox.bind(this, property, value, onChange)}
-                />
-            )
-        default:
-            return (<span>Property {value.label} not supported</span>)
+    
+    onButtonClick = () => {
+        const { property, value, onChange } = this.props;
+        onChange({ [value.name]: true });
     }
-}
 
+    getDisplayValue = () => this.props.displayValue === undefined ? this.props.value.value : this.props.displayValue;
+
+    render = () => {
+        const {property, value, editMode }= this.props;
+        switch(property.rule) {
+            case "ONE_OF_MANY":
+            case "AT_MOST_ONE":
+                return ( <CheckButton
+                            size='mini'
+                            key={value.name}
+                            active={this.getDisplayValue()}
+                            onClick={this.onButtonClick}
+                            disabled={!editMode}
+                            content={value.label} />
+                        );
+            case "ANY":
+                return (
+                    <Checkbox
+                        className='indi-one-of-many-switch'
+                        slider
+                        checked={this.getDisplayValue()}
+                        label={value.label}
+                        readOnly={!editMode}
+                        onChange={this.onCheckbox}
+                    />
+                );
+            default:
+                return (<span>Property {value.label} not supported</span>);
+        }
+    }
+} 

@@ -1,9 +1,6 @@
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
 import { getSequenceId, getSequence } from '../Sequences/inputSelectors';
-import { get } from 'lodash';
-import { getSequenceGear } from '../Sequences/selectors';
-import { getPropertyId, getValueId } from '../INDI-Server/utils';
 import { getValueInputSelector, getValueInputSelectorById, getDevices, getGroups, getProperties } from '../INDI-Server/selectors';
 import { getFilterWheelAvailableFiltersProperty } from '../Gear/selectors';
 
@@ -152,4 +149,9 @@ export const indiPropertySequenceJobPropertyItemSelector = createCachedSelector(
     id,
     label,
 }))( (state, {propertyId}) => propertyId);
+
+
+export const indiPropertySequenceJobValuesMenuSelector = createSelector([
+    getSelectedProperty,
+], property => ({property}));
 

@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { Button, Grid } from 'semantic-ui-react'
-import { get, set } from 'lodash/fp';
+import { get } from 'lodash/fp';
 import { transform } from 'lodash';
 import { INDINumberContainer, INDITextContainer } from './INDIValueContainer';
-import { getValueId } from './utils';
+import { getValueName } from './utils';
 
 class INDIInputProperty extends React.Component {
     constructor(props) {
@@ -14,9 +14,12 @@ class INDIInputProperty extends React.Component {
 
     editMode = mode => this.props.isWriteable && mode;
 
-    displayValue = name => get(['pendingValues', name, 'value'], this.state);
-    onValueChange = (name, value) => this.setState(set(['pendingValues', getValueId(this.props.property, {name})], {name, value}, this.state));
+    displayValue = id => get(['pendingValues', getValueName(id)], this.state);
+
+    onValueChange = (value) => this.setState({...this.state, pendingValues: {...this.state.pendingValues, ...value}});
+
     enterEditMode = () => this.setState({...this.state, editMode: this.editMode(true)});
+    
     cancelEdit = () => {
         this.setState({
             ...this.state,
@@ -26,11 +29,10 @@ class INDIInputProperty extends React.Component {
     }
 
     commit = () => {
-        const pendingValues = transform(this.state.pendingValues, (acc, val, key) => acc[val.name] = val.value, {});
         this.props.setPropertyValues(
             this.props.device,
             this.props.property,
-            pendingValues,
+            this.state.pendingValues,
         );
         this.cancelEdit();
     }
