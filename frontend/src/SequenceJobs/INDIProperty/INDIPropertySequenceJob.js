@@ -70,6 +70,8 @@ export class INDIPropertySequenceJob extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={12}>
                         <INDIPropertySequenceJobValuesMenuContainer
+                            deviceId={this.state.sequenceJob.device}
+                            groupId={this.state.sequenceJob.group}
                             propertyId={getPropertyId(this.state.sequenceJob.device, this.state.sequenceJob.property)}
                             onValueChanged={this.onValueChanged}
                             values={get(this.state, 'sequenceJob.values')}

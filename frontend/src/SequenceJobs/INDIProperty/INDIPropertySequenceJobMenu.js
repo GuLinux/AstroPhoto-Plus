@@ -24,12 +24,17 @@ export class INDIPropertySequenceJobDeviceMenu extends React.PureComponent {
 }
 
 export class INDIPropertySequenceJobGroupMenu extends React.PureComponent {
-    render = () => this.props.group ? (
-        <Menu pointing size='mini' vertical>
-            <Menu.Item header>Property</Menu.Item>
-            {this.props.group.properties.map(this.renderProperty)}
-        </Menu>
-    ) : null;
+    render = () => {
+        if(this.props.group) {
+            return (
+                <Menu pointing size='mini' vertical>
+                    <Menu.Item header>Property</Menu.Item>
+                    {this.props.group.properties.map(this.renderProperty)}
+                </Menu>
+            );
+        }
+        return null;
+    }
 
     renderProperty = property => <INDIPropertySequenceJobPropertyItemContainer
         propertyId={property}
@@ -72,9 +77,20 @@ export class INDIPropertySequenceJobValues extends React.PureComponent {
                 return null;
         }
     }
-    render = () => this.props.property ?(
-        <React.Fragment>
-            {this.props.property.values.map(this.renderValue)}
-        </React.Fragment>
-    ) : null;
+    render = () => {
+        if(this.props.property) {
+            return (
+                <React.Fragment>
+                    {this.props.property.values.map(this.renderValue)}
+                </React.Fragment>
+            );
+        }
+        if(this.props.groupId) {
+            return <p>Select a property from the left menu</p>;
+        }
+        if(this.props.deviceId) {
+            return <p>Select a group from the left menu</p>;
+        }
+        return <p>Select a device from the menu above</p>;
+    }
 }
