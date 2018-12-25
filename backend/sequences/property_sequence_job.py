@@ -6,6 +6,7 @@ class PropertySequenceJob:
     def __init__(self, data):
         self.device = data['device']
         self.property = data['property']
+        self.group = data.get('group')
         self.values = data['values']
         self.wait = data.get('wait', 0)
        
@@ -14,6 +15,7 @@ class PropertySequenceJob:
             'device': self.device,
             'property': self.property,
             'values': self.values,
+            'group': self.group,
             'wait': self.wait,
         }
 

@@ -8,11 +8,7 @@ import { get } from 'lodash';
 export class INDIPropertySequenceJob extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { group: '', sequenceJob: {device: '', property: '', wait: -1, ...props.sequenceJob }}
-
-        if(props.sequenceJob.device && props.sequenceJob.property) {
-            this.state.group = this.getProperties()[props.sequenceJob.property].group
-        }
+        this.state = { sequenceJob: {device: '', group: '', property: '', wait: -1, ...props.sequenceJob }}
     }
 
     isValid() {
@@ -23,9 +19,9 @@ export class INDIPropertySequenceJob extends React.Component {
         return true;
     }
 
-    onDeviceChanged = device => this.setState({...this.state, group: '', sequenceJob: {...this.state.sequenceJob, device, property: ''} });
+    onDeviceChanged = device => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, device, group: '', property: ''} });
 
-    onGroupChanged = group => this.setState({...this.state, group, sequenceJob: {...this.state.sequenceJob, property: ''} });
+    onGroupChanged = group => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, group, property: ''} });
 
     onPropertyChanged = property => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, property: getPropertyName(property), values:{} } });
 
@@ -67,7 +63,7 @@ export class INDIPropertySequenceJob extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={2}>
                         <INDIPropertySequenceJobGroupMenuContainer
-                            groupId={this.state.group}
+                            groupId={this.state.sequenceJob.group}
                             onPropertySelected={this.onPropertyChanged}
                             propertyId={getPropertyId(this.state.sequenceJob.device, this.state.sequenceJob.property)}
                         />
