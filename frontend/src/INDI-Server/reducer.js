@@ -96,6 +96,12 @@ const propertyUpdated = ({values, ...property}, prevState) => {
     values && values.forEach(v => {
         state = addValueToState(property, v, state)
     });
+    if(property.name === 'CONNECTION') {
+        state = set(['devices', 'entities', property.device, 'connected'], values.find(v => v.name === 'CONNECT').value, state);
+    }
+    if(state.devices.entities[property.device].connected === undefined) {
+        console.log(state.devices.entities[property.device].connected)
+    }
     return state;
 }
 
@@ -103,9 +109,6 @@ const propertyUpdated = ({values, ...property}, prevState) => {
 const receivedDeviceProperties = (state, device, deviceProperties) => {
     deviceProperties.forEach(property => {
         state = propertyUpdated(property, state);
-        if(property.name === 'CONNECTION') {
-            state = set(['devices', 'entities', property.device, 'connected'], property.values.find(v => v.name === 'CONNECT').value, state);
-        }
     })
     return state;
 }
@@ -152,7 +155,9 @@ const receivedINDIDevices = (state, devices) => ({
 
 const indiDeviceAdded = (state, {device}) => {
     state = set('devices.ids', [...state.devices.ids, device.id], state);
-    return set(['devices', 'entities', device.id], {...device, connected: false, groups: []}, state);
+    const currentDevice = getOr({}, ['devices', 'entities', device.id], state);
+    device = {...currentDevice, ...device};
+    return set(['devices', 'entities', device.id], {...device, groups: []}, state);
 }
 
 const indiDeviceRemoved = (state, device) => {

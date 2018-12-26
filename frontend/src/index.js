@@ -29,6 +29,7 @@ const loggerMiddleware = createLogger()
 const createMiddleware = () => {
     const devMode = process.env.NODE_ENV === 'development';
     const disableLogger = true;
+    //const composeEnhancers = (devMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({maxAge: 200})) || compose;
     const composeEnhancers = (devMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
     const middlewares = [thunkMiddleware];
     devMode && ! disableLogger && middlewares.push(loggerMiddleware);
