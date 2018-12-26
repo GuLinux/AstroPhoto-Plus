@@ -1,5 +1,7 @@
 import { cameraShootAPI, fetchHistogramApi } from '../middleware/api';
 import Actions from '../actions';
+import { getCurrentFilterWheel, getCurrentFilterWheelId } from './selectors';
+import { getPropertyId } from '../INDI-Server/utils';
 
 
 const Camera = {
@@ -67,9 +69,11 @@ const Camera = {
         }
         dispatch(Actions.Notifications.add('Image error', errorMessage , 'error'));
     },
-    changeFilter: (wheelDevice, filterProperty, value) => dispatch => {
-        dispatch({ type: 'CAMERA_CHANGE_FILTER', device: wheelDevice.id, property: filterProperty.id, value });
-        dispatch(Actions.INDIServer.setPropertyValues(wheelDevice, filterProperty, value));
+    changeFilter: (value) => (dispatch, getState) => {
+        const state = getState();
+        const filterWheelId = getCurrentFilterWheelId(state);
+        dispatch({ type: 'CAMERA_CHANGE_FILTER', device: filterWheelId, property: getPropertyId(filterWheelId, 'FILTER_SLOT'), value });
+        dispatch(Actions.INDIServer.setPropertyValues({name: filterWheelId}, {name: 'FILTER_SLOT'}, {FILTER_SLOT_VALUE: value}));
     },
 };
 

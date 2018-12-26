@@ -1,14 +1,14 @@
 import React from 'react';
 import { Form, Header, Button, Message, Input } from 'semantic-ui-react';
 import ExposureInputContainer from './ExposureInputContainer';
-import SelectFilterContainer from './SelectFilterContainer';
+import { SelectFilterContainer } from './SelectFilterContainer';
 import ImageViewOptions from '../Image/ImageViewOptions';
 
 const FilterWheelSection = ({filterWheels, currentFilterWheel, setCurrentFilterWheel}) => (
     <React.Fragment>
         <Header size='tiny' content='FilterWheel' textAlign='center' />
         <Button.Group vertical size='mini' fluid basic>
-        { filterWheels.all.map(c => <Button
+        { filterWheels.map(c => <Button
             toggle
             active={currentFilterWheel && currentFilterWheel.id === c.id}
             key={c.id} content={c.name}
@@ -17,8 +17,7 @@ const FilterWheelSection = ({filterWheels, currentFilterWheel, setCurrentFilterW
         </Button.Group>
         { currentFilterWheel &&
             <Form.Field inline>
-                <label>Filter</label>
-                <SelectFilterContainer basic size='tiny' labeled floating />
+                <SelectFilterContainer filterWheelId={currentFilterWheel.id} />
             </Form.Field>
         }
     </React.Fragment>
@@ -38,7 +37,7 @@ export const CameraShootingSectionMenuEntries = ({
     <React.Fragment>
         <Header size='tiny' content='Camera' textAlign='center' />
         <Button.Group vertical size='mini' fluid basic>
-        { cameras.all.map(c => <Button
+        { cameras.map(c => <Button
             toggle
             active={currentCamera && currentCamera.id === c.id}
             key={c.id} content={c.name}
@@ -50,7 +49,7 @@ export const CameraShootingSectionMenuEntries = ({
         }
         <Header size='tiny' content='Exposure' textAlign='center' />
         <Form.Field>
-            <ExposureInputContainer disabled={!currentCamera || isShooting} size='tiny' />
+            <ExposureInputContainer cameraId={currentCamera && currentCamera.id} disabled={!currentCamera || isShooting} size='tiny' />
             { !currentCamera && <Message content='Please select a camera first' size='tiny'/> }
         </Form.Field>
         <Form.Checkbox label='Continuous' disabled={!currentCamera} toggle size='mini' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} />

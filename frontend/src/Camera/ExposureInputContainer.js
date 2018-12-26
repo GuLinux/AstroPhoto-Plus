@@ -1,19 +1,7 @@
 import { connect } from 'react-redux';
 import Actions from '../actions';
 import ExposureInput from './ExposureInput';
-import { getShotParameters } from './selectors';
-import  { connectedCamerasSelector } from '../Gear/selectors';
-
-
-const mapStateToProps = (state) => {
-    const shotParameters = getShotParameters(state);
-    const cameraObject = shotParameters.camera && connectedCamerasSelector(state).get(shotParameters.camera.id);
-    return {
-        shotParameters,
-        isShooting: state.camera.isShooting,
-        cameraExposureValue: cameraObject && cameraObject.exposureProperty.values[0],
-    }
-};
+import { exposureInputSelector } from './selectors';
 
 const onExposureChanged = exposure => Actions.Camera.setOption({exposure});
 
@@ -24,7 +12,7 @@ const mapDispatchToProps = {
 
 
 const ExposureInputContainer = connect(
-    mapStateToProps,
+    exposureInputSelector,
     mapDispatchToProps
 )(ExposureInput);
 

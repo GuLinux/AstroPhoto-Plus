@@ -11,9 +11,6 @@ const getServerState = state => state.indiserver.state;
 const getServiceServerFound = state => state.indiservice.server_found;
 
 
-
-
-// Own props
 const getDeviceProp = (state, {deviceId}) => deviceId;
 
 
@@ -85,9 +82,6 @@ export const getValueInputSelector = (deviceId, propertyName, valueName, default
     return getValueInputSelectorById(state, {valueId}) || defaultValue;
 }
 
-
-
-
 export const indiValueSelector = createCachedSelector(
     [getValueInputSelectorById],
     (value) => ({ value }),
@@ -96,7 +90,3 @@ export const indiValueSelector = createCachedSelector(
 
 
 
-// TODO: remove
-const nullSelector = (...args) => console.log(args);
-export const getDevicesProperties = nullSelector;
- 

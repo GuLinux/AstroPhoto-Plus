@@ -1,18 +1,30 @@
 import React from 'react';
-import { Select } from 'semantic-ui-react';
+import { Dropdown } from 'semantic-ui-react';
+import { FilterSelectionContainer } from './FilterSelectionContainer';
 
-export const SelectFilter = ({filterWheel, availableFilters, currentFilter, onFilterSelected, filterWheelEntity, filterSlotProperty, isPending, ...rest}) => (
-    <Select
-        placeholder='Select a filter'
-        value={filterWheel.currentFilter.number}
-        icon={ isPending && { loading: true, name: 'spinner' }}
-        options={
-            filterWheel.filters.map(f => ({ text: f.name, value: f.number }))
-        }
-        onChange={(e, data) => onFilterSelected(data.value, filterWheel, filterWheel.filterSlotProperty) }
-        {...rest}
-     />
 
-)
+export class SelectFilter extends React.Component {
+    renderFilter = (id, index) => <FilterSelectionContainer onClick={this.onChange} filterWheelId={this.props.filterWheelId} key={id} filterNumber={index+1} />;
 
-export default SelectFilter;
+    onChange = (e,{value}) => this.props.onFilterSelected(value);
+
+    render = () => {
+        const {currentFilter, currentFilterName, availableFilters, isPending} = this.props;
+        return (
+           <Dropdown 
+               size='tiny'
+               button
+               floating
+               labeled
+               text={currentFilterName}
+               value={currentFilter}
+               icon={ isPending && { loading: true, name: 'spinner' }}
+            >
+               <Dropdown.Menu>
+                   {availableFilters.map(this.renderFilter)}
+               </Dropdown.Menu>
+            </Dropdown>
+       
+       );
+    }
+}

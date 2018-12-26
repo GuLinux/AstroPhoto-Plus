@@ -38,9 +38,3 @@ export const getFilterWheelCurrentFilterName = (state, {filterWheelId}) => {
     return currentFilterNumber ? getFilterWheelFilterName(state, {filterWheelId, filterNumber: currentFilterNumber.value}) : null;
 }
 
-
-// TODO: remove
-const nullF = (...args) => console.log('TODO: remove', args);
-export const connectedCamerasSelector = nullF;
-export const connectedFilterWheelsSelector = nullF;
-export const getSequencesGears = nullF;
