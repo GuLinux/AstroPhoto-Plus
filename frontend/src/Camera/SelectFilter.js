@@ -13,10 +13,11 @@ export class SelectFilter extends React.Component {
         return (
            <Dropdown 
                size='tiny'
-               button
                floating
-               labeled
-               text={currentFilterName}
+               button
+               fluid
+               compact
+               text={'Filter: ' + currentFilterName}
                value={currentFilter}
                icon={ isPending && { loading: true, name: 'spinner' }}
             >
