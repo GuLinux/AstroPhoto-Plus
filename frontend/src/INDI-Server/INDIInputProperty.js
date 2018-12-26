@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Button, Grid } from 'semantic-ui-react'
 import { get } from 'lodash/fp';
-import { transform } from 'lodash';
 import { INDINumberContainer, INDITextContainer } from './INDIValueContainer';
 import { getValueName } from './utils';
 

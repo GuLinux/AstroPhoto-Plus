@@ -1,9 +1,6 @@
 import React from 'react';
 import { Table, Label, Icon, Card } from 'semantic-ui-react';
-import { INDISwitchPropertyContainer } from '../INDI-Server/INDIPropertyContainer';
 import { INDILight } from '../INDI-Server/INDILight';
-import { formatDecimalNumber } from '../utils';
-import { secs2time } from '../utils';
 
 
 const DeviceCardHeader = ({connected, name}) => {

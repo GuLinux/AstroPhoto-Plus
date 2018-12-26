@@ -1,13 +1,12 @@
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
 
-import { getDevices, getProperties, getValues, getValueInputSelector } from '../INDI-Server/selectors';
+import { getDevices } from '../INDI-Server/selectors';
 import { getJobsForSequence } from '../SequenceJobs/selectors';
 import { imageUrlBuilder, formatDecimalNumber } from '../utils';
 import { secs2time } from '../utils';
 import { getConnectedCameras, getConnectedFilterWheels, getCameraExposureValue, getCameraExposureProperty, getFilterWheelCurrentFilter, getFilterWheelCurrentFilterName } from '../Gear/selectors';
 import { getSequenceIds, getSequenceId, getSequence, getShowLastImage } from './inputSelectors';
-import { getPropertyId} from '../INDI-Server/utils';
 import { get } from 'lodash';
 
 

@@ -53,7 +53,7 @@ export class INDIPropertySequenceJobValues extends React.PureComponent {
         this.props.onValueChanged(value);
     }
 
-    onMount = (value) => Object.keys(this.props.values).length == 0 &&this.props.onValueChanged({
+    onMount = (value) => Object.keys(this.props.values).length === 0 && this.props.onValueChanged({
         [value.name]: value.value,
     });
         

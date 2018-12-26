@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 import { ConfirmDialog } from '../Modals/ModalDialog';
-import { withRouter } from 'react-router';
 
 export const SequenceJobButtons = ({isValid, isChanged, onSave, sequenceJob, history }) => {
 

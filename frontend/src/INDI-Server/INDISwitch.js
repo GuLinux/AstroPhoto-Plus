@@ -1,7 +1,6 @@
 import React from 'react';
 import { Checkbox } from 'semantic-ui-react'
 import { CheckButton } from '../components/CheckButton';
-import { getPropertyInputSelector } from './selectors';
 
 export class INDISwitch extends React.PureComponent{
     
@@ -13,7 +12,7 @@ export class INDISwitch extends React.PureComponent{
     }
     
     onButtonClick = () => {
-        const { property, value, onChange } = this.props;
+        const { value, onChange } = this.props;
         onChange({ [value.name]: true });
     }
 

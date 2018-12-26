@@ -1,6 +1,6 @@
 import { cameraShootAPI, fetchHistogramApi } from '../middleware/api';
 import Actions from '../actions';
-import { getCurrentFilterWheel, getCurrentFilterWheelId } from './selectors';
+import { getCurrentFilterWheelId } from './selectors';
 import { getPropertyId } from '../INDI-Server/utils';
 
 
