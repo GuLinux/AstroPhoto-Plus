@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@welldone-software/why-did-you-render": "^2.3.2",
     "d3-celestial-react": "GuLinux/d3-celestial-react",
     "event-source-polyfill": "0.0.12",
     "forest-themes": "semantic-ui-forest/forest-themes#7f472cfbcc2093bb8c90cc56fba18ca8e3818028",
@@ -7,6 +8,7 @@
     "normalizr": "^3.2.4",
     "npm": "^6.4.0",
     "printj": "^1.2.1",
+    "re-reselect": "^2.2.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-dropzone": "^5.0.1",

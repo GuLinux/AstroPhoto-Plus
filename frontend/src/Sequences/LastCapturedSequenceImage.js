@@ -89,14 +89,17 @@ class LastCapturedSequenceImageComponent extends React.Component {
 }
 
 
-const LastCapturedSequenceImage = ({showLastImage, toggleShowLastImage, ...props}) => (
-    <Container>
-        <Header>
-            <Radio toggle label='Last captured image' checked={showLastImage} onChange={() => toggleShowLastImage(!showLastImage)} />
-        </Header>
-        { showLastImage && <LastCapturedSequenceImageComponent {...props} /> }
-    </Container>
-);
+export class LastCapturedSequenceImage extends React.PureComponent {
+    render = () => {
+        const {showLastImage, toggleShowLastImage, ...props} = this.props;
+        return (
+            <Container>
+                <Header>
+                    <Radio toggle label='Last captured image' checked={showLastImage} onChange={() => toggleShowLastImage(!showLastImage)} />
+                </Header>
+                { showLastImage && <LastCapturedSequenceImageComponent {...props} /> }
+            </Container>
+        );
+    }
+}
 
-
-export default LastCapturedSequenceImage;

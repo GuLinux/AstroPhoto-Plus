@@ -28,9 +28,6 @@ const indiserverEvents = (event, dispatch) => {
             break;
         case 'indi_property_updated':
             dispatch(Actions.INDIServer.propertyUpdated(eventObject.payload));
-            if(eventObject.payload.name === 'CONNECTION') {
-                Actions.Gear.fetchAll(dispatch);
-            }
             break;
         case 'indi_property_added':
             dispatch(Actions.INDIServer.propertyAdded(eventObject.payload));

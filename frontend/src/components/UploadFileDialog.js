@@ -4,7 +4,7 @@ import { ModalDialog } from '../Modals/ModalDialog';
 import Dropzone from 'react-dropzone';
 
 
-class UploadFileDialog extends React.Component {
+export class UploadFileDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -56,4 +56,3 @@ class UploadFileDialog extends React.Component {
     }
 }
 
-export default UploadFileDialog;

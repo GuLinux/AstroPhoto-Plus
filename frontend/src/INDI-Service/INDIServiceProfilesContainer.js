@@ -12,26 +12,16 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    loadProfile: id => dispatch(Actions.INDIService.selectProfile(id === 'select' ? null : id)),
-    addProfile: (name, drivers) => dispatch(Actions.INDIService.addProfile(name, drivers)),
-    removeProfile: (id) => dispatch(Actions.INDIService.removeProfile(id)),
-    updateProfile: (id, name, drivers) => dispatch(Actions.INDIService.updateProfile(id, name, drivers)),
-})
-
-const mergeProps = (stateProps, dispatchProps, ownProps) => ({
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    addProfile: (name) => dispatchProps.addProfile(name, stateProps.selectedDrivers),
-    renameProfile: (id, name) => dispatchProps.updateProfile(id, name, stateProps.profiles.find(p => p.id === id).drivers),
-    updateProfile: (id) => dispatchProps.updateProfile(id, undefined, stateProps.selectedDrivers),
-})
+const mapDispatchToProps = {
+    loadProfile: Actions.INDIService.selectProfile,
+    addProfile: Actions.INDIService.addProfile,
+    removeProfile: Actions.INDIService.removeProfile,
+    updateProfile: Actions.INDIService.updateProfile,
+};
 
 const INDIServiceProfilesContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-  mergeProps,
 )(INDIServiceProfilesPage)
 
 export default INDIServiceProfilesContainer

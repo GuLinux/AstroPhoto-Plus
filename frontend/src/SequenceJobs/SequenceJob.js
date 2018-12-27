@@ -1,30 +1,30 @@
 import React from 'react';
-import ExposureSequenceJobContainer from './ExposureSequenceJobContainer'
-import CommandSequenceJob from './CommandSequenceJob'
-import FilterSequenceJobContainer from './FilterSequenceJobContainer'
-import INDIPropertySequenceJobContainer from './INDIPropertySequenceJobContainer'
+import { ExposureSequenceJobContainer } from './Exposure/ExposureSequenceJobContainer'
 import { NotFoundPage } from '../components/NotFoundPage';
+import { get } from 'lodash';
+import { Container } from 'semantic-ui-react';
+import { FilterSequenceJobContainer } from './FilterWheel/FilterSequenceJobContainer';
+import { CommandSequenceJob } from './Command/CommandSequenceJob';
+import { INDIPropertySequenceJobContainer } from './INDIProperty/INDIPropertySequenceJobContainer';
 
-const mapItemType = (sequenceJob) => {
-    switch(sequenceJob.type) {
+const mapItemType = sequenceJob => {
+    switch(get(sequenceJob, 'type')) {
         case 'shots':
             return <ExposureSequenceJobContainer sequenceJob={sequenceJob} />;
         case 'filter':
             return <FilterSequenceJobContainer sequenceJob={sequenceJob} />;
         case 'command':
-            return <CommandSequenceJob sequenceJob={sequenceJob} />
+            return <CommandSequenceJob sequenceJob={sequenceJob} />;
         case 'property':
-            return <INDIPropertySequenceJobContainer sequenceJob={sequenceJob} />
+            return <INDIPropertySequenceJobContainer sequenceJob={sequenceJob} />;
         default:
-            return null;
+            return <NotFoundPage backToUrl='/sequences/all' message='Sequence job not found' />;
         }
 }
 
-const SequenceJob = ({sequenceJob}) => {
-    if(sequenceJob) {
-        return <div className="container">{mapItemType(sequenceJob)}</div>
-    }
-    return <NotFoundPage backToUrl='/sequences/all' message='Sequence job not found' />
-}
+export const SequenceJob = ({sequenceJob}) => (
+    <Container>
+        {mapItemType(sequenceJob)}
+    </Container>
+)
 
-export default SequenceJob

@@ -1,15 +1,6 @@
-import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoloadConfigurationAPI } from '../middleware/api'
-import Actions from '../actions'
-
-let fetchGearTimerId;
-const fetchGear = dispatch => {
-    clearTimeout(fetchGearTimerId);
-    fetchGearTimerId = setTimeout( () => {
-        fetchGearTimerId = null;
-        Actions.Gear.fetchAll(dispatch);
-    }, 1000);
-}
-
+import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoloadConfigurationAPI } from '../middleware/api';
+import Actions from '../actions';
+import { get } from 'lodash';
 
 export const INDIServer = {
     serverConnectionNotify: (state, dispatch) => {
@@ -45,7 +36,6 @@ export const INDIServer = {
     },
 
     receivedDevices: (devices, dispatch) => {
-        fetchGear(dispatch);
         devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device)));
         return {
             type: 'RECEIVED_INDI_DEVICES',
@@ -89,15 +79,6 @@ export const INDIServer = {
         }
     },
 
-    addPendingValues: (device, property, pendingValues, autoApply) => {
-        return dispatch => {
-            dispatch({ type: 'ADD_PENDING_VALUES', device, property, pendingValues, autoApply })
-            if(autoApply) {
-                dispatch(INDIServer.commitPendingValues(device, property, pendingValues));
-            }
-        }
-    },
-
     autoloadConfig: (device) => dispatch => {
         return autoloadConfigurationAPI(dispatch, device.name, json => {
             if(json.result)
@@ -105,29 +86,35 @@ export const INDIServer = {
         });
     },
 
-    commitPendingValues: (device, property, pendingValues) => {
+    setPropertyValues: (device, property, values) => {
         return dispatch => {
-            setINDIValuesAPI(dispatch, device, property, pendingValues, json => {});
-            dispatch({ type: 'COMMIT_PENDING_VALUES', property, pendingValues })
+            setINDIValuesAPI(dispatch, device, property, values, json => {});
+            dispatch({ type: 'INDI_REQUEST_SET_PROPERTY_VALUES', property, values})
         }
     },
 
     deviceMessage: (device, message) => ({ type: 'INDI_DEVICE_MESSAGE', device, message }),
-    propertyUpdated: property => dispatch => {
+
+    propertyUpdated: property => (dispatch, getState) => {
         if(property.name === 'CONNECTION') {
-            if(property.values.find(v => v.name === 'CONNECT' && v.value))
+            if(property.values.find(v => v.name === 'CONNECT' && v.value)) {
                 dispatch({type: 'INDI_DEVICE_CONNECTED', device: property.device})
-            else
+                setTimeout(() => dispatch(Actions.INDIServer.autoloadConfig(get(getState(), ['indiserver', 'devices', 'entities', property.device]))), 1500);
+            }
+            else {
                 dispatch({type: 'INDI_DEVICE_DISCONNECTED', device: property.device})
+            }
         }
         dispatch({ type: 'INDI_PROPERTY_UPDATED', property })
     },
+
     propertyAdded: property => ({ type: 'INDI_PROPERTY_ADDED', property }),
+
     propertyRemoved: property => ({ type: 'INDI_PROPERTY_REMOVED', property }),
+
     deviceAdded: device => {
         return dispatch => {
             dispatch({ type: 'INDI_DEVICE_ADDED', device })
-            fetchGear(dispatch);
         }
     },
     

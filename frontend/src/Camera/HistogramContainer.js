@@ -19,9 +19,9 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    loadHistogram: (camera, image, bins) => dispatch(Actions.Camera.loadHistogram(camera, image, bins)),
-})
+const mapDispatchToProps = {
+    loadHistogram: Actions.Camera.loadHistogram,
+}
 
 const HistogramContainer = connect(
   mapStateToProps,

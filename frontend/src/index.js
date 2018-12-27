@@ -19,11 +19,17 @@ import listenToEvents from './middleware/events';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
+// if (process.env.NODE_ENV !== 'production') {
+//   const whyDidYouRender = require('@welldone-software/why-did-you-render');
+//   whyDidYouRender(React, {include: [/SequenceListItem/]});
+// }
+
 const loggerMiddleware = createLogger()
 
 const createMiddleware = () => {
     const devMode = process.env.NODE_ENV === 'development';
     const disableLogger = true;
+    //const composeEnhancers = (devMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({maxAge: 200})) || compose;
     const composeEnhancers = (devMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
     const middlewares = [thunkMiddleware];
     devMode && ! disableLogger && middlewares.push(loggerMiddleware);

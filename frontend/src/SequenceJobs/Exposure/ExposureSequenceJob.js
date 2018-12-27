@@ -1,11 +1,12 @@
 import React from 'react';
 import { Form, Label, Divider } from 'semantic-ui-react';
-import { sanitizePath, secs2time } from '../utils'
-import SequenceJobButtonsContainer from './SequenceJobButtonsContainer'
-import { formatDecimalNumber } from '../utils';
-import { NumericInput } from '../components/NumericInput';
+import { sanitizePath, secs2time } from '../../utils'
+import { SequenceJobButtonsContainer } from '../SequenceJobButtonsContainer'
+import { formatDecimalNumber } from '../../utils';
+import { NumericInput } from '../../components/NumericInput';
+import { NotFoundPage } from '../../components/NotFoundPage';
 
-class ExposureSequenceJob extends React.Component {
+export class ExposureSequenceJob extends React.Component {
     constructor(props) {
         super(props)
         this.initialSequenceJob =
@@ -63,8 +64,7 @@ class ExposureSequenceJob extends React.Component {
     }
 
     updateShootingParams(key, value) {
-        const { exposureProperty } = this.props.camera;
-        const exposureValue = exposureProperty.values[0];
+        const { exposureValue } = this.props;
         const { min, max } = exposureValue;
 
         let newState = this.buildSequenceJobState({[key]: value});
@@ -109,10 +109,9 @@ class ExposureSequenceJob extends React.Component {
         return secs2time(time);
     }
 
-    render() {
-        const { exposureProperty } = this.props.camera;
-        const exposureValue = exposureProperty.values[0];
-        return (
+    render = () => {
+        const { exposureValue } = this.props;
+        return exposureValue ? (
             <Form>
                 <Form.Input
                     type='text'
@@ -196,8 +195,7 @@ class ExposureSequenceJob extends React.Component {
                 <Divider section />
                 <SequenceJobButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceJob={this.state.sequenceJob} />
             </Form>
-        );
+        ) : <NotFoundPage />;
     }
 }
 
-export default ExposureSequenceJob;

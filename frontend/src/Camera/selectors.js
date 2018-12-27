@@ -1,8 +1,9 @@
 import { createSelector } from 'reselect'
-import { connectedCamerasSelector, connectedFilterWheelsSelector } from '../Gear/selectors'
+import { getConnectedCameras, getConnectedFilterWheels, getCameraExposureValue, getFilterWheelCurrentFilter, getFilterWheelCurrentFilterName, getFilterWheelAvailableFiltersProperty, getFilterWheelFilterName } from '../Gear/selectors'
+import { getDevices } from '../INDI-Server/selectors';
 
 const getCurrentCameraId = state => state.camera.currentCamera;
-const getCurrentFilterWheelId = state => state.camera.currentFilterWheel;
+export const getCurrentFilterWheelId = state => state.camera.currentFilterWheel;
 const getOptions = state => state.camera.options;
 const getROI = state => state.camera.crop;
 const getIsShooting = state => state.camera.isShooting;
@@ -10,18 +11,18 @@ const getCrop = state => state.camera.crop;
 const getCurrentImage = state => state.camera.currentImage;
 const getImageLoading = state => state.camera.imageLoading;
 
-export const getCurrentCamera = createSelector([getCurrentCameraId, connectedCamerasSelector], (currentCameraId, connectedCameras) => {
-    if(! currentCameraId || ! connectedCameras.ids.includes(currentCameraId)) {
+export const getCurrentCamera = createSelector([getCurrentCameraId, getConnectedCameras, getDevices], (currentCameraId, connectedCameras, devices) => {
+    if(! currentCameraId || ! connectedCameras.includes(currentCameraId)) {
         return null;
     };
-    return connectedCameras.get(currentCameraId);
+    return devices.entities[currentCameraId];
 })
 
-export const getCurrentFilterWheel = createSelector([getCurrentFilterWheelId, connectedFilterWheelsSelector], (currentFilterWheelId, connectedFilterWheels) => {
-    if(! currentFilterWheelId || ! connectedFilterWheels.ids.includes(currentFilterWheelId)) {
+export const getCurrentFilterWheel = createSelector([getCurrentFilterWheelId, getConnectedFilterWheels, getDevices], (currentFilterWheelId, connectedFilterWheels, devices) => {
+    if(! currentFilterWheelId || ! connectedFilterWheels.includes(currentFilterWheelId)) {
         return null;
     };
-    return connectedFilterWheels.get(currentFilterWheelId);
+    return devices.entities[currentFilterWheelId];
 })
 
 
@@ -35,18 +36,21 @@ export const getShotParameters = createSelector([getCurrentCamera, getOptions, g
     }
 });
 
-export const cameraContainerSelector = createSelector([getOptions, connectedCamerasSelector], (options, cameras) => ({
+export const cameraContainerSelector = createSelector([getOptions, getConnectedCameras], (options, cameras) => ({
     options,
     cameras,
 }));
 
+const mapDevices = (ids, devices) => ids.map(id => devices.entities[id]);
+
 export const cameraShootingSectionMenuEntriesSelector = createSelector([
     getOptions,
-    connectedCamerasSelector,
-    connectedFilterWheelsSelector,
+    getConnectedCameras,
+    getConnectedFilterWheels,
     getCurrentCamera,
     getCurrentFilterWheel,
     getIsShooting,
+    getDevices,
 ], (
     options,
     cameras,
@@ -54,10 +58,11 @@ export const cameraShootingSectionMenuEntriesSelector = createSelector([
     currentCamera,
     currentFilterWheel,
     isShooting,
+    devices,
 ) => ({
     options,
-    cameras,
-    filterWheels,
+    cameras: mapDevices(cameras, devices),
+    filterWheels: mapDevices(filterWheels, devices),
     currentCamera,
     currentFilterWheel,
     isShooting,
@@ -68,7 +73,7 @@ const getCanCrop = createSelector([getIsShooting, getCurrentImage, getImageLoadi
 
 export const cameraImageOptionsSectionMenuEntriesSelector = createSelector([
     getOptions,
-    connectedCamerasSelector,
+    getConnectedCameras,
     getCrop,
     getCanCrop,
 ], (
@@ -82,3 +87,36 @@ export const cameraImageOptionsSectionMenuEntriesSelector = createSelector([
     crop,
     canCrop,
 }));
+
+
+const getSelectedCameraExposureValue = (state, {cameraId}) => cameraId && getCameraExposureValue(state, {cameraId})
+
+
+export const exposureInputSelector = createSelector([
+    getShotParameters,
+    getSelectedCameraExposureValue,
+    state => state.camera.isShooting,
+], (shotParameters, cameraExposureValue, isShooting) => {
+    return {
+        shotParameters,
+        isShooting,
+        cameraExposureValue,
+    }
+});
+
+
+export const selectFilterSelector = createSelector([
+    state => !!state.camera.pendingFilter,
+    getFilterWheelCurrentFilter,
+    getFilterWheelCurrentFilterName,
+    getFilterWheelAvailableFiltersProperty,
+], (isPending, { value: currentFilter}, { value: currentFilterName}, { values: availableFilters}) => ({
+        isPending,
+        currentFilter,
+        currentFilterName,
+        availableFilters,
+}));
+
+export const filterSelectionSelector = createSelector([
+    getFilterWheelFilterName,
+], ({value: filterName}) => ({filterName}));

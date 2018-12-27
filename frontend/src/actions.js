@@ -2,7 +2,6 @@ import Sequences from './Sequences/actions';
 import SequenceJobs from './SequenceJobs/actions';
 import INDIServer from './INDI-Server/actions';
 import Notifications from './Notifications/actions';
-import Gear from './Gear/actions';
 import INDIService from './INDI-Service/actions';
 import Camera from './Camera/actions';
 import Settings from './Settings/actions';
@@ -17,7 +16,6 @@ export const Actions = {
     SequenceJobs,
     INDIServer,
     Notifications,
-    Gear,
     serverError: (source, payloadType, payload, responseBody) => ({ type: 'SERVER_ERROR', source, payloadType, payload, responseBody }),
     INDIService,
     Camera,

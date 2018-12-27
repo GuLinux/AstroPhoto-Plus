@@ -28,18 +28,15 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    const setOption = (option) => dispatch(Actions.Image.setOption(option));
-    return { setOption };
+const mapDispatchToProps = {
+    setOption: Actions.Image.setOption,
 };
 
 
-export const ImageContainer = connect(
+export const ImageContainer = withRouter(connect(
     mapStateToProps,
     mapDispatchToProps,
-    null,
-    { pure: false }
-)(ImagePage);
+)(ImagePage));
 
 export const ImageSectionMenuContainer = connect(
     mapStateToProps,

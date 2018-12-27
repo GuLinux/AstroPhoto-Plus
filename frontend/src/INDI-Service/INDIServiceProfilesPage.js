@@ -56,15 +56,35 @@ class INDIServiceProfilesPage extends React.Component{
         }
     }
 
-    render() {
+    loadProfile = (profile) => () => this.props.loadProfile(profile === 'select' ? null : profile);
+    addProfile = (name) => this.props.addProfile(name, this.props.selectedDrivers);
+    renameProfile = id => name => this.props.updateProfile(id, name, this.props.profiles.find(p => p.id === id).drivers);
+    updateProfile = (id) => () => this.props.updateProfile(id, undefined, this.props.selectedDrivers);
+    removeProfile = id => () => this.props.removeProfile(id);
+
+    renderProfileMenuItem = p => {
+        const {
+            driversAreSelected,
+        } = this.props;
+
+        return (
+            <Dropdown item text={p.name} key={p.id} simple>
+                <Dropdown.Menu direction='left'>
+                    <Dropdown.Item icon='check' text='load' onClick={this.loadProfile(p.id)} />
+
+                    <ProfileNameDialog initialValue={p.name} title='Rename profile' buttonText='Rename' trigger={
+                        <Dropdown.Item icon='tag' text='rename'  />
+                    } onSave={this.renameProfile(p.id)} />
+                    <Dropdown.Item icon='save' disabled={!driversAreSelected} text='update' onClick={this.updateProfile(p.id)}/>
+                    <Dropdown.Item icon='delete' text='remove' onClick={this.removeProfile(p.id)} />
+                </Dropdown.Menu>
+            </Dropdown>
+        )
+    }
+
+    render = () => {
         const {
             profiles,
-            selectedDrivers,
-            loadProfile,
-            addProfile,
-            removeProfile,
-            updateProfile,
-            renameProfile,
             driversAreSelected,
         } = this.props;
         return (
@@ -76,22 +96,10 @@ class INDIServiceProfilesPage extends React.Component{
                             driversAreSelected ?
                             <Label size='mini' icon='plus' content='add' basic as='a' />
                             : null
-                        } onSave={(name) => addProfile(name, selectedDrivers)} />
+                        } onSave={this.addProfile} />
 
                     </Menu.Item>
-                    { profiles.map(p => (
-                        <Dropdown item text={p.name} key={p.id} simple>
-                            <Dropdown.Menu direction='left'>
-                                <Dropdown.Item icon='check' text='load' onClick={() => loadProfile(p.id)} />
-
-                                <ProfileNameDialog initialValue={p.name} title='Rename profile' buttonText='Rename' trigger={
-                                    <Dropdown.Item icon='tag' text='rename'  />
-                                } onSave={(name) => renameProfile(p.id, name)} />
-                                <Dropdown.Item icon='save' disabled={!driversAreSelected} text='update' onClick={() => updateProfile(p.id)}/>
-                                <Dropdown.Item icon='delete' text='remove' onClick={() => removeProfile(p.id)} />
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    ))}
+                    { profiles.map(this.renderProfileMenuItem)}
                 </Menu>
             </Container>
         )

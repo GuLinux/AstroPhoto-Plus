@@ -16,7 +16,7 @@ export const CameraSectionMenu = () => (
 
 
 export const Camera = ({options, cameras}) => {
-    if(cameras.all.length === 0)
+    if(cameras.length === 0)
         return <NotFoundPage
             backToUrl='/indi/server'
             title='No camera found'

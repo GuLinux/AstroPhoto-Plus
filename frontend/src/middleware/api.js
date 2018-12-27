@@ -136,13 +136,13 @@ export const deleteSequenceJobAPI = (dispatch, sequenceId, sequenceJobId, option
 
 
 
-export const autoloadConfigurationAPI = (dispatch, device) => fetchJSON(dispatch, `/api/server/devices/${device}/properties/CONFIG_PROCESS`, {
+export const autoloadConfigurationAPI = (dispatch, device, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device}/properties/CONFIG_PROCESS`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ CONFIG_LOAD: true }),
-    }, json => {});
+    }, onSuccess);
 
 export const getINDIServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/status', {}, onSuccess);
 
@@ -150,16 +150,11 @@ export const setINDIServerConnectionAPI = (dispatch, connect, onSuccess) => fetc
 
 export const getINDIDevicesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/devices', {}, onSuccess);
 
-export const getCamerasAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/cameras', {}, onSuccess, onError);
-export const getFilterWheelsAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/filter_wheels', {}, onSuccess, onError);
-export const getTelescopesAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/telescopes', {}, onSuccess, onError);
-export const getAstrometryDriversAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/astrometry', {}, onSuccess, onError);
-
 export const getINDIDevicePropertiesAPI = (dispatch, device, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties`, {}, onSuccess);
 
-export const setINDIValuesAPI = (dispatch, device, property, pendingValues, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties/${property.name}`, {
+export const setINDIValuesAPI = (dispatch, device, property, values, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties/${property.name}`, {
         method: 'PUT',
-        body: JSON.stringify(pendingValues),
+        body: JSON.stringify(values),
         headers: {
             'Content-Type': 'application/json'
         }
