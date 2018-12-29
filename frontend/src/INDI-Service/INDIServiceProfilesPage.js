@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Menu, Container, Label, Dropdown, Modal} from 'semantic-ui-react';
+import { Form, Menu, Container, Label, Dropdown, Modal, Button} from 'semantic-ui-react';
 
 
 class ProfileNameDialog extends React.Component {
@@ -20,6 +20,8 @@ class ProfileNameDialog extends React.Component {
         this.props.onSave(this.state.name)
     }
 
+    onProfileNameChanged = e => this.setState({...this.state, name: e.target.value});
+
     modalContent = () => (
         <Modal.Content>
             <Form>
@@ -28,7 +30,7 @@ class ProfileNameDialog extends React.Component {
                     label='Profile name'
                     placeholder="Enter the profile name"
                     value={this.state.name}
-                    onChange={ (e) => this.setState({...this.state, name: e.target.value})}
+                    onChange={this.onProfileNameChanged}
                     autoFocus
                 />
             </Form>
@@ -68,8 +70,8 @@ class INDIServiceProfilesPage extends React.Component{
         } = this.props;
 
         return (
-            <Dropdown item text={p.name} key={p.id} simple>
-                <Dropdown.Menu direction='left'>
+            <Dropdown item text={p.name} key={p.id} >
+                <Dropdown.Menu> 
                     <Dropdown.Item icon='check' text='load' onClick={this.loadProfile(p.id)} />
 
                     <ProfileNameDialog initialValue={p.name} title='Rename profile' buttonText='Rename' trigger={
