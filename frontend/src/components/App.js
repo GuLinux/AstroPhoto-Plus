@@ -6,7 +6,7 @@ import INDIServerContainer from '../INDI-Server/INDIServerContainer';
 import NotificationsContainer from '../Notifications/NotificationsContainer';
 import ErrorPageContainer from '../Errors/ErrorPageContainer';
 import { CameraContainer } from '../Camera/CameraContainer';
-import SettingsContainer from '../Settings/SettingsContainer';
+import { SettingsContainer } from '../Settings/SettingsContainer';
 import { ImageContainer } from '../Image/ImageContainer';
 import { PlateSolvingPageContainer } from '../PlateSolving/PlateSolvingPageContainer';
 import './App.css';
