@@ -95,7 +95,7 @@ const listenToEvents = (dispatch) => {
     es.addEventListener('indi_server', serverListener);
     es.addEventListener('sequences', serverListener);
     es.addEventListener('indi_service', serverListener);
-    es.onerror = e => dispatch(Actions.serverError('event_source', 'event', e));
+    es.onerror = e => dispatch(Actions.Server.error('event_source', 'event', e));
 }
 
 export default listenToEvents;

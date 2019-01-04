@@ -99,9 +99,6 @@ const propertyUpdated = ({values, ...property}, prevState) => {
     if(property.name === 'CONNECTION') {
         state = set(['devices', 'entities', property.device, 'connected'], values.find(v => v.name === 'CONNECT').value, state);
     }
-    if(state.devices.entities[property.device].connected === undefined) {
-        console.log(state.devices.entities[property.device].connected)
-    }
     return state;
 }
 

@@ -22,7 +22,7 @@ export const apiFetch = async (url, options) => {
 // TODO: refactor using apiFetch
 const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
     let dispatchError = response => {
-        response.text().then( body => { dispatch(Actions.serverError('network_request', 'response', response, body)) })
+        response.text().then( body => { dispatch(Actions.Server.error('network_request', 'response', response, body)) })
     }
 
     let errorHandler = response => {
@@ -39,7 +39,7 @@ const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
             if('status' in error) {
                 errorHandler(error)
             } else {
-                dispatch(Actions.serverError('network_request', 'exception', error))
+                dispatch(Actions.Server.error('network_request', 'exception', error))
             }
         });
 }

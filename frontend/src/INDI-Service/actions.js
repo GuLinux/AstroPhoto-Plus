@@ -55,10 +55,13 @@ export const INDIService = {
         }
     },
 
-    serviceStarted: (data) => ({
-        type: 'INDI_SERVICE_STARTED',
-        ...data
-    }),
+    serviceStarted: (data) => dispatch => {
+        dispatch(Actions.INDIServer.autoconnectServer());
+        dispatch({
+            type: 'INDI_SERVICE_STARTED',
+            ...data
+        });
+    },
 
     serviceExited: (data) => dispatch => {
         const notificationMessage = `INDI Service has exited with exit code ${data.payload.exit_code}`;

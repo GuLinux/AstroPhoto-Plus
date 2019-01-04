@@ -15,7 +15,6 @@ import 'react-image-crop/dist/ReactCrop.css';
 import './index.css';
 
 import registerServiceWorker from './registerServiceWorker';
-import listenToEvents from './middleware/events';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
@@ -41,14 +40,7 @@ let store = createStore(
     createMiddleware()
 )
 
-store.dispatch(Actions.fetchBackendVersion())
-store.dispatch(Actions.Sequences.fetch())
-store.dispatch(Actions.INDIServer.fetchServerState(true))
-store.dispatch(Actions.INDIService.fetchService())
-store.dispatch(Actions.INDIService.fetchProfiles())
-store.dispatch(Actions.Commands.get())
-store.dispatch(Actions.Settings.fetch())
-listenToEvents(store.dispatch)
+store.dispatch(Actions.init());
 
 render(
   <Provider store={store}>

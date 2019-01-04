@@ -1,7 +1,8 @@
 import { createSelector } from 'reselect';
 import { get } from 'lodash';
 
-const getSettings = state => state.settings;
+export const getSettings = state => state.settings;
+export const getCurrentSettings = state => getSettings(state).current;
 const getVersion = state => get(state, 'version.version');
 const getCommands = state => state.commands;
 
