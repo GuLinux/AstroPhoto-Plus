@@ -1,38 +1,43 @@
 import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoloadConfigurationAPI } from '../middleware/api';
 import Actions from '../actions';
 import { get } from 'lodash';
+import { getCurrentSettings } from '../Settings/selectors';
+import { getServerState } from './selectors';
 
 export const INDIServer = {
-    serverConnectionNotify: (state, dispatch) => {
-        dispatch(INDIServer.receivedServerState(state.payload, dispatch));
-        if(state.is_error) {
-            return Actions.Notifications.add('INDI Server connection', 'Error while connecting to INDI server', 'error');
+    serverConnectionNotify: (state, isError, notifyOnError) => dispatch => {
+        dispatch(INDIServer.receivedServerState(state));
+        if(isError) {
+            notifyOnError && dispatch(Actions.Notifications.add('INDI Server connection', 'Error while connecting to INDI server', 'error'));
+        } else {
+            dispatch(Actions.Notifications.add('INDI Server connection', 'INDI server connected successfully', 'success', 10000));
         }
-        return Actions.Notifications.add('INDI Server connection', 'INDI server connected successfully', 'success', 10000);
     },
 
-    serverDisconnectNotify: (state, dispatch) => {
-        dispatch(INDIServer.receivedServerState(state.payload, dispatch));
-        if(state.is_error) {
-            return Actions.Notifications.add('INDI Server connection', 'Error while disconnecting to INDI server.', 'error');
+    serverDisconnectNotify: (state, isError) => dispatch => {
+        dispatch(INDIServer.receivedServerState(state));
+        if(isError) {
+            dispatch(Actions.Notifications.add('INDI Server connection', 'Error while disconnecting to INDI server.', 'error'));
+        } else {
+            dispatch(Actions.Notifications.add('INDI Server connection', 'INDI server disconnected successfully.', 'success', 10000));
         }
-        return Actions.Notifications.add('INDI Server connection', 'INDI server disconnected successfully.', 'success', 10000);
     },
 
 
     serverDisconnectErrorNotify: (state, dispatch) => {
-        dispatch(INDIServer.receivedServerState(state.payload, dispatch));
+        dispatch(INDIServer.receivedServerState(state.payload));
         return Actions.Notifications.add('Error', 'INDI server disconnected. Please check your server logs.', 'error');
     },
 
 
-    receivedServerState: (state, dispatch, fetchFullTree = false) => {
-        if(fetchFullTree && state.connected)
+    receivedServerState: (state, fetchFullTree = false) => (dispatch, getState) => {
+        if(fetchFullTree && state.connected) {
             dispatch(INDIServer.fetchDevices());
-        return {
+        }
+        dispatch({
             type: 'RECEIVED_SERVER_STATE',
             state
-        } 
+        })
     },
 
     receivedDevices: (devices, dispatch) => {
@@ -43,11 +48,14 @@ export const INDIServer = {
         }
     },
 
-    receivedDeviceProperties: (device, data) => ({
+    receivedDeviceProperties: (device, data) => dispatch => {
+        dispatch({
             type: 'RECEIVED_DEVICE_PROPERTIES',
             device,
             properties: data
-    }),
+        });
+        dispatch(Actions.INDIServer.autoconnectDevice(device.name));
+    },
 
     fetchDeviceProperties: device => {
         return dispatch => {
@@ -68,22 +76,50 @@ export const INDIServer = {
     fetchServerState: (fetchFullTree = false) => {
         return dispatch => {
             dispatch({type: 'FETCH_INDI_SERVER_STATE'});
-            return getINDIServerStatusAPI(dispatch, data => dispatch(INDIServer.receivedServerState(data, dispatch, fetchFullTree)));
+            return getINDIServerStatusAPI(dispatch, data => dispatch(INDIServer.receivedServerState(data, fetchFullTree)));
         }
     },
 
-    setServerConnection: connect => {
+    setServerConnection: (connect, notifyOnError = true) => {
         return dispatch => {
             dispatch({type: connect ? 'CONNECT_INDI_SERVER' : 'DISCONNECT_INDI_SERVER'});
-            return setINDIServerConnectionAPI(dispatch, connect, data => dispatch(INDIServer.receivedServerState(data, dispatch)));
+            return setINDIServerConnectionAPI(dispatch, connect, data => {
+                dispatch(INDIServer.receivedServerState(data, true));
+                const action = connect ? INDIServer.serverConnectionNotify : INDIServer.serverDisconnectNotify;
+                const isError = data.connected !== connect;
+                dispatch(action(data, isError, notifyOnError));
+            });
         }
     },
+
+    autoconnectServer: () => (dispatch, getState) => {
+        const state = getState();
+        const indiServerConnected = getServerState(state).connected;
+        if(!indiServerConnected) {
+            const settings = getCurrentSettings(getState());
+            if(settings.indi_server_autoconnect) {
+                dispatch(Actions.INDIServer.setServerConnection(true, false));
+            }
+        }
+    },
+
 
     autoloadConfig: (device) => dispatch => {
         return autoloadConfigurationAPI(dispatch, device.name, json => {
             if(json.result)
                 dispatch({type: 'INDI_CONFIG_AUTOLOADED', device});
         });
+    },
+
+    autoconnectDevice: device => (dispatch, getState) => {
+        if(getCurrentSettings(getState()).indi_drivers_autostart) {
+            // TODO: replace the timers with a more robust solution
+            setTimeout(() => {
+                dispatch(Actions.INDIServer.autoloadConfig({name: device}));
+                dispatch(Actions.INDIServer.setPropertyValues({name: device}, {name: 'CONNECTION'}, {CONNECT: true}));
+                setTimeout(() => dispatch(Actions.INDIServer.autoloadConfig({name: device})), 1000);
+            }, 1000);
+        }
     },
 
     setPropertyValues: (device, property, values) => {
@@ -108,14 +144,16 @@ export const INDIServer = {
         dispatch({ type: 'INDI_PROPERTY_UPDATED', property })
     },
 
-    propertyAdded: property => ({ type: 'INDI_PROPERTY_ADDED', property }),
+    propertyAdded: property => (dispatch, getState) => {
+        dispatch({ type: 'INDI_PROPERTY_ADDED', property });
+    },
 
     propertyRemoved: property => ({ type: 'INDI_PROPERTY_REMOVED', property }),
 
-    deviceAdded: device => {
-        return dispatch => {
-            dispatch({ type: 'INDI_DEVICE_ADDED', device })
-        }
+    deviceAdded: device => dispatch => {
+        dispatch({ type: 'INDI_DEVICE_ADDED', device });
+        dispatch(Actions.INDIServer.fetchDeviceProperties(device));
+        dispatch(Actions.INDIServer.autoconnectDevice(device.name));
     },
     
     deviceRemoved: device => ({ type: 'INDI_DEVICE_REMOVED', device }),

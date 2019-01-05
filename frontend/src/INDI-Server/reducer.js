@@ -99,9 +99,6 @@ const propertyUpdated = ({values, ...property}, prevState) => {
     if(property.name === 'CONNECTION') {
         state = set(['devices', 'entities', property.device, 'connected'], values.find(v => v.name === 'CONNECT').value, state);
     }
-    if(state.devices.entities[property.device].connected === undefined) {
-        console.log(state.devices.entities[property.device].connected)
-    }
     return state;
 }
 
@@ -156,8 +153,8 @@ const receivedINDIDevices = (state, devices) => ({
 const indiDeviceAdded = (state, {device}) => {
     state = set('devices.ids', [...state.devices.ids, device.id], state);
     const currentDevice = getOr({}, ['devices', 'entities', device.id], state);
-    device = {...currentDevice, ...device};
-    return set(['devices', 'entities', device.id], {...device, groups: []}, state);
+    const groups = state.groups.ids.filter(id => state.groups.entities[id].device === device.id);
+    return set(['devices', 'entities', device.id], {...currentDevice, ...device, groups}, state);
 }
 
 const indiDeviceRemoved = (state, device) => {

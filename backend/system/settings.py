@@ -32,7 +32,17 @@ class Settings:
         self.indi_service_logs = self.__build_path(['.cache', 'StarQuew', 'logs', 'indi_service'], isdir=True)
 
         self.ro_props = ['default_datadir', 'indi_service_logs', 'config_dir']
-        self.rw_props = ['sequences_dir', 'indi_prefix', 'indi_host', 'indi_port', 'indi_service', 'log_level', 'sequence_async']
+        self.rw_props = [
+            'sequences_dir',
+            'indi_prefix',
+            'indi_host',
+            'indi_port',
+            'indi_service',
+            'log_level',
+            'sequence_async',
+            'indi_server_autoconnect',
+            'indi_drivers_autostart',
+        ]
 
         self.on_update = None
         self.reload()
@@ -55,6 +65,14 @@ class Settings:
                 map_object[prop] = int(map_object[prop])
         return map_object
 
+    @property
+    def indi_server_autoconnect(self):
+        return self.__get_bool('indi_server_autoconnect', True)
+
+    @property
+    def indi_drivers_autostart(self):
+        return self.__get_bool('indi_drivers_autostart', True)
+ 
     @property
     def camera_tempdir(self):
         return self.__build_path(['.cache', 'StarQuew', 'camera'], isdir=True)
@@ -118,7 +136,7 @@ class Settings:
 
 
     def __get_bool(self, name, default_value=False):
-        return str(self.json_map.get(name, 'true' if default_value else 'false')).lower() == 'true'
+        return str(self.json_map.get(name, 'true' if default_value else 'false')).lower() in ['true', '1']
 
     def __build_path(self, components, root=None, isdir=False):
         path = os.path.join(root if root else os.environ['HOME'], *components)

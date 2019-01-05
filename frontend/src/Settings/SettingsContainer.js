@@ -1,12 +1,7 @@
 import { connect } from 'react-redux'
-import Settings from './Settings'
+import { Settings } from './Settings'
 import Actions from '../actions'
-
-const mapStateToProps = (state) => ({
-    settings: state.settings,
-    version: state.version && state.version.version,
-    showCommands: state.commands.ids.length > 0 || state.commands.fetching,
-});
+import { settingsSelector } from './selectors';
 
 const update = (key, value) => Actions.Settings.update({ [key]: value });
 
@@ -16,9 +11,8 @@ const mapDispatchToProps = {
     update,
 }
 
-const SettingsContainer = connect(
-    mapStateToProps,
+export const SettingsContainer = connect(
+    settingsSelector,
     mapDispatchToProps,
 )(Settings)
 
-export default SettingsContainer
