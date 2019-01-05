@@ -136,7 +136,7 @@ class Settings:
 
 
     def __get_bool(self, name, default_value=False):
-        return str(self.json_map.get(name, 'true' if default_value else 'false')).lower() == 'true'
+        return str(self.json_map.get(name, 'true' if default_value else 'false')).lower() in ['true', '1']
 
     def __build_path(self, components, root=None, isdir=False):
         path = os.path.join(root if root else os.environ['HOME'], *components)

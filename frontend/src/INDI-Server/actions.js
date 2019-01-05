@@ -44,7 +44,7 @@ export const INDIServer = {
         if(!indiServerConnected) {
             const settings = getCurrentSettings(getState());
             if(settings.indi_server_autoconnect) {
-                dispatch(Actions.INDIServer.setServerConnection(true));
+                dispatch(Actions.INDIServer.setServerConnection(true, false));
             }
         }
     },
@@ -86,7 +86,7 @@ export const INDIServer = {
         }
     },
 
-    setServerConnection: connect => {
+    setServerConnection: (connect, notifyOnError = true) => {
         return dispatch => {
             dispatch({type: connect ? 'CONNECT_INDI_SERVER' : 'DISCONNECT_INDI_SERVER'});
             return setINDIServerConnectionAPI(dispatch, connect, data => dispatch(INDIServer.receivedServerState(data)));
