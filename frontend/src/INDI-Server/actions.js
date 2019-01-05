@@ -5,20 +5,22 @@ import { getCurrentSettings } from '../Settings/selectors';
 import { getServerState } from './selectors';
 
 export const INDIServer = {
-    serverConnectionNotify: (state, dispatch) => {
-        dispatch(INDIServer.receivedServerState(state.payload));
-        if(state.is_error) {
-            return Actions.Notifications.add('INDI Server connection', 'Error while connecting to INDI server', 'error');
+    serverConnectionNotify: (state, isError, notifyOnError) => dispatch => {
+        dispatch(INDIServer.receivedServerState(state));
+        if(isError) {
+            notifyOnError && dispatch(Actions.Notifications.add('INDI Server connection', 'Error while connecting to INDI server', 'error'));
+        } else {
+            dispatch(Actions.Notifications.add('INDI Server connection', 'INDI server connected successfully', 'success', 10000));
         }
-        return Actions.Notifications.add('INDI Server connection', 'INDI server connected successfully', 'success', 10000);
     },
 
-    serverDisconnectNotify: (state, dispatch) => {
-        dispatch(INDIServer.receivedServerState(state.payload));
-        if(state.is_error) {
-            return Actions.Notifications.add('INDI Server connection', 'Error while disconnecting to INDI server.', 'error');
+    serverDisconnectNotify: (state, isError) => dispatch => {
+        dispatch(INDIServer.receivedServerState(state));
+        if(isError) {
+            dispatch(Actions.Notifications.add('INDI Server connection', 'Error while disconnecting to INDI server.', 'error'));
+        } else {
+            dispatch(Actions.Notifications.add('INDI Server connection', 'INDI server disconnected successfully.', 'success', 10000));
         }
-        return Actions.Notifications.add('INDI Server connection', 'INDI server disconnected successfully.', 'success', 10000);
     },
 
 
@@ -89,7 +91,12 @@ export const INDIServer = {
     setServerConnection: (connect, notifyOnError = true) => {
         return dispatch => {
             dispatch({type: connect ? 'CONNECT_INDI_SERVER' : 'DISCONNECT_INDI_SERVER'});
-            return setINDIServerConnectionAPI(dispatch, connect, data => dispatch(INDIServer.receivedServerState(data)));
+            return setINDIServerConnectionAPI(dispatch, connect, data => {
+                dispatch(INDIServer.receivedServerState(data));
+                const action = connect ? INDIServer.serverConnectionNotify : INDIServer.serverDisconnectNotify;
+                const isError = data.connected !== connect;
+                dispatch(action(data, isError, notifyOnError));
+            });
         }
     },
 

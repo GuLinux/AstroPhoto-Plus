@@ -147,16 +147,16 @@ def get_server_status():
 @json_api
 def connect_server():
     controller.indi_server.connect()
-    is_error = not timeout(5)(controller.indi_server.is_connected)()
-    return notify('indi_server', 'indi_server_connect', controller.indi_server.to_map(), is_error)
+    timeout(5)(controller.indi_server.is_connected)()
+    return controller.indi_server.to_map()
 
 @app.route('/api/server/disconnect', methods=['PUT'])
 @json_api
 @indi_connected
 def disconnect_server():
     controller.indi_server.disconnect()
-    is_error = not timeout(5)(lambda: not controller.indi_server.is_connected())()
-    return notify('indi_server', 'indi_server_disconnect', controller.indi_server.to_map(), is_error)
+    timeout(5)(lambda: not controller.indi_server.is_connected())()
+    return controller.indi_server.to_map() 
 
 
 @app.route('/api/server/devices', methods=['GET'])

@@ -15,10 +15,10 @@ const indiserverEvents = (event, dispatch) => {
     let eventObject = JSON.parse(event.data);
     switch(eventObject.event) {
         case 'indi_server_connect':
-            dispatch(Actions.INDIServer.serverConnectionNotify(eventObject, dispatch));
+            dispatch(Actions.INDIServer.serverConnectionNotify(eventObject.payload, eventObject.is_error));
             break;
         case 'indi_server_disconnect':
-            dispatch(Actions.INDIServer.serverDisconnectNotify(eventObject, dispatch));
+            dispatch(Actions.INDIServer.serverDisconnectNotify(eventObject.payload, eventObject.is_error));
             break;
         case 'indi_server_disconnect_error':
             dispatch(Actions.INDIServer.serverDisconnectErrorNotify(eventObject, dispatch));
