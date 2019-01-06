@@ -151,7 +151,9 @@ const receivedINDIDevices = (state, devices) => ({
 })
 
 const indiDeviceAdded = (state, {device}) => {
-    state = set('devices.ids', [...state.devices.ids, device.id], state);
+    if(! state.devices.ids.includes(device.id)) {
+        state = set('devices.ids', [...state.devices.ids, device.id], state);
+    }
     const currentDevice = getOr({}, ['devices', 'entities', device.id], state);
     const groups = state.groups.ids.filter(id => state.groups.entities[id].device === device.id);
     return set(['devices', 'entities', device.id], {...currentDevice, ...device, groups}, state);

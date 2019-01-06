@@ -104,7 +104,7 @@ export const INDIServer = {
     },
 
 
-    autoloadConfig: (device) => dispatch => {
+    autoloadConfig: (device, retry = 0) => dispatch => {
         return autoloadConfigurationAPI(
             dispatch,
             device.name,
@@ -113,8 +113,8 @@ export const INDIServer = {
                 dispatch({type: 'INDI_CONFIG_AUTOLOADED', device});
             },
             err => {
-                if(err.status === 404) {
-                    setTimeout(() => dispatch(Actions.INDIServer.autoloadConfig(device)), 1000);
+                if((err.status === 404 || err.status === 400) && retry < 3) {
+                    setTimeout(() => dispatch(Actions.INDIServer.autoloadConfig(device, retry+1)), 1000);
                     return true;
                 }
                 return false;
