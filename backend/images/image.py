@@ -146,6 +146,7 @@ class Image:
                 clip_high = float(args.get('clip_high', 100)) / 100.
                 imp.clip(clip_low, clip_high)
 
+        imp.debayer('auto')
         maxwidth = int(args.get('maxwidth', '0'))
         if maxwidth > 0:
             maxheight = int(imp.height() / (imp.width() / maxwidth))

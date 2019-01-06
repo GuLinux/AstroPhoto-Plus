@@ -131,6 +131,9 @@ class ImageProcessing(_object):
 
     def bpp(self):
         return _image_processing.ImageProcessing_bpp(self)
+
+    def debayer(self, pattern):
+        return _image_processing.ImageProcessing_debayer(self, pattern)
 ImageProcessing_swigregister = _image_processing.ImageProcessing_swigregister
 ImageProcessing_swigregister(ImageProcessing)
 

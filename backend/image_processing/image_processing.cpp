@@ -3,6 +3,7 @@
 #include <CCfits>
 #include <valarray>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -38,6 +39,12 @@ ImageProcessing::ImageProcessing(const string &fitsfile) {
 //
 //    cerr << "bitpix: " << fits_image.bitpix() << ", axes: " << fits_image.axes() << endl;
 
+    try {
+        fits_image.readKey("BAYERPAT", this->bayerPattern);
+    } catch(const CCfits::HDU::NoSuchKeyword &) {
+    }
+    //cerr << "Bayer pattern: " << bayerPattern << endl;
+
     fits_image.read(contents);
     static vector<uint16_t> data(contents.size());
     move(begin(contents), end(contents), data.begin());
@@ -46,6 +53,22 @@ ImageProcessing::ImageProcessing(const string &fitsfile) {
 }
 
 ImageProcessing::~ImageProcessing() {
+}
+
+void ImageProcessing::debayer(std::string pattern) {
+    if(pattern.empty() || pattern == "auto") {
+        pattern = this->bayerPattern;
+    }
+    static const std::unordered_map<std::string, int> patterns = {
+        {"RGGB", cv::COLOR_BayerRG2RGB},
+        {"GRBG", cv::COLOR_BayerGR2RGB},
+        {"GBRG", cv::COLOR_BayerGB2RGB},
+        {"BGGR", cv::COLOR_BayerBG2RGB},
+    };
+    try {
+        cv::cvtColor(this->image, this->image, patterns.at(pattern));
+    } catch(const std::out_of_range &) {
+    }
 }
 
 void ImageProcessing::save(const std::string &filename) {

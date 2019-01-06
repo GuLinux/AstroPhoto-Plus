@@ -18,7 +18,9 @@ public:
     int width() const;
     int height() const;
     int bpp() const;
+    void debayer(std::string pattern);
 private:
+    std::string bayerPattern;
     cv::Mat image;
 };
 

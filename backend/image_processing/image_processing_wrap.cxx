@@ -3756,6 +3756,38 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ImageProcessing_debayer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ImageProcessing *arg1 = (ImageProcessing *) 0 ;
+  std::string arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ImageProcessing_debayer",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ImageProcessing, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ImageProcessing_debayer" "', argument " "1"" of type '" "ImageProcessing *""'"); 
+  }
+  arg1 = reinterpret_cast< ImageProcessing * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(obj1, &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "ImageProcessing_debayer" "', argument " "2"" of type '" "std::string""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  (arg1)->debayer(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *ImageProcessing_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
@@ -3774,6 +3806,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"ImageProcessing_width", _wrap_ImageProcessing_width, METH_VARARGS, NULL},
 	 { (char *)"ImageProcessing_height", _wrap_ImageProcessing_height, METH_VARARGS, NULL},
 	 { (char *)"ImageProcessing_bpp", _wrap_ImageProcessing_bpp, METH_VARARGS, NULL},
+	 { (char *)"ImageProcessing_debayer", _wrap_ImageProcessing_debayer, METH_VARARGS, NULL},
 	 { (char *)"ImageProcessing_swigregister", ImageProcessing_swigregister, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
