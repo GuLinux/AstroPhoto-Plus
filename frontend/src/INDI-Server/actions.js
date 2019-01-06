@@ -1,4 +1,4 @@
-import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoloadConfigurationAPI } from '../middleware/api';
+import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoconnectDeviceAPI, autoloadConfigurationAPI } from '../middleware/api';
 import Actions from '../actions';
 import { get } from 'lodash';
 import { getCurrentSettings } from '../Settings/selectors';
@@ -122,11 +122,24 @@ export const INDIServer = {
         );
     },
 
-    autoconnectDevice: device => async (dispatch, getState) => {
+    autoconnectDevice: (device, retry=0) => async (dispatch, getState) => {
         if(getCurrentSettings(getState()).indi_drivers_autostart) {
             await dispatch(Actions.INDIServer.autoloadConfig({name: device}));
-            await dispatch(Actions.INDIServer.setPropertyValues({name: device}, {name: 'CONNECTION'}, {CONNECT: true}));
-            await dispatch(Actions.INDIServer.autoloadConfig({name: device}));
+            autoconnectDeviceAPI(
+                dispatch,
+                device,
+                json => {
+                    dispatch(Actions.INDIServer.autoloadConfig({name: device}));
+                },
+                err => {
+                    if(err.status === 404) {
+                        setTimeout(() => dispatch(Actions.INDIServer.autoconnectDevice(device, retry+1)), 1000);
+                        return true;
+                    }
+                    console.log(err)
+                    return false;
+                }
+            );
         }
     },
 

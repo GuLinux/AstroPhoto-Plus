@@ -144,6 +144,15 @@ export const autoloadConfigurationAPI = (dispatch, device, onSuccess, onError) =
         body: JSON.stringify({ CONFIG_LOAD: true }),
     }, onSuccess, onError);
 
+export const autoconnectDeviceAPI = (dispatch, device, onSuccess, onError) => fetchJSON(dispatch, `/api/server/devices/${device}/properties/CONNECTION`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ CONNECT: true }),
+    }, onSuccess, onError);
+
+
 export const getINDIServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/status', {}, onSuccess);
 
 export const setINDIServerConnectionAPI = (dispatch, connect, onSuccess) => fetchJSON(dispatch, `/api/server/${ connect ? 'connect' : 'disconnect'}`, { method: 'PUT'}, onSuccess);
