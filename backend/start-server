@@ -28,6 +28,7 @@ fi
 
 . "$VENV_HOME/bin/activate"
 
+
 requirements_checksum="$( md5sum requirements.txt | cut -d' ' -f1 )"
 if [ "$requirements_checksum" != "$( cat "$VENV_HOME/requirements_checksum" 2>/dev/null )" ]; then
     pip install wheel # prerequisite for installing other packages
@@ -46,4 +47,14 @@ if [ "$1" == --only-deps ]; then
 fi
 
 export PYTHONPATH="$PWD/indi-lite-tools/:$PWD:$HOME/.local/share/StarQuew/native_modules:$PYTHONPATH"
-gunicorn --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t 30 -k gthread -b 0.0.0.0:5000 star-quew:app "$@"
+thread_timeout=30
+
+if [ "${ENABLE_PTVSD}" == 1 ] || [ "${ENABLE_PTVSD}" == true ]; then
+    thread_timeout=999999
+    pip install ptvsd
+fi
+
+
+set -x
+gunicorn --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t ${thread_timeout} -k gthread -b 0.0.0.0:5000 star-quew:app "$@"
+set +x

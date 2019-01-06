@@ -26,6 +26,8 @@ class Server:
         return {'host': self.settings.indi_host, 'port': self.settings.indi_port, 'connected': self.is_connected() }
 
     def connect(self):
+        if self.is_connected():
+            return
         self.client = INDIClient(address=self.settings.indi_host, port=self.settings.indi_port, callbacks={
             'on_server_disconnected': self.__on_disconnected,
             'on_new_device': self.__on_device_added,

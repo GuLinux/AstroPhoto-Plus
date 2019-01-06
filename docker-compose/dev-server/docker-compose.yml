@@ -22,11 +22,15 @@ services:
         - ../../backend:/app
     expose:
         - "5000"
+        - "5678"
+    ports:
+        - "5678:5678"
     environment:
         - INDI_SERVER_HOST
         - INDI_SERVER_PORT
         - WEB_THREADS
         - REDIS_SERVER=redis
+        - ENABLE_PTVSD
   redis:
     image: redis:alpine
     command: redis-server --appendonly yes

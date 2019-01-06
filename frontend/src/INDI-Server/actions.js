@@ -105,20 +105,28 @@ export const INDIServer = {
 
 
     autoloadConfig: (device) => dispatch => {
-        return autoloadConfigurationAPI(dispatch, device.name, json => {
-            if(json.result)
+        return autoloadConfigurationAPI(
+            dispatch,
+            device.name,
+            json => {
+                if(json.result)
                 dispatch({type: 'INDI_CONFIG_AUTOLOADED', device});
-        });
+            },
+            err => {
+                if(err.status === 404) {
+                    setTimeout(() => dispatch(Actions.INDIServer.autoloadConfig(device)), 1000);
+                    return true;
+                }
+                return false;
+            }
+        );
     },
 
-    autoconnectDevice: device => (dispatch, getState) => {
+    autoconnectDevice: device => async (dispatch, getState) => {
         if(getCurrentSettings(getState()).indi_drivers_autostart) {
-            // TODO: replace the timers with a more robust solution
-            setTimeout(() => {
-                dispatch(Actions.INDIServer.autoloadConfig({name: device}));
-                dispatch(Actions.INDIServer.setPropertyValues({name: device}, {name: 'CONNECTION'}, {CONNECT: true}));
-                setTimeout(() => dispatch(Actions.INDIServer.autoloadConfig({name: device})), 1000);
-            }, 1000);
+            await dispatch(Actions.INDIServer.autoloadConfig({name: device}));
+            await dispatch(Actions.INDIServer.setPropertyValues({name: device}, {name: 'CONNECTION'}, {CONNECT: true}));
+            await dispatch(Actions.INDIServer.autoloadConfig({name: device}));
         }
     },
 
@@ -135,7 +143,6 @@ export const INDIServer = {
         if(property.name === 'CONNECTION') {
             if(property.values.find(v => v.name === 'CONNECT' && v.value)) {
                 dispatch({type: 'INDI_DEVICE_CONNECTED', device: property.device})
-                setTimeout(() => dispatch(Actions.INDIServer.autoloadConfig(get(getState(), ['indiserver', 'devices', 'entities', property.device]))), 1500);
             }
             else {
                 dispatch({type: 'INDI_DEVICE_DISCONNECTED', device: property.device})

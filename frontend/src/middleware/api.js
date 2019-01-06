@@ -136,13 +136,13 @@ export const deleteSequenceJobAPI = (dispatch, sequenceId, sequenceJobId, option
 
 
 
-export const autoloadConfigurationAPI = (dispatch, device, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device}/properties/CONFIG_PROCESS`, {
+export const autoloadConfigurationAPI = (dispatch, device, onSuccess, onError) => fetchJSON(dispatch, `/api/server/devices/${device}/properties/CONFIG_PROCESS`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ CONFIG_LOAD: true }),
-    }, onSuccess);
+    }, onSuccess, onError);
 
 export const getINDIServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/status', {}, onSuccess);
 
