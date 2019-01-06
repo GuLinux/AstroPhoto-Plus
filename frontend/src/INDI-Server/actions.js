@@ -1,6 +1,5 @@
 import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoconnectDeviceAPI, autoloadConfigurationAPI } from '../middleware/api';
 import Actions from '../actions';
-import { get } from 'lodash';
 import { getCurrentSettings } from '../Settings/selectors';
 import { getServerState } from './selectors';
 

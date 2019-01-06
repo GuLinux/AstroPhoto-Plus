@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Menu, Container, Label, Dropdown, Modal, Button} from 'semantic-ui-react';
+import { Form, Menu, Container, Label, Dropdown, Modal } from 'semantic-ui-react';
 
 
 class ProfileNameDialog extends React.Component {
