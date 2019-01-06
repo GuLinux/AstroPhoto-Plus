@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { getConnectedCameras, getConnectedFilterWheels, getCameraExposureValue, getFilterWheelCurrentFilter, getFilterWheelCurrentFilterName, getFilterWheelAvailableFiltersProperty, getFilterWheelFilterName } from '../Gear/selectors'
 import { getDevices } from '../INDI-Server/selectors';
+import { get } from 'lodash';
 
 const getCurrentCameraId = state => state.camera.currentCamera;
 export const getCurrentFilterWheelId = state => state.camera.currentFilterWheel;
@@ -10,6 +11,7 @@ const getIsShooting = state => state.camera.isShooting;
 const getCrop = state => state.camera.crop;
 const getCurrentImage = state => state.camera.currentImage;
 const getImageLoading = state => state.camera.imageLoading;
+
 
 export const getCurrentCamera = createSelector([getCurrentCameraId, getConnectedCameras, getDevices], (currentCameraId, connectedCameras, devices) => {
     if(! currentCameraId || ! connectedCameras.includes(currentCameraId)) {
@@ -110,11 +112,11 @@ export const selectFilterSelector = createSelector([
     getFilterWheelCurrentFilter,
     getFilterWheelCurrentFilterName,
     getFilterWheelAvailableFiltersProperty,
-], (isPending, { value: currentFilter}, { value: currentFilterName}, { values: availableFilters}) => ({
+], (isPending, currentFilter, currentFilterName, availableFilters) => ({
         isPending,
-        currentFilter,
-        currentFilterName,
-        availableFilters,
+        currentFilter: get(currentFilter, 'value'),
+        currentFilterName: get(currentFilterName, 'value'),
+        availableFilters: get(availableFilters, 'values', []),
 }));
 
 export const filterSelectionSelector = createSelector([
