@@ -31,6 +31,12 @@ class ProfileNameDialog extends React.Component {
         }
     }
 
+    onKeyDown = ({key}) => {
+        if(key === 'Escape') {
+            this.modal.current.close();
+        }
+    }
+
     modalContent = () => (
         <Modal.Content>
             <Form>
@@ -41,6 +47,7 @@ class ProfileNameDialog extends React.Component {
                     value={this.state.name}
                     onChange={this.onProfileNameChanged}
                     onKeyPress={this.onKeyPress}
+                    onKeyDown={this.onKeyDown}
                     autoFocus
                 />
             </Form>
