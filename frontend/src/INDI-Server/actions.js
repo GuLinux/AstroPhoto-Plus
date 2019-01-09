@@ -2,6 +2,7 @@ import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, 
 import Actions from '../actions';
 import { getCurrentSettings } from '../Settings/selectors';
 import { autoconnectSelector, getServerState } from './selectors';
+import { get } from 'lodash';
 
 export const INDIServer = {
     serverConnectionNotify: (state, isError, notifyOnError) => dispatch => {
@@ -103,8 +104,12 @@ export const INDIServer = {
 
     onDeviceLoaded: (device) => (dispatch, getState) => {
         const {isConnected, hasConnectionProperty, hasConfigLoadProperty, configLoadState } = autoconnectSelector(getState(), device);
-        if(hasConnectionProperty && hasConfigLoadProperty && configLoadState === 'IDLE' && !isConnected) {
-            dispatch(Actions.INDIServer.autoloadConfig(device, () => dispatch(Actions.INDIServer.autoconnectDevice(device)) ));
+        if(hasConnectionProperty && hasConfigLoadProperty && !isConnected) {
+            if(configLoadState === 'IDLE') {
+                dispatch(Actions.INDIServer.autoloadConfig(device, () => dispatch(Actions.INDIServer.autoconnectDevice(device)) ));
+            } else {
+                dispatch(Actions.INDIServer.autoconnectDevice(device));
+            }
         }
     },
 
@@ -123,7 +128,9 @@ export const INDIServer = {
     },
 
     autoconnectDevice: (device, retry=0) => async (dispatch, getState) => {
-        if(getCurrentSettings(getState()).indi_drivers_autostart) {
+        const state = getState();
+
+        if(getCurrentSettings(state).indi_drivers_autostart && ! get(state, ['indiserver', 'devices', 'entities', device, 'autoconnectRequested'])) {
             dispatch({ type: 'INDI_AUTOCONNECT_DEVICE', device});
             autoconnectDeviceAPI(
                 dispatch,

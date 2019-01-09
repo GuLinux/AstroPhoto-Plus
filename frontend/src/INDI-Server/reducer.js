@@ -193,6 +193,8 @@ const indiserver = (state = defaultState, action) => {
             return set(['devices', 'entities', action.device, 'connected'], false, state);
         case 'INDI_CONFIG_AUTOLOAD_REQUEST':
             return set(['properties', 'entities', getPropertyId(action.deviceName, 'CONFIG_PROCESS'), 'state'], 'CHANGED_BUSY', state)
+        case 'INDI_AUTOCONNECT_DEVICE':
+            return set(['devices', 'entities', action.device, 'autoconnectRequested'], true, state);
         case 'INDI_CONFIG_AUTOLOADED':
         default:
             return state;
