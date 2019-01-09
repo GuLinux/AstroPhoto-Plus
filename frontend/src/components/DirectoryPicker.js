@@ -79,7 +79,8 @@ const DirectoryView = ({info, loading, onChanged}) => {
     const sections = path.map( (key, index) => ({
             key,
             content: key === '/' ? 'Root' : key,
-            active: index+1 === path.length
+            active: index+1 === path.length,
+            onClick: () => onChanged([...path.slice(0, index), key].join('/').replace(/^\/\//, '/')),
         })
     );
     return (
@@ -100,7 +101,7 @@ export class DirectoryPicker extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentPath: this.props.currentDirectory,
+            currentPath: props.currentDirectory,
             loading: true,
         }
     }
@@ -111,6 +112,9 @@ export class DirectoryPicker extends React.Component {
     }
 
     componentDidUpdate = (prevProps, prevState) => {
+        if(prevProps.currentDirectory !== this.props.currentDirectory && this.props.currentDirectory) {
+            this.setState({...this.state, currentPath: this.props.currentDirectory })
+        }
         if(this.state.currentPath !== prevState.currentPath) {
             this.fetchDirectory();
         }
