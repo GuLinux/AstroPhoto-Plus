@@ -1,7 +1,7 @@
 import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoconnectDeviceAPI, autoloadConfigurationAPI } from '../middleware/api';
 import Actions from '../actions';
 import { getCurrentSettings } from '../Settings/selectors';
-import { getServerState } from './selectors';
+import { autoconnectSelector, getServerState } from './selectors';
 
 export const INDIServer = {
     serverConnectionNotify: (state, isError, notifyOnError) => dispatch => {
@@ -53,7 +53,6 @@ export const INDIServer = {
             device,
             properties: data
         });
-        dispatch(Actions.INDIServer.autoconnectDevice(device.name));
     },
 
     fetchDeviceProperties: device => {
@@ -102,34 +101,34 @@ export const INDIServer = {
         }
     },
 
+    onDeviceLoaded: (device) => (dispatch, getState) => {
+        const {isConnected, hasConnectionProperty, hasConfigLoadProperty, configLoadState } = autoconnectSelector(getState(), device);
+        if(hasConnectionProperty && hasConfigLoadProperty && configLoadState === 'IDLE' && !isConnected) {
+            dispatch(Actions.INDIServer.autoloadConfig(device, () => dispatch(Actions.INDIServer.autoconnectDevice(device)) ));
+        }
+    },
 
-    autoloadConfig: (device, retry = 0) => dispatch => {
-        return autoloadConfigurationAPI(
+    autoloadConfig: (deviceName, onSuccess) => dispatch => {
+        dispatch({ type: 'INDI_CONFIG_AUTOLOAD_REQUEST', deviceName });
+        autoloadConfigurationAPI(
             dispatch,
-            device.name,
+            deviceName,
             json => {
-                if(json.result)
-                dispatch({type: 'INDI_CONFIG_AUTOLOADED', device});
-            },
-            err => {
-                if((err.status === 404 || err.status === 400) && retry < 3) {
-                    setTimeout(() => dispatch(Actions.INDIServer.autoloadConfig(device, retry+1)), 1000);
-                    return true;
+                if(json.result) {
+                    dispatch({type: 'INDI_CONFIG_AUTOLOADED', deviceName});
                 }
-                return false;
-            }
+                onSuccess && onSuccess();
+            },
         );
     },
 
     autoconnectDevice: (device, retry=0) => async (dispatch, getState) => {
         if(getCurrentSettings(getState()).indi_drivers_autostart) {
-            await dispatch(Actions.INDIServer.autoloadConfig({name: device}));
+            dispatch({ type: 'INDI_AUTOCONNECT_DEVICE', device});
             autoconnectDeviceAPI(
                 dispatch,
                 device,
-                json => {
-                    dispatch(Actions.INDIServer.autoloadConfig({name: device}));
-                },
+                json => {},
                 err => {
                     if(err.status === 404) {
                         setTimeout(() => dispatch(Actions.INDIServer.autoconnectDevice(device, retry+1)), 1000);
@@ -154,17 +153,19 @@ export const INDIServer = {
     propertyUpdated: property => (dispatch, getState) => {
         if(property.name === 'CONNECTION') {
             if(property.values.find(v => v.name === 'CONNECT' && v.value)) {
-                dispatch({type: 'INDI_DEVICE_CONNECTED', device: property.device})
+                dispatch({type: 'INDI_DEVICE_CONNECTED', device: property.device});
+                dispatch(Actions.INDIServer.autoloadConfig(property.device));
             }
             else {
-                dispatch({type: 'INDI_DEVICE_DISCONNECTED', device: property.device})
+                dispatch({type: 'INDI_DEVICE_DISCONNECTED', device: property.device});
             }
         }
-        dispatch({ type: 'INDI_PROPERTY_UPDATED', property })
+        dispatch({ type: 'INDI_PROPERTY_UPDATED', property });
     },
 
     propertyAdded: property => (dispatch, getState) => {
         dispatch({ type: 'INDI_PROPERTY_ADDED', property });
+        dispatch(Actions.INDIServer.onDeviceLoaded(property.device));
     },
 
     propertyRemoved: property => ({ type: 'INDI_PROPERTY_REMOVED', property }),
@@ -172,7 +173,6 @@ export const INDIServer = {
     deviceAdded: device => dispatch => {
         dispatch({ type: 'INDI_DEVICE_ADDED', device });
         dispatch(Actions.INDIServer.fetchDeviceProperties(device));
-        dispatch(Actions.INDIServer.autoconnectDevice(device.name));
     },
     
     deviceRemoved: device => ({ type: 'INDI_DEVICE_REMOVED', device }),

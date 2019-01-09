@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
-import { getGroupId, getValueId } from './utils';
+import { getPropertyId, getGroupId, getValueId } from './utils';
 import { get } from 'lodash';
 
 export const getDevices = state => state.indiserver.devices;
@@ -50,19 +50,19 @@ export const indiDeviceGroupSelector = createCachedSelector([getCurrentGroup], (
     group,
 }))(getCurrentGroupProp);
 
-const getPropertyId = (state, {propertyId}) => propertyId;
+const getPropertyIdProp = (state, {propertyId}) => propertyId;
 
 export const getPropertyInputSelector = (state, {propertyId}) => get(getProperties(state), ['entities', propertyId]);
 
 export const indiPropertyRowSelector = createCachedSelector([getPropertyInputSelector], (property) => ({
     property,
-}))(getPropertyId);
+}))(getPropertyIdProp);
 
     
 const getReadOnlyProperty = (state, {readOnly}) => readOnly;
 
 export const indiPropertySelector = createCachedSelector(
-    [getPropertyId, getDevices, getProperties, getReadOnlyProperty],
+    [getPropertyIdProp, getDevices, getProperties, getReadOnlyProperty],
     (propertyId, devices, properties, readOnly) => {
         const property = properties.entities[propertyId];
         return {
@@ -71,7 +71,7 @@ export const indiPropertySelector = createCachedSelector(
             isWriteable: property.perm_write && property.state !== 'CHANGED_BUSY' && ! readOnly,
         };
     }
-)(getPropertyId);
+)(getPropertyIdProp);
 
 const getValueIdProp = (state, {valueId}) => valueId;
 
@@ -88,5 +88,20 @@ export const indiValueSelector = createCachedSelector(
 )(getValueIdProp);
 
 
+const getDeviceProperty = (deviceName, propertyName) => state => get(state, ['indiserver', 'properties', 'entities', getPropertyId(deviceName, propertyName)]);
+const getPropertyValue = (deviceName, propertyName, valueName) => state => get(state, ['indiserver', 'values', 'entities', getValueId({ device: deviceName, name: propertyName}, { name: valueName })]);
 
+
+const getDeviceHasConnectionProperty = (state, deviceName)=> !!getDeviceProperty(deviceName, 'CONNECTION')(state);
+const getDeviceHasConfigLoadProperty = (state, deviceName) => !!getDeviceProperty(deviceName, 'CONFIG_PROCESS')(state);
+const getDeviceIsConnected = (state, deviceName) => get(getPropertyValue(deviceName, 'CONNECTION', 'CONNECT')(state), 'value');
+const getDeviceConfigWasLoaded = (state, deviceName) => get(getPropertyValue(deviceName, 'CONFIG_PROCESS', 'CONFIG_LOAD')(state), 'value');
+
+export const autoconnectSelector = (state, deviceName) => ({
+    hasConnectionProperty: getDeviceHasConnectionProperty(state, deviceName),
+    hasConfigLoadProperty: getDeviceHasConfigLoadProperty(state, deviceName),
+    isConnected: getDeviceIsConnected(state, deviceName),
+    configWasLoaded: getDeviceConfigWasLoaded(state, deviceName),
+    configLoadState: get(getDeviceProperty(deviceName, 'CONFIG_PROCESS')(state), 'state'),
+});
 
