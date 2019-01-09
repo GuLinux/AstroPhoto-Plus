@@ -164,6 +164,13 @@ export class PlateSolving extends React.PureComponent {
                     </Grid.Column>
                 </Grid.Row>
             )}
+            {this.props.telescopeFocalLength && (
+                <Grid.Row>
+                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Telescope focal length' /></Grid.Column>
+                    <Grid.Column width={11}>
+                        {this.props.telescopeFocalLength}mm
+                    </Grid.Column>
+                </Grid.Row>)}
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Sync telescope on solve'/></Grid.Column>
                     <Grid.Column width={11}>
