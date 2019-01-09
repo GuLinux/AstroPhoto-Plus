@@ -88,8 +88,8 @@ class Sequence:
 
     def reset(self, remove_files=False):
         logger.debug('reset sequence {}, remove_files: {}'.format(self.name, remove_files))
+        self.status = 'idle'
         for sequence_job in self.sequence_jobs:
-            self.status = 'idle'
             logger.info('resetting sequence job {}'.format(sequence_job))
             sequence_job.reset(remove_files)
 

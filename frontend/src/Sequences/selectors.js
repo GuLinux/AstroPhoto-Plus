@@ -152,14 +152,13 @@ export const addSequenceModalSelector = createSelector([
 }) );
 
 
-const getFilterWheelId = (state, {filterWheelId}) => filterWheelId;
 
-const getSequenceFilterWheelDevice = createCachedSelector([
+const getSequenceFilterWheelDevice = createSelector([
     (state, {filterWheelId}) => get(getDevices(state), ['entities', filterWheelId])
-], filterWheel => filterWheel)(getFilterWheelId);
+], filterWheel => filterWheel);
 
 
-export const filterWheelCardSelector = createCachedSelector([
+export const filterWheelCardSelector = createSelector([
     getSequenceFilterWheelDevice,
     getFilterWheelCurrentFilterName,
     getFilterWheelCurrentFilter,
@@ -167,4 +166,4 @@ export const filterWheelCardSelector = createCachedSelector([
     filterWheel,
     filterName: get(filterNameValue, 'value', 'N/A'),
     filterNumber: get(filterNumberValue, 'value', 'N/A'),
-}))(getFilterWheelId);
+}));
