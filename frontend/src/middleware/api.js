@@ -20,28 +20,34 @@ export const apiFetch = async (url, options) => {
 
 
 // TODO: refactor using apiFetch
-const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
-    let dispatchError = response => {
+const fetchJSON = async (dispatch, url, options, onSuccess, onError) => {
+    const dispatchError = response => {
         response.text().then( body => { dispatch(Actions.Server.error('network_request', 'response', response, body)) })
     }
 
-    let errorHandler = response => {
-        if(! onError || ! onError(response, isJSON(response)))
-            dispatchError(response);
-    }
-    return fetch(url, options)
-        .then(response => {
-            if(! response.ok)
-                throw response;
-            return response.json();
-        }).then(onSuccess)
-        .catch(error => {
-            if('status' in error) {
-                errorHandler(error)
-            } else {
-                dispatch(Actions.Server.error('network_request', 'exception', error))
+    const errorHandler = response => {
+        if(onError) {
+            const errorWasHandled = onError(response, isJSON(response));
+            if(errorWasHandled) {
+                return;
             }
-        });
+        }
+        dispatchError(response);
+    }
+    try {
+        const response = await fetch(url, options);
+        if(! response.ok) {
+            throw response;
+        }
+        const json = await response.json();
+        onSuccess(json);
+    } catch(error) {
+        if('status' in error) {
+            errorHandler(error)
+        } else {
+            dispatch(Actions.Server.error('network_request', 'exception', error))
+        }
+    }
 }
 
 export const fetchBackendVersion = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/version', {}, json => onSuccess(json));
