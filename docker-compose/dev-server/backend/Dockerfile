@@ -12,6 +12,7 @@ VOLUME /usr/local/lib/python3.6/dist-packages
 WORKDIR /app
 ENV PYTHONPATH="/app/indi-lite-tools" LANG=C.UTF-8 LC_ALL=C.UTF-8 WEB_THREADS=4 ENABLE_PTVSD=false
 COPY starquew-wifi-helper /usr/bin
+COPY shutdown-docker-helper /usr/bin
 RUN mkdir -p /root/.config/StarQuew
 COPY commands.json /root/.config/StarQuew/commands.json
 COPY entrypoint /entrypoint
