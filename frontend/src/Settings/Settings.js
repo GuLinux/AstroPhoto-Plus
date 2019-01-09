@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
+import { Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header, Label} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
 import { CommandsContainer } from '../Commands/CommandsContainer';
 import { CheckButton } from '../components/CheckButton';
@@ -29,6 +29,13 @@ export class Settings extends React.Component {
             </Dropdown.Menu>
         </Dropdown>
     )
+
+    changedItemWarning = settingsKey => this.isChanged(settingsKey) && (
+        <Label color='yellow' pointing>
+            This settings is not saved. Please click the Save button to apply it.
+        </Label>
+    );
+
     onInputChange = (key) => (e, data) => this.props.onChange(key, data.value);
     getIconProp = (settingsKey) => this.isChanged(settingsKey) ? { iconPosition: 'left', icon: <Icon name='edit' />} : {};
  
@@ -86,6 +93,7 @@ export class Settings extends React.Component {
                                     } />
                                  ))}
                             />
+                            {this.changedItemWarning('sequences_dir')}
                             <Message attached='top' content='Sequences will save images inside this directory.' info />
                             <Divider hidden />
                             <Form.Input
@@ -103,6 +111,7 @@ export class Settings extends React.Component {
                                     } />
                                 ))}
                             />
+                            {this.changedItemWarning('indi_prefix')}
                             <Message attached='top' content='Only change this setting if you installed INDI on a custom path.' info />
                         </Segment>
                         <Segment>
