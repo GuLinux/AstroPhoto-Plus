@@ -1,6 +1,6 @@
 import { list2object } from '../utils';
 import { get, getOr, set, omit } from 'lodash/fp';
-import { getValueId, getGroupId } from './utils';
+import { getPropertyId, getValueId, getGroupId } from './utils';
 
 const devicesDefaultState = {
     devices: {
@@ -47,7 +47,7 @@ const addGroupsToDevice = (property, prevState) => {
         return prevState;
     }
     let state = set(['devices', 'entities', property.device, 'groups'], [...groups, groupId], prevState);
-    state = set('groups.ids', [...prevState.groups.ids, groupId], state);
+    state = set('groups.ids', [...prevState.groups.ids.filter(id => id !== groupId), groupId], state);
     return set(['groups', 'entities', groupId], {
         id: groupId,
         name: property.group,
@@ -191,6 +191,10 @@ const indiserver = (state = defaultState, action) => {
             return set(['devices', 'entities', action.device, 'connected'], true, state);
         case 'INDI_DEVICE_DISCONNECTED':
             return set(['devices', 'entities', action.device, 'connected'], false, state);
+        case 'INDI_CONFIG_AUTOLOAD_REQUEST':
+            return set(['properties', 'entities', getPropertyId(action.deviceName, 'CONFIG_PROCESS'), 'state'], 'CHANGED_BUSY', state)
+        case 'INDI_AUTOCONNECT_DEVICE':
+            return set(['devices', 'entities', action.device, 'autoconnectRequested'], true, state);
         case 'INDI_CONFIG_AUTOLOADED':
         default:
             return state;
