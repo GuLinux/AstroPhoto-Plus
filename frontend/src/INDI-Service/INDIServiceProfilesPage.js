@@ -1,11 +1,13 @@
 import React from 'react'
 import { Form, Menu, Container, Label, Dropdown, Modal } from 'semantic-ui-react';
+import { ModalDialog } from '../Modals/ModalDialog';
 
 
 class ProfileNameDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = { name: props.initialValue, open: false};
+        this.modal = React.createRef();
     }
 
     hasChanged = () => this.state.name === this.props.initialValue;
@@ -22,6 +24,19 @@ class ProfileNameDialog extends React.Component {
 
     onProfileNameChanged = e => this.setState({...this.state, name: e.target.value});
 
+    onKeyPress = ({key}) => {
+        if(key === 'Enter' && this.canSubmit()) {
+            this.save();
+            this.modal.current.close();
+        }
+    }
+
+    onKeyDown = ({key}) => {
+        if(key === 'Escape') {
+            this.modal.current.close();
+        }
+    }
+
     modalContent = () => (
         <Modal.Content>
             <Form>
@@ -31,22 +46,24 @@ class ProfileNameDialog extends React.Component {
                     placeholder="Enter the profile name"
                     value={this.state.name}
                     onChange={this.onProfileNameChanged}
+                    onKeyPress={this.onKeyPress}
+                    onKeyDown={this.onKeyDown}
                     autoFocus
                 />
             </Form>
         </Modal.Content>
     )
 
-    render = () => {
-        const { trigger, title } = this.props;
-        const actions = [
-            'Cancel',
-            { key: 'submit', content: this.props.buttonText, positive: true, disabled: !this.canSubmit(), onClick: () => this.save() }
-        ];
-        return (
-            <Modal trigger={trigger} centered={false} size='mini' basic content={this.modalContent()} header={title} actions={actions} />
-        )
-    }
+    render = () => (
+        <ModalDialog trigger={this.props.trigger} centered={false} size='mini' basic ref={this.modal}>
+            <Modal.Header content={this.props.title} />
+            {this.modalContent()}
+            <Modal.Actions>
+                <ModalDialog.CloseButton content='Cancel' /> 
+                <ModalDialog.CloseButton content={this.props.buttonText} positive disabled={!this.canSubmit()} onClose={this.save} /> 
+            </Modal.Actions>
+        </ModalDialog>
+    )
 }
 
 
@@ -94,12 +111,14 @@ class INDIServiceProfilesPage extends React.Component{
                 <Menu size='mini' stackable secondary>
                     <Menu.Item header>
                         {profiles.length === 0 ? 'No profiles' : 'Profiles'}
-                        <ProfileNameDialog initialValue='' title='New profile' buttonText='Create' trigger={
-                            driversAreSelected ?
-                            <Label size='mini' icon='plus' content='add' basic as='a' />
-                            : null
-                        } onSave={this.addProfile} />
-
+                        {driversAreSelected &&
+                            <ProfileNameDialog
+                                initialValue=''
+                                title='New profile'
+                                buttonText='Create'
+                                trigger={<Label size='mini' icon='plus' content='add' basic as='a' />}
+                                onSave={this.addProfile} />
+                        }
                     </Menu.Item>
                     { profiles.map(this.renderProfileMenuItem)}
                 </Menu>
