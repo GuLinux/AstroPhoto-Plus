@@ -7,7 +7,6 @@ class ProfileNameDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = { name: props.initialValue, open: false};
-        this.modal = React.createRef();
     }
 
     hasChanged = () => this.state.name === this.props.initialValue;
@@ -31,12 +30,6 @@ class ProfileNameDialog extends React.Component {
         }
     }
 
-    onKeyDown = ({key}) => {
-        if(key === 'Escape') {
-            this.modal.current.close();
-        }
-    }
-
     modalContent = () => (
         <Modal.Content>
             <Form>
@@ -47,7 +40,6 @@ class ProfileNameDialog extends React.Component {
                     value={this.state.name}
                     onChange={this.onProfileNameChanged}
                     onKeyPress={this.onKeyPress}
-                    onKeyDown={this.onKeyDown}
                     autoFocus
                 />
             </Form>
@@ -55,7 +47,7 @@ class ProfileNameDialog extends React.Component {
     )
 
     render = () => (
-        <ModalDialog trigger={this.props.trigger} centered={false} size='mini' basic ref={this.modal}>
+        <ModalDialog trigger={this.props.trigger} centered={false} size='mini' basic>
             <Modal.Header content={this.props.title} />
             {this.modalContent()}
             <Modal.Actions>
