@@ -1,5 +1,6 @@
 from models import random_id
 from errors import NotFoundError, BadRequestError
+from .stop_sequence import StopSequence
 from .sequence_job import SequenceJob
 import os
 from app import logger
@@ -128,6 +129,10 @@ class Sequence:
                     sequence_job.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
             if not self.stopped:
                 self.status = 'finished'
+        except StopSequence as e:
+            logger.info('Stopping sequence: {}'.format(e.message))
+            self.stop(on_update=on_update)
+
         except Exception as e:
             logger.exception('error running sequence')
             self.status = 'error'

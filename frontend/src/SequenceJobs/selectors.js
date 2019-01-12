@@ -38,7 +38,9 @@ const getTypeLabel = type => {
         case 'command':
             return 'Run command'
         case 'property':
-            return 'Change property'
+            return 'Change property';
+        case 'pause':
+            return 'Pause Sequence'
         default:
             return '';
     }
@@ -54,6 +56,8 @@ const getDescription = (sequenceJob, filterName) => {
             return `Run command: ${sequenceJob.command}`
         case 'property':
             return `Change INDI property ${sequenceJob.property} on ${sequenceJob.device}`
+        case 'pause':
+            return sequenceJob.autoresume ? `Pause for ${sequenceJob.autoresume} seconds` : 'Pause until manually restarted';
         default:
             return '';
     }

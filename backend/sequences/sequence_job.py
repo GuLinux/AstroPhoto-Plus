@@ -5,6 +5,7 @@ from .exposure_sequence_job import ExposureSequenceJob
 from .filter_wheel_sequence_job import FilterWheelSequenceJob
 from .property_sequence_job import PropertySequenceJob
 from .command_sequence_job import CommandSequenceJob
+from .pause_sequence_job import PauseSequenceJob
 import time
 from app import logger
 
@@ -23,6 +24,8 @@ class SequenceJob:
             self.job = PropertySequenceJob(data)
         elif self.type == 'command':
             self.job = CommandSequenceJob(data)
+        elif self.type == 'pause':
+            self.job = PauseSequenceJob(data)
         else:
             raise BadRequestError('Invalid sequence job type: {}'.format(self.type))
 
