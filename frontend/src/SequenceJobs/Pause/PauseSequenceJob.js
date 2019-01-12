@@ -12,10 +12,24 @@ export class PauseSequenceJob extends React.Component {
     }
 
     autoresume = () => get(this.state, 'sequenceJob.autoresume', 0);
+
+    componentDidUpdate = (prevProps, prevState) => {
+        const prevAutoresume = get(prevState, 'sequenceJob.autoresume');
+        if(
+            this.autoresume() !== prevAutoresume &&
+            (!this.autoresume() || ! prevAutoresume) &&
+            this.sequenceJob().notificationMessage === this.defaultNotificationMessage(prevAutoresume)
+            ) {
+            this.resetNotificationMessage();
+        }
+    }
    
-    defaultNotificationMessage = () => {
-        return this.autoresume() > 0 ?
-            `The sequence will restart in ${this.autoresume()} seconds. You can also resume the sequence by pressing the Resume button` :
+    defaultNotificationMessage = (autoresume) => {
+        if(autoresume === undefined) {
+            autoresume = this.autoresume();
+        }
+        return autoresume > 0 ?
+            `The sequence will restart in ${autoresume} seconds. You can also resume the sequence by pressing the Resume button` :
             'You can resume the sequence by pressing the Resume button';
     }
 
