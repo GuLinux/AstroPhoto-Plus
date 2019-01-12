@@ -55,6 +55,9 @@ const sequences = (event, dispatch) => {
         case 'sequence_error':
             dispatch(Actions.Sequences.error(eventObject.payload));
             break
+        case 'sequence_paused':
+            dispatch(Actions.Notifications.add('Sequence Paused', eventObject.payload.notification_message, 'success', eventObject.payload.notification_timeout * 1000))
+            break;
         default:
             logEvent(event)
     }

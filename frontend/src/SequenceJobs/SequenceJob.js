@@ -6,6 +6,7 @@ import { Container } from 'semantic-ui-react';
 import { FilterSequenceJobContainer } from './FilterWheel/FilterSequenceJobContainer';
 import { CommandSequenceJob } from './Command/CommandSequenceJob';
 import { INDIPropertySequenceJobContainer } from './INDIProperty/INDIPropertySequenceJobContainer';
+import { PauseSequenceJob } from './Pause/PauseSequenceJob';
 
 const mapItemType = sequenceJob => {
     switch(get(sequenceJob, 'type')) {
@@ -17,6 +18,8 @@ const mapItemType = sequenceJob => {
             return <CommandSequenceJob sequenceJob={sequenceJob} />;
         case 'property':
             return <INDIPropertySequenceJobContainer sequenceJob={sequenceJob} />;
+        case 'pause':
+            return <PauseSequenceJob sequenceJob={sequenceJob} />;
         default:
             return <NotFoundPage backToUrl='/sequences/all' message='Sequence job not found' />;
         }

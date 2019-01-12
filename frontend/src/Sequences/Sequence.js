@@ -6,7 +6,7 @@ import { NotFoundPage } from '../components/NotFoundPage';
 import { ConfirmFlagsDialog } from '../Modals/ModalDialog';
 import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
 import { Routes } from '../routes';
-import AddSequenceJobModal from '../SequenceJobs/AddSequenceJobModal';
+import { AddSequenceJobModal } from '../SequenceJobs/AddSequenceJobModal';
 import { withRouter } from 'react-router';
 import { SequenceJobsList } from '../SequenceJobs/SequenceJobsList';
 import { ExposuresCardContainer, CameraDetailsCardContainer, FilterWheelDetailsCardContainer } from './SequenceStatusCardsContainer';
