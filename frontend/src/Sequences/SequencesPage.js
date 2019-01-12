@@ -16,7 +16,7 @@ const SequencesPage = () => (
                 ({match}) => <SequenceContainer sequenceId={match.params.id} />
             } />
             <Route path={Routes.SEQUENCE_JOB_PAGE} exact={true} render={
-                ({match}) => <SequenceJobContainer sequenceJobId={match.params.itemId} />
+                ({match}) => <SequenceJobContainer sequenceJobId={match.params.itemId} sequenceId={match.params.id} />
             } />
 
             <Route path={Routes.SEQUENCE_JOB_IMAGES} exact={true} render={

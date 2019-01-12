@@ -8,7 +8,7 @@ import { CommandSequenceJob } from './Command/CommandSequenceJob';
 import { INDIPropertySequenceJobContainer } from './INDIProperty/INDIPropertySequenceJobContainer';
 import { PauseSequenceJob } from './Pause/PauseSequenceJob';
 
-const mapItemType = sequenceJob => {
+const mapItemType = (sequenceJob, sequenceId) => {
     switch(get(sequenceJob, 'type')) {
         case 'shots':
             return <ExposureSequenceJobContainer sequenceJob={sequenceJob} />;
@@ -21,13 +21,13 @@ const mapItemType = sequenceJob => {
         case 'pause':
             return <PauseSequenceJob sequenceJob={sequenceJob} />;
         default:
-            return <NotFoundPage backToUrl='/sequences/all' message='Sequence job not found' />;
+            return <NotFoundPage backToUrl={`/sequences/${sequenceId}`} message='Sequence job not found' />;
         }
 }
 
-export const SequenceJob = ({sequenceJob}) => (
+export const SequenceJob = ({sequenceJob, sequenceId}) => (
     <Container>
-        {mapItemType(sequenceJob)}
+        {mapItemType(sequenceJob, sequenceId)}
     </Container>
 )
 
