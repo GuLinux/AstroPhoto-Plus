@@ -73,7 +73,7 @@ class LastCapturedSequenceImageComponent extends React.Component {
         const {type, lastImageId, lastImage} = this.state.shownImage;
         return lastImage ? (
             <Link to={`/image/main/${lastImageId}`}>
-                <ImageLoader key={lastImageId} id={lastImageId} type={type} uri={lastImage} fitScreen={true} onImageLoaded={this.onImageLoaded} />
+                <ImageLoader key={lastImageId} id={lastImageId} type={type} uri={lastImage} options={{fitToScreen: true}} onImageLoaded={this.onImageLoaded} />
             </Link>
         ) : (
             <Message content='No image was saved yet.' />
