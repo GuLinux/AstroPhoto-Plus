@@ -1,5 +1,14 @@
 import { createSelector } from 'reselect'
-import { getConnectedCameras, getConnectedFilterWheels, getCameraExposureValue, getFilterWheelCurrentFilter, getFilterWheelCurrentFilterName, getFilterWheelAvailableFiltersProperty, getFilterWheelFilterName } from '../Gear/selectors'
+import {
+    getConnectedCameras,
+    getConnectedFilterWheels,
+    getCameraExposureValue,
+    getFilterWheelCurrentFilter,
+    getFilterWheelCurrentFilterName,
+    getFilterWheelAvailableFiltersProperty,
+    getFilterWheelFilterName,
+    getCameraBinningValue,
+} from '../Gear/selectors'
 import { getDevices } from '../INDI-Server/selectors';
 import { get } from 'lodash';
 import { imageUrlBuilder } from '../utils';
@@ -12,6 +21,7 @@ const getIsShooting = state => state.camera.isShooting;
 const getCrop = state => state.camera.crop;
 const getCurrentImage = state => state.camera.currentImage;
 const getImageLoading = state => state.camera.imageLoading;
+
 
 
 export const getCurrentCamera = createSelector([getCurrentCameraId, getConnectedCameras, getDevices], (currentCameraId, connectedCameras, devices) => {
@@ -35,6 +45,7 @@ export const getShotParameters = createSelector([getCurrentCamera, getOptions, g
         camera: currentCamera,
         exposure: options.exposure,
         continuous: options.continuous,
+        binning: options.binning,
         roi: roi && roi.pixel && roi.pixel,
     }
 });
@@ -141,3 +152,11 @@ export const currentImageSelector = createSelector(
             crop,
         }
 });
+
+export const cameraBinningSelector = createSelector([getCameraBinningValue, getOptions],
+    (binning, options) => {
+        const selectedBinning = get(options, 'binning', get(binning, 'value'));
+        return { binning, selectedBinning };
+    }
+);
+

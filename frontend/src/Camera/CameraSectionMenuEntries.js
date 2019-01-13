@@ -3,6 +3,7 @@ import { Form, Header, Button, Message } from 'semantic-ui-react';
 import ExposureInputContainer from './ExposureInputContainer';
 import { SelectFilterContainer } from './SelectFilterContainer';
 import { ImageViewOptionsContainer } from '../Image/ImageViewOptionsContainer';
+import { CameraBinningContainer } from './CameraBinningContainer';
 
 class FilterWheelSection extends React.Component {
     autosetFilterWheel = () => this.props.filterWheels.length === 1 && !this.props.currentFilterWheel && this.props.setCurrentFilterWheel(this.props.filterWheels[0].id);
@@ -66,6 +67,7 @@ export class CameraShootingSectionMenuEntries extends React.Component {
                     { !currentCamera && <Message content='Please select a camera first' size='tiny'/> }
                 </Form.Field>
                 <Form.Checkbox label='Continuous' disabled={!currentCamera} toggle size='mini' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} />
+                <CameraBinningContainer cameraId={currentCamera && currentCamera.id} />
             </React.Fragment>
         ) : null;
     }

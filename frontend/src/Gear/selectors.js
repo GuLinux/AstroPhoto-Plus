@@ -24,6 +24,8 @@ export const filterDevices = (devices, ids) => ({
 export const getCameraExposureValue = (state, {cameraId}) => getValueInputSelector(cameraId, 'CCD_EXPOSURE', 'CCD_EXPOSURE_VALUE')(state);
 export const getCameraExposureProperty = (state, {cameraId}) => getPropertyInputSelector(state, {propertyId: getPropertyId(cameraId, 'CCD_EXPOSURE')});
 
+export const getCameraBinningValue = (state, {cameraId}) => getValueInputSelector(cameraId, 'CCD_BINNING', 'HOR_BIN')(state);
+
 export const getFilterWheelCurrentFilter = (state, {filterWheelId}) =>
     getValueInputSelector(filterWheelId, 'FILTER_SLOT', 'FILTER_SLOT_VALUE')(state);
 

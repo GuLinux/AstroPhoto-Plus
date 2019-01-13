@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Actions from '../actions';
-import ExposureInput from './ExposureInput';
+import { ExposureInput } from './ExposureInput';
 import { exposureInputSelector } from './selectors';
 
 const onExposureChanged = exposure => Actions.Camera.setOption({exposure});
