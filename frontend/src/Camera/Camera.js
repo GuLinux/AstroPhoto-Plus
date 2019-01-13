@@ -2,7 +2,6 @@ import React from 'react';
 import { Container, Form } from 'semantic-ui-react';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
 import AutoExposureContainer from './AutoExposureContainer';
-import HistogramContainer from './HistogramContainer';
 import { NotFoundPage } from '../components/NotFoundPage';
 import { CameraShootingSectionMenuEntriesContaner, CameraImageOptionsSectionMenuEntriesContainer } from './CameraSectionMenuEntriesContainer';
 
@@ -26,7 +25,6 @@ export const Camera = ({options, cameras}) => {
     return (
         <Container fluid>
             <AutoExposureContainer />
-            <HistogramContainer />
             <CurrentImageViewerContainer fitScreen={options.fitToScreen} />
         </Container>
     );

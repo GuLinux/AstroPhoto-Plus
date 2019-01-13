@@ -68,13 +68,13 @@ class Histogram extends React.Component {
         this.loadHistogram();
     }
     componentDidUpdate = (prevProps) => {
-        this.loadHistogram(prevProps.bins !== this.props.bins || prevProps.image !== this.props.image || prevProps.camera !== this.props.camera);
+        this.loadHistogram(prevProps.bins !== this.props.bins || prevProps.imageId !== this.props.imageId);
     }
     loadHistogram = (updated) =>
         this.props.histogramEnabled &&
-        this.props.image &&
+        this.props.imageId &&
         (!this.props.histogram || updated) &&
-        this.props.loadHistogram(this.props.image, this.props.bins);
+        this.props.loadHistogram(this.props.imageId, this.props.type, this.props.bins);
 }
 
 export default Histogram;

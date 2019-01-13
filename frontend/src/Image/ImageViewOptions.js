@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input } from 'semantic-ui-react';
+import { Form, Input, Header } from 'semantic-ui-react';
 
 const TIMER_SECONDS = 1.5 * 1000;
 
@@ -37,10 +37,43 @@ class NumberInput extends React.Component {
     }
 }
 
-
-const ImageViewOptions = ({options, setOption}) => (
+const HistogramSectionMenuEntries = ({
+    options,
+    setOption,
+}) => (
     <React.Fragment>
-        <Form.Checkbox label='Auto histogram stretch' toggle size='mini' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} />
+        <Header size='tiny' content='Histogram' textAlign='center' />
+        <Form.Checkbox label='Show histogram' toggle size='tiny' checked={options.showHistogram} onChange={(e, data) => setOption({showHistogram: data.checked})} />
+        {
+            options.showHistogram && (<React.Fragment>
+                <Form.Checkbox
+                    key='log'
+                    label='logarithmic'
+                    toggle
+                    size='tiny'
+                    checked={options.histogramLogarithmic}
+                    onChange={(e, data) => setOption({histogramLogarithmic: data.checked})}
+                    />
+                <Form.Field key='bins'>
+                    <Input
+                        type='number'
+                        label='bins'
+                        size='tiny'
+                        min={0}
+                        max={255}
+                        value={options.histogramBins}
+                        onChange={(e, data) => setOption({histogramBins: data.value})}
+                        />
+                </Form.Field>
+            </React.Fragment>)
+        }
+
+    </React.Fragment>
+)
+export const ImageViewOptions = ({options, setOption}) => (
+    <React.Fragment>
+        <Header size='tiny' content='View Options' textAlign='center' />
+        <Form.Checkbox label='Auto histogram stretch' toggle size='tiny' checked={options.stretch} onChange={(e, data) => setOption({stretch: data.checked})} />
         {
             !options.stretch && (<React.Fragment>
                 <Form.Field key='shadows'>
@@ -57,8 +90,8 @@ const ImageViewOptions = ({options, setOption}) => (
             { text: 'JPEG', value: 'jpeg' },
         ]} onChange={(e, data) => setOption({format: data.value})}/>
         <Form.Checkbox label='Fit image to screen' toggle size='tiny' checked={options.fitToScreen} onChange={(e, data) => setOption({fitToScreen: data.checked})} />
+        <HistogramSectionMenuEntries setOption={setOption} options={options} />
     </React.Fragment>
 );
 
-export default ImageViewOptions;
 

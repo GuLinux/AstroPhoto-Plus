@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
-import ImageViewer from './ImageViewer';
+import { ImageViewer } from './ImageViewer';
 import { imageUrlBuilder } from '../utils';
 import { getCurrentCamera } from './selectors';
 import Actions from '../actions';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
     const currentCamera = getCurrentCamera(state);
     const currentImage = state.camera.currentImage;
 
