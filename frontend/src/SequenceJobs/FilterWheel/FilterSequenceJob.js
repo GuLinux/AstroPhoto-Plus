@@ -15,7 +15,7 @@ export class FilterSequenceJob extends React.Component {
     onFilterSelected = (number) => this.setState({...this.state, sequenceJob: {...this.state.sequenceJob, filterNumber: parseInt(number, 10)}});
 
     isValid = () => this.state.filterNumber > 0
-    isChanged = () => get(this.state, 'sequenceJob.filterNumber', DEFAULT_FILTER_NUMBER) !== get(this.props, 'sequenceJob.filterNumber', DEFAULT_FILTER_NUMBER);
+    isChanged = () => get(this.state, 'sequenceJob.filterNumber', DEFAULT_FILTER_NUMBER) !== get(this.props, 'sequenceJob.filterNumber');
 
     renderFilter = (filterId) => <FilterSequenceJobItemContainer key={filterId} filterId={filterId} sequenceId={this.props.sequenceJob.sequence} onFilterSelected={this.onFilterSelected} selectedfilter={this.state.sequenceJob.filterNumber} />
 
