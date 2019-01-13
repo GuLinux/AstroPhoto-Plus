@@ -280,14 +280,15 @@ def stop_sequence(id):
     running_sequence.stop()
     return running_sequence.sequence.to_map()
 
+
 @app.route('/api/sequences/<id>/reset', methods=['POST'])
+@json_input
 @json_api
-def reset_sequence(id):
-    # TODO: delete files as parameter
+def reset_sequence(id, json):
     with controller.sequences.lookup_edit(id) as sequence:
         if sequence.is_running():
             raise BadRequestError('Sequence with id {} running, cannot reset'.format(id))
-        sequence.reset(remove_files=arg_bool(request, 'remove_files'))
+        sequence.reset(remove_files=json.get('remove_files', False), jobs_to_reset=json.get('jobs_to_reset', []))
         return sequence.to_map()
 
 

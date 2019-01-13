@@ -26,6 +26,7 @@ const getSequenceGear = createCachedSelector([
         } : {}
 )(getSequenceId); 
 
+export const getCanReset = (sequence) => sequence.status !== 'running';
 
 const getSequenceStatus = (sequence, gear) => {
     if(!sequence) {
@@ -35,7 +36,7 @@ const getSequenceStatus = (sequence, gear) => {
     const canStart = gearConnected && ['idle', 'stopped', 'error'].includes(sequence.status);
     const canStop = sequence.status === 'running';
     const canEdit = gearConnected && ['idle', 'error'].includes(sequence.status);
-    const canReset = sequence.status !== 'running';
+    const canReset = getCanReset(sequence);
     return { canStart, canStop, canEdit, canReset };
 };
 

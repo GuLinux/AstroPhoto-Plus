@@ -15,7 +15,7 @@ export class SequenceSectionMenu extends React.PureComponent {
 
     startSequence = () => this.props.startSequence(this.props.sequence);
     stopSequence = () => this.props.stopSequence(this.props.sequence);
-    resetSequence = (flags) => this.props.resetSequence(this.props.sequence, flags);
+    resetSequence = (flags) => this.props.resetSequence(this.props.sequence.id, flags);
     onCreateSequenceJob = (type) => this.props.onCreateSequenceJob(type, this.props.sequence.id);
 
     render = () => {
@@ -62,10 +62,10 @@ const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, t
 ))
 
 
-export const Sequence = ({ sequence, canEdit }) => sequence ? (
+export const Sequence = ({ sequence, canEdit, canReset }) => sequence ? (
     <Container>
         <Header size="medium">{sequence.name}</Header>
-        <SequenceJobsList canEdit={canEdit} sequenceJobs={sequence.sequenceJobs} />
+        <SequenceJobsList canEdit={canEdit} canReset={canReset} sequenceJobs={sequence.sequenceJobs} />
         <Card.Group>
             <ExposuresCardContainer sequenceId={sequence.id} />
             <CameraDetailsCardContainer sequenceId={sequence.id} cameraId={sequence.camera} />

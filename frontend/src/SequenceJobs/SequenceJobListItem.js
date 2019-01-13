@@ -45,9 +45,10 @@ export class SequenceJobListItem extends React.Component {
     moveDown = () => this.props.moveSequenceJob(this.props.sequenceJob, 'down');
     duplicate = () => this.props.duplicateSequenceJob(this.props.sequenceJob);
     remove = flags => this.props.deleteSequenceJob(this.props.sequenceJob, flags);
+    reset = flags => this.props.resetSequenceJob(this.props.sequenceJob, flags);
 
     render = () => {
-        const { sequenceJob, canEdit, canMoveUp, canMoveDown } = this.props;
+        const { sequenceJob, canEdit, canMoveUp, canMoveDown, canReset } = this.props;
         return (
             <Table.Row key={sequenceJob.id}>
                 <Table.Cell>{sequenceJob.typeLabel}</Table.Cell>
@@ -57,7 +58,7 @@ export class SequenceJobListItem extends React.Component {
                     <Button.Group icon>
                         <Button as={Link} to={`/sequences/${sequenceJob.sequence}/items/${sequenceJob.id}`} icon='edit' title="Edit" size="small" disabled={!canEdit} />
                         <ConfirmFlagsDialog
-                            trigger={<Button title="Remove" size="small" icon='remove' />}
+                            trigger={<Button title="Remove" size="small" icon='remove' disabled={!canEdit} />}
                             header='Confirm removal'
                             resetState={true}
                             cancelButton='no'
@@ -78,6 +79,29 @@ export class SequenceJobListItem extends React.Component {
                         <Button title="Move up" size="small" disabled={!canMoveUp} onClick={this.moveUp} icon='angle up' />
                         <Button title="Move down" size="small" disabled={canMoveDown} onClick={this.moveDown} icon='angle down' />
                         <Button title="Duplicate" size="small" onClick={this.duplicate} icon='copy' />
+                        <ConfirmFlagsDialog
+                            trigger={<Button title="Reset" size="small" icon='redo' disabled={!canReset} />}
+                            header='Confirm reset'
+                            resetState={true}
+                            cancelButton='no'
+                            confirmButton='yes'
+                            onConfirm={this.reset}
+                            content='Do you really want to reset this job?'
+                            size='mini'
+                            basic
+                            centered={false}
+                            flags={[
+                                {
+                                    name: 'reset_following',
+                                    label: 'Also reset following jobs',
+                                },
+                                {
+                                    name: 'remove_files',
+                                    label: 'Also remove all saved files',
+                                },
+                            ]}
+
+                        />
                         { sequenceJob.saved_images && sequenceJob.saved_images.length > 0 && <SequenceJobImagesButton sequenceJob={sequenceJob} /> }
                     </Button.Group>
                 </Table.Cell>

@@ -29,7 +29,7 @@ export class PauseSequenceJob extends React.Component {
             autoresume = this.autoresume();
         }
         return autoresume > 0 ?
-            `The sequence will restart in ${autoresume} seconds. You can also resume the sequence by pressing the Resume button` :
+            `The sequence will restart in ${autoresume} seconds`:
             'You can resume the sequence by pressing the Resume button';
     }
 

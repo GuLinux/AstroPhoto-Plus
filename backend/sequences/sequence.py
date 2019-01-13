@@ -87,12 +87,16 @@ class Sequence:
         for job in self.sequence_jobs:
             job.on_deleted(remove_files)
 
-    def reset(self, remove_files=False):
-        logger.debug('reset sequence {}, remove_files: {}'.format(self.name, remove_files))
+    def reset(self, remove_files=False, jobs_to_reset=[]):
+        if not jobs_to_reset:
+            jobs_to_reset = [j.id for j in self.sequence_jobs]
+
+        logger.debug('reset sequence {}, remove_files: {}, jobs_to_reset: {}'.format(self.name, remove_files, jobs_to_reset))
         self.status = 'idle'
         for sequence_job in self.sequence_jobs:
-            logger.info('resetting sequence job {}'.format(sequence_job))
-            sequence_job.reset(remove_files)
+            if sequence_job.id in jobs_to_reset:
+                logger.info('resetting sequence job {}'.format(sequence_job))
+                sequence_job.reset(remove_files)
 
     def run(self, server, root_directory, event_listener, logger, on_update=None):
         camera = [c for c in server.cameras() if c.id == self.camera]

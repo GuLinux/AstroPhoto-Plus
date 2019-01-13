@@ -67,7 +67,7 @@ const getSequenceForJob = (state, {sequenceJob}) => getSequence(state, {sequence
 
 export const sequenceJobListItemSelector = createCachedSelector([
     getSequenceJob,
-], sequenceJob => ({
+], (sequenceJob, sequence) => ({
     sequenceJob: sequenceJob && sequenceJobViewModel(sequenceJob),
 }))(getSequenceJobId);    
 

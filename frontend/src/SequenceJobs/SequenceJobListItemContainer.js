@@ -7,6 +7,7 @@ const mapDispatchToProps = {
     deleteSequenceJob: Actions.SequenceJobs.delete,
     moveSequenceJob: Actions.SequenceJobs.move,
     duplicateSequenceJob: Actions.SequenceJobs.duplicate,
+    resetSequenceJob: Actions.SequenceJobs.reset,
 }
 
 export const SequenceJobsListItemContainer = connect(

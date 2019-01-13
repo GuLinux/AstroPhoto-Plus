@@ -5,6 +5,7 @@ export class SequenceJobsList extends React.PureComponent {
 
     renderSequenceJob = (id, index) => <SequenceJobsListItemContainer
         canEdit={this.props.canEdit}
+        canReset={this.props.canReset}
         sequenceJobId={id} key={index}
         canMoveUp={index !== 0}
         canMoveDown={index < this.props.sequenceJobs.length -1}
