@@ -26,7 +26,7 @@ export class SequenceListItem extends React.PureComponent {
     resetSequence = (flags) => this.props.resetSequence(this.props.sequence, flags);
 
     render = () => {
-        const {sequence, gear, canStart, canStop, canReset, canEdit} = this.props;
+        const {sequence, gear, canStart, canStop, canReset, canEdit, hasFiles} = this.props;
         return (
             <Table.Row key={sequence.id}>
                 <Table.Cell verticalAlign='middle'>
@@ -62,12 +62,12 @@ export class SequenceListItem extends React.PureComponent {
                                         size='mini'
                                         basic
                                         centered={false}
-                                        flags={[
+                                        flags={hasFiles ? [
                                             {
                                                 name: 'remove_files',
-                                                label: 'Also remove all fits files',
+                                                label: 'Also remove all saved files',
                                             },
-                                        ]}
+                                        ]: []}
                                     />
                                     <ConfirmFlagsDialog
                                         trigger={
@@ -82,12 +82,12 @@ export class SequenceListItem extends React.PureComponent {
                                         size='mini'
                                         basic
                                         centered={false}
-                                        flags={[
+                                        flags={hasFiles ? [
                                             {
                                                 name: 'remove_files',
-                                                label: 'Also remove all fits files',
+                                                label: 'Also remove all saved files',
                                             },
-                                        ]}
+                                        ] : []}
                                    />
 
 

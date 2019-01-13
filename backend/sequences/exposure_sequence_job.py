@@ -60,7 +60,8 @@ class ExposureSequenceJob:
             'progress': self.progress,
             'last_message': self.last_message,
             'saved_images': self.saved_images,
-            'save_directory': self.save_directory
+            'save_directory': self.save_directory,
+            'has_files': len(self.saved_images) > 0,
         }
 
     def stop(self):

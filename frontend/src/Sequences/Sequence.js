@@ -19,7 +19,7 @@ export class SequenceSectionMenu extends React.PureComponent {
     onCreateSequenceJob = (type) => this.props.onCreateSequenceJob(type, this.props.sequence.id);
 
     render = () => {
-        const { sequence, canStart, canEdit, canReset, canStop} = this.props;
+        const { sequence, canStart, canEdit, canReset, canStop, hasFiles} = this.props;
         return sequence ? (
             <NavbarSectionMenu sectionName='Sequence' sectionText={sequence.name}>
                 <Menu.Item onClick={this.startSequence} icon='play' content='start' disabled={!canStart} />
@@ -29,12 +29,12 @@ export class SequenceSectionMenu extends React.PureComponent {
                     header='Confim sequence reset'
                     cancelButton='No'
                     confirmButton='Yes'
-                    flags={[
+                    flags={hasFiles ? [
                         {
                             name: 'remove_files',
-                            label: 'Also remove all fits files',
+                            label: 'Also remove all saved files',
                         },
-                    ]}
+                    ] : []}
                     onConfirm={this.resetSequence}
                     resetState={true}
                     size={'mini'}

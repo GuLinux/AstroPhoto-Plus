@@ -40,9 +40,14 @@ const SequenceJobImagesButton = withRouter( ({history, sequenceJob}) => (
 
 
 
-export class SequenceJobListItem extends React.PureComponent {
+export class SequenceJobListItem extends React.Component {
+    moveUp = () => this.props.moveSequenceJob(this.props.sequenceJob, 'up');
+    moveDown = () => this.props.moveSequenceJob(this.props.sequenceJob, 'down');
+    duplicate = () => this.props.duplicateSequenceJob(this.props.sequenceJob);
+    remove = flags => this.props.deleteSequenceJob(this.props.sequenceJob, flags);
+
     render = () => {
-        const { sequenceJob, canEdit, deleteSequenceJob, canMoveUp, canMoveDown,moveSequenceJob, duplicateSequenceJob } = this.props;
+        const { sequenceJob, canEdit, canMoveUp, canMoveDown } = this.props;
         return (
             <Table.Row key={sequenceJob.id}>
                 <Table.Cell>{sequenceJob.typeLabel}</Table.Cell>
@@ -57,22 +62,22 @@ export class SequenceJobListItem extends React.PureComponent {
                             resetState={true}
                             cancelButton='no'
                             confirmButton='yes'
-                            onConfirm={(flags) => deleteSequenceJob(sequenceJob, flags)}
+                            onConfirm={this.remove}
                             content='Do you really want to remove this element?'
                             size='mini'
                             basic
                             centered={false}
-                            flags={[
+                            flags={sequenceJob.has_files ? [
                                 {
                                     name: 'remove_files',
-                                    label: 'Also remove all fits files',
+                                    label: 'Also remove all saved files',
                                 },
-                            ]}
+                            ] : []}
 
                         />
-                        <Button title="Move up" size="small" disabled={!canMoveUp} onClick={() => moveSequenceJob(sequenceJob, 'up')} icon='angle up' />
-                        <Button title="Move down" size="small" disabled={canMoveDown} onClick={() => moveSequenceJob(sequenceJob, 'down')} icon='angle down' />
-                        <Button title="Duplicate" size="small" onClick={() => duplicateSequenceJob(sequenceJob)} icon='copy' />
+                        <Button title="Move up" size="small" disabled={!canMoveUp} onClick={this.moveUp} icon='angle up' />
+                        <Button title="Move down" size="small" disabled={canMoveDown} onClick={this.moveDown} icon='angle down' />
+                        <Button title="Duplicate" size="small" onClick={this.duplicate} icon='copy' />
                         { sequenceJob.saved_images && sequenceJob.saved_images.length > 0 && <SequenceJobImagesButton sequenceJob={sequenceJob} /> }
                     </Button.Group>
                 </Table.Cell>

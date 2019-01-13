@@ -39,18 +39,24 @@ const getSequenceStatus = (sequence, gear) => {
     return { canStart, canStop, canEdit, canReset };
 };
 
+
+const sequenceHasFiles = createCachedSelector([getJobsForSequence],
+    sequenceJobs => sequenceJobs.reduce( (hasFiles, sequenceJob) => hasFiles || sequenceJob.has_files, false )
+)(getSequenceId);
+
+
 export const getSequenceListItemSelector = createCachedSelector([
     getSequence,
     getSequenceGear,
-], (sequence, gear) => {
+    sequenceHasFiles,
+], (sequence, gear, hasFiles) => {
     return {
         sequence,
         gear,
+        hasFiles,
         ...getSequenceStatus(sequence, gear),
     }
 })(getSequenceId);
-
-
 
 
 export const sequenceSelector = createCachedSelector([
@@ -67,10 +73,12 @@ export const sequenceSelector = createCachedSelector([
 export const sequenceSectionMenuSelector = createCachedSelector([
     getSequence,
     getSequenceGear,
-], (sequence, gear) => {
+    sequenceHasFiles,
+], (sequence, gear, hasFiles) => {
     return {
         sequence,
         gear,
+        hasFiles,
         ...getSequenceStatus(sequence, gear),
     };
 })(getSequenceId);
