@@ -1,5 +1,3 @@
-import { fetchHistogramApi } from "../middleware/api";
-
 const defaultState = {
     options: {
         maxWidth: 0,

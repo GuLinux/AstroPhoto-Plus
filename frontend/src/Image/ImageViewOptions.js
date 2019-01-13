@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Header } from 'semantic-ui-react';
+import { Form, Header } from 'semantic-ui-react';
 import { NumericInput } from '../components/NumericInput';
 export class ImageViewOptions extends React.Component{
     onStretchChanged = (e, data) => this.props.setOption({stretch: data.checked});

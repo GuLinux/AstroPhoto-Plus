@@ -1,6 +1,5 @@
 import React from 'react';
-import { Divider, Menu, Message, Image, Form, Container, Header, Loader } from 'semantic-ui-react';
-import ImageViewOptions from '../Image/ImageViewOptions';
+import { Divider, Menu, Message, Image, Form, Loader } from 'semantic-ui-react';
 import fetch from 'isomorphic-fetch'
 import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
 import { ImageViewOptionsContainer } from './ImageViewOptionsContainer';
@@ -45,19 +44,21 @@ export class ImageLoader extends React.Component {
     shouldShowLoader = () => (this.state.loading || ! this.state.ready) && ! this.state.error 
     shouldShowImage = () => this.state.ready && ! this.state.error 
 
-    componentDidMount = () => {
-        fetch(`/api/images/${this.props.type}/${this.props.id}/wait_until_ready`).then( (response) => {
-            if(response.ok) {
-                return response.json();
+    componentDidMount = async () => {
+        try {
+            const response = await fetch(`/api/images/${this.props.type}/${this.props.id}/wait_until_ready`);
+            if(!response.ok) {
+                throw response;
             }
-            return Promise.reject(response);
-        })
-            .then(json => {
-                this.exiting || this.toggleReady(true);
-            })
-            .catch(response => {
-                this.exiting || this.setState({...this.state, error: true});
-            })
+            const json = await response.json();
+            if(!json.ready) {
+                throw json;
+            }
+            this.exiting || this.toggleReady(true);
+        } catch(response) {
+            console.warning('Unable to load image: ', response);
+            this.exiting || this.setState({...this.state, error: true});
+        }
     }
 
     render = () => this.exiting ? null : (

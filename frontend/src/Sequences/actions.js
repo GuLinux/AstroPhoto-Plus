@@ -65,7 +65,7 @@ export const Sequences = {
 
     reset: (sequence, options) => {
         return dispatch => {
-            dispatch({type: 'RESET_SEQUENCE_REQUESTED'});
+            dispatch({type: 'RESET_SEQUENCE_REQUESTED', sequence});
             return resetSequenceAPI(dispatch, sequence, options, data => {
                 dispatch({type: 'RECEIVED_RESET_SEQUENCE_REPLY', sequence: { id: sequence.id, status: data.status} });
                 dispatch(Sequences.updated(data));

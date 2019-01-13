@@ -1,8 +1,7 @@
 import React from 'react';
-import { Form, Header, Button, Message, Input } from 'semantic-ui-react';
+import { Form, Header, Button, Message } from 'semantic-ui-react';
 import ExposureInputContainer from './ExposureInputContainer';
 import { SelectFilterContainer } from './SelectFilterContainer';
-import ImageViewOptions from '../Image/ImageViewOptions';
 import { ImageViewOptionsContainer } from '../Image/ImageViewOptionsContainer';
 
 class FilterWheelSection extends React.Component {
@@ -74,8 +73,6 @@ export class CameraShootingSectionMenuEntries extends React.Component {
 
 export const CameraImageOptionsSectionMenuEntries = ({
     cameras,
-    options,
-    setOption,
     canCrop,
     crop,
     startCrop,
