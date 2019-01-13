@@ -32,7 +32,7 @@ class ImageCrop extends React.Component {
 }
 
 export const ImageViewer = ({uri, id, type, onImageLoading, onImageLoaded, crop, setCrop, imageInfo}) => {
-    return uri ? (
+    return id ? (
         <div className='image-viewer'>
             <HistogramContainer imageId={id} type={type} />
             { crop && (crop.initial || crop.relative) ?

@@ -1,24 +1,9 @@
 import { connect } from 'react-redux';
 import { ImageViewer } from './ImageViewer';
-import { imageUrlBuilder } from '../utils';
-import { getCurrentCamera } from './selectors';
+import { currentImageSelector } from './selectors';
 import Actions from '../actions';
 
-const mapStateToProps = (state) => {
-    const currentCamera = getCurrentCamera(state);
-    const currentImage = state.camera.currentImage;
 
-    if(! currentCamera || ! currentImage) {
-        return { }
-    }
-    return {
-        uri: imageUrlBuilder(currentImage.id, {...state.camera.options, type: 'camera' }),
-        id: currentImage.id,
-        type: 'camera',
-        imageInfo: currentImage.image_info,
-        crop: state.camera.crop,
-    }
-}
 
 const mapDispatchToProps = {
     onImageLoading: Actions.Camera.imageLoading,
@@ -27,7 +12,7 @@ const mapDispatchToProps = {
 };
 
 const CurrentImageViewerContainer = connect(
-  mapStateToProps,
+  currentImageSelector,
   mapDispatchToProps
 )(ImageViewer)
 
