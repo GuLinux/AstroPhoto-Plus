@@ -1,4 +1,4 @@
-import { cameraShootAPI, fetchHistogramApi } from '../middleware/api';
+import { cameraShootAPI } from '../middleware/api';
 import Actions from '../actions';
 import { getCurrentFilterWheelId } from './selectors';
 import { getPropertyId } from '../INDI-Server/utils';
@@ -13,32 +13,6 @@ const Camera = {
     startCrop: () => ({ type: 'CAMERA_START_CROP' }),
     resetCrop: () => ({ type: 'CAMERA_RESET_CROP' }),
     setCrop: (crop) => ({ type: 'CAMERA_SET_CROP', crop }),
-
-    histogramLoaded: (histogram) => ({ type: 'CAMERA_HISTOGRAM_LOADED', histogram}),
-    histogramError: (dispatch, error) => {
-        dispatch({ type: 'CAMERA_HISTOGRAM_ERROR', error });
-        let errorMessage = [
-            'There was an error creating the histogram data.',
-        ];
-        if(error.error_message) {
-            errorMessage.push(error.error_message);
-        }
-        dispatch(Actions.Notifications.add('Histogram error', errorMessage , 'error'));
-    },
-
-    loadHistogram: (image, bins) => (dispatch) => {
-        dispatch({type: 'CAMERA_LOAD_HISTOGRAM'});
-        return fetchHistogramApi(dispatch, 'camera', image, bins,
-                (data) => dispatch(Camera.histogramLoaded(data)),
-                (err) => {
-                    if(err.headers.get('Content-Type') === 'application/json') {
-                        err.json().then( (errorData) => dispatch(Camera.histogramError(errorData)) );
-                        return true;
-                    }
-                    return false;
-                }
-        )
-    },
 
     shoot: (parameters) => (dispatch) => {
         dispatch({ type: 'CAMERA_SHOOT', parameters });

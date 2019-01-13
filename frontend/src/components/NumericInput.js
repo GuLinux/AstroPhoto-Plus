@@ -66,7 +66,6 @@ export class NumericInput extends React.Component {
             <Input
                 onKeyUp={e => this.onKeyUp(e)}
                 onBlur={() => this.mergeState()}
-                className='indi-number'
                 value={this.value()}
                 onChange={(e, data) => this.onChange(data)}
                 type='text'

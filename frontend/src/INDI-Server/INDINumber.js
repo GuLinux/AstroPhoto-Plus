@@ -108,6 +108,7 @@ const CurrentValue = ({value, format, ...args}) => (
         value={value}
         size='small'
         readOnly={true}
+        className='indi-number'
         format={v => formatValue(v, format)}
         parse={s => parseStringValue(s, format)}
         {...args}

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Icon, Button, Popup } from 'semantic-ui-react';
 import ReactCrop from 'react-image-crop';
-import { ImageLoader } from '../Image/Image';
+import { ImageContainer } from '../Image/ImageContainer';
+import HistogramContainer from '../Image/HistogramContainer';
 
 
 class ImageCrop extends React.Component {
@@ -30,14 +31,14 @@ class ImageCrop extends React.Component {
     }
 }
 
-const ImageViewer = ({uri, id, type, fitScreen = false, onImageLoading, onImageLoaded, crop, setCrop, imageInfo}) => {
-    return uri ? (
+export const ImageViewer = ({uri, id, type, onImageLoading, onImageLoaded, crop, setCrop, imageInfo}) => {
+    return id ? (
         <div className='image-viewer'>
+            <HistogramContainer imageId={id} type={type} />
             { crop && (crop.initial || crop.relative) ?
                 <ImageCrop src={uri} width={imageInfo.width} height={imageInfo.height} crop={crop} setCrop={setCrop} /> :
-                <ImageLoader key={id} id={id} type={type} uri={uri} {...{onImageLoading, onImageLoaded, fitScreen}} />
+                <ImageContainer key={id} id={id} type={type} {...{onImageLoading, onImageLoaded}} />
             }
         </div>
     ): <Icon name='image outline' size='massive' disabled />;
 }
-export default ImageViewer;

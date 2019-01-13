@@ -3,6 +3,7 @@ import { Form, Header, Button, Message, Input } from 'semantic-ui-react';
 import ExposureInputContainer from './ExposureInputContainer';
 import { SelectFilterContainer } from './SelectFilterContainer';
 import ImageViewOptions from '../Image/ImageViewOptions';
+import { ImageViewOptionsContainer } from '../Image/ImageViewOptionsContainer';
 
 class FilterWheelSection extends React.Component {
     autosetFilterWheel = () => this.props.filterWheels.length === 1 && !this.props.currentFilterWheel && this.props.setCurrentFilterWheel(this.props.filterWheels[0].id);
@@ -81,33 +82,7 @@ export const CameraImageOptionsSectionMenuEntries = ({
     resetCrop,
 }) => cameras.length > 0 && (
     <React.Fragment>
-        <Header size='tiny' content='View Options' textAlign='center' />
-        <ImageViewOptions options={options} setOption={setOption} />
-        <Header size='tiny' content='Histogram' textAlign='center' />
-        <Form.Checkbox label='Show histogram' toggle size='tiny' checked={options.showHistogram} onChange={(e, data) => setOption({showHistogram: data.checked})} />
-        {
-            options.showHistogram && (<React.Fragment>
-                <Form.Checkbox
-                    key='log'
-                    label='logarithmic'
-                    toggle
-                    size='tiny'
-                    checked={options.histogramLogarithmic}
-                    onChange={(e, data) => setOption({histogramLogarithmic: data.checked})}
-                    />
-                <Form.Field key='bins'>
-                    <Input
-                        type='number'
-                        label='bins'
-                        size='tiny'
-                        min={0}
-                        max={255}
-                        value={options.histogramBins}
-                        onChange={(e, data) => setOption({histogramBins: data.value})}
-                        />
-                </Form.Field>
-            </React.Fragment>)
-        }
+        <ImageViewOptionsContainer />
         <Header size='tiny' content='ROI' textAlign='center' />
         <Button content='select ROI' size='tiny' fluid basic disabled={!canCrop || !!crop} onClick={startCrop}/>
         <Button content='clear ROI' size='tiny' fluid basic disabled={!canCrop || !(!!crop && crop.pixel )} onClick={resetCrop}/>

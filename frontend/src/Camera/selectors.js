@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 import { getConnectedCameras, getConnectedFilterWheels, getCameraExposureValue, getFilterWheelCurrentFilter, getFilterWheelCurrentFilterName, getFilterWheelAvailableFiltersProperty, getFilterWheelFilterName } from '../Gear/selectors'
 import { getDevices } from '../INDI-Server/selectors';
 import { get } from 'lodash';
+import { imageUrlBuilder } from '../utils';
 
 const getCurrentCameraId = state => state.camera.currentCamera;
 export const getCurrentFilterWheelId = state => state.camera.currentFilterWheel;
@@ -122,3 +123,24 @@ export const selectFilterSelector = createSelector([
 export const filterSelectionSelector = createSelector([
     getFilterWheelFilterName,
 ], ({value: filterName}) => ({filterName}));
+
+
+export const currentImageSelector = createSelector(
+    [
+        getCurrentCamera,
+        state => state.camera.currentImage,
+        state => state.camera.options,
+        state => state.camera.crop,
+    ],
+    (currentCamera, currentImage, options, crop) => {
+        if(! currentCamera || ! currentImage) {
+            return { }
+        }
+        return {
+            uri: imageUrlBuilder(currentImage.id, {...options, type: 'camera' }),
+            id: currentImage.id,
+            type: 'camera',
+            imageInfo: currentImage.image_info,
+            crop,
+        }
+});
