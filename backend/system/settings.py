@@ -26,10 +26,10 @@ def lookup_level(level):
 
 class Settings:
     def __init__(self):
-        self.default_datadir = os.environ.get('STARQUEW_DATADIR', os.path.join(os.environ['HOME'], 'StarQuew-Data'))
-        self.config_dir = os.path.join(os.environ['HOME'], '.config', 'StarQuew')
+        self.default_datadir = os.environ.get('ASTROPHOTOPLUS_DATADIR', os.path.join(os.environ['HOME'], 'AstroPhoto+-Data'))
+        self.config_dir = os.path.join(os.environ['HOME'], '.config', 'AstroPhoto+')
         self.system_config_dir = os.environ.get('SYSTEM_CONFDIR', '/etc')
-        self.indi_service_logs = self.__build_path(['.cache', 'StarQuew', 'logs', 'indi_service'], isdir=True)
+        self.indi_service_logs = self.__build_path(['.cache', 'AstroPhoto+', 'logs', 'indi_service'], isdir=True)
 
         self.ro_props = ['default_datadir', 'indi_service_logs', 'config_dir']
         self.rw_props = [
@@ -75,7 +75,7 @@ class Settings:
  
     @property
     def camera_tempdir(self):
-        return self.__build_path(['.cache', 'StarQuew', 'camera'], isdir=True)
+        return self.__build_path(['.cache', 'AstroPhoto+', 'camera'], isdir=True)
 
     @property
     def sequences_dir(self):

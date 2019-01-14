@@ -25,11 +25,11 @@
     },
     {
         "id": "7",
-        "name": "Update StarQuew",
-        "arguments": ["sudo", "starquew-deb-updater", "update"],
+        "name": "Update AstroPhoto+",
+        "arguments": ["sudo", "astrophoto+-deb-updater", "update"],
         "category": "Updates",
-        "check": ["starquew-deb-updater", "get-latest-info"],
-        "confirmation_message": "This will restart StarQuew, and any job in progress. Are you sure?",
+        "check": ["astrophoto+-deb-updater", "get-latest-info"],
+        "confirmation_message": "This will restart AstroPhoto+, and any job in progress. Are you sure?",
         "ui_properties": {
             "icon": "sync"
         }
