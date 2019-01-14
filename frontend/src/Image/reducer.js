@@ -4,7 +4,7 @@ const defaultState = {
         stretch: true,
         clipLow: 0,
         clipHigh: 100,
-        format: 'png',
+        format: 'jpeg',
         fitToScreen: true,
         showHistogram: false,
         histogramBins: 255,

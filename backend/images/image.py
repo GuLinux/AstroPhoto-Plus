@@ -8,6 +8,8 @@ import math
 import numpy
 from image_processing.image_processing import ImageProcessing
 from utils.benchmark_log import benchlogger
+from app import logger
+import logging
 
 # TODO:
 # - use fits loader (plugin)
@@ -137,20 +139,26 @@ class Image:
         }
 
     def __convert(self, args, filepath, format):
-        imp = ImageProcessing(self.path)
+        logger.debug('creating ImageProcessing object with path={}, format={}, args={}'.format(self.path, format, args))
+        imp = ImageProcessing(self.path, logger.isEnabledFor(logging.DEBUG))
         if args.get('stretch', '0') == '1':
+            logger.debug('applying autostretch')
             imp.autostretch()
         else:
             if 'clip_low' in args or 'clip_high' in args:
                 clip_low = float(args.get('clip_low', 0)) / 100.
                 clip_high = float(args.get('clip_high', 100)) / 100.
+                logger.debug('manual clipping: {}, {}'.format(clip_low, clip_high))
                 imp.clip(clip_low, clip_high)
 
+        logger.debug('debayering')
         imp.debayer('auto')
         maxwidth = int(args.get('maxwidth', '0'))
         if maxwidth > 0:
             maxheight = int(imp.height() / (imp.width() / maxwidth))
+            logger.debug('resizing to {}x{}'.format(maxwidth, maxheight))
             imp.resize(maxwidth, maxheight, 'LINEAR')
+        logger.debug('saving to {}'.format(filepath))
         imp.save(filepath)
 
 

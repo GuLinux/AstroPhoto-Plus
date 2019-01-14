@@ -102,8 +102,8 @@ class ImageProcessing(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, ImageProcessing, name)
     __repr__ = _swig_repr
 
-    def __init__(self, fitsfile):
-        this = _image_processing.new_ImageProcessing(fitsfile)
+    def __init__(self, fitsfile, debug_log):
+        this = _image_processing.new_ImageProcessing(fitsfile, debug_log)
         try:
             self.this.append(this)
         except __builtin__.Exception:
