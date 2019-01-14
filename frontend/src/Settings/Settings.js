@@ -56,12 +56,12 @@ export class Settings extends React.Component {
                     <Header content='About' />
                     <Grid stackable>
                         <Grid.Column width={6} verticalAlign='middle'>
-                            StarQuew version {version}
+                            AstroPhoto+ version {version}
                         </Grid.Column>
                         <Grid.Column textAlign='right' width={10} verticalAlign='middle'>
                             <Menu compact stackable>
-                                <Menu.Item content='Homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
-                                <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
+                                <Menu.Item content='Homepage' as='a' href='https://github.com/GuLinux/AstroPhotoPlus' target='_blank' />
+                                <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/AstroPhotoPlus/issues' target='_blank' />
                                 <Menu.Item content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
                             </Menu>
                         </Grid.Column>

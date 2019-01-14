@@ -7,7 +7,7 @@ import { Actions } from './actions'
 import thunkMiddleware from 'redux-thunk'
 import { Routes } from './routes'
 
-import { starQuewReducer } from './reducers'
+import { astroPhotoPlusReducer } from './reducers'
 import App from './components/App'
 
 import 'react-image-crop/dist/ReactCrop.css';
@@ -36,7 +36,7 @@ const createMiddleware = () => {
 }
 
 let store = createStore(
-    starQuewReducer,
+    astroPhotoPlusReducer,
     createMiddleware()
 )
 

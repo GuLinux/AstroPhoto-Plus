@@ -25,7 +25,7 @@
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.84.0"
   },
-  "name": "StarQuew-frontend",
+  "name": "AstroPhotoPlus-frontend",
   "private": true,
   "scripts": {
     "forest:clean": "rm -rf public/themes; mkdir -p public/themes",
