@@ -59,17 +59,17 @@ start-redis() {
 }
 
 setup-apache2() {
-    cp -avf "$ASTRO_PHOTO_PLUS_BASEPATH/frontend/webserver-conf/apache2/starquew.conf" /etc/apache2/sites-available
+    cp -avf "$ASTRO_PHOTO_PLUS_BASEPATH/frontend/webserver-conf/apache2/astrophotoplus.conf" /etc/apache2/sites-available
     rm -f /etc/apache2/sites-enabled/*
-    ln -s /etc/apache2/sites-available/starquew.conf /etc/apache2/sites-enabled/
+    ln -s /etc/apache2/sites-available/astrophotoplus.conf /etc/apache2/sites-enabled/
     a2enmod proxy proxy_http rewrite
     systemctl restart apache2
 }
 
 setup-nginx() {
-    cp -avf "$ASTRO_PHOTO_PLUS_BASEPATH/frontend/webserver-conf/nginx/starquew.conf" /etc/nginx/sites-available
+    cp -avf "$ASTRO_PHOTO_PLUS_BASEPATH/frontend/webserver-conf/nginx/astrophotoplus.conf" /etc/nginx/sites-available
     rm -f /etc/nginx/sites-enabled/*
-    ln -s /etc/nginx/sites-available/starquew.conf /etc/nginx/sites-enabled/
+    ln -s /etc/nginx/sites-available/astrophotoplus.conf /etc/nginx/sites-enabled/
     systemctl restart nginx
 }
 

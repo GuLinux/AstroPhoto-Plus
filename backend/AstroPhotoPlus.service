@@ -4,9 +4,9 @@ Wants=redis.service
 
 [Service]
 Type=simple
-ExecStart=@STARQUEW_INSTALL_PREFIX@/backend/start-server --log-level warning --log-syslog --log-syslog-prefix StarQuew --disable-redirect-access-to-syslog
-ExecStartPre=@STARQUEW_INSTALL_PREFIX@/backend/start-server --check-user
-WorkingDirectory=@STARQUEW_INSTALL_PREFIX@/backend
+ExecStart=@ASTRO_PHOTO_PLUS_INSTALL_PREFIX@/backend/start-server --log-level warning --log-syslog --log-syslog-prefix AstroPhotoPlus --disable-redirect-access-to-syslog
+ExecStartPre=@ASTRO_PHOTO_PLUS_INSTALL_PREFIX@/backend/start-server --check-user
+WorkingDirectory=@ASTRO_PHOTO_PLUS_INSTALL_PREFIX@/backend
 Environment="SYSTEM_CONFDIR=@CONFDIR@"
 
 [Install]

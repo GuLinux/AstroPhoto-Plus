@@ -31,10 +31,10 @@
 ## [0.1.1] - 2018-08-03
 ### User experience improvements
 Various UI fixes, particularly for mobile devices.
-Also added the capability of running shell commands, configured by `$HOME/.config/StarQuew/commands.json`.
+Also added the capability of running shell commands, configured by `$HOME/.config/AstroPhotoPlus/commands.json`.
 
 This is at the moment very useful for the Raspberry Pi image, to allow reboot, automatic updates and wifi configuration via the Settings page.
-Sample configuration: https://github.com/GuLinux/StarQuew/blob/master/config/raspberry_pi/commands.json
+Sample configuration: https://github.com/GuLinux/AstroPhotoPlus/blob/master/config/raspberry_pi/commands.json
 
 Added an AUR package for Arch Linux
 
