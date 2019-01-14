@@ -13,7 +13,7 @@ export class CameraBinning extends React.Component {
         return (
             <React.Fragment>
                 <Form.Field>
-                    <NumericInput label='Binning' min={binning.min} max={binning.max} step={1} value={selectedBinning} onChange={this.setBinning} />;
+                    <NumericInput label='Binning' min={binning.min} max={binning.max} step={1} value={selectedBinning} onChange={this.setBinning} />
                 </Form.Field>
             </React.Fragment>
         );
