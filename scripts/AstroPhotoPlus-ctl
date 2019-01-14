@@ -1,6 +1,9 @@
 #!/bin/bash
 
 ASTRO_PHOTO_PLUS_BASEPATH="@ASTRO_PHOTO_PLUS_INSTALL_PREFIX@"
+APP_DISPLAY_NAME="AstroPhoto+"
+APP_CONFIG_NAME="AstroPhotoPlus"
+SYSTEMCTL_UNIT="AstroPhotoPlus"
 
 print_help() {
     cat >&2 <<EOF
@@ -11,11 +14,11 @@ Commands:
  - autosetup [username]        Prepares everything automatically, asking confirmation about choices where necessary.
  - setup-backend username      Setup the backend to run as the specified user.
  - start-redis                 Starts the required Redis server, and enables autostart at boot
- - setup-apache2               Prepares apache2 to serve StarQuew.
- - setup-nginx                 Prepares nginx to serve StarQuew.
- - start                       Starts StarQuew daemon.
- - autostart                   Starts StarQuew daemon, and enables autostart on system boot.
- - restart                     Restarts StarQuew daemon after an upgrade.
+ - setup-apache2               Prepares apache2 to serve ${APP_DISPLAY_NAME}.
+ - setup-nginx                 Prepares nginx to serve ${APP_DISPLAY_NAME}.
+ - start                       Starts ${APP_DISPLAY_NAME} daemon.
+ - autostart                   Starts ${APP_DISPLAY_NAME} daemon, and enables autostart on system boot.
+ - restart                     Restarts ${APP_DISPLAY_NAME} daemon after an upgrade.
  - status                      Checks daemon status
  - logs                        Show daemon logs
 
@@ -40,13 +43,13 @@ autosetup() {
     if [ -n "$1" ]; then
         ASTRO_PHOTO_PLUS_USER="$1"
     else
-        read -p "Please enter the username for your StarQuew backend server: " -i "${SUDO_USER:-$USER}" -e ASTRO_PHOTO_PLUS_USER
+        read -p "Please enter the username for your ${APP_DISPLAY_NAME} backend server: " -i "${SUDO_USER:-$USER}" -e ASTRO_PHOTO_PLUS_USER
     fi
     start-redis
     setup-backend "$ASTRO_PHOTO_PLUS_USER"
     autostart
-    echo "Automatic setup complete. You can open your browser at http://localhost to start using your StarQuew installation."
-    echo "If this is the first time installing StarQuew, the server might not be ready yet and display an error page."
+    echo "Automatic setup complete. You can open your browser at http://localhost to start using your ${APP_DISPLAY_NAME} installation."
+    echo "If this is the first time installing ${APP_DISPLAY_NAME}, the server might not be ready yet and display an error page."
     echo "If this is the case, run $0 logs to see if it's still installing packages, or if there is a problem with your setup."
 }
 
@@ -81,42 +84,42 @@ setup-backend() {
         echo "Please specify a valid user" >&2
         print_help
     fi
-    echo "Autoconfiguring $ASTRO_PHOTO_PLUS_USER as default StarQuew user."
-    echo "Run 'systemctl edit StarQuew' to change user"
-    mkdir -p /etc/systemd/system/StarQuew.service.d
-    cat > /etc/systemd/system/StarQuew.service.d/override.conf <<EOF
+    echo "Autoconfiguring $ASTRO_PHOTO_PLUS_USER as default ${APP_DISPLAY_NAME} user."
+    echo "Run 'systemctl edit ${SYSTEMCTL_UNIT}' to change user"
+    mkdir -p /etc/systemd/system/${SYSTEMCTL_UNIT}.service.d
+    cat > /etc/systemd/system/${SYSTEMCTL_UNIT}.service.d/override.conf <<EOF
 [Service]
 User=$ASTRO_PHOTO_PLUS_USER
 EOF
-    config_json_file="/home/$ASTRO_PHOTO_PLUS_USER/.config/StarQuew/commands.json"
+    config_json_file="/home/$ASTRO_PHOTO_PLUS_USER/.config/${APP_CONFIG_NAME}/commands.json"
     if which dpkg >/dev/null 2>&1 && ! [ -r "$config_json_file" ]; then
         mkdir -p "$( dirname "$config_json_file")"
         chown $ASTRO_PHOTO_PLUS_USER "$( dirname "$config_json_file")"
-        ln -s /usr/share/StarQuew/config/debian_based/commands.json "$config_json_file"
+        ln -s /usr/share/${APP_CONFIG_NAME}/config/debian_based/commands.json "$config_json_file"
     fi
     systemctl daemon-reload
 }
 
 start() {
-    systemctl start StarQuew
+    systemctl start "${SYSTEMCTL_UNIT}"
 }
 
 autostart() {
-    systemctl enable StarQuew
+    systemctl enable "${SYSTEMCTL_UNIT}"
     start
 }
 
 restart() {
     systemctl daemon-reload
-    systemctl restart StarQuew
+    systemctl restart "${SYSTEMCTL_UNIT}"
 }
 
 status() {
-    systemctl status StarQuew
+    systemctl status "${SYSTEMCTL_UNIT}"
 }
 
 logs() {
-    journalctl -xefu StarQuew
+    journalctl -xefu "${SYSTEMCTL_UNIT}"
 }
 
 original_command_line="$@"
