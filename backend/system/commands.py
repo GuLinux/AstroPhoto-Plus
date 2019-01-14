@@ -82,7 +82,7 @@ class Commands:
     def __init__(self):
         commands_parsed, commands = self.__read_commands_file(os.path.join(settings.config_dir, 'commands.json'))
         if not commands_parsed:
-            commands_parsed, commands = self.__read_commands_file(os.path.join(settings.system_config_dir, 'AstroPhoto+-commands.json'))
+            commands_parsed, commands = self.__read_commands_file(os.path.join(settings.system_config_dir, 'AstroPhotoPlus-commands.json'))
         self._commands = [Command(c, readonly=True) for c in commands]
 
 
