@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "$0 $@ $( date) - stdout test"
+echo "$0 $@ $( date) - stderr test" >&2
+

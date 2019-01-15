@@ -18,7 +18,12 @@
 }
 
 #root {
-    overflow: auto;
+    overflow: visible;
+}
+
+#root, .App, .App > div {
+    min-height: 100%;
+    height: 100%;
 }
 
 .loadingOverlay {

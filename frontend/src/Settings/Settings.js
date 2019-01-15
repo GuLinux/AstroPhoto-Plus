@@ -1,125 +1,143 @@
 import React from 'react';
-import { Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header} from 'semantic-ui-react';
+import { Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header, Label} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
 import { CommandsContainer } from '../Commands/CommandsContainer';
 import { CheckButton } from '../components/CheckButton';
-
-const valueOrDefault = (value, defaultValue) => value ? value : defaultValue;
-
-const displayValue = (settings, key, isValid, defaultValue) => {
-    if(key in settings.pending && isValid(settings.pending[key]))
-        return valueOrDefault(settings.pending[key], defaultValue);
-    return valueOrDefault(settings.current[key], defaultValue);
-}
-
-const isChanged = (settings, key) => key in settings.pending && settings.pending[key];
+import { get } from 'lodash'; 
  
-const displayTextValue = (settings, key) => displayValue(settings, key, (v) => v && v !== '', '')
+export class Settings extends React.Component {
 
-const SettingButton = ({settings, setting, value, onUpdate, ...props}) => (
-    <CheckButton active={settings.current[setting] === value} onClick={() => onUpdate(setting, value)} {...props} />
-)
+    displayValue = (key, isValid, defaultValue) => {
+        const currentValue = get(this.props.settings, ['current', key], defaultValue);
+        return get(this.props.settings, ['pending', key], currentValue);
+    }
+
+    isChanged = key => get(this.props.settings, ['pending', key]);
+    
+    displayTextValue = key => this.displayValue(key, (v) => v && v !== '', '')
+    
+    settingButton = (setting, value, props) =>
+        <CheckButton active={get(this.props.settings, ['current', setting]) === value} onClick={() => this.props.update(setting, value)} {...props} />
 
 
-
-const Settings = ({settings, onChange, reset, update, showCommands, version='N/A'}) => {
-    const InputButtons = ({settingsKey, customButtons=null}) => (
+    inputButtons = (settingsKey, customButtons=null) => (
         <Dropdown direction='left' button basic floating icon='ellipsis horizontal'>
             <Dropdown.Menu>
                 {customButtons}
-                <Dropdown.Item content='update' disabled={!isChanged(settings, settingsKey)} onClick={() => update(settingsKey, settings.pending[settingsKey])} />
-                <Dropdown.Item content='reset' onClick={() => reset(settingsKey)} disabled={!isChanged(settings, settingsKey)}/>
+                <Dropdown.Item content='update' disabled={!this.isChanged(settingsKey)} onClick={() => this.props.update(settingsKey, this.props.settings.pending[settingsKey])} />
+                <Dropdown.Item content='reset' onClick={() => this.props.reset(settingsKey)} disabled={!this.isChanged(settingsKey)}/>
             </Dropdown.Menu>
         </Dropdown>
     )
 
-    const onInputChange = (key) => (e, data) => onChange(key, data.value);
-    const getIconProp = (settingsKey) => isChanged(settings, settingsKey) ? { iconPosition: 'left', icon: <Icon name='edit' />} : {};
+    changedItemWarning = settingsKey => this.isChanged(settingsKey) && (
+        <Label color='yellow' pointing>
+            This settings is not saved. Please click the Save button to apply it.
+        </Label>
+    );
+
+    onInputChange = (key) => (e, data) => this.props.onChange(key, data.value);
+    getIconProp = (settingsKey) => this.isChanged(settingsKey) ? { iconPosition: 'left', icon: <Icon name='edit' />} : {};
  
-    const currentSequencesDir = displayTextValue(settings, 'sequences_dir', '');
-    const currentINDIPath = displayTextValue(settings, 'indi_prefix', '');
+    checkbox = (valueName, props={}) => <Form.Checkbox
+        checked={get(this.props.settings, ['current', valueName], 0) !== 0}
+        onChange={(e, data) => this.props.update(valueName, data.checked)}
+        {...props}
+    />;
 
-    return (
-        <Container>
-            <Segment>
-                <Header content='About' />
-                <Grid stackable>
-                    <Grid.Column width={6} verticalAlign='middle'>
-                        StarQuew version {version}
-                    </Grid.Column>
-                    <Grid.Column textAlign='right' width={10} verticalAlign='middle'>
-                        <Menu compact stackable>
-                            <Menu.Item content='Homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
-                            <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
-                            <Menu.Item content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
-                        </Menu>
-                    </Grid.Column>
-                </Grid>
-            </Segment>
-            { showCommands && (
+
+    render = () => {
+        const {onChange, showCommands, version='N/A'} = this.props;
+        const currentSequencesDir = this.displayTextValue('sequences_dir', '');
+        const currentINDIPath = this.displayTextValue('indi_prefix', '');
+        return (
+            <Container>
                 <Segment>
-                    <Header content='Commands' />
-                    <CommandsContainer />
+                    <Header content='About' />
+                    <Grid stackable>
+                        <Grid.Column width={6} verticalAlign='middle'>
+                            StarQuew version {version}
+                        </Grid.Column>
+                        <Grid.Column textAlign='right' width={10} verticalAlign='middle'>
+                            <Menu compact stackable>
+                                <Menu.Item content='Homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
+                                <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
+                                <Menu.Item content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
+                            </Menu>
+                        </Grid.Column>
+                    </Grid>
                 </Segment>
-            )}
-            <Form>
-                <Segment>
-                    <Header content='Settings' />
-                    <Form.Input
-                        label='Sequences data directory'
-                        fluid
-                        type='text'
-                        {...getIconProp('sequences_dir')}
-                        value={currentSequencesDir}
-                        onChange={onInputChange('sequences_dir')}
-                        action={<InputButtons settingsKey='sequences_dir' customButtons={
-                            <DirectoryPicker currentDirectory={currentSequencesDir} onSelected={
-                                (dir) => onChange('sequences_dir', dir)
-                                } trigger={
-                                <Dropdown.Item content='Browse...' icon='folder' />
-                            } />
-                        } />}
-                    />
-                    <Message attached='top' content='Sequences will save images inside this directory.' info />
-                    <Divider hidden />
-                    <Form.Input
-                        label='INDI path prefix'
-                        fluid
-                        type='text'
-                        {...getIconProp('indi_prefix')}
-                        value={currentINDIPath}
-                        onChange={onInputChange('indi_prefix')}
-                        action={<InputButtons settingsKey='indi_prefix' customButtons={
-                            <DirectoryPicker currentDirectory={currentINDIPath} onSelected={
-                                (dir) => onChange('indi_prefix', dir)
-                                } trigger={
-                                <Dropdown.Item content='Browse...' icon='folder' />
-                            } />
-                        } />}
-                    />
-                    <Message attached='top' content='Only change this setting if you installed INDI on a custom path.' info />
-                    <Divider hidden />
-
-
-                    <Form.Group inline>
-                        <label>Log level</label>
-                        <SettingButton size='mini' content='Critical' value='CRITICAL' settings={settings} setting='log_level' onUpdate={update} />
-                        <SettingButton size='mini' content='Error' value='ERROR' settings={settings} setting='log_level' onUpdate={update} />
-                        <SettingButton size='mini' content='Warning' value='WARNING' settings={settings} setting='log_level' onUpdate={update} />
-                        <SettingButton size='mini' content='Info' value='INFO' settings={settings} setting='log_level' onUpdate={update} />
-                        <SettingButton size='mini' content='Debug' value='DEBUG' settings={settings} setting='log_level' onUpdate={update} />
-                    </Form.Group>
-                    <Divider hidden />
-
-                    <Form.Checkbox label='Asynchronous file saving' toggle checked={settings.current && settings.current.sequence_async!==0} onChange={(e, data) => update('sequence_async', data.checked)} />
-                    <Message>If enabled (default), will use memory buffering to improve sequences speed, saving a file while taking the next shot. Disable if you run on a low memory system</Message>
-
-                </Segment>
-            </Form>
-
-
-        </Container>
-    )
+                { showCommands && (
+                    <Segment>
+                        <Header content='Commands' />
+                        <CommandsContainer />
+                    </Segment>
+                )}
+                <Form>
+                    <Segment>
+                        <Header content='Settings' />
+                        <Segment>
+                            <Header content='Paths' />
+                            <Form.Input
+                                label='Sequences data directory'
+                                fluid
+                                type='text'
+                                {...this.getIconProp('sequences_dir')}
+                                value={currentSequencesDir}
+                                onChange={this.onInputChange('sequences_dir')}
+                                action={this.inputButtons('sequences_dir', (
+                                    <DirectoryPicker currentDirectory={currentSequencesDir} onSelected={
+                                        (dir) => onChange('sequences_dir', dir)
+                                        } trigger={
+                                        <Dropdown.Item content='Browse...' icon='folder' />
+                                    } />
+                                 ))}
+                            />
+                            {this.changedItemWarning('sequences_dir')}
+                            <Message attached='top' content='Sequences will save images inside this directory.' info />
+                            <Divider hidden />
+                            <Form.Input
+                                label='INDI path prefix'
+                                fluid
+                                type='text'
+                                {...this.getIconProp('indi_prefix')}
+                                value={currentINDIPath}
+                                onChange={this.onInputChange('indi_prefix')}
+                                action={this.inputButtons('indi_prefix', (
+                                    <DirectoryPicker currentDirectory={currentINDIPath} onSelected={
+                                        (dir) => onChange('indi_prefix', dir)
+                                        } trigger={
+                                        <Dropdown.Item content='Browse...' icon='folder' />
+                                    } />
+                                ))}
+                            />
+                            {this.changedItemWarning('indi_prefix')}
+                            <Message attached='top' content='Only change this setting if you installed INDI on a custom path.' info />
+                        </Segment>
+                        <Segment>
+                            <Header content='INDI' />
+                            {this.checkbox('indi_server_autoconnect', {label: 'Autoconnect to INDI server', toggle: true})}
+                            <Message>Connect automatically to INDI server</Message>
+                            {this.checkbox('indi_drivers_autostart', {label: 'Autostart INDI drivers', toggle: true})}
+                            <Message>Autostart INDI drivers on connection</Message>
+                        </Segment>
+                        <Segment>
+                            <Header content='Misc' />
+                            <Form.Group inline>
+                                <label>Log level</label>
+                                {this.settingButton('log_level', 'CRITICAL', {size: 'mini', content: 'Critical'})}
+                                {this.settingButton('log_level', 'ERROR', {size: 'mini', content: 'Error'})}
+                                {this.settingButton('log_level', 'WARNING', {size: 'mini', content: 'Warning'})}
+                                {this.settingButton('log_level', 'INFO', {size: 'mini', content: 'Info'})}
+                                {this.settingButton('log_level', 'DEBUG', {size: 'mini', content: 'Debug'})}
+                            </Form.Group>
+                            <Divider hidden />
+                            {this.checkbox('sequence_async', {label: 'Asynchronous file saving', toggle: true})}
+                            <Message>If enabled (default), will use memory buffering to improve sequences speed, saving a file while taking the next shot. Disable if you run on a low memory system</Message>
+                        </Segment>
+                    </Segment>
+                </Form>
+            </Container>
+        ) 
+    }
 }
-
-export default Settings;

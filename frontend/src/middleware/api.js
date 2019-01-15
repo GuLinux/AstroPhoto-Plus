@@ -4,6 +4,9 @@ import { normalize } from 'normalizr';
 import { commandsSchema, sequenceSchema, sequenceListSchema, sequenceJobSchema } from './schemas'
 
 const isJSON = response => response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
+const headersJSONRequest = {
+    'Content-Type': 'application/json',
+};
 
 export const apiFetch = async (url, options) => {
     const response = await fetch(url, options);
@@ -19,28 +22,34 @@ export const apiFetch = async (url, options) => {
 
 
 // TODO: refactor using apiFetch
-const fetchJSON = (dispatch, url, options, onSuccess, onError) => {
-    let dispatchError = response => {
-        response.text().then( body => { dispatch(Actions.serverError('network_request', 'response', response, body)) })
+const fetchJSON = async (dispatch, url, options, onSuccess, onError) => {
+    const dispatchError = response => {
+        response.text().then( body => { dispatch(Actions.Server.error('network_request', 'response', response, body)) })
     }
 
-    let errorHandler = response => {
-        if(! onError || ! onError(response, isJSON(response)))
-            dispatchError(response);
-    }
-    return fetch(url, options)
-        .then(response => {
-            if(! response.ok)
-                throw response;
-            return response.json();
-        }).then(onSuccess)
-        .catch(error => {
-            if('status' in error) {
-                errorHandler(error)
-            } else {
-                dispatch(Actions.serverError('network_request', 'exception', error))
+    const errorHandler = response => {
+        if(onError) {
+            const errorWasHandled = onError(response, isJSON(response));
+            if(errorWasHandled) {
+                return;
             }
-        });
+        }
+        dispatchError(response);
+    }
+    try {
+        const response = await fetch(url, options);
+        if(! response.ok) {
+            throw response;
+        }
+        const json = await response.json();
+        onSuccess(json);
+    } catch(error) {
+        if('status' in error) {
+            errorHandler(error)
+        } else {
+            dispatch(Actions.Server.error('network_request', 'exception', error))
+        }
+    }
 }
 
 export const fetchBackendVersion = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/version', {}, json => onSuccess(json));
@@ -54,9 +63,13 @@ export const stopSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(disp
         method: 'POST',
     }, json => onSuccess(json));
 
-export const resetSequenceAPI = (dispatch, sequence, options, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/reset?remove_files=${String(options.remove_files)}`, {
+export const resetSequenceAPI = (dispatch, sequenceId, options, onSuccess) => {
+    return fetchJSON(dispatch, `/api/sequences/${sequenceId}/reset`, {
         method: 'POST',
+        body: JSON.stringify(options),
+        headers: headersJSONRequest,
     }, json => onSuccess(normalize(json, sequenceSchema)));
+}
 
 
 export const duplicateSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/duplicate`, {
@@ -67,9 +80,7 @@ export const duplicateSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON
 export const importSequenceAPI = (dispatch, data, onSuccess) => fetchJSON(dispatch, '/api/sequences/import', {
         method: 'POST',
         body: data,
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headersJSONRequest,
     }, json => onSuccess(normalize(json, sequenceSchema)));
 
 
@@ -78,17 +89,13 @@ export const fetchSequencesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/
 
 export const createSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, '/api/sequences', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headersJSONRequest,
         body: JSON.stringify(sequence)
     }, json => onSuccess(normalize(json, sequenceSchema)));
 
 export const editSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, '/api/sequences/' + sequence.id, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headersJSONRequest,
         body: JSON.stringify(sequence)
     }, json => onSuccess(normalize(json, sequenceSchema)));
 
@@ -101,25 +108,19 @@ export const deleteSequenceAPI = (dispatch, sequenceId, options, onSuccess) => f
 
 export const createSequenceJobAPI = (dispatch, sequenceJob, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequenceJob.sequence}/sequence_jobs`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headersJSONRequest,
         body: JSON.stringify(sequenceJob)
     }, json => onSuccess(normalize(json, sequenceJobSchema)));
 
 export const updateSequenceJobAPI = (dispatch, sequenceJob, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceJob.sequence}/sequence_jobs/${sequenceJob.id}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headersJSONRequest,
         body: JSON.stringify(sequenceJob)
     }, json => onSuccess(normalize(json, sequenceJobSchema)), onError);
 
 export const moveSequenceJobAPI = (dispatch, sequenceJob, direction, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequenceJob.sequence}/sequence_jobs/${sequenceJob.id}/move`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headersJSONRequest,
         body: JSON.stringify({ direction })
     }, json => onSuccess(normalize(json, sequenceSchema)), onError);
 
@@ -135,13 +136,18 @@ export const deleteSequenceJobAPI = (dispatch, sequenceId, sequenceJobId, option
 
 
 
-export const autoloadConfigurationAPI = (dispatch, device) => fetchJSON(dispatch, `/api/server/devices/${device}/properties/CONFIG_PROCESS`, {
+export const autoloadConfigurationAPI = (dispatch, device, onSuccess, onError) => fetchJSON(dispatch, `/api/server/devices/${device}/properties/CONFIG_PROCESS`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headersJSONRequest,
         body: JSON.stringify({ CONFIG_LOAD: true }),
-    }, json => {});
+    }, onSuccess, onError);
+
+export const autoconnectDeviceAPI = (dispatch, device, onSuccess, onError) => fetchJSON(dispatch, `/api/server/devices/${device}/properties/CONNECTION`, {
+        method: 'PUT',
+        headers: headersJSONRequest,
+        body: JSON.stringify({ CONNECT: true }),
+    }, onSuccess, onError);
+
 
 export const getINDIServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/status', {}, onSuccess);
 
@@ -149,28 +155,19 @@ export const setINDIServerConnectionAPI = (dispatch, connect, onSuccess) => fetc
 
 export const getINDIDevicesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/devices', {}, onSuccess);
 
-export const getCamerasAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/cameras', {}, onSuccess, onError);
-export const getFilterWheelsAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/filter_wheels', {}, onSuccess, onError);
-export const getTelescopesAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/telescopes', {}, onSuccess, onError);
-export const getAstrometryDriversAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/astrometry', {}, onSuccess, onError);
-
 export const getINDIDevicePropertiesAPI = (dispatch, device, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties`, {}, onSuccess);
 
-export const setINDIValuesAPI = (dispatch, device, property, pendingValues, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties/${property.name}`, {
+export const setINDIValuesAPI = (dispatch, device, property, values, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties/${property.name}`, {
         method: 'PUT',
-        body: JSON.stringify(pendingValues),
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        body: JSON.stringify(values),
+        headers: headersJSONRequest,
     }, onSuccess);
 
 export const getINDIServiceAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/indi_service', {}, onSuccess);
 export const startINDIServiceAPI = (dispatch, drivers, onSuccess, onError) => fetchJSON(dispatch, '/api/indi_service/start', {
         method: 'POST',
         body: JSON.stringify({ drivers }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        headers: headersJSONRequest,
     }, onSuccess, onError);
 export const stopINDIServiceAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/indi_service/stop', {
         method: 'POST',
@@ -181,9 +178,7 @@ export const fetchINDIProfilesAPI = (dispatch, onSuccess) => fetchJSON(dispatch,
 export const addINDIProfileAPI = (dispatch, data, onSuccess) => fetchJSON(dispatch, '/api/indi_profiles', {
     method: 'POST',
     body: JSON.stringify(data),
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    headers: headersJSONRequest,
 }, json => onSuccess(json));
 export const removeINDIProfileAPI = (dispatch, id, onSuccess) => fetchJSON(dispatch, '/api/indi_profiles/' + id, {
     method: 'DELETE',
@@ -192,17 +187,13 @@ export const removeINDIProfileAPI = (dispatch, id, onSuccess) => fetchJSON(dispa
 export const updateINDIProfileAPI = (dispatch, data, onSuccess) => fetchJSON(dispatch, '/api/indi_profiles/' + data.id, {
     method: 'PUT',
     body: JSON.stringify(data),
-    headers: {
-        'Content-Type': 'application/json',
-    }
+    headers: headersJSONRequest,
 }, json => onSuccess(json));
 
 export const cameraShootAPI = (dispatch, cameraId, data, onSuccess, onError) => fetchJSON(dispatch, `/api/cameras/${cameraId}/image`, {
     method: 'POST',
     body: JSON.stringify(data),
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    headers: headersJSONRequest,
 }, onSuccess, onError);
 
 
@@ -217,9 +208,7 @@ export const getSettingsApi = (dispatch, onSuccess) => fetchJSON(dispatch, '/api
 export const updateSettingsApi = (dispatch, settings, onSuccess) => fetchJSON(dispatch, '/api/settings', {
         method: 'PUT',
         body: JSON.stringify(settings),
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        headers: headersJSONRequest,
 }, onSuccess);
 
 
@@ -227,7 +216,7 @@ export const getImages = (dispatch, type, onSuccess) => fetchJSON(dispatch, `/ap
 export const searchImages = (dispatch, type, params, onSuccess) => fetchJSON(dispatch, `/api/images/${type}/search`, {
     method: 'POST',
     body: JSON.stringify(params),
-    headers: { 'Content-Type': 'application/json' },
+    headers: headersJSONRequest,
 }, onSuccess);
 
 
@@ -236,6 +225,6 @@ export const fetchCommandsAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/a
 export const solveFieldAPI = (dispatch, onSuccess, onError, astrometryDriver,options) => fetchJSON(dispatch, `/api/astrometry/${astrometryDriver}/solveField`, {
     method: 'POST',
     body: JSON.stringify(options),
-    headers: { 'Content-Type': 'application/json'},
+    headers: headersJSONRequest,
 }, onSuccess, onError);
 

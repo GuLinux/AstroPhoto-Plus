@@ -15,15 +15,20 @@ import 'react-image-crop/dist/ReactCrop.css';
 import './index.css';
 
 import registerServiceWorker from './registerServiceWorker';
-import listenToEvents from './middleware/events';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom'
+
+// if (process.env.NODE_ENV !== 'production') {
+//   const whyDidYouRender = require('@welldone-software/why-did-you-render');
+//   whyDidYouRender(React, {include: [/SequenceListItem/]});
+// }
 
 const loggerMiddleware = createLogger()
 
 const createMiddleware = () => {
     const devMode = process.env.NODE_ENV === 'development';
     const disableLogger = true;
+    //const composeEnhancers = (devMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({maxAge: 200})) || compose;
     const composeEnhancers = (devMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
     const middlewares = [thunkMiddleware];
     devMode && ! disableLogger && middlewares.push(loggerMiddleware);
@@ -35,14 +40,7 @@ let store = createStore(
     createMiddleware()
 )
 
-store.dispatch(Actions.fetchBackendVersion())
-store.dispatch(Actions.Sequences.fetch())
-store.dispatch(Actions.INDIServer.fetchServerState(true))
-store.dispatch(Actions.INDIService.fetchService())
-store.dispatch(Actions.INDIService.fetchProfiles())
-store.dispatch(Actions.Commands.get())
-store.dispatch(Actions.Settings.fetch())
-listenToEvents(store.dispatch)
+store.dispatch(Actions.init());
 
 render(
   <Provider store={store}>

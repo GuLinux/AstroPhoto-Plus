@@ -5,7 +5,9 @@ import Actions from '../actions'
 
 const mapStateToProps = (state, ownProps) => ({ serverState: state.indiserver.state, })
 
-const mapDispatchToProps = dispatch => ({ setServerConnection: (connect) => dispatch(Actions.INDIServer.setServerConnection(connect)) })
+const mapDispatchToProps = { 
+    setServerConnection: Actions.INDIServer.setServerConnection,
+};
 
 const INDIServerDetailsContainer = connect(
   mapStateToProps,

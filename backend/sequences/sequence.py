@@ -1,5 +1,6 @@
 from models import random_id
 from errors import NotFoundError, BadRequestError
+from .stop_sequence import StopSequence
 from .sequence_job import SequenceJob
 import os
 from app import logger
@@ -86,12 +87,16 @@ class Sequence:
         for job in self.sequence_jobs:
             job.on_deleted(remove_files)
 
-    def reset(self, remove_files=False):
-        logger.debug('reset sequence {}, remove_files: {}'.format(self.name, remove_files))
+    def reset(self, remove_files=False, jobs_to_reset=[]):
+        if not jobs_to_reset:
+            jobs_to_reset = [j.id for j in self.sequence_jobs]
+
+        logger.debug('reset sequence {}, remove_files: {}, jobs_to_reset: {}'.format(self.name, remove_files, jobs_to_reset))
+        self.status = 'idle'
         for sequence_job in self.sequence_jobs:
-            self.status = 'idle'
-            logger.info('resetting sequence job {}'.format(sequence_job))
-            sequence_job.reset(remove_files)
+            if sequence_job.id in jobs_to_reset:
+                logger.info('resetting sequence job {}'.format(sequence_job))
+                sequence_job.reset(remove_files)
 
     def run(self, server, root_directory, event_listener, logger, on_update=None):
         camera = [c for c in server.cameras() if c.id == self.camera]
@@ -128,6 +133,10 @@ class Sequence:
                     sequence_job.run(server, {'camera': camera, 'filter_wheel': filter_wheel}, sequence_root_path, logger, event_listener, on_update, index=index)
             if not self.stopped:
                 self.status = 'finished'
+        except StopSequence as e:
+            logger.info('Stopping sequence: {}'.format(e.message))
+            self.stop(on_update=on_update)
+
         except Exception as e:
             logger.exception('error running sequence')
             self.status = 'error'

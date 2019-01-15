@@ -102,8 +102,8 @@ class ImageProcessing(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, ImageProcessing, name)
     __repr__ = _swig_repr
 
-    def __init__(self, fitsfile):
-        this = _image_processing.new_ImageProcessing(fitsfile)
+    def __init__(self, fitsfile, debug_log):
+        this = _image_processing.new_ImageProcessing(fitsfile, debug_log)
         try:
             self.this.append(this)
         except __builtin__.Exception:
@@ -131,6 +131,9 @@ class ImageProcessing(_object):
 
     def bpp(self):
         return _image_processing.ImageProcessing_bpp(self)
+
+    def debayer(self, pattern):
+        return _image_processing.ImageProcessing_debayer(self, pattern)
 ImageProcessing_swigregister = _image_processing.ImageProcessing_swigregister
 ImageProcessing_swigregister(ImageProcessing)
 

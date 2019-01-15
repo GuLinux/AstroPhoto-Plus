@@ -1,4 +1,5 @@
 import {  moveSequenceJobAPI, updateSequenceJobAPI, createSequenceJobAPI, deleteSequenceJobAPI, duplicateSequenceJobAPI } from '../middleware/api'
+import { getJobsForSequence } from './selectors'; 
 import Actions from '../actions'
 
 export const SequenceJobs = {
@@ -58,6 +59,18 @@ export const SequenceJobs = {
     duplicate: (sequenceJob) => dispatch => {
         dispatch({type: 'REQUEST_SEQUENCE_JOB_DUPLICATE', sequenceJob});
         return duplicateSequenceJobAPI(dispatch, sequenceJob, (data) => dispatch(Actions.Sequences.updated(data)));
+    },
+
+    reset: (sequenceJob, flags) => (dispatch, getState) => {
+        const jobsToReset = [sequenceJob.id];
+        const { reset_following, ...options } = flags;
+        if(reset_following) {
+            const sequenceJobs = getJobsForSequence(getState(), {sequenceId: sequenceJob.sequence});
+            const sequenceJobIndex = sequenceJobs.findIndex(j => j.id === sequenceJob.id);
+            const followingJobs = sequenceJobs.filter( (j, index) => index > sequenceJobIndex);
+            followingJobs.forEach(job => jobsToReset.push(job.id));
+        }
+        dispatch(Actions.Sequences.reset(sequenceJob.sequence, {...options, jobs_to_reset: jobsToReset}));
     },
 
     setImagesPreview: (imagesPreview) => ({ type: 'SEQUENCE_JOB_IMAGES_PREVIEW', imagesPreview }),

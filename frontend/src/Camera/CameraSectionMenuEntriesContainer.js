@@ -13,10 +13,7 @@ export const CameraShootingSectionMenuEntriesContaner = connect(
 )(CameraShootingSectionMenuEntries);
 
 export const CameraImageOptionsSectionMenuEntriesContainer = connect(
-    cameraImageOptionsSectionMenuEntriesSelector,
-    dispatch => ({
-        setOption: option => dispatch(Actions.Camera.setOption(option)),
-        startCrop: () => dispatch(Actions.Camera.startCrop()),
-        resetCrop: () => dispatch(Actions.Camera.resetCrop()),
-    })
-)(CameraImageOptionsSectionMenuEntries); 
+    cameraImageOptionsSectionMenuEntriesSelector, { 
+        startCrop: Actions.Camera.startCrop,
+        resetCrop: Actions.Camera.resetCrop,
+    })(CameraImageOptionsSectionMenuEntries); 

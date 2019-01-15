@@ -1,15 +1,12 @@
 import { connect } from 'react-redux';
 import { HistoryLandingPage } from './HistoryLandingPage';
+import { makeHistoryLandingSelector } from './selectors';
 import Actions from '../actions';
 
-const mapStateToProps = (state, ownProps) => ({
-    landingPath: state.navigation.landingPaths[ownProps.route] || ownProps.defaultLandingPath,
-});
-
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    setLandingPath: (path) => dispatch(Actions.Navigation.setLandingPath(ownProps.route, path)),
-});
+const mapDispatchToProps = {
+    setLandingPath: Actions.Navigation.setLandingPath,
+};
 
 
-export const HistoryLandingContainer = connect(mapStateToProps, mapDispatchToProps)(HistoryLandingPage);
+export const HistoryLandingContainer = connect(makeHistoryLandingSelector, mapDispatchToProps)(HistoryLandingPage);
 

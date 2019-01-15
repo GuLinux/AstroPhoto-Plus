@@ -28,14 +28,22 @@ const AlertNotification = ({notification, onDismiss}) => (
 )
 
 
-const Notificatons = ({notifications, onClosed}) => (
-    <div className="notifications-container">
-        {notifications.map( (notification, index) => {
-            setAutoclose(notification, onClosed);
-            return <AlertNotification key={index} notification={notification} onDismiss={() => onClosed(notification)} />
-        }
-        )}
-    </div>
-)
+export class Notifications extends React.PureComponent {
 
-export default Notificatons
+    onClosed = notification => () => this.props.onClosed(notification);
+
+    renderNotification = (notification, index) => {
+        setAutoclose(notification, this.onClosed(notification));
+        return <AlertNotification key={index} notification={notification} onDismiss={this.onClosed(notification)} />
+    }
+
+    render = () => {
+        const {notifications } = this.props;
+        return (
+            <div className="notifications-container">
+                {notifications.map(this.renderNotification)}
+            </div>
+        )
+    }
+}
+

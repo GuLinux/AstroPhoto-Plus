@@ -1,23 +1,9 @@
 import { connect } from 'react-redux'
-import INDIDevicePage from './INDIDevicePage'
-import { getVisibleGroups, getMessages } from './selectors';
+import { INDIDevicePage } from './INDIDevicePage'
+import { indiDeviceContainerSelector } from './selectors';
 
-
-const mapStateToProps = (state, ownProps) => {
-    let device = ownProps.device in state.indiserver.deviceEntities ? ownProps.device : null;
-    let groups = getVisibleGroups(state, ownProps);
-    return {
-        device,
-        groups,
-        messages: getMessages(state)[device],
-    }
-}
-
-const mapDispatchToProps = dispatch => ({})
-
-const INDIDeviceContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
+export const INDIDeviceContainer = connect(
+  indiDeviceContainerSelector,
+  null,
 )(INDIDevicePage)
 
-export default INDIDeviceContainer

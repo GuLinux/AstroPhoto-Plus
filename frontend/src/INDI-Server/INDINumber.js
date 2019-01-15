@@ -108,29 +108,37 @@ const CurrentValue = ({value, format, ...args}) => (
         value={value}
         size='small'
         readOnly={true}
+        className='indi-number'
         format={v => formatValue(v, format)}
         parse={s => parseStringValue(s, format)}
         {...args}
     />
 )
 
-const INDINumber = ({value, displayValue, addPendingValues, editMode}) => {
-    const onChange= (numValue, stringValue) => addPendingValues({ [value.name]: numValue })
+export class INDINumber extends React.PureComponent {
+    componentDidMount = () => this.props.onMount && this.props.onMount(this.props.value);
 
-    if(editMode) {
-        return (
-            <EditableInput
-                min={value.min} max={value.max} step={value.step}
-                label={value.label}
-                format={value.format}
-                value={displayValue}
-                fluid
-                onChange={onChange}
-            />
+    getDisplayValue = () => this.props.displayValue || this.props.value.value;
 
-        )
+    onChange = (value) => this.props.onChange({[this.props.value.name]: value});
+
+    render = () => {
+        const {value, editMode} = this.props;
+        if(editMode) {
+            return (
+                <EditableInput
+                    min={value.min} max={value.max} step={value.step}
+                    label={value.label}
+                    format={value.format}
+                    value={this.getDisplayValue()}
+                    fluid
+                    onChange={this.onChange}
+                />
+
+            )
+        }
+        return <CurrentValue format={value.format} label={value.label} value={value.value} fluid />
     }
-    return <CurrentValue format={value.format} label={value.label} value={value.value} fluid />
 }
 
-export default INDINumber
+

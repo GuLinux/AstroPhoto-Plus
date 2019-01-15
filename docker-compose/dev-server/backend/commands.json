@@ -2,7 +2,7 @@
     {
         "id": "1",
         "name": "Shutdown",
-        "arguments": ["echo", "systemctl", "poweroff"],
+        "arguments": ["shutdown-docker-helper", "systemctl", "poweroff"],
         "category": "System",
         "confirmation_message": "Are you sure you want to shutdown?",
         "check": ["true"],
@@ -15,7 +15,7 @@
         "id": "2",
         "name": "Reboot",
         "confirmation_message": "Are you sure you want to reboot?",
-        "arguments": ["echo", "systemctl", "reboot"],
+        "arguments": ["shutdown-docker-helper", "systemctl", "reboot"],
         "check": ["true"],
         "category": "System",
         "ui_properties": {

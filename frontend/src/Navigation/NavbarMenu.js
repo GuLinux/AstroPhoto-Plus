@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 export const NavbarMenu = (props) => <Menu stackable inverted {...props} />
 export const NavItem = ({disabled, ...args}) => <Menu.Item disabled={disabled} as={disabled ? 'a' : NavLink} {...args} />
 
+
 export const NavbarSectionMenu = ({sectionName, sectionText=null, children}) => (
                 <Menu.Item>
                     <Header as='h4' content={sectionName} />

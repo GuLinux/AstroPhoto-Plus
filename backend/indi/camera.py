@@ -71,6 +71,11 @@ class Camera:
             else:
                 self.camera.clear_roi()
 
+            current_binning = None
+            if 'binning' in options:
+                current_binning = self.camera.binning()
+                self.camera.set_binning(options['binning'])
+
             self.camera.set_upload_path(self.settings.camera_tempdir, prefix=id)
             self.logger.info('Camera.shoot: id={}, parameters: {}'.format(id, options))
 
@@ -78,6 +83,8 @@ class Camera:
                 self.camera.shoot(exposure)
                 blob_listener.get().save(filename)
             self.camera.clear_roi()
+            if current_binning:
+                self.camera.set_binning(current_binning.get('value', 1))
 
         except RuntimeError as e:
             raise FailedMethodError(str(e))

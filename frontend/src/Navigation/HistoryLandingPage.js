@@ -1,11 +1,11 @@
 import { Route, Switch, Redirect } from 'react-router';
 import React from 'react';
 
-class HistoryLandingRoutes extends React.Component {
+class HistoryLandingRoutes extends React.PureComponent {
 
     setLandingPath = () => {
         if(this.props.currentPath !== this.props.route) {
-            this.props.setLandingPath(this.props.currentPath);
+            this.props.setLandingPath(this.props.route, this.props.currentPath);
         }
     }
 

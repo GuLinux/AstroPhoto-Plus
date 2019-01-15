@@ -1,8 +1,8 @@
 import React from 'react';
-import { Divider, Menu, Message, Image, Form, Container, Header, Loader } from 'semantic-ui-react';
-import ImageViewOptions from '../Image/ImageViewOptions';
+import { Divider, Menu, Message, Image, Form, Loader } from 'semantic-ui-react';
 import fetch from 'isomorphic-fetch'
 import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
+import { ImageViewOptionsContainer } from './ImageViewOptionsContainer';
 
 export class ImageComponent extends React.Component {
     componentDidUpdate = (prevProps) => this.props.uri !== prevProps.uri && this.props.onImageLoading && this.props.onImageLoading();
@@ -44,46 +44,48 @@ export class ImageLoader extends React.Component {
     shouldShowLoader = () => (this.state.loading || ! this.state.ready) && ! this.state.error 
     shouldShowImage = () => this.state.ready && ! this.state.error 
 
-    componentDidMount = () => {
-        fetch(`/api/images/${this.props.type}/${this.props.id}/wait_until_ready`).then( (response) => {
-            if(response.ok) {
-                return response.json();
+    componentDidMount = async () => {
+        try {
+            const response = await fetch(`/api/images/${this.props.type}/${this.props.id}/wait_until_ready`);
+            if(!response.ok) {
+                throw response;
             }
-            return Promise.reject(response);
-        })
-            .then(json => {
-                this.exiting || this.toggleReady(true);
-            })
-            .catch(response => {
-                this.exiting || this.setState({...this.state, error: true});
-            })
+            const json = await response.json();
+            if(!json.ready) {
+                throw json;
+            }
+            this.exiting || this.toggleReady(true);
+        } catch(response) {
+            console.warning('Unable to load image: ', response);
+            this.exiting || this.setState({...this.state, error: true});
+        }
     }
 
     render = () => this.exiting ? null : (
         <React.Fragment>
             <Loader active={this.shouldShowLoader()} inverted />
             { this.state.error &&   <Message icon='image' header='Error loading image' content='An error occured while loading the image. Please retry, or check your server logs.' /> }
-            { this.shouldShowImage() && <ImageComponent {...this.props} onImageLoading={this.onImageLoading} onImageLoaded={this.onImageLoaded} /> }
+            { this.shouldShowImage() && <ImageComponent
+                {...this.props}
+                fitScreen={this.props.options.fitToScreen}
+                onImageLoading={this.onImageLoading}
+                onImageLoaded={this.onImageLoaded}
+            /> }
         </React.Fragment>
     );
 
     componentWillUnmount = () => this.exiting = true;
 }
 
-export const ImageSectionMenu = ({url, id, options, setOption, history, imageLoading, onImageLoaded}) => url && (
+
+
+export const ImageSectionMenu = ({id, history}) => id && (
     <NavbarSectionMenu sectionName='Image'>
         <Form>
-            <Header size='tiny' content='View Options' textAlign='center' />
-            <ImageViewOptions options={options} setOption={setOption} />
+            <ImageViewOptionsContainer />
         </Form>
         <Divider />
         <Menu.Item onClick={() => history.goBack() } content='back' icon='arrow left' />
     </NavbarSectionMenu>
 );
-
-export const ImagePage  = ({id, type, url, options }) => url ? (
-    <Container fluid>
-        <ImageLoader id={id} type={type} uri={url} fitScreen={!!options.fitToScreen} />
-    </Container>
-) : null;
 

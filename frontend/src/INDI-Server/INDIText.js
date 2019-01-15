@@ -24,12 +24,20 @@ const CurrentValue = ({value, ...args}) => (
     />
 )
 
-const INDIText = ({value, editMode, displayValue, addPendingValues}) => {
-    const onChange = text => addPendingValues({ [value.name]: text})
-    if(editMode)
-        return <EditableInput label={value.label} value={displayValue} onChange={onChange} fluid />
-    return <CurrentValue label={value.label} value={value.value} fluid />
+export class INDIText extends React.PureComponent {
+    onChange = value => {
+        this.props.onChange({[this.props.value.name]: value});
+    }
+
+    getDisplayValue = () => this.props.displayValue || this.props.value.value;
+
+    componentDidMount = () => this.props.onMount && this.props.onMount(this.props.value);
+
+    render = () => {
+        const {value, editMode}= this.props;
+        if(editMode)
+            return <EditableInput label={value.label} value={this.getDisplayValue()} onChange={this.onChange} fluid />;
+        return <CurrentValue label={value.label} value={value.value} fluid />;
+    }
 }
 
-
-export default INDIText

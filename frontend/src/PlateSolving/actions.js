@@ -20,18 +20,29 @@ export const PlateSolving = {
 
     solveField: ({astrometryDriver, ...options}) => dispatch => {
         dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD' });
-        return solveFieldAPI(dispatch, result => {
+        const onSuccess = result => {
             dispatch(Actions.Notifications.add('Platesolving successful', '', 'success', 5000));
             dispatch(Actions.PlateSolving.fieldSolved(result));
-        }, async (error, isJSON) => {
+        };
+        const onError = (error, isJSON) => {
             if(!isJSON) {
-                return false;
+                if(error.status === 413) {
+                    const error_message = 'Request body too large. You probably need to configure your web server (nginx, apache) to accept large files upload.'
+                    dispatch(Actions.Notifications.add('Platesolving failed', error_message, 'warning', 5000));
+                    dispatch(Actions.PlateSolving.solvingFailed(error_message));
+                    return true;
+                } else {
+                    return false;
+                }
             }
-            const { error_message } = await error.json();
-            dispatch(Actions.Notifications.add('Platesolving failed', error_message, 'warning', 5000));
-            dispatch(Actions.PlateSolving.solvingFailed(error_message));
+            error.json().then( ({error_message}) => {
+                dispatch(Actions.Notifications.add('Platesolving failed', error_message, 'warning', 5000));
+                dispatch(Actions.PlateSolving.solvingFailed(error_message));
+            });
             return true;
-        }, astrometryDriver, options);
+        }
+
+        solveFieldAPI(dispatch, onSuccess, onError, astrometryDriver, options);
     },
 
     solveCameraImage: filePath => (dispatch, getState) => {

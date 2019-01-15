@@ -12,9 +12,9 @@ const mapStateToProps = (state, ownProps) => ({
     serverRunning: state.indiservice.server_running,
 })
 
-const mapDispatchToProps = dispatch => ({
-    toggleDriverSelection: (driver, selected) => dispatch(Actions.INDIService.toggleDriver(driver, selected))
-})
+const mapDispatchToProps = {
+    toggleDriverSelection: Actions.INDIService.toggleDriver,
+}
 
 const INDIServiceDriversContainer = connect(
   mapStateToProps,

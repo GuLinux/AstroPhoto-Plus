@@ -13,10 +13,10 @@ const indiserverEvents = (event, dispatch) => {
     let eventObject = JSON.parse(event.data);
     switch(eventObject.event) {
         case 'indi_server_connect':
-            dispatch(Actions.INDIServer.serverConnectionNotify(eventObject, dispatch));
+            dispatch(Actions.INDIServer.serverConnectionNotify(eventObject.payload, eventObject.is_error));
             break;
         case 'indi_server_disconnect':
-            dispatch(Actions.INDIServer.serverDisconnectNotify(eventObject, dispatch));
+            dispatch(Actions.INDIServer.serverDisconnectNotify(eventObject.payload, eventObject.is_error));
             break;
         case 'indi_server_disconnect_error':
             dispatch(Actions.INDIServer.serverDisconnectErrorNotify(eventObject, dispatch));
@@ -26,9 +26,6 @@ const indiserverEvents = (event, dispatch) => {
             break;
         case 'indi_property_updated':
             dispatch(Actions.INDIServer.propertyUpdated(eventObject.payload));
-            if(eventObject.payload.name === 'CONNECTION') {
-                Actions.Gear.fetchAll(dispatch);
-            }
             break;
         case 'indi_property_added':
             dispatch(Actions.INDIServer.propertyAdded(eventObject.payload));
@@ -56,6 +53,9 @@ const sequences = (event, dispatch) => {
         case 'sequence_error':
             dispatch(Actions.Sequences.error(eventObject.payload));
             break
+        case 'sequence_paused':
+            dispatch(Actions.Notifications.add('Sequence Paused', eventObject.payload.notification_message, 'success', eventObject.payload.notification_timeout * 1000))
+            break;
         default:
             logEvent(event)
     }
@@ -96,7 +96,7 @@ const listenToEvents = (dispatch) => {
     es.addEventListener('indi_server', serverListener);
     es.addEventListener('sequences', serverListener);
     es.addEventListener('indi_service', serverListener);
-    es.onerror = e => dispatch(Actions.serverError('event_source', 'event', e));
+    es.onerror = e => dispatch(Actions.Server.error('event_source', 'event', e));
 }
 
 export default listenToEvents;

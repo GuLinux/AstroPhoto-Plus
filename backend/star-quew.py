@@ -9,6 +9,13 @@ app.logger.handlers = gunicorn_logger.handlers
 is_debug_mode = int(os.environ.get('DEV_MODE', '0')) == 1
 app.logger.setLevel(os.environ.get('LOG_LEVEL', 'DEBUG' if is_debug_mode else 'WARNING' ))
 
+if is_debug_mode and os.environ.get('ENABLE_PTVSD', '0').lower() in ['1', 'true']:
+    import ptvsd
+    app.logger.debug('ptvsd: waiting for connection')
+    ptvsd.enable_attach(address=('0.0.0.0', 5678), redirect_output=True)
+    ptvsd.wait_for_attach()
+    app.logger.debug('ptvsd: attached to remote debugger')
+
 
 from api_decorators import *
 from api_utils import *
@@ -147,16 +154,16 @@ def get_server_status():
 @json_api
 def connect_server():
     controller.indi_server.connect()
-    is_error = not timeout(5)(controller.indi_server.is_connected)()
-    return notify('indi_server', 'indi_server_connect', controller.indi_server.to_map(), is_error)
+    timeout(5)(controller.indi_server.is_connected)()
+    return controller.indi_server.to_map()
 
 @app.route('/api/server/disconnect', methods=['PUT'])
 @json_api
 @indi_connected
 def disconnect_server():
     controller.indi_server.disconnect()
-    is_error = not timeout(5)(lambda: not controller.indi_server.is_connected())()
-    return notify('indi_server', 'indi_server_disconnect', controller.indi_server.to_map(), is_error)
+    timeout(5)(lambda: not controller.indi_server.is_connected())()
+    return controller.indi_server.to_map() 
 
 
 @app.route('/api/server/devices', methods=['GET'])
@@ -273,14 +280,15 @@ def stop_sequence(id):
     running_sequence.stop()
     return running_sequence.sequence.to_map()
 
+
 @app.route('/api/sequences/<id>/reset', methods=['POST'])
+@json_input
 @json_api
-def reset_sequence(id):
-    # TODO: delete files as parameter
+def reset_sequence(id, json):
     with controller.sequences.lookup_edit(id) as sequence:
         if sequence.is_running():
             raise BadRequestError('Sequence with id {} running, cannot reset'.format(id))
-        sequence.reset(remove_files=arg_bool(request, 'remove_files'))
+        sequence.reset(remove_files=json.get('remove_files', False), jobs_to_reset=json.get('jobs_to_reset', []))
         return sequence.to_map()
 
 

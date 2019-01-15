@@ -1,8 +1,14 @@
 import React from 'react';
 import { Message } from 'semantic-ui-react';
 
-const INDIMessagesPanel = ({messages}) => messages ? (
-    <Message header='Messages' list={messages.map(m => m.message)} />
-): null;
-
-export default INDIMessagesPanel;
+export class INDIMessagesPanel extends React.Component {
+    renderItem = ({message}, index) => <Message.Item key={index} content={message} />;
+    render = () => this.props.messages ? (
+        <Message>
+            <Message.Header content='Messages' />
+            <Message.List>
+                 {this.props.messages.map(this.renderItem)}
+            </Message.List>
+        </Message>
+    ) : null;
+}

@@ -1,48 +1,22 @@
-import { ImagePage, ImageSectionMenu } from './Image';
+import { ImageSectionMenu, ImageLoader } from './Image';
 import { connect } from 'react-redux';
-import { imageUrlBuilder } from '../utils';
 import Actions from '../actions';
 import { withRouter } from 'react-router';
+import { imageSelector, imageSectionMenuSelector } from './selectors';
 
 
-const mapStateToProps = (state, ownProps) => {
-    if(!ownProps.id) {
-        return {};
-    }
-    const type = ownProps.type || 'main';
-
-    const { maxWidth, stretch, clipLow, clipHigh, format } = state.image;
-
-    return {
-        id: ownProps.id,
-        type,
-        url: imageUrlBuilder(ownProps.id, {
-            type,
-            maxWidth,
-            stretch,
-            clipLow,
-            clipHigh,
-            format,
-        }),
-        options: state.image,
-    };
-};
-
-const mapDispatchToProps = (dispatch, props) => {
-    const setOption = (option) => dispatch(Actions.Image.setOption(option));
-    return { setOption };
+const mapDispatchToProps = {
+    setOption: Actions.Image.setOption,
 };
 
 
-export const ImageContainer = connect(
-    mapStateToProps,
+export const ImageContainer = withRouter(connect(
+    imageSelector,
     mapDispatchToProps,
-    null,
-    { pure: false }
-)(ImagePage);
+)(ImageLoader));
 
 export const ImageSectionMenuContainer = connect(
-    mapStateToProps,
+    imageSectionMenuSelector,
     mapDispatchToProps
 )(withRouter(ImageSectionMenu));
 

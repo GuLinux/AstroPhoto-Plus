@@ -69,7 +69,7 @@ class Command:
         logger.debug('Command arguments: {}'.format(arguments))
 
         try:
-            result = subprocess.run(arguments, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+            result = subprocess.run(arguments, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             return {
                 'exit_code': result.returncode,
                 'stdout': result.stdout.decode() if result.stdout else None,

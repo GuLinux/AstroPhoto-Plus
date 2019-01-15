@@ -1,5 +1,6 @@
 import React from 'react'
-import { Form, Menu, Container, Label, Dropdown, Modal} from 'semantic-ui-react';
+import { Form, Menu, Container, Label, Dropdown, Modal } from 'semantic-ui-react';
+import { ModalDialog } from '../Modals/ModalDialog';
 
 
 class ProfileNameDialog extends React.Component {
@@ -20,6 +21,15 @@ class ProfileNameDialog extends React.Component {
         this.props.onSave(this.state.name)
     }
 
+    onProfileNameChanged = e => this.setState({...this.state, name: e.target.value});
+
+    onKeyPress = ({key}) => {
+        if(key === 'Enter' && this.canSubmit()) {
+            this.save();
+            this.modal.current.close();
+        }
+    }
+
     modalContent = () => (
         <Modal.Content>
             <Form>
@@ -28,23 +38,24 @@ class ProfileNameDialog extends React.Component {
                     label='Profile name'
                     placeholder="Enter the profile name"
                     value={this.state.name}
-                    onChange={ (e) => this.setState({...this.state, name: e.target.value})}
+                    onChange={this.onProfileNameChanged}
+                    onKeyPress={this.onKeyPress}
                     autoFocus
                 />
             </Form>
         </Modal.Content>
     )
 
-    render = () => {
-        const { trigger, title } = this.props;
-        const actions = [
-            'Cancel',
-            { key: 'submit', content: this.props.buttonText, positive: true, disabled: !this.canSubmit(), onClick: () => this.save() }
-        ];
-        return (
-            <Modal trigger={trigger} centered={false} size='mini' basic content={this.modalContent()} header={title} actions={actions} />
-        )
-    }
+    render = () => (
+        <ModalDialog trigger={this.props.trigger} centered={false} size='mini' basic>
+            <Modal.Header content={this.props.title} />
+            {this.modalContent()}
+            <Modal.Actions>
+                <ModalDialog.CloseButton content='Cancel' /> 
+                <ModalDialog.CloseButton content={this.props.buttonText} positive disabled={!this.canSubmit()} onClose={this.save} /> 
+            </Modal.Actions>
+        </ModalDialog>
+    )
 }
 
 
@@ -56,15 +67,35 @@ class INDIServiceProfilesPage extends React.Component{
         }
     }
 
-    render() {
+    loadProfile = (profile) => () => this.props.loadProfile(profile === 'select' ? null : profile);
+    addProfile = (name) => this.props.addProfile(name, this.props.selectedDrivers);
+    renameProfile = id => name => this.props.updateProfile(id, name, this.props.profiles.find(p => p.id === id).drivers);
+    updateProfile = (id) => () => this.props.updateProfile(id, undefined, this.props.selectedDrivers);
+    removeProfile = id => () => this.props.removeProfile(id);
+
+    renderProfileMenuItem = p => {
+        const {
+            driversAreSelected,
+        } = this.props;
+
+        return (
+            <Dropdown item text={p.name} key={p.id} >
+                <Dropdown.Menu> 
+                    <Dropdown.Item icon='check' text='load' onClick={this.loadProfile(p.id)} />
+
+                    <ProfileNameDialog initialValue={p.name} title='Rename profile' buttonText='Rename' trigger={
+                        <Dropdown.Item icon='tag' text='rename'  />
+                    } onSave={this.renameProfile(p.id)} />
+                    <Dropdown.Item icon='save' disabled={!driversAreSelected} text='update' onClick={this.updateProfile(p.id)}/>
+                    <Dropdown.Item icon='delete' text='remove' onClick={this.removeProfile(p.id)} />
+                </Dropdown.Menu>
+            </Dropdown>
+        )
+    }
+
+    render = () => {
         const {
             profiles,
-            selectedDrivers,
-            loadProfile,
-            addProfile,
-            removeProfile,
-            updateProfile,
-            renameProfile,
             driversAreSelected,
         } = this.props;
         return (
@@ -72,26 +103,16 @@ class INDIServiceProfilesPage extends React.Component{
                 <Menu size='mini' stackable secondary>
                     <Menu.Item header>
                         {profiles.length === 0 ? 'No profiles' : 'Profiles'}
-                        <ProfileNameDialog initialValue='' title='New profile' buttonText='Create' trigger={
-                            driversAreSelected ?
-                            <Label size='mini' icon='plus' content='add' basic as='a' />
-                            : null
-                        } onSave={(name) => addProfile(name, selectedDrivers)} />
-
+                        {driversAreSelected &&
+                            <ProfileNameDialog
+                                initialValue=''
+                                title='New profile'
+                                buttonText='Create'
+                                trigger={<Label size='mini' icon='plus' content='add' basic as='a' />}
+                                onSave={this.addProfile} />
+                        }
                     </Menu.Item>
-                    { profiles.map(p => (
-                        <Dropdown item text={p.name} key={p.id} simple>
-                            <Dropdown.Menu direction='left'>
-                                <Dropdown.Item icon='check' text='load' onClick={() => loadProfile(p.id)} />
-
-                                <ProfileNameDialog initialValue={p.name} title='Rename profile' buttonText='Rename' trigger={
-                                    <Dropdown.Item icon='tag' text='rename'  />
-                                } onSave={(name) => renameProfile(p.id, name)} />
-                                <Dropdown.Item icon='save' disabled={!driversAreSelected} text='update' onClick={() => updateProfile(p.id)}/>
-                                <Dropdown.Item icon='delete' text='remove' onClick={() => removeProfile(p.id)} />
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    ))}
+                    { profiles.map(this.renderProfileMenuItem)}
                 </Menu>
             </Container>
         )

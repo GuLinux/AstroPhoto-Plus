@@ -1,5 +1,6 @@
 import React from 'react'
 import { Divider, Form, Modal, Button } from 'semantic-ui-react';
+import { get } from 'lodash';
 
 const ModalDialogContext = React.createContext();
 
@@ -33,13 +34,19 @@ export class ModalDialog extends React.Component {
         }
     }
 
+    onClose = e => {
+        if(e.type === 'keydown' && e.key === 'Escape' && get(this.props, 'closeOnEscape', true)) {
+            this.close();
+        }
+    }
+
 
     render = () => {
-        const {open, trigger, onModalOpened, onModalClosed, triggerAction = 'onClick', children, ...rest} = this.props;
+        const {open, trigger, onModalOpened, onModalClosed, triggerAction = 'onClick', children, closeOnEscape, ...rest} = this.props;
         return (
             <React.Fragment>
                 { React.cloneElement(trigger, { [triggerAction]: this.open }) }
-                    <Modal open={this.state.open} {...rest}>
+                    <Modal onClose={this.onClose} open={this.state.open} {...rest}>
                         <ModalDialogContext.Provider value={{close: this.close}}>
                             {children}
                         </ModalDialogContext.Provider>
