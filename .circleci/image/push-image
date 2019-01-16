@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+docker build . -t gulinux/astrophotoplus-circleci
+docker push gulinux/astrophotoplus-circleci
+
