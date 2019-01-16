@@ -41,7 +41,7 @@ if not args.rebuild_index:
     dir='{}/ci-{}'.format(base, args.build_number)
     os.makedirs(dir, exist_ok=True)
 
-    artifacts = requests.get('https://circleci.com/api/v1.1/project/github/GuLinux/AstroPhotoPlus/{}/artifacts?circle-token={}'.format(args.build_number, ci_token)).json()
+    artifacts = requests.get('https://circleci.com/api/v1.1/project/github/GuLinux/AstroPhoto-Plus/{}/artifacts?circle-token={}'.format(args.build_number, ci_token)).json()
     print('writing info')
     with open(os.path.join(dir, 'info.json'), 'w') as json_file:
         json.dump({
