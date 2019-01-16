@@ -58,5 +58,5 @@ native_module = Extension('_image_processing',
 
 setup (name = 'ImageProcessing',
        version = '0.1.0',
-       description = 'Native image processing module for AstroPhoto+',
+       description = 'Native image processing module for AstroPhoto Plus',
        ext_modules = [native_module])

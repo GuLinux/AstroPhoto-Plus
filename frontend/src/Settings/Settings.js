@@ -56,7 +56,7 @@ export class Settings extends React.Component {
                     <Header content='About' />
                     <Grid stackable>
                         <Grid.Column width={6} verticalAlign='middle'>
-                            AstroPhoto+ version {version}
+                            AstroPhoto Plus version {version}
                         </Grid.Column>
                         <Grid.Column textAlign='right' width={10} verticalAlign='middle'>
                             <Menu compact stackable>

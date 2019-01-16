@@ -25,7 +25,7 @@
     },
     {
         "id": "7",
-        "name": "Update AstroPhoto+",
+        "name": "Update AstroPhoto Plus",
         "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/astrophotoplus-deb-updater", "update"],
         "category": "Updates",
         "check": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/astrophotoplus-deb-updater", "get-latest-info"],

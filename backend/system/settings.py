@@ -26,7 +26,7 @@ def lookup_level(level):
 
 class Settings:
     def __init__(self):
-        self.default_datadir = os.environ.get('ASTROPHOTOPLUS_DATADIR', os.path.join(os.environ['HOME'], 'AstroPhoto+'))
+        self.default_datadir = os.environ.get('ASTROPHOTOPLUS_DATADIR', os.path.join(os.environ['HOME'], 'AstroPhoto Plus'))
         self.config_dir = os.path.join(os.environ['HOME'], '.config', 'AstroPhotoPlus')
         self.system_config_dir = os.environ.get('SYSTEM_CONFDIR', '/etc')
         self.indi_service_logs = self.__build_path(['.cache', 'AstroPhotoPlus', 'logs', 'indi_service'], isdir=True)

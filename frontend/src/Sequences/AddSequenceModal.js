@@ -80,7 +80,7 @@ class AddSequenceModal extends React.Component {
                             placeholder='sequence directory'
                         />
                         <Message info size='mini'>
-                            Main directory where images will be saved. This will be saved under the main AstroPhoto+ data directory configured on the server.
+                            Main directory where images will be saved. This will be saved under the main AstroPhoto Plus data directory configured on the server.
                         </Message>
 
                         <Form.Select

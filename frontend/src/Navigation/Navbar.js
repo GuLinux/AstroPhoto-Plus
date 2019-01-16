@@ -8,7 +8,7 @@ import { NavbarMenu } from './NavbarMenu';
 const TRIGGER_SIZE = 1200;
 
 
-const SiteMenuHeader = (props) => <Menu.Item header {...props} content='AstroPhoto+' />
+const SiteMenuHeader = (props) => <Menu.Item header {...props} content='AstroPhoto Plus' />
 
 class DesktopNavbar extends React.PureComponent {
     render = () => (

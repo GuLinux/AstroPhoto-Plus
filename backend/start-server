@@ -11,8 +11,8 @@ esac
 
 if [ "$RUN_AS_ROOT" == no ] && [ "$EUID" == 0 ]; then
     cat >&2 <<EOF
-Error: running AstroPhoto+ as root is not recommended.
-Please start AstroPhoto+ as normal user (see docs on https://github.com/GuLinux/AstroPhotoPlus).
+Error: running AstroPhoto Plus as root is not recommended.
+Please start AstroPhoto Plus as normal user (see docs on https://github.com/GuLinux/AstroPhotoPlus).
 EOF
     exit 1
 fi

@@ -1,8 +1,8 @@
-# AstroPhoto+ - Astrophotography sequence server
+# AstroPhoto Plus - Astrophotography sequence server
 
 A lightweight, web based sequence generator and INDI client written in Python and React.
 
-*AstroPhoto+* allows you to start and manage an astrophotography sequence directly from your browser, even remotely by using the now very popular SoC boards such as the Raspberry Pi.
+*AstroPhoto Plus* allows you to start and manage an astrophotography sequence directly from your browser, even remotely by using the now very popular SoC boards such as the Raspberry Pi.
 
 Right now it provides an INDI control panel, and a sequence management interface allowing you to control camera, filter wheel and other properties, as well as image previewing, and it is then perfect for lightweight setups using a Raspberry Pi as shooting board, a star tracker (Star Adventurer and similar) and a CMOS/CCD camera.
 

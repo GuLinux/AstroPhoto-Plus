@@ -6,7 +6,7 @@ static_folder = os.path.abspath(os.environ.get('ASTROPHOTO_PLUS_STATIC_FOLDER', 
 has_static_folder = os.path.isfile(os.path.join(static_folder, 'index.html'))
 
 
-app = Flask('AstroPhoto+', static_folder=None)
+app = Flask('AstroPhoto Plus', static_folder=None)
 app.config['has_static_folder'] = has_static_folder
 app.config['static_folder'] = static_folder
 
