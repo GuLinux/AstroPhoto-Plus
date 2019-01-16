@@ -13,7 +13,7 @@ In the future I also plan to support telescope interfaces (GOTO/tracking),  focu
 Please see the [wiki](https://github.com/GuLinux/AstroPhotoPlus/wiki).
 
 ## Last build status
-[![CircleCI](https://circleci.com/gh/GuLinux/AstroPhotoPlus.svg?style=svg)](https://circleci.com/gh/GuLinux/AstroPhotoPlus)
+[![CircleCI](https://circleci.com/gh/GuLinux/AstroPhoto-Plus.svg?style=svg)](https://circleci.com/gh/GuLinux/AstroPhoto-Plus)
 
 
 ## Screenshots
