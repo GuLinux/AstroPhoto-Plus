@@ -5,6 +5,7 @@ install(
     PATTERN "*pyc" EXCLUDE
     PATTERN "__pycache__" EXCLUDE
     PATTERN "start-server" EXCLUDE
+    PATTERN "access.log" EXCLUDE
 )
 
 INSTALL(
