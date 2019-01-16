@@ -20,7 +20,7 @@ if [ "$1" == --check-user ]; then
     exit 0
 fi
 
-export VENV_HOME="$HOME/.local/share/AstroPhoto+/python-venv"
+export VENV_HOME="$HOME/.local/share/AstroPhotoPlus/python-venv"
 if ! [ -d "$VENV_HOME" ] && ! [ -r "$VENV_HOME/bin/activate" ]; then
     mkdir -p "$( dirname "$VENV_HOME" )"
     python3 -m venv "$VENV_HOME"
@@ -46,7 +46,7 @@ if [ "$1" == --only-deps ]; then
     exit 0
 fi
 
-export PYTHONPATH="$PWD/indi-lite-tools/:$PWD:$HOME/.local/share/AstroPhoto+/native_modules:$PYTHONPATH"
+export PYTHONPATH="$PWD/indi-lite-tools/:$PWD:$HOME/.local/share/AstroPhotoPlus/native_modules:$PYTHONPATH"
 thread_timeout=30
 
 if [ "${ENABLE_PTVSD}" == 1 ] || [ "${ENABLE_PTVSD}" == true ]; then
