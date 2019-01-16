@@ -18,7 +18,7 @@ jobs:
       - run: mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCONFDIR=/etc -DVERSION_SUFFIX=-b${CIRCLE_BUILD_NUM} && CI=false make package && rm -rf packages/_CPack_Packages
       - store_artifacts:
           path: ~/repo/build/packages
-      - run: ../scripts/astrophotoplus-publish-launcher
+      - run: ls && ./scripts/astrophotoplus-publish-launcher
       - save_cache:
           paths:
             - node_modules
