@@ -26,7 +26,7 @@ def retry_connection(f):
 
 class RedisClient:
     CURRENT_VERSION=1
-    PREFIX='sq_'
+    PREFIX='ap+_'
 
     def __init__(self):
         redis_host = os.environ.get('REDIS_SERVER', '127.0.0.1')

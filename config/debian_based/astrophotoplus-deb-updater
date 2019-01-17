@@ -2,10 +2,11 @@
 
 set -e
 
-LATEST_BASE_URL="https://gulinux.net/downloads/StarQuew/latest"
+
+LATEST_BASE_URL="https://gulinux.net/downloads/AstroPhotoPlus/latest"
 
 get-installed-version() {
-    dpkg-query --showformat='${Version}' --show starquew
+    dpkg-query --showformat='${Version}' --show astrophotoplus
 }
 
 get-latest-info() {
@@ -34,7 +35,7 @@ if not current_version:
 
 latest = '$1'
 
-if latest.startswith('StarQuew-{}'.format(current_version)):
+if latest.startswith('AstroPhotoPlus-{}'.format(current_version)):
     print('is_latest')
 else:
     print('needs_update')
@@ -50,7 +51,7 @@ run-updater() {
     apt install -y "$temp_deb_file"
     rm -f "$temp_deb_file"
     echo "Your system will now reboot."
-    StarQuew-ctl restart
+    AstroPhotoPlus-ctl restart
 }
 
 

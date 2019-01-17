@@ -66,7 +66,7 @@ const version = (state = {}, action) => {
 }
 
 
-export const starQuewReducer = combineReducers({
+export const astroPhotoPlusReducer = combineReducers({
     version,
     sequenceJobs,
     sequences,

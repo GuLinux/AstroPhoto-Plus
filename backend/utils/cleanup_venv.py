@@ -4,7 +4,7 @@ def clean_environment():
     env = dict(os.environ)
     del env['VIRTUAL_ENV']
     del env['PYTHONPATH']
-    env['PATH'] = os.pathsep.join([p for p in env['PATH'].split(os.pathsep) if os.path.join('StarQuew', 'python-venv') not in p])
+    env['PATH'] = os.pathsep.join([p for p in env['PATH'].split(os.pathsep) if os.path.join('AstroPhotoPlus', 'python-venv') not in p])
     return env
 
 

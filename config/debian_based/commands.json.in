@@ -25,11 +25,11 @@
     },
     {
         "id": "7",
-        "name": "Update StarQuew",
-        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/debian_based/starquew-deb-updater", "update"],
+        "name": "Update AstroPhoto Plus",
+        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/astrophotoplus-deb-updater", "update"],
         "category": "Updates",
-        "check": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/debian_based/starquew-deb-updater", "get-latest-info"],
-        "confirmation_message": "This will restart StarQuew, and any job in progress. Are you sure?",
+        "check": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/astrophotoplus-deb-updater", "get-latest-info"],
+        "confirmation_message": "This will restart AstroPhotoPlus, and any job in progress. Are you sure?",
         "ui_properties": {
             "icon": "sync"
         }

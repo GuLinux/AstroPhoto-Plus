@@ -8,7 +8,7 @@ import { NavbarMenu } from './NavbarMenu';
 const TRIGGER_SIZE = 1200;
 
 
-const SiteMenuHeader = (props) => <Menu.Item header {...props} content='StarQuew' />
+const SiteMenuHeader = (props) => <Menu.Item header {...props} content='AstroPhoto Plus' />
 
 class DesktopNavbar extends React.PureComponent {
     render = () => (
@@ -40,7 +40,7 @@ class ResponsiveNavbar extends React.Component {
     render = () => {
         const { children } = this.props;
         return (
-            <Sidebar.Pushable className='starquew-sidebar'>
+            <Sidebar.Pushable className='astrophotoplus-sidebar'>
                 <Sidebar as={NavbarMenu} vertical animation='overlay' size='small' width='wide' direction='left' visible={this.state.visible} onHide={this.hide}>
                     <SiteMenuHeader onClick={this.hide} />
                     <NavbarMenuItemsContainer onClick={this.hide} />

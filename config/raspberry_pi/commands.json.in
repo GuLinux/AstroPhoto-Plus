@@ -1,15 +1,15 @@
 [
     {
         "type": "include",
-        "filename": "${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/debian_based/commands.json"
+        "filename": "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/commands.json"
     },
     {
         "id": "3",
         "name": "Turn on wifi access point",
         "confirmation_message": "This might cause network disconnection. Are you sure?",
-        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "ap-on"],
+        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "ap-on"],
         "category": "Wifi",
-        "check": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "is-ap-off"],
+        "check": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "is-ap-off"],
         "ui_properties": {
             "icon": "wifi"
         }
@@ -17,10 +17,10 @@
     {
         "id": "4",
         "name": "Turn off wifi access point",
-        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "ap-off"],
+        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "ap-off"],
         "confirmation_message": "This might cause network disconnection. Are you sure?",
         "category": "Wifi",
-        "check": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "is-ap-on"],
+        "check": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "is-ap-on"],
         "ui_properties": {
             "icon": "wifi"
         }
@@ -28,14 +28,14 @@
     {
         "id": "5",
         "name": "Configure access point",
-        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "configure-ap"],
+        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "configure-ap"],
         "category": "Wifi",
-        "check": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "status"],
+        "check": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "status"],
         "request_parameters": {
             "message": "Enter ESSID and Secret for your access point. Please note that you need to restart your server to apply the new configuration.",
             "variables": [
-                { "label": "ESSID", "name": "ESSID", "type": "text", "required": true, "get_default_value": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "get-ap-essid"] },
-                { "label": "Secret", "name": "PSK", "type": "text", "required": true, "get_default_value": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "get-ap-psk"] }
+                { "label": "ESSID", "name": "ESSID", "type": "text", "required": true, "get_default_value": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "get-ap-essid"] },
+                { "label": "Secret", "name": "PSK", "type": "text", "required": true, "get_default_value": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "get-ap-psk"] }
             ]
         },
         "ui_properties": {
@@ -45,15 +45,15 @@
     {
         "id": "6",
         "name": "Configure client WiFi",
-        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "configure-client-wifi"],
+        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "configure-client-wifi"],
         "category": "Wifi",
-        "check": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "status"],
+        "check": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "status"],
         "request_parameters": {
             "message": "Set wifi network to connect to. Please note that you need to restart your server to apply the new configuration.",
             "variables": [
-                { "label": "ESSID", "name": "ESSID", "type": "text", "required": true, "get_default_value": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "get-client-essid"] },
-                { "label": "Secret", "name": "PSK", "type": "text", "required": true, "get_default_value": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "get-client-psk"] },
-                { "label": "Country", "name": "COUNTRY", "type": "text", "required": true, "get_default_value": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/raspberry_pi/starquew-wifi-helper", "get-client-country"] }
+                { "label": "ESSID", "name": "ESSID", "type": "text", "required": true, "get_default_value": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "get-client-essid"] },
+                { "label": "Secret", "name": "PSK", "type": "text", "required": true, "get_default_value": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "get-client-psk"] },
+                { "label": "Country", "name": "COUNTRY", "type": "text", "required": true, "get_default_value": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "get-client-country"] }
             ]
         },
         "ui_properties": {

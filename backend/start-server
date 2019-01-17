@@ -11,8 +11,8 @@ esac
 
 if [ "$RUN_AS_ROOT" == no ] && [ "$EUID" == 0 ]; then
     cat >&2 <<EOF
-Error: running StarQuew as root is not recommended.
-Please start StarQuew as normal user (see docs on https://github.com/GuLinux/StarQuew).
+Error: running AstroPhoto Plus as root is not recommended.
+Please start AstroPhoto Plus as normal user (see docs on https://github.com/GuLinux/AstroPhotoPlus).
 EOF
     exit 1
 fi
@@ -20,7 +20,7 @@ if [ "$1" == --check-user ]; then
     exit 0
 fi
 
-export VENV_HOME="$HOME/.local/share/StarQuew/python-venv"
+export VENV_HOME="$HOME/.local/share/AstroPhotoPlus/python-venv"
 if ! [ -d "$VENV_HOME" ] && ! [ -r "$VENV_HOME/bin/activate" ]; then
     mkdir -p "$( dirname "$VENV_HOME" )"
     python3 -m venv "$VENV_HOME"
@@ -46,7 +46,7 @@ if [ "$1" == --only-deps ]; then
     exit 0
 fi
 
-export PYTHONPATH="$PWD/indi-lite-tools/:$PWD:$HOME/.local/share/StarQuew/native_modules:$PYTHONPATH"
+export PYTHONPATH="$PWD/indi-lite-tools/:$PWD:$HOME/.local/share/AstroPhotoPlus/native_modules:$PYTHONPATH"
 thread_timeout=30
 
 if [ "${ENABLE_PTVSD}" == 1 ] || [ "${ENABLE_PTVSD}" == true ]; then
@@ -56,5 +56,5 @@ fi
 
 
 set -x
-gunicorn --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t ${thread_timeout} -k gthread -b 0.0.0.0:5000 star-quew:app "$@"
+gunicorn --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t ${thread_timeout} -k gthread -b 0.0.0.0:5000 api_entrypoint:app "$@"
 set +x
