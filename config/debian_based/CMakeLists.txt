@@ -1,6 +1,4 @@
-set(ETC_CONFFILE ${CONFDIR}/AstroPhotoPlus-commands.json)
-set(DEBIAN_CONFFILE ${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/etc_AstroPhotoPlus-commands.json)
-set(RASPBIAN_CONFFILE ${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/etc_AstroPhotoPlus-commands.json)
+set(DEBIAN_COMMANDS_FILE ${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/etc_AstroPhotoPlus-commands.json)
 
 configure_file(commands.json.in ${CMAKE_CURRENT_BINARY_DIR}/commands.json)
 configure_file(etc_AstroPhotoPlus-commands.json.in ${CMAKE_CURRENT_BINARY_DIR}/etc_AstroPhotoPlus-commands.json)
@@ -15,5 +13,6 @@ set(
 install(FILES ${DEBIAN_SOURCES} DESTINATION share/AstroPhotoPlus/config/debian_based)
 install(PROGRAMS astrophotoplus-deb-updater DESTINATION share/AstroPhotoPlus/config/debian_based)
 
-set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/postinst;${CMAKE_CURRENT_BINARY_DIR}/postrm" CACHE INTERNAL "debian scripts")
-
+if(NOT "${PACKAGE_TARGET}" STREQUAL "raspbian")
+    set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/postinst;${CMAKE_CURRENT_BINARY_DIR}/postrm" CACHE INTERNAL "debian scripts")
+endif()

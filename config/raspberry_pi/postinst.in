@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if ! [ -r "@ETC_COMMANDS_FILE@" ]; then
+    ln -svf "@RASPBIAN_SHARE_DIR@/etc_AstroPhotoPlus-commands.json" "@ETC_COMMANDS_FILE@"
+    mkdir -p /etc/default /etc/hostapd /etc/dnsmasq.d
+    ln -svf "@RASPBIAN_SHARE_DIR@/hostapd.conf" "/etc/hostapd/"
+    rm -f "/etc/default/hostapd"
+    ln -svf "@RASPBIAN_SHARE_DIR@/hostapd" "/etc/default/"
+    ln -svf "@RASPBIAN_SHARE_DIR@/dnsmasq-wlan0.conf" "/etc/dnsmasq.d/"
+    ln -svf "@RASPBIAN_SHARE_DIR@/dhcpcd-ap.conf" "/etc/"
+fi
+
