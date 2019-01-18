@@ -8,5 +8,7 @@ if ! [ -r "@ETC_COMMANDS_FILE@" ]; then
     ln -svf "@RASPBIAN_SHARE_DIR@/hostapd" "/etc/default/"
     ln -svf "@RASPBIAN_SHARE_DIR@/dnsmasq-wlan0.conf" "/etc/dnsmasq.d/"
     ln -svf "@RASPBIAN_SHARE_DIR@/dhcpcd-ap.conf" "/etc/"
+    cp -v "/etc/dhcpcd.conf" "/etc/dhcpcd-client.conf"
+    ln -svf "@RASPBIAN_SHARE_DIR@/astrophotoplus-wifi-helper" "/usr/bin"
 fi
 
