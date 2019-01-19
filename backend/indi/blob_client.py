@@ -77,7 +77,11 @@ class BLOBClient:
     def __on_disconnected(self, code):
         if self.indi_client:
             logger.warning('BLOBClient: Unexpected disconnection from INDI server with error code {}, trying to connect'.format(code))
-            self.connect(self.indi_client.host, self.indi_client.port)
+            try:
+                self.connect(self.indi_client.host, self.indi_client.port)
+            except AttributeError:
+                # Usually means indi_client is not valid anymore
+                pass
 
     @contextmanager
     def listener(self, device):
