@@ -1,16 +1,23 @@
 #!/bin/bash
 
 install-indi-ppa() {
+    echo "Adding INDI PPA."
     sudo add-apt-repository ppa:mutlaqja/ppa
+    echo "Updating packages database"
     sudo apt-get update
+    echo "Installing INDI full"
     sudo apt-get install -y indi-full
 }
 
 install-indi-raspbian() {
     mkdir /tmp/indi-setup && cd /tmp/indi-setup
-    wget http://www.indilib.org/download/raspberry-pi/send/6-raspberry-pi/9-indi-library-for-raspberry-pi.html -O indi.tar.gz --quiet
+    echo "Downloading INDI Raspbian archive"
+    wget http://www.indilib.org/download/raspberry-pi/send/6-raspberry-pi/9-indi-library-for-raspberry-pi.html -O indi.tar.gz
     tar xf indi.tar.gz && rm indi.tar.gz
     cd libindi_*
+    echo "Updating packages database"
+    sudo apt update
+    echo "Installing INDI"
     sudo apt install -y ./*.deb
 
     cd /
