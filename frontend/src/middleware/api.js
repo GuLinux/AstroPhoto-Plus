@@ -4,7 +4,7 @@ import Actions from '../actions'
 import { normalize } from 'normalizr'
 import { commandsSchema, sequenceSchema, sequenceListSchema, sequenceJobSchema } from './schemas'
 
-const isJSON = response => response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
+export const isJSON = response => response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
 const headersJSONRequest = {
     'Content-Type': 'application/json',
 };
@@ -156,7 +156,13 @@ export const setINDIServerConnectionAPI = (dispatch, connect, onSuccess) => fetc
 
 export const getINDIDevicesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/devices', {}, onSuccess);
 
-export const getINDIDevicePropertiesAPI = (dispatch, device, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties`, {}, onSuccess);
+export const getINDIDevicePropertiesAPI = (dispatch, device, onSuccess, onError) => fetchJSON(
+    dispatch,
+    `/api/server/devices/${device.name}/properties`,
+    {},
+    onSuccess,
+    onError,
+);
 
 export const setINDIValuesAPI = (dispatch, device, property, values, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties/${property.name}`, {
         method: 'PUT',

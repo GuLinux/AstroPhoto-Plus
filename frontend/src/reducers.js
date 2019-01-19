@@ -18,7 +18,6 @@ const network = (state = { fetching: false }, action) => {
         case 'REQUEST_SESSIONS':
         case 'REQUEST_ADD_SESSION':
         case 'REQUEST_ADD_SEQUENCE':
-        case 'FETCH_INDI_DEVICE_PROPERTIES':
         case 'FETCH_INDI_DEVICES':
         case 'FETCH_INDI_SERVER_STATE':
         case 'CONNECT_INDI_SERVER':
@@ -38,7 +37,6 @@ const network = (state = { fetching: false }, action) => {
         case 'SEQUENCE_CREATED':
         case 'RECEIVED_SERVER_STATE':
         case 'RECEIVED_INDI_DEVICES':
-        case 'RECEIVED_DEVICE_PROPERTIES':
         case 'SERVER_ERROR':
         case 'RECEIVED_CAMERAS':
         case 'RECEIVED_START_SEQUENCE_REPLY':

@@ -1,4 +1,4 @@
-import { getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoconnectDeviceAPI, autoloadConfigurationAPI } from '../middleware/api';
+import { isJSON, getINDIServerStatusAPI, setINDIServerConnectionAPI, getINDIDevicesAPI, getINDIDevicePropertiesAPI, setINDIValuesAPI, autoconnectDeviceAPI, autoloadConfigurationAPI } from '../middleware/api';
 import Actions from '../actions';
 import { getCurrentSettings } from '../Settings/selectors';
 import { autoconnectSelector, getServerState } from './selectors';
@@ -61,6 +61,13 @@ export const INDIServer = {
             dispatch({type: 'FETCH_INDI_DEVICE_PROPERTIES'});
             return getINDIDevicePropertiesAPI(dispatch, device, data => {
                 dispatch(INDIServer.receivedDeviceProperties(device, data));
+            }, error => {
+                dispatch({type: 'FETCH_INDI_DEVICE_PROPERTIES_FAILED'})
+                if(error.status === 400 && isJSON(error)) {
+                    error.json().then(data => console.log(data))
+                    return true;
+                }
+                return false;
             });
         }
     },
