@@ -11,6 +11,7 @@ install-indi-raspbian() {
     wget http://www.indilib.org/download/raspberry-pi/send/6-raspberry-pi/9-indi-library-for-raspberry-pi.html -O indi.tar.gz
     tar xf indi.tar.gz && rm indi.tar.gz
     cd libindi_*
+    sudo apt update
     sudo apt install -y ./*.deb
 
     cd /
