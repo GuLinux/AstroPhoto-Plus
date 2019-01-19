@@ -1,0 +1,35 @@
+#!/bin/bash
+
+install-indi-ppa() {
+    sudo add-apt-repository ppa:mutlaqja/ppa
+    sudo apt-get update
+    sudo apt-get install -y indi-full
+}
+
+install-indi-raspbian() {
+    mkdir /tmp/indi-setup && cd /tmp/indi-setup
+    wget http://www.indilib.org/download/raspberry-pi/send/6-raspberry-pi/9-indi-library-for-raspberry-pi.html -O indi.tar.gz --quiet
+    tar xf indi.tar.gz && rm indi.tar.gz
+    cd libindi_*
+    apt install -y ./*.deb
+
+    cd /
+    rm -rf /tmp/indi-setup
+}
+
+distributor_id="$( lsb_release --id -s )"
+
+case "$distributor_id" in
+    Ubuntu)
+        install-indi-ppa
+        ;;
+    Raspbian)
+        install-indi-raspbian
+        ;;
+    *)
+        cat >&2 <<EOF
+Unsupported distribution, please install INDI manually.
+Please go to https://www.indilib.org/ and look for downloads for your platform.
+EOF
+        ;;
+esac
