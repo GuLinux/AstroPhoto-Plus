@@ -91,12 +91,6 @@ setup-backend() {
 [Service]
 User=$ASTRO_PHOTO_PLUS_USER
 EOF
-    config_json_file="/home/$ASTRO_PHOTO_PLUS_USER/.config/${APP_CONFIG_NAME}/commands.json"
-    if which dpkg >/dev/null 2>&1 && ! [ -r "$config_json_file" ]; then
-        mkdir -p "$( dirname "$config_json_file")"
-        chown $ASTRO_PHOTO_PLUS_USER "$( dirname "$config_json_file")"
-        ln -s /usr/share/${APP_CONFIG_NAME}/config/debian_based/commands.json "$config_json_file"
-    fi
     systemctl daemon-reload
 }
 

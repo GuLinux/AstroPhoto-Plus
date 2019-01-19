@@ -1,19 +1,23 @@
 # Changelog
 
-## [0.1.2] - Unreleased
+## [1.0.0] - Unreleased
+### First major release - Also renaming to Astro Photo Plus
 
 ### New features:
 
+ - Plate solving, featuring a sky map highlighting solution when found.
  - Allow to edit sequence after creation (name, camera, filter wheel, directory)
  - allow to stop and resume sequences.
  - import/export sequences to JSON files
- - Plate solving (please update nginx config file)
+ - Add "Pause" sequence job, to suspend sequences (for manual refocusing, for instance)
+ - INDI autoconnect: connect automatically to INDI Server at startup, or when starting INDI service, and also automatically connect to devices.
+ - Correctly handle colour images in Camera page (debayer)
 
 ### Improvements
 
  - Add '(copy)' suffix to duplicated sequences
  - add "Exposures" card with info about total, finished and remaining shots of a sequence (number and time)
- - allow to "reset" sequences to restart them.
+ - allow to "reset" sequences to restart them, or even single sequence jobs.
  - switch to INDI blob for sequences (speed/reliability improvement)
  - Images database optimization
  - Histogram improvements
@@ -21,12 +25,19 @@
  - Add min/max validation for exposure sequence item depending on camera values
  - Better name for sequence files if no filter wheel is available
  - Autodetect stale sequences
+ - Support binning in Camera page
+ - Add Histogram in sequence images
+ - Lots of minor User Experience improvements
 
 ### Bugfixes:
 
  - Block filter wheel sequence item creation if no filter wheel is defined on sequence
  - Fix histogram not reloading on image changing
  - improve values editing for numbers
+ - Fix rare backend crash when camera image changes size
+
+### Notes
+ - Make sure you use the new config file for nginx, to allow for big file uploads (necessary for Plate Solving)
 
 ## [0.1.1] - 2018-08-03
 ### User experience improvements
