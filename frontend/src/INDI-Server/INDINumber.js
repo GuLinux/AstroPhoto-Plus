@@ -94,6 +94,7 @@ const EditableInput = ({value, format, min, max, step, onChange, ...args}) => (
         value={value}
         onChange={onChange}
         size='small'
+        className='indi-number'
         format={v => formatValue(v, format)}
         parse={s => parseStringValue(s, format)}
         min={min}
