@@ -8,6 +8,7 @@ ExecStart=@ASTRO_PHOTO_PLUS_INSTALL_PREFIX@/backend/start-server --log-level war
 ExecStartPre=@ASTRO_PHOTO_PLUS_INSTALL_PREFIX@/backend/start-server --check-user
 WorkingDirectory=@ASTRO_PHOTO_PLUS_INSTALL_PREFIX@/backend
 Environment="SYSTEM_CONFDIR=@CONFDIR@"
+SyslogIdentifier=AstroPhoto-Plus
 
 [Install]
 WantedBy=multi-user.target
