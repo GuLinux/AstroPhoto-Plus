@@ -41,7 +41,7 @@ export const INDIServer = {
     },
 
     receivedDevices: (devices, dispatch) => {
-        devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device)));
+        setTimeout( () => devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device))), 5000);
         return {
             type: 'RECEIVED_INDI_DEVICES',
             devices
