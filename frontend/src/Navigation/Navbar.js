@@ -4,14 +4,22 @@ import { Menu, Sidebar, Responsive } from 'semantic-ui-react';
 
 import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';
 import { NavbarMenu } from './NavbarMenu';
+import { withRouter } from 'react-router';
+import { Routes } from '../routes';
 
 const TRIGGER_SIZE = 1200;
 
 
 const SiteMenuHeader = (props) => <Menu.Item header {...props} content='AstroPhoto Plus' />
 
-class DesktopNavbar extends React.PureComponent {
-    render = () => (
+class DesktopNavbarComponent extends React.PureComponent {
+    isHome = () => this.props.location.pathname === Routes.ROOT;
+
+    render = () => this.isHome() ? (
+        <div className='desktop-content home'>
+            {this.props.children}
+        </div>
+    ) : (
         <React.Fragment>
             <div className='fullHeight desktop-sidebar'>
                 <NavbarMenu vertical attached className='fullHeight' size='small' fluid>
@@ -25,6 +33,8 @@ class DesktopNavbar extends React.PureComponent {
         </React.Fragment>
     );
 }
+
+const DesktopNavbar = withRouter(DesktopNavbarComponent);
 
 class ResponsiveNavbar extends React.Component {
     constructor(props) {

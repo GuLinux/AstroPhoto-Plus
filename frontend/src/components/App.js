@@ -12,13 +12,14 @@ import { PlateSolvingPageContainer } from '../PlateSolving/PlateSolvingPageConta
 import './App.css';
 import { Route, Redirect } from "react-router-dom";
 import { Routes } from '../routes';
+import { Home } from './Home';
 
 const App = ({location}) => (
   <div className="App">
     <Navbar location={location}>
         <NotificationsContainer />
         <ErrorPageContainer>
-            <Route exact path={Routes.ROOT} render={() => <Redirect to={Routes.SEQUENCES_LIST} /> }/>
+            <Route exact path={Routes.ROOT} component={Home}/>
             <Route path={Routes.SEQUENCES_PAGE} component={SequencesPage} />
             <Route path={Routes.INDI_PAGE} component={INDIServerContainer} />
             <Route path={Routes.CAMERA_PAGE} component={CameraContainer} />

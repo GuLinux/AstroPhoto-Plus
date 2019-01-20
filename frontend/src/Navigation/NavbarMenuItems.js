@@ -23,6 +23,7 @@ export class NavbarMenuItems extends React.PureComponent {
         const {disabled} = this.props;
         return (
             <React.Fragment>
+                <NavItem icon='home' content='Home' exact={true} to={Routes.ROOT} disabled={disabled} onClick={this.onClick} />
                 <NavItem icon='list' content='Sequences' to={Routes.SEQUENCES_PAGE} disabled={disabled} onClick={this.onClick} />
                 <NavItem icon='computer' content='INDI Server' to={Routes.INDI_PAGE} disabled={disabled} onClick={this.onClick} />
                 <NavItem icon='camera' content='Camera' to={Routes.CAMERA_PAGE} disabled={disabled} onClick={this.onClick}/>
