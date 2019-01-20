@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="89.21035mm"
+   width="90.268684mm"
    height="10.123116mm"
-   viewBox="0 0 89.21035 10.123116"
+   viewBox="0 0 90.268684 10.123116"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 2405546, 2018-03-11"
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="-62.131896"
-     inkscape:cy="82.553684"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="162.01739"
+     inkscape:cy="47.729072"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -56,10 +56,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-0.49831859,-97.255634)">
+     transform="translate(0.56001475,-97.255634)">
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="10.829113"
        y="107.08755"
        id="text3715"><tspan
@@ -67,10 +67,10 @@
          id="tspan3713"
          x="10.829113"
          y="107.08755"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'URW Gothic';-inkscape-font-specification:'URW Gothic, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332;fill:#f2f2f2;">AstroPhoto</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'URW Gothic';-inkscape-font-specification:'URW Gothic, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;stroke-width:0.26458332">AstroPhoto</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:11.28888893px;line-height:1.25;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;opacity:0.40895063;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:11.28888893px;line-height:1.25;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;opacity:0.40895063;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="67.053062"
        y="106.82297"
        id="text3719"><tspan
@@ -78,10 +78,10 @@
          id="tspan3717"
          x="67.053062"
          y="106.82297"
-         style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:14.11111069px;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332;fill:#f2f2f2;">Plus</tspan></text>
+         style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:14.11111069px;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;stroke-width:0.26458332">Plus</tspan></text>
     <g
        id="g3769"
-       transform="matrix(0.07704514,0,0,0.07398648,0.20947993,98.086852)"
+       transform="matrix(0.07704514,0,0,0.07398648,-0.84885341,98.086852)"
        style="fill:#f2f2f2">
       <path
          id="path3723"
