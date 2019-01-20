@@ -60,8 +60,8 @@ export class Settings extends React.Component {
                         </Grid.Column>
                         <Grid.Column textAlign='right' width={10} verticalAlign='middle'>
                             <Menu compact stackable>
-                                <Menu.Item content='Homepage' as='a' href='https://github.com/GuLinux/AstroPhotoPlus' target='_blank' />
-                                <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/AstroPhotoPlus/issues' target='_blank' />
+                                <Menu.Item content='Homepage' as='a' href='https://astrophotoplus.gulinux.net' target='_blank' />
+                                <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/AstroPhoto-Plus/issues' target='_blank' />
                                 <Menu.Item content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
                             </Menu>
                         </Grid.Column>
