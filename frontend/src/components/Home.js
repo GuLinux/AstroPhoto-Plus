@@ -50,7 +50,7 @@ export const Home = () => (
                     <List.Content>
                         <List.Header as={Link} to='/plate-solving' content='Plate Solving' />
                         <List.Description>
-                            Know where your camera is pointing, via an easy to use offline plate solved, powered by <a href='http://astrometry.net' target="_BLANK">astrometry.net</a>.
+                            Know where your camera is pointing, via an easy to use offline plate solved, powered by <a rel="noopener noreferrer" href='http://astrometry.net' target="_BLANK">astrometry.net</a>.
                         </List.Description>
                     </List.Content>
                 </List.Item>
@@ -72,17 +72,17 @@ export const Home = () => (
                 <List size='mini'>
                     <List.Item>
                         <List.Content>
-                            AstroPhoto Plus - © <a href='http://gulinux.net' target='_BLANK'>Marco Gulino http://gulinux.net</a>.
+                            AstroPhoto Plus - © <a rel="noopener noreferrer" href='http://gulinux.net' target='_BLANK'>Marco Gulino http://gulinux.net</a>.
                         </List.Content>
                     </List.Item>
                     <List.Item>
                         <List.Content>
-                            <a href='https://astrophotoplus.gulinux.net' target='_BLANK'>Project Homepage: https://astrophotoplus.gulinux.net</a>.
+                            <a rel="noopener noreferrer" href='https://astrophotoplus.gulinux.net' target='_BLANK'>Project Homepage: https://astrophotoplus.gulinux.net</a>.
                         </List.Content>
                     </List.Item>
                     <List.Item>
                         <List.Content>
-                            <a href='https://www.github.com/GuLinux/AstroPhoto-Plus' target='_BLANK'>Github Project Page: https://www.github.com/GuLinux/AstroPhoto-Plus</a>.
+                            <a rel="noopener noreferrer" href='https://www.github.com/GuLinux/AstroPhoto-Plus' target='_BLANK'>Github Project Page: https://www.github.com/GuLinux/AstroPhoto-Plus</a>.
                         </List.Content>
                     </List.Item>
                 </List>

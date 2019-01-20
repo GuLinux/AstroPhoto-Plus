@@ -11,11 +11,9 @@ class HistoryLandingRoutes extends React.PureComponent {
 
     componentDidMount = () => {
         this.setLandingPath();
-        console.log('M', this.props.route, this.props.landingPath, this.props.currentPath)
     }
 
     componentDidUpdate = (prevProps) => {
-        console.log('U', this.props.route, this.props.landingPath, this.props.currentPath)
         if(this.props.currentPath !== prevProps.currentPath) {
             this.setLandingPath();
         }
