@@ -16,7 +16,7 @@ const setAutoclose = (notification, onClosed) => {
 }
 
 const AlertNotification = ({notification, onDismiss}) => (
-    <Message icon {...{[notification.type]: true}} onDismiss={() => onDismiss() }>
+    <Message onClick={onDismiss} icon {...{[notification.type]: true}}>
         <Icon name={icons[notification.type]} />
         <Message.Content>
             <Message.Header>{notification.title}</Message.Header>
