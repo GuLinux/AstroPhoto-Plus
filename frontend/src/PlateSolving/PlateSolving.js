@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader, Label, Grid, Container, Header, Button, Divider} from 'semantic-ui-react';
+import { Loader, Label, Grid, Container, Header, Button, Divider, Message} from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import { UploadFileDialog } from '../components/UploadFileDialog';
@@ -206,12 +206,18 @@ export class PlateSolving extends React.PureComponent {
                                 telescopeFocalLength={this.props.telescopeFocalLength}
                                 setOption={setOption}
                             /> }
-                        { options[Options.fovSource] && (
-                        <Grid.Row>
-                            <Grid.Column width={8}><NumericInput min={0} label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'minimumWidth'], 0)} onChange={this.setMinimumFOV}/></Grid.Column>
-                            <Grid.Column width={8}><NumericInput min={get(options, [Options.fov, 'maximumWidth'], 0)} label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'maximumWidth'], 0)} onChange={this.setMaximumFOV}/></Grid.Column>
-                        </Grid.Row>
-                        )}
+                            { options[Options.fovSource] ? (
+                                <Grid.Row>
+                                <Grid.Column width={8}><NumericInput min={0} label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'minimumWidth'], 0)} onChange={this.setMinimumFOV}/></Grid.Column>
+                                <Grid.Column width={8}><NumericInput min={get(options, [Options.fov, 'maximumWidth'], 0)} label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'maximumWidth'], 0)} onChange={this.setMaximumFOV}/></Grid.Column>
+                            </Grid.Row>
+                            ) : (
+                                <Grid.Row>
+                                    <Message size='tiny' color='orange'>
+                                        Please note that plate solving an image without selecting a field of view can be very slow, depending on your server capabilities.
+                                    </Message>
+                                </Grid.Row>
+                            )}
                     </Grid.Column>
                 </Grid.Row>
                 { !options[Options.camera] && (
