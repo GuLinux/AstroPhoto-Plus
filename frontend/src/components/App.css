@@ -9,6 +9,9 @@
     overflow: auto;
 }
 
+body {
+    height: auto;
+}
 .desktop-content {
     margin-left: 22rem;
 }
@@ -23,7 +26,6 @@
 
 .responsive-content, .desktop-content {
     margin-top: 0.8em;
-    margin-bottom: 0.8em;
 }
 
 .homeMenuList > .item {
