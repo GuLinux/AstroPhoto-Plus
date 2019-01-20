@@ -213,9 +213,12 @@ export class PlateSolving extends React.PureComponent {
                             </Grid.Row>
                             ) : (
                                 <Grid.Row>
-                                    <Message size='tiny' color='orange'>
-                                        Please note that plate solving an image without selecting a field of view can be very slow, depending on your server capabilities.
-                                    </Message>
+                                    <Message
+                                        size='tiny'
+                                        compact
+                                        icon='warning'
+                                        content='Please note that plate solving an image without selecting a field of view can be very slow, depending on your server capabilities.'
+                                    />
                                 </Grid.Row>
                             )}
                     </Grid.Column>
