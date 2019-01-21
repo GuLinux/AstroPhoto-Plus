@@ -75,7 +75,18 @@ export const INDIServer = {
     fetchDevices: () => {
         return dispatch => {
             dispatch({type: 'FETCH_INDI_DEVICES'});
-            return getINDIDevicesAPI(dispatch, data => dispatch(INDIServer.receivedDevices(data, dispatch)));
+            return getINDIDevicesAPI(
+                dispatch,
+                data => dispatch(INDIServer.receivedDevices(data, dispatch)),
+                error => {
+                    dispatch({type: 'FETCH_INDI_DEVICES_FAILED'})
+                    if(error.status === 400 && isJSON(error)) {
+                        error.json().then(data => console.log(data))
+                        return true;
+                    }
+                    return false;
+                }
+            );
         }
     },
 

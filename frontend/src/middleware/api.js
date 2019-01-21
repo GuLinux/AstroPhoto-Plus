@@ -154,7 +154,7 @@ export const getINDIServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatc
 
 export const setINDIServerConnectionAPI = (dispatch, connect, onSuccess) => fetchJSON(dispatch, `/api/server/${ connect ? 'connect' : 'disconnect'}`, { method: 'PUT'}, onSuccess);
 
-export const getINDIDevicesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/devices', {}, onSuccess);
+export const getINDIDevicesAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/server/devices', {}, onSuccess, onError);
 
 export const getINDIDevicePropertiesAPI = (dispatch, device, onSuccess, onError) => fetchJSON(
     dispatch,
