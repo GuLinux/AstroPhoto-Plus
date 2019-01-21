@@ -4,7 +4,7 @@
         "filename": "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/commands.json"
     },
     {
-        "id": "3",
+        "id": "100",
         "name": "Turn on wifi access point",
         "confirmation_message": "This might cause network disconnection. Are you sure?",
         "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "ap-on"],
@@ -15,7 +15,7 @@
         }
     },
     {
-        "id": "4",
+        "id": "101",
         "name": "Turn off wifi access point",
         "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "ap-off"],
         "confirmation_message": "This might cause network disconnection. Are you sure?",
@@ -26,7 +26,7 @@
         }
     },
     {
-        "id": "5",
+        "id": "102",
         "name": "Configure access point",
         "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "configure-ap"],
         "category": "Wifi",
@@ -43,7 +43,7 @@
         }
     },
     {
-        "id": "6",
+        "id": "103",
         "name": "Configure client WiFi",
         "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper", "configure-client-wifi"],
         "category": "Wifi",
