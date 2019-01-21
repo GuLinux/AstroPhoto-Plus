@@ -6,12 +6,13 @@
 ### New features:
 
  - Plate solving, featuring a sky map highlighting solution when found.
- - Allow to edit sequence after creation (name, camera, filter wheel, directory)
+ - Allow to edit sequence after creation (name, camera, filter wheel, directory).
  - allow to stop and resume sequences.
- - import/export sequences to JSON files
- - Add "Pause" sequence job, to suspend sequences (for manual refocusing, for instance)
+ - import/export sequences to JSON files.
+ - Add "Pause" sequence job, to suspend sequences (for manual refocusing, for instance).
  - INDI autoconnect: connect automatically to INDI Server at startup, or when starting INDI service, and also automatically connect to devices.
- - Correctly handle colour images in Camera page (debayer)
+ - Correctly handle colour images in Camera page (debayer).
+ - Timelapse and groups mode: pause between shots or groups of shots in a sequence.
 
 ### Improvements
 
