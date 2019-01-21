@@ -4,6 +4,7 @@ import React from 'react';
 import { sprintf } from 'printj'
 import { formatDecimalNumber } from '../utils';
 import { NumericInput } from '../components/NumericInput';
+import { get } from 'lodash';
 
 // copied from INDI github repo: https://github.com/indilib/indi/blob/bda9177ef25c6a219ac3879994c6efcae3b2d1c6/libindi/libs/indicom.c#L117
 // TODO: rewrite in a more modern/readable way
@@ -119,7 +120,7 @@ const CurrentValue = ({value, format, ...args}) => (
 export class INDINumber extends React.PureComponent {
     componentDidMount = () => this.props.onMount && this.props.onMount(this.props.value);
 
-    getDisplayValue = () => this.props.displayValue || this.props.value.value;
+    getDisplayValue = () => get(this.props, 'displayValue', this.props.value.value);
 
     onChange = (value) => this.props.onChange({[this.props.value.name]: value});
 
