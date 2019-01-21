@@ -5,6 +5,7 @@ from app import logger
 from utils.threads import start_thread, thread_queue
 from indi.blob_client import BLOBError
 from system import settings
+import time
 
 
 class SequenceCallbacks:
@@ -24,7 +25,21 @@ class SequenceCallbacks:
 
 
 class ExposureSequenceJobRunner:
-    def __init__(self, server, camera, exposure, count, upload_path, progress=0, filename_template='{name}_{exposure}s_{number:04}.fits', filename_template_params={}, **kwargs):
+    def __init__(
+            self,
+            server,
+            camera,
+            exposure,
+            count,
+            upload_path,
+            progress=0,
+            filename_template='{name}_{exposure}s_{number:04}.fits',
+            filename_template_params={},
+            shots_pause=0,
+            shots_group=1,
+            shots_group_pause=0,
+            **kwargs
+        ):
         self.camera = camera
         self.count = count
         self.exposure = exposure
@@ -40,6 +55,9 @@ class ExposureSequenceJobRunner:
         self.error = None
         self.server = server
         self.save_async_fits = SaveAsyncFITS(on_saved=self.on_saved, on_error=self.on_error)
+        self.shots_pause=shots_pause
+        self.shots_group = shots_group
+        self.shots_group_pause = shots_group_pause
 
     def stop(self):
         self.stopped = True
@@ -89,6 +107,11 @@ class ExposureSequenceJobRunner:
                     else:
                         shot.save(clear_blob=True)
                         self.on_saved(shot)
+                    if self.shots_group > 1 and (sequence+1) % self.shots_group == 0:
+                        time.sleep(self.shots_group_pause)
+                    else:
+                        time.sleep(self.shots_pause)
+
         except Exception as e:
             self.error = e
             logger.warning('Exception on shot')
