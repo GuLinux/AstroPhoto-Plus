@@ -32,7 +32,7 @@ export const INDIServer = {
 
     receivedServerState: (state, fetchFullTree = false) => (dispatch, getState) => {
         if(fetchFullTree && state.connected) {
-            dispatch(INDIServer.fetchDevices());
+            setTimeout( () => dispatch(INDIServer.fetchDevices()), 1000);
         }
         dispatch({
             type: 'RECEIVED_SERVER_STATE',
@@ -41,7 +41,7 @@ export const INDIServer = {
     },
 
     receivedDevices: (devices, dispatch) => {
-        setTimeout( () => devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device))), 5000);
+        setTimeout( () => devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device))), 1000);
         return {
             type: 'RECEIVED_INDI_DEVICES',
             devices
