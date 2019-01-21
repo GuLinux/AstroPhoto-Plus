@@ -236,7 +236,7 @@ export class ExposureSequenceJob extends React.Component {
                 <Divider hidden />
 
                 <Accordion>
-                    <Accordion.Title active={this.timeLapseActive()} onClick={this.toggleTimeLapse} index={1} content='Time lapse options'/>
+                    <Accordion.Title active={this.timeLapseActive()} onClick={this.toggleTimeLapse} index={1} content='Time lapse and groups options'/>
                     <Accordion.Content active={this.timeLapseActive()}>
                         <Form.Field>
                             <label>Pause between shots</label>
