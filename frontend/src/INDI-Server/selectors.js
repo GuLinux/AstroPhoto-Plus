@@ -105,3 +105,20 @@ export const autoconnectSelector = (state, deviceName) => ({
     configLoadState: get(getDeviceProperty(deviceName, 'CONFIG_PROCESS')(state), 'state'),
 });
 
+export const getINDIServerBusySelector = createSelector([
+    state => state.indiserver.fetchingDevices,
+    state => state.indiserver.fetchingDeviceProperties,
+    state => state.indiserver.autoloadingDeviceConfig,
+], (isFetchingDevices, fetchingDeviceProperties, autoloadingDeviceConfig) => 
+    isFetchingDevices ||
+    fetchingDeviceProperties.length > 0 ||
+    autoloadingDeviceConfig.length > 0
+);
+
+export const indiServerDetailsSelector = createSelector([
+    getServerState,
+    getINDIServerBusySelector,
+], (serverState, isBusy) => ({
+    serverState,
+    isBusy,
+}));

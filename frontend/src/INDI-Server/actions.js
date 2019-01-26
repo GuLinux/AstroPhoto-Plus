@@ -32,7 +32,7 @@ export const INDIServer = {
 
     receivedServerState: (state, fetchFullTree = false) => (dispatch, getState) => {
         if(fetchFullTree && state.connected) {
-            setTimeout( () => dispatch(INDIServer.fetchDevices()), 1000);
+            dispatch(INDIServer.fetchDevices(1000));
         }
         dispatch({
             type: 'RECEIVED_SERVER_STATE',
@@ -40,12 +40,12 @@ export const INDIServer = {
         })
     },
 
-    receivedDevices: (devices, dispatch) => {
-        setTimeout( () => devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device))), 1000);
-        return {
+    receivedDevices: (devices) => dispatch => {
+        devices.forEach(device => dispatch(INDIServer.fetchDeviceProperties(device, 1000)));
+        dispatch({
             type: 'RECEIVED_INDI_DEVICES',
             devices
-        }
+        });
     },
 
     receivedDeviceProperties: (device, data) => dispatch => {
@@ -56,28 +56,27 @@ export const INDIServer = {
         });
     },
 
-    fetchDeviceProperties: device => {
-        return dispatch => {
-            dispatch({type: 'FETCH_INDI_DEVICE_PROPERTIES'});
-            return getINDIDevicePropertiesAPI(dispatch, device, data => {
+    fetchDeviceProperties: (device, timer=0) => dispatch => {
+        dispatch({type: 'FETCH_INDI_DEVICE_PROPERTIES', device: device.name});
+        setTimeout( () => 
+            getINDIDevicePropertiesAPI(dispatch, device, data => {
                 dispatch(INDIServer.receivedDeviceProperties(device, data));
             }, error => {
-                dispatch({type: 'FETCH_INDI_DEVICE_PROPERTIES_FAILED'})
+                dispatch({type: 'FETCH_INDI_DEVICE_PROPERTIES_FAILED', device: device.name})
                 if(error.status === 400 && isJSON(error)) {
                     error.json().then(data => console.log(data))
                     return true;
                 }
                 return false;
-            });
-        }
+            }),
+        timer);
     },
 
-    fetchDevices: () => {
-        return dispatch => {
-            dispatch({type: 'FETCH_INDI_DEVICES'});
-            return getINDIDevicesAPI(
+    fetchDevices: (timer=0) => dispatch => {
+        dispatch({type: 'FETCH_INDI_DEVICES'});
+        setTimeout(() => getINDIDevicesAPI(
                 dispatch,
-                data => dispatch(INDIServer.receivedDevices(data, dispatch)),
+                data => dispatch(INDIServer.receivedDevices(data)),
                 error => {
                     dispatch({type: 'FETCH_INDI_DEVICES_FAILED'})
                     if(error.status === 400 && isJSON(error)) {
@@ -86,8 +85,7 @@ export const INDIServer = {
                     }
                     return false;
                 }
-            );
-        }
+            ), timer);
     },
 
     fetchServerState: (fetchFullTree = false) => {
@@ -139,9 +137,20 @@ export const INDIServer = {
             json => {
                 if(json.result) {
                     dispatch({type: 'INDI_CONFIG_AUTOLOADED', deviceName});
+                    onSuccess && onSuccess();
+                } else {
+                    dispatch({ type: 'INDI_CONFIG_AUTOLOAD_REQUEST_FAILED', deviceName });
                 }
-                onSuccess && onSuccess();
             },
+            error => {
+                if(isJSON(error)) {
+                    error.json().then(json => 
+                        dispatch({ type: 'INDI_CONFIG_AUTOLOAD_REQUEST_FAILED', deviceName, error, json })
+                    );
+                } else {
+                    dispatch({ type: 'INDI_CONFIG_AUTOLOAD_REQUEST_FAILED', deviceName, error });
+                }
+            } 
         );
     },
 

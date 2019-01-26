@@ -6,7 +6,7 @@ class INDIServicePage extends React.PureComponent {
     onServerStopStart = () => this.props.serverRunning ? this.props.stopService(this.props.serverConnected) : this.props.startService(this.props.drivers);
 
     render = () => {
-        const {serverFound, serverRunning, startStopPending } = this.props;
+        const {serverFound, serverRunning, startStopPending, isBusy } = this.props;
 
         if(! serverFound)
             return null;
@@ -25,7 +25,7 @@ class INDIServicePage extends React.PureComponent {
                         <Label color={stateParams.labelColor} size='mini' content={stateParams.label} />
                     </Grid.Column>
                     <Grid.Column>
-                        <Button size="tiny" compact color={stateParams.buttonColor} onClick={this.onServerStopStart} disabled={startStopPending} content={stateParams.buttonLabel} />
+                        <Button size="tiny" compact color={stateParams.buttonColor} onClick={this.onServerStopStart} disabled={startStopPending || isBusy} content={stateParams.buttonLabel} />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

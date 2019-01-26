@@ -11,7 +11,7 @@ const getConnectionView = (isConnected, connectAction, disconnectAction) => {
     }
 }
 
-const INDIServerDetailsPage = ({serverState, setServerConnection}) => {
+const INDIServerDetailsPage = ({serverState, setServerConnection, isBusy}) => {
     let connectionView = getConnectionView(serverState.connected);
     let connectionAction = () => setServerConnection(! serverState.connected);
     return (
@@ -31,7 +31,7 @@ const INDIServerDetailsPage = ({serverState, setServerConnection}) => {
                     </Label>
                 </Grid.Column>
                 <Grid.Column>
-                    <Button size="mini" color={connectionView.connectionButtonColor} onClick={connectionAction} compact>
+                    <Button size="mini" disabled={isBusy} color={connectionView.connectionButtonColor} onClick={connectionAction} compact>
                         {connectionView.connectionButtonLabel}
                     </Button>
                 </Grid.Column>
