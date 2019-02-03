@@ -21,6 +21,7 @@ Commands:
  - restart                     Restarts ${APP_DISPLAY_NAME} daemon after an upgrade.
  - status                      Checks daemon status
  - logs                        Show daemon logs
+ - wait-backend                Wait for backend server to be ready
 
 * Note: most commands require root access. If you see "access denied" errors, try running this command as root with:
   sudo $0
@@ -48,6 +49,7 @@ autosetup() {
     start-redis
     setup-backend "$ASTRO_PHOTO_PLUS_USER"
     autostart
+    wait-backend
     echo "Automatic setup complete. You can open your browser at http://localhost to start using your ${APP_DISPLAY_NAME} installation."
     echo "If this is the first time installing ${APP_DISPLAY_NAME}, the server might not be ready yet and display an error page."
     echo "If this is the case, run $0 logs to see if it's still installing packages, or if there is a problem with your setup."
@@ -116,6 +118,16 @@ logs() {
     journalctl -xefu "${SYSTEMCTL_UNIT}"
 }
 
+wait-backend() {
+    echo -n "Waiting for backend server to be ready."
+    while ! curl -s -f http://localhost:5000/api/version >/dev/null; do
+        echo -n '.'
+        sleep 1
+    done
+    echo
+    echo "Backend ready. You can now start your browser."
+}
+
 original_command_line="$@"
 check_root() {
     if [ "$EUID" != '0' ]; then
@@ -132,7 +144,7 @@ case "$command" in
         check_root
         "$command" "$@"
         ;;
-    status|logs)
+    status|logs|wait-backend)
         "$command" "$@"
         ;;
     *)
