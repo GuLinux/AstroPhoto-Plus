@@ -1,4 +1,11 @@
 #!/bin/bash
+# Colour codes
+
+RED=31
+GREEN=32
+YELLOW=33
+LIGHT_GREEN=92
+LIGHT_YELLOW=93
 
 if [ "$EUID" != 0 ]; then
     cat >&2 <<EOF
@@ -14,21 +21,36 @@ workdir="/tmp/setup-astrophotoplus-$$"
 rm -rf "$workdir"
 mkdir -p "$workdir"
 
+prevdir="$PWD"
 cd "$workdir"
 
-# prerequisite
-apt-get install -y curl
+notify() {
+    text="$1"
+    colour="${2:-$LIGHT_GREEN}"
+    stars_colour="${3:-$YELLOW}"
+    sleep_time="${4:-3}"
+
+    echo -e "\e[${stars_colour}m*****\e[m  \e[${colour}m${text}\e[m"
+    sleep "$sleep_time"
+}
+
+install-prerequisites() {
+    if ! which wget >/dev/null 2>&1; then
+        notify "Installing wget" $LIGHT_GREEN $YELLOW 2
+        sudo apt-get install -y -q wget
+    fi
+}
 
 setup-indi-ppa() {
-    echo "Adding INDI stable PPA"
+    notify "Adding INDI stable PPA"
     add-apt-repository -y ppa:mutlaqja/ppa
-    echo "Installing INDI full"
-    apt-get install -y indi-full
+    notify "Installing INDI full"
+    apt-get install -y -q indi-full
 }
 
 get-astrophotoplus-edge() {
-    echo "Downloading latest AstroPhoto-Plus release"
-    curl -O "https://gulinux.net/downloads/AstroPhotoPlus/latest/info.json"
+    notify "Downloading latest AstroPhoto-Plus release"
+    wget -nc "https://gulinux.net/downloads/AstroPhotoPlus/latest/info.json"
     deb_filename="$(
         python <<EOF
 import json
@@ -37,16 +59,21 @@ with open('info.json') as j:
 print([x for x in  release_info['artifacts'] if x.endswith('Linux.deb')][0])
 EOF
     )"
-    curl -O  "https://gulinux.net/downloads/AstroPhotoPlus/latest/$deb_filename"
+    wget -nc "https://gulinux.net/downloads/AstroPhotoPlus/latest/$deb_filename"
 }
 
 install-astrophotoplus() {
-    apt install -y ./AstroPhotoPlus*.deb
+    apt install -q -y ./AstroPhotoPlus*.deb
     AstroPhotoPlus-ctl autosetup "$target_user"
+}
+
+cleanup() {
+    cd "$prevdir"
+    rm -rf "$workdir"
 }
 
 setup-indi-ppa
 get-astrophotoplus-edge
 install-astrophotoplus
-
+cleanup
 

@@ -118,9 +118,18 @@ logs() {
     journalctl -xefu "${SYSTEMCTL_UNIT}"
 }
 
+check-url() {
+    url="$1"
+    if which curl >/dev/null 2>&1; then
+        curl -f -s "$url" >/dev/null
+    else
+        wget -q "$url" -O /dev/null
+    fi
+}
+
 wait-backend() {
     echo -n "Waiting for backend server to be ready."
-    while ! curl -s -f http://localhost:5000/api/version >/dev/null; do
+    while ! check-url http://localhost:5000/api/version ; do
         echo -n '.'
         sleep 1
     done
