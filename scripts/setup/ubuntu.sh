@@ -67,6 +67,32 @@ install-astrophotoplus() {
     AstroPhotoPlus-ctl autosetup "$target_user"
 }
 
+setup-nm-ap() {
+    notify "Setup wifi access point connection? [y/n]"
+    read -N 1 prompt; echo
+    if [ prompt == 'y' ]; then
+        read -e -i "AstroPhoto-Plus" -p "Wifi name? " essid
+        read -e -i "AstroPhoto-Plus password" -p "Wifi WPA2 key? " psk
+        read -N 1 -p "Autoconnect on startup? [y/n]" autoconnect
+        if [ "$autoconnect" ] == "y"; then
+            autoconnect=yes
+        else
+            autoconnect=no
+        fi
+        sudo nmcli connection add type wifi ifname "*" autoconnect "$autoconnect" save yes con-name "$essid"  mode ap ssid "$essid" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$psk" ipv4.method shared
+    fi
+}
+
+setup-sudo() {
+    notify "Setup the user $target_user to run sudo without password? [y/n]"
+    notify "Warning! Although this is perfectly safe in isolated environments, it might be a security concern." $RED
+    read -N 1 prompt; echo
+    if [ "$prompt" == "y" ]; then
+        echo "$target_user    ALL = NOPASSWD: ALL" >/etc/sudoers.d/${target_user}_nopasswd
+        chmod 644 /etc/sudoers.d/${target_user}_nopasswd
+    fi
+}
+
 cleanup() {
     cd "$prevdir"
     rm -rf "$workdir"
@@ -75,5 +101,7 @@ cleanup() {
 setup-indi-ppa
 get-astrophotoplus-edge
 install-astrophotoplus
+setup-sudo
+setup-nm-ap
 cleanup
 
