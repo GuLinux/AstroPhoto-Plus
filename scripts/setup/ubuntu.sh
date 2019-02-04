@@ -85,7 +85,7 @@ setup-nm-ap() {
 
 setup-sudo() {
     notify "Setup the user $target_user to run sudo without password? [y/n]"
-    notify "Warning! Although this is perfectly safe in isolated environments, it might be a security concern." $RED
+    notify "Warning! Although this is perfectly safe in isolated environments, it might be a security concern. It might be a good idea to allow this if you want to trigger privileged commands from AstroPhoto Plus." $RED
     read -N 1 prompt; echo
     if [ "$prompt" == "y" ]; then
         echo "$target_user    ALL = NOPASSWD: ALL" >/etc/sudoers.d/${target_user}_nopasswd
