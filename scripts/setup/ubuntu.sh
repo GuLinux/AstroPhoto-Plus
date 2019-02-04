@@ -70,7 +70,7 @@ install-astrophotoplus() {
 setup-nm-ap() {
     notify "Setup wifi access point connection? [y/n]" $LIGHT_GREEN $YELLOW 0
     read -N 1 prompt; echo
-    if [ prompt == 'y' ]; then
+    if [ "$prompt" == 'y' ]; then
         read -e -i "AstroPhoto-Plus" -p "Wifi name? " essid
         read -e -i "AstroPhoto-Plus password" -p "Wifi WPA2 key? " psk
         read -N 1 -p "Autoconnect on startup? [y/n]" autoconnect
