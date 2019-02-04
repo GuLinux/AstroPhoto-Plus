@@ -84,9 +84,9 @@ setup-nm-ap() {
 }
 
 setup-sudo() {
-    notify "Setup the user $target_user to run sudo without password? [y/n]"
+    notify "Do you want to allow the user $target_user to run sudo without password?"
     notify "Warning! Although this is perfectly safe in isolated environments, it might be a security concern. It might be a good idea to allow this if you want to trigger privileged commands from AstroPhoto Plus." $RED
-    read -N 1 prompt; echo
+    read -N 1 -p "Setup sudo? [y/n]" prompt; echo
     if [ "$prompt" == "y" ]; then
         echo "$target_user    ALL = NOPASSWD: ALL" >/etc/sudoers.d/${target_user}_nopasswd
         chmod 644 /etc/sudoers.d/${target_user}_nopasswd
@@ -104,4 +104,6 @@ install-astrophotoplus
 setup-sudo
 setup-nm-ap
 cleanup
+
+notify "Automatic setup of AstroPhoto Plus finished. You should now be able to run the app at the address http://localhost (or in your local network, at http://$(hostname).local"
 
