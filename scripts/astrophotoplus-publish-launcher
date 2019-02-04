@@ -3,8 +3,8 @@ set -e
 scripts_dir="$( cd "$( dirname "$0")"; pwd )"
 
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$astrophotoplus_publishing_host" -p 8122 <<EOF
-cat >astrophoto-publish  <<EOFF
+cat >astrophoto-publish  <<'EOFF'
 $( cat "$scripts_dir/astrophotoplus-publish" )
-EOFF
+'EOFF'
 astrophotoplus_publishing_token="$astrophotoplus_publishing_token" astrophotoplus_publishing_path="$astrophotoplus_publishing_path" python3 ./astrophoto-publish -n $CIRCLE_BUILD_NUM -d $CIRCLE_COMPARE_URL -r $CIRCLE_REPOSITORY_URL -c $CIRCLE_SHA1
 EOF
