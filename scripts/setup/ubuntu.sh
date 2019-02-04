@@ -30,7 +30,7 @@ notify() {
     stars_colour="${3:-$YELLOW}"
     sleep_time="${4:-3}"
     endline="\n"
-    if [ "$4" == "noendl" ]; then
+    if [ "$5" == "noendl" ]; then
         endline=""
     fi
 
