@@ -7,6 +7,8 @@ import os
 import json
 import time
 
+MAX_BUILDS=5
+
 parser = argparse.ArgumentParser(description='Publish CircleCI artifacts as downloadable packages for AstroPhotoPlus.')
 parser.add_argument('-n', '--build-number', type=int, help='build number from CircleCI')
 parser.add_argument('-d', '--compare-url', type=str, help='Github compare url')
@@ -19,11 +21,14 @@ args = parser.parse_args()
 if not args.rebuild_index and (not args.build_number or not args.compare_url or not args.repository_url or not args.commit_id):
     raise RuntimeError('Required arguments not found')
 
-ci_token = os.environ['astrophotoplus_publishing_token']
-base=os.environ['astrophotoplus_publishing_path']
+ci_token = os.environ.get('astrophotoplus_publishing_token')
+base = os.environ['astrophotoplus_publishing_path']
+builds_path = os.path.join(base, 'builds')
 
 
 def download_artifact(artifact, dest):
+    if not ci_token:
+        raise RuntimeError('Missing `astrophotoplus_publishing_token` environment variable')
     url = artifact['url']
     path = artifact['path']
     filename = os.path.basename(path)
@@ -38,7 +43,10 @@ def download_artifact(artifact, dest):
         raise RuntimeError(r)
 
 if not args.rebuild_index:
-    dir='{}/ci-{}'.format(base, args.build_number)
+    if not ci_token:
+        raise RuntimeError('Missing `astrophotoplus_publishing_token` environment variable')
+
+    dir='{}/ci-{}'.format(builds_path, args.build_number)
     os.makedirs(dir, exist_ok=True)
 
     artifacts = requests.get('https://circleci.com/api/v1.1/project/github/GuLinux/AstroPhoto-Plus/{}/artifacts?circle-token={}'.format(args.build_number, ci_token)).json()
@@ -60,15 +68,15 @@ if not args.rebuild_index:
 
 
 
-builds = [d for d in os.listdir(base) if d.startswith('ci-')]
+builds = [d for d in os.listdir(builds_path) if d.startswith('ci-')]
 builds_sorted = sorted(builds, key=lambda d: int(d.replace('ci-', '')), reverse=True)
-newest = builds_sorted[0:20]
+newest = builds_sorted[0:MAX_BUILDS]
 older = [x for x in builds if x not in newest]
 for dir in older:
     print('Removing old directory: {}'.format(dir))
-    shutil.rmtree(os.path.join(base, dir), ignore_errors=True)
+    shutil.rmtree(os.path.join(builds_path, dir), ignore_errors=True)
 
-latest_link = os.path.join(base, 'latest')
+latest_link = os.path.join(builds_path, 'latest')
 
 try:
     os.remove(latest_link)
@@ -77,56 +85,33 @@ except FileNotFoundError:
 os.symlink(newest[0], latest_link)
 
 
-with open(os.path.join(base, 'index.html'), 'w') as index:
-    index.write('''
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <title>AstroPhoto Plus Builds</title>
-    </head>
-    <body>
-        <div class="container">
-            <H1>AstroPhoto Plus builds</H1>
-            <p>In this page you'll find development builds for AstroPhoto Plus, sorted from newest to oldest</p>
-
-''')
+with open(os.path.join(base, 'default.md'), 'w') as index:
+    with open(os.path.join(base, 'default.md.template'), 'r') as template:
+        index.write(template.read())
+        index.write('\n[ui-accordion open=0]\n')
     for build in newest:
         build_info = None
         try:
-            with open(os.path.join(base, build, 'info.json')) as json_file:
+            with open(os.path.join(builds_path, build, 'info.json')) as json_file:
                 build_info = json.load(json_file)
             print('Creating index entry for {}, info={}'.format(build, build_info))
             build_info['date'] = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(build_info['build-timestamp']))
             build_info['path'] = build
+            github_commit_info = requests.get('https://api.github.com/repos/GuLinux/AstroPhoto-Plus/commits/{}'.format(build_info['commit-id'])).json()
+            build_info['message'] = github_commit_info['commit']['message']
+
             index.write('''
-                <div class="row">
-                    <div class="col-sm-2">
-                        <a href="{path}">build #{build-number}</a>
-                    </div>
-                    <div class="col-sm-7">
-                        commit id:
-                        <a href="https://github.com/GuLinux/AstroPhoto-Plus/commit/{commit-id}" target="_BLANK">
-                            {commit-id}
-                        </a>
-                        <!--
-                        <a href="{github-compare-url}" target="_BLANK">view diff</a>
-                        -->
-                    </div>
-                    <div class="col-sm-3">
-                        date: {date}
-                    </div>
-                </div>
-                '''.format(**build_info))
+[ui-accordion-item title="build #{build-number}"]
+Commit date: *{date}*  
+commit id: [{commit-id}](https://github.com/GuLinux/AstroPhoto-Plus/commit/{commit-id}?target=_blank)    [view diff]({github-compare-url}?target=_blank)  
+```
+{message}
+```  
+### Files: \n'''.format(**build_info))
+            for artifact in build_info['artifacts']:
+                index.write(' - [{name}](https://astrophotoplus.gulinux.net/development-builds/builds/{build}/{name})\n'.format(build=build, name=artifact))
+            index.write('[/ui-accordion-item]\n')
         except Exception as e:
-            print('Error creating entry for {}: {}'.format(build, str(e)))
-    index.write('''
-        </ul>
-    </body>
-</html>
-''')
+            print('Error creating entry for {}: {}'.format(build, repr(e)))
 
-
+    index.write('[/ui-accordion]-\n')
