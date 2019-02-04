@@ -52,18 +52,19 @@ setup-indi-ppa() {
     apt-get install -y -q indi-full
 }
 
+
 get-astrophotoplus-edge() {
     notify "Downloading latest AstroPhoto-Plus release"
-    wget -nc "https://gulinux.net/downloads/AstroPhotoPlus/latest/info.json"
+    wget -nc "https://astrophotoplus.gulinux.net/development-builds/builds/latest/info.json"
     deb_filename="$(
         python <<EOF
 import json
 with open('info.json') as j:
     release_info = json.load(j)
-print([x for x in  release_info['artifacts'] if x.endswith('Linux.deb')][0])
+print([x for x in  release_info['artifacts'] if x.endswith('Raspbian.deb')][0])
 EOF
     )"
-    wget -nc "https://gulinux.net/downloads/AstroPhotoPlus/latest/$deb_filename"
+    wget -nc "https://astrophotoplus.gulinux.net/development-builds/builds/latest/$deb_filename"
 }
 
 install-astrophotoplus() {

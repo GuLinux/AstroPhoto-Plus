@@ -1,6 +1,6 @@
 # AstroPhoto Plus - Astrophotography sequence server
 
-A lightweight, web based sequence generator and INDI client written in Python and React.
+A lightweight, web based astrophotography sequence generator and INDI client written in Python and React.
 
 *AstroPhoto Plus* allows you to start and manage an astrophotography sequence directly from your browser, even remotely by using the now very popular SoC boards such as the Raspberry Pi.
 
@@ -8,22 +8,12 @@ Right now it provides an INDI control panel, and a sequence management interface
 
 In the future I also plan to support telescope interfaces (GOTO/tracking),  focus helpers, plate solving, and possibly autoguiding using PHD2 APIs.
 
-## Installation and docs
+## Installation, screenshots and docs
 
-Please see the [wiki](https://github.com/GuLinux/AstroPhotoPlus/wiki).
+Please see the [website](https://astrophotoplus.gulinux.net).
 
 ## Last build status
 [![CircleCI](https://circleci.com/gh/GuLinux/AstroPhoto-Plus.svg?style=svg)](https://circleci.com/gh/GuLinux/AstroPhoto-Plus)
-
-
-## Screenshots
-
-![INDI Control Panel](docs/screenshots/indi-control-panel.png)
-![Sequences](docs/screenshots/sequences.png)
-![Sequence edit/details](docs/screenshots/sequence-details.png)
-![Filter wheel sequence step](docs/screenshots/change-filter.png)
-![Exposure sequence step](docs/screenshots/exposure.png)
-![Change property sequence step](docs/screenshots/change-property.png)
 
 
 ## Credits
