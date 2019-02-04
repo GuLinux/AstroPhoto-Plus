@@ -71,12 +71,19 @@ install-astrophotoplus() {
     AstroPhotoPlus-ctl autosetup "$target_user"
 }
 
+ask-yn() {
+    prompt=""
+    while [ "$prompt" != y ] && [ "$prompt" != n ]; do
+        "$@"
+        read -N 1 prompt; echo
+    done
+    [ "$prompt" == y ]
+}
+
 setup-nm-ap() {
-    notify "Setup wifi access point connection? [y/n] " $LIGHT_GREEN $YELLOW 0 noendl
-    read -N 1 prompt; echo
-    if [ "$prompt" == 'y' ]; then
+    if ask-yn notify "Setup wifi access point connection? [y/n] " $LIGHT_GREEN $YELLOW 0 noendl; then
         read -e -i "AstroPhoto-Plus" -p "Wifi name? " essid
-        read -e -i "AstroPhoto-Plus password" -p "Wifi WPA2 key? " psk
+        read -e -i "AstroPhoto-Plus" -p "Wifi WPA2 key? " psk
         read -N 1 -p "Autoconnect on startup? [y/n]" autoconnect
         if [ "$autoconnect" == "y" ]; then
             autoconnect=yes
@@ -90,8 +97,7 @@ setup-nm-ap() {
 setup-sudo() {
     notify "Do you want to allow the user $target_user to run sudo without password?" $LIGHT_GREEN $YELLOW 0
     notify "Warning! Although this is perfectly safe in isolated environments, it might be a security concern. It might be a good idea to allow this if you want to trigger privileged commands from AstroPhoto Plus." $RED $YELLOW 0
-    read -N 1 -p "Setup sudo? [y/n] " prompt; echo
-    if [ "$prompt" == "y" ]; then
+    if ask-yn echo -n "Setup sudo? [y/n] "; then
         echo "$target_user    ALL = NOPASSWD: ALL" >/etc/sudoers.d/${target_user}_nopasswd
         chmod 644 /etc/sudoers.d/${target_user}_nopasswd
     fi
