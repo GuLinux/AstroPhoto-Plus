@@ -30,6 +30,10 @@ EOF
     exit 1
 }
 
+is-chroot() {
+    [ "$(awk '$5=="/" {print $1}' </proc/1/mountinfo)" != "$(awk '$5=="/" {print $1}' </proc/$$/mountinfo)" ]
+}
+
 autosetup() {
     if which nginx >/dev/null 2>&1; then
         echo "Using nginx as web server"
@@ -49,7 +53,7 @@ autosetup() {
     start-redis
     setup-backend "$ASTRO_PHOTO_PLUS_USER"
     autostart
-    wait-backend
+    is-chroot || wait-backend
     echo "Automatic setup complete. You can open your browser at http://localhost to start using your ${APP_DISPLAY_NAME} installation."
     echo "If this is the first time installing ${APP_DISPLAY_NAME}, the server might not be ready yet and display an error page."
     echo "If this is the case, run $0 logs to see if it's still installing packages, or if there is a problem with your setup."
@@ -57,7 +61,7 @@ autosetup() {
 
 start-redis() {
     systemctl enable redis
-    systemctl start redis
+    is-chroot || systemctl start redis
 }
 
 setup-apache2() {
@@ -65,14 +69,14 @@ setup-apache2() {
     rm -f /etc/apache2/sites-enabled/*
     ln -s /etc/apache2/sites-available/astrophotoplus.conf /etc/apache2/sites-enabled/
     a2enmod proxy proxy_http rewrite
-    systemctl restart apache2
+    is-chroot || systemctl restart apache2
 }
 
 setup-nginx() {
     cp -avf "$ASTRO_PHOTO_PLUS_BASEPATH/frontend/webserver-conf/nginx/astrophotoplus.conf" /etc/nginx/sites-available
     rm -f /etc/nginx/sites-enabled/*
     ln -s /etc/nginx/sites-available/astrophotoplus.conf /etc/nginx/sites-enabled/
-    systemctl restart nginx
+    is-chroot || systemctl restart nginx
 }
 
 is_valid_user() {
@@ -93,21 +97,23 @@ setup-backend() {
 [Service]
 User=$ASTRO_PHOTO_PLUS_USER
 EOF
-    systemctl daemon-reload
+    is-chroot || systemctl daemon-reload
 }
 
 start() {
-    systemctl start "${SYSTEMCTL_UNIT}"
+    is-chroot || systemctl start "${SYSTEMCTL_UNIT}"
 }
 
 autostart() {
     systemctl enable "${SYSTEMCTL_UNIT}"
-    start
+    is-chroot || start
 }
 
 restart() {
-    systemctl daemon-reload
-    systemctl restart "${SYSTEMCTL_UNIT}"
+    if ! is-chroot; then
+        systemctl daemon-reload
+        systemctl restart "${SYSTEMCTL_UNIT}"
+    fi
 }
 
 status() {

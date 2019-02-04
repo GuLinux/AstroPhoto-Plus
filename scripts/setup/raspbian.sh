@@ -15,7 +15,7 @@ EOF
     exit 1
 fi
 
-target_user="$SUDO_USER"
+target_user="${TARGET_USER:-$SUDO_USER}"
 workdir="/tmp/setup-astrophotoplus-$$"
 
 rm -rf "$workdir"
@@ -85,14 +85,16 @@ ask-yn() {
 
 setup-ap() {
     if ask-yn notify "Setup wifi access point connection? [y/n] " $LIGHT_GREEN $YELLOW 0 noendl; then
-        read -e -i "AstroPhoto-Plus" -p "Wifi name? " essid
-        read -e -i "AstroPhoto-Plus" -p "Wifi WPA2 key? " psk
-        /usr/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper configure-ap "$essid" "$psk" >/dev/null
-        /usr/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper ap-on
+        read -e -i "AstroPhoto-Plus" -p "Wifi name? " ASTROPHOTOPLUS_AP
+        read -e -i "AstroPhoto-Plus" -p "Wifi WPA2 key? " ASTROPHOTOPLUS_AP_PSK
+        setup-ap-vars
     fi
 }
 
-
+setup-ap-vars() {
+    /usr/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper configure-ap "$ASTROPHOTOPLUS_AP" "$ASTROPHOTOPLUS_AP_PSK" >/dev/null
+    /usr/share/AstroPhotoPlus/config/raspberry_pi/astrophotoplus-wifi-helper ap-on
+}
 
 cleanup() {
     cd "$prevdir"
@@ -103,7 +105,12 @@ install-prerequisites
 install-indi
 get-astrophotoplus-edge
 install-astrophotoplus
-setup-ap
+if [ -n "$ASTROPHOTOPLUS_AP" ] && [ -n "$ASTROPHOTOPLUS_AP_PSK" ]; then
+    setup-ap-vars
+else
+    setup-ap
+fi
+
 cleanup
 
 notify "Automatic setup of AstroPhoto Plus finished. You should now be able to run the app at the address http://localhost (or in your local network, at http://$(hostname).local"

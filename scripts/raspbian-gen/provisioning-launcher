@@ -1,0 +1,8 @@
+#!/bin/bash
+export TARGET_USER=astrophotoplus
+export ASTROPHOTOPLUS_AP=AstroPhoto-Plus
+export ASTROPHOTOPLUS_AP_PSK=AstroPhoto-Plus
+
+echo " *** Launching raspbian provisioning script" >&2
+bash /tmp/raspbian.sh
+rm -f /tmp/raspbian.sh

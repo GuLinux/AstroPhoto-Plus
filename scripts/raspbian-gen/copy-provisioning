@@ -1,0 +1,2 @@
+#!/bin/bash
+cp -av files/raspbian.sh "${ROOTFS_DIR}/tmp/"

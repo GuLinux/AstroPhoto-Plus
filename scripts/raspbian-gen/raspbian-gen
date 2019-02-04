@@ -1,0 +1,68 @@
+#!/bin/bash
+
+project_dir="$( cd "$( dirname "$0")/../.."; pwd)"
+raspbian_gen_root="$( cd "$( dirname "$0")"; pwd )"
+rpigen_path="$raspbian_gen_root/pi-gen"
+
+launcher_script="$raspbian_gen_root/provisioning-launcher"
+provisioning_script="$project_dir/scripts/setup/raspbian.sh"
+copy_script="$raspbian_gen_root/copy-provisioning"
+
+USE_QEMU=0
+CONTINUE=""
+
+show_help() {
+    cat >&2 <<EOF
+Usage: $0 [options].
+Available options:
+
+ -q|--qemu      create a Qemu image for testing
+ -r|--rm        remove and rebuild the docker image
+ -c|--continue  continue a stopped build
+
+EOF
+    exit "${1:-1}"
+}
+
+while [ -n "$1" ]; do
+    case "$1" in
+        -q|--qemu)
+            USE_QEMU=1
+            ;;
+        -r|--rm)
+            docker rm -v pigen_work
+            ;;
+        -c|--continue)
+            CONTINUE=1
+            ;;
+    esac
+    shift
+done
+
+if ! [ -d "$rpigen_path" ]; then
+    git clone https://github.com/RPi-Distro/pi-gen
+fi
+
+cd "$rpigen_path"
+git checkout -f master
+git clean -f -d -x
+git pull
+
+cat > config <<EOF
+IMG_NAME="AstroPhoto-Plus"
+FIRST_USER_NAME="astrophotoplus"
+FIRST_USER_PASS="astrophotoplus"
+ENABLE_SSH=1
+DEPLOY_ZIP=0
+USE_QEMU=${USE_QEMU}
+STAGE_LIST="stage0 stage1 stage2"
+EOF
+
+mkdir -p stage2/99-install-astrophotoplus/files
+cp -v "$provisioning_script" stage2/99-install-astrophotoplus/files
+cp -v "$copy_script" stage2/99-install-astrophotoplus/00-run.sh
+cp -v "$launcher_script" stage2/99-install-astrophotoplus/01-run-chroot.sh
+
+CONTINUE="$CONTINUE" ./build-docker.sh
+
+
