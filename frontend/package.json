@@ -43,5 +43,5 @@
         "start": "yarn run copy:assets && react-scripts start",
         "test": "react-scripts test --env=jsdom"
     },
-    "version": "0.1.2"
+    "version": "1.0.0"
 }
