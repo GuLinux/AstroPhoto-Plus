@@ -10,6 +10,7 @@ copy_script="$raspbian_gen_root/files/copy-provisioning"
 
 USE_QEMU=0
 DEPLOY_ZIP=0
+USE_DOCKER=0
 CONTINUE=""
 
 show_help() {
@@ -21,6 +22,7 @@ Available options:
  -r|--rm        remove and rebuild the docker image
  -c|--continue  continue a stopped build
  -z|--zip       zip the destination file
+ -d|--docker    use docker to build image
 EOF
     exit "${1:-1}"
 }
@@ -39,6 +41,12 @@ while [ -n "$1" ]; do
         -z|--zip)
             DEPLOY_ZIP=1
             ;;
+        -d|--docker)
+            USE_DOCKER=1
+            ;;
+        *)
+            show_help
+            ;;
     esac
     shift
 done
@@ -54,7 +62,7 @@ git pull
 
 cat > config <<EOF
 IMG_NAME="AstroPhoto-Plus"
-FIRST_USER_NAME="astrophotoplus"
+FIRST_USER_NAME="stargazer"
 FIRST_USER_PASS="astrophotoplus"
 ENABLE_SSH=1
 DEPLOY_ZIP=$DEPLOY_ZIP
@@ -66,7 +74,11 @@ mkdir -p stage2/99-install-astrophotoplus/files
 cp -v "$provisioning_script" stage2/99-install-astrophotoplus/files
 cp -v "$copy_script" stage2/99-install-astrophotoplus/00-run.sh
 cp -v "$launcher_script" stage2/99-install-astrophotoplus/01-run-chroot.sh
+sed -i 's/-lite//g' "stage2/EXPORT_IMAGE"
 
-CONTINUE="$CONTINUE" ./build-docker.sh
-
+if [ "$USE_DOCKER" == 1 ]; then
+    CONTINUE="$CONTINUE" ./build-docker.sh
+else
+    CONTINUE="$CONTINUE" ./build-docker.sh
+fi
 

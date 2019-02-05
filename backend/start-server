@@ -42,18 +42,17 @@ if [ "$native_image_processor_checksum" != "$( cat "$VENV_HOME/native_image_proc
 fi
 echo "$native_image_processor_checksum" > "$VENV_HOME/native_image_processor_checksum"
 
+if [ "${ENABLE_PTVSD}" == 1 ] || [ "${ENABLE_PTVSD}" == true ]; then
+    thread_timeout=999999
+    pip install ptvsd
+fi
+
 if [ "$1" == --only-deps ]; then
     exit 0
 fi
 
 export PYTHONPATH="$PWD/indi-lite-tools/:$PWD:$HOME/.local/share/AstroPhotoPlus/native_modules:$PYTHONPATH"
 thread_timeout=30
-
-if [ "${ENABLE_PTVSD}" == 1 ] || [ "${ENABLE_PTVSD}" == true ]; then
-    thread_timeout=999999
-    pip install ptvsd
-fi
-
 
 set -x
 gunicorn --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t ${thread_timeout} -k gthread -b 0.0.0.0:5000 api_entrypoint:app "$@"
