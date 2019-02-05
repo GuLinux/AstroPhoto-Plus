@@ -79,6 +79,6 @@ sed -i 's/-lite//g' "stage2/EXPORT_IMAGE"
 if [ "$USE_DOCKER" == 1 ]; then
     CONTINUE="$CONTINUE" ./build-docker.sh
 else
-    CONTINUE="$CONTINUE" ./build-docker.sh
+    CONTINUE="$CONTINUE" ./build.sh
 fi
 
