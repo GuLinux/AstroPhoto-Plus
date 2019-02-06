@@ -4,11 +4,12 @@ project_dir="$( cd "$( dirname "$0")/../.."; pwd)"
 raspbian_gen_root="$( cd "$( dirname "$0")"; pwd )"
 rpigen_path="$raspbian_gen_root/pi-gen"
 
-launcher_script="$raspbian_gen_root/provisioning-launcher"
+launcher_script="$raspbian_gen_root/files/provisioning-launcher"
 provisioning_script="$project_dir/scripts/setup/raspbian.sh"
-copy_script="$raspbian_gen_root/copy-provisioning"
+copy_script="$raspbian_gen_root/files/copy-provisioning"
 
 USE_QEMU=0
+DEPLOY_ZIP=0
 CONTINUE=""
 
 show_help() {
@@ -19,7 +20,7 @@ Available options:
  -q|--qemu      create a Qemu image for testing
  -r|--rm        remove and rebuild the docker image
  -c|--continue  continue a stopped build
-
+ -z|--zip       zip the destination file
 EOF
     exit "${1:-1}"
 }
@@ -34,6 +35,9 @@ while [ -n "$1" ]; do
             ;;
         -c|--continue)
             CONTINUE=1
+            ;;
+        -z|--zip)
+            DEPLOY_ZIP=1
             ;;
     esac
     shift
@@ -53,7 +57,7 @@ IMG_NAME="AstroPhoto-Plus"
 FIRST_USER_NAME="astrophotoplus"
 FIRST_USER_PASS="astrophotoplus"
 ENABLE_SSH=1
-DEPLOY_ZIP=0
+DEPLOY_ZIP=$DEPLOY_ZIP
 USE_QEMU=${USE_QEMU}
 STAGE_LIST="stage0 stage1 stage2"
 EOF
