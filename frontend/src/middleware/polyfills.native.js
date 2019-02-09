@@ -1,7 +1,7 @@
 const nativeFetch = (...args) => fetch(...args);
-const EventSource = require('react-native-eventsource');
+import { NativeEventSource } from 'event-source-polyfill';
 
 export {
     nativeFetch as fetch,
-    EventSource,
+    NativeEventSource as EventSource,
 };

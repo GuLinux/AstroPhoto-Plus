@@ -1,6 +1,6 @@
 /** @format */
 
-import {AppRegistry} from 'react-native';
+import {AppRegistry } from 'react-native';
 import App from './components/App';
 import {name as appName} from '../app.json';
 import React from 'react';
@@ -36,7 +36,6 @@ listenToEvents(store.dispatch);
 
 const renderIndex = () => (
     <Provider store={store}>
-        <Text>hello</Text>
         <Router>
             <Route path={Routes.ROOT}>
                 {({location}) => <App location={location} /> }

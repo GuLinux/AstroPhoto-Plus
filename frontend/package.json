@@ -33,7 +33,6 @@
         "react-router-dom": "^4.3.1",
         "react-scripts": "^2.1.1",
         "react-native": "0.58.4",
-        "react-native-eventsource": "^0.0.2",
         "react-router-native": "^4.3.0",
         "react-web-notification": "^0.5.0",
         "recharts": "^1.2.0",
@@ -56,7 +55,9 @@
         "start": "yarn run copy:assets && react-scripts start",
         "test": "react-scripts test --env=jsdom",
         "start:native": "node node_modules/react-native/local-cli/cli.js start",
-        "test:native": "jest"
+        "test:native": "jest",
+        "run:android": "react-native run-android",
+        "run:ios": "react-native run-ios"
     },
     "version": "1.0.0"
 }
