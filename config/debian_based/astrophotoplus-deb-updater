@@ -3,7 +3,7 @@
 set -e
 
 
-LATEST_BASE_URL="https://gulinux.net/downloads/AstroPhotoPlus/latest"
+LATEST_BASE_URL="https://astrophotoplus.gulinux.net/development-builds/builds/latest"
 
 get-installed-version() {
     dpkg-query --showformat='${Version}' --show astrophotoplus
