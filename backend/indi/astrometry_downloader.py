@@ -30,6 +30,7 @@ class AstrometryIndexDownloader:
         }
     
     def __download(self, files):
+        os.makedirs(settings.astrometry_path(), exist_ok=True)
         self.total = 0
         missing_files = []
         for file in files:
