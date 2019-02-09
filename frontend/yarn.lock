@@ -10170,11 +10170,6 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
 
-react-native-eventsource@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/react-native-eventsource/-/react-native-eventsource-0.0.2.tgz#cc609d0dfe895dab8cd3bcca81771047a823823d"
-  integrity sha1-zGCdDf6JXauM07zKgXcQR6gjgj0=
-
 react-native@0.58.4:
   version "0.58.4"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.58.4.tgz#bb1392727712787ba84983104c4920c0f4082677"
