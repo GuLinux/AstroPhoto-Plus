@@ -109,6 +109,11 @@ class Settings:
     def log_level(self):
         return lookup_level(logger.getEffectiveLevel())
 
+    def astrometry_path(self, filename=None):
+        if filename:
+            return os.path.join(self.astrometry_path(), filename)
+        return os.path.join(self.default_datadir, 'Astrometry.Net Data')
+
     def update(self, new_data):
         ro_props = [x for x in new_data.keys() if x in self.ro_props]
         unsupported_props = [x for x in new_data.keys() if x not in self.rw_props]

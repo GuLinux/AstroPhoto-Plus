@@ -219,6 +219,18 @@ export const updateSettingsApi = (dispatch, settings, onSuccess) => fetchJSON(di
 }, onSuccess);
 
 
+export const downloadAstrometryIndexesApi = (dispatch, arcminutes, onSuccess, onError) => fetchJSON(
+    dispatch,
+    '/api/astrometry/download_indexes',
+    {
+        method: 'POST',
+        body: JSON.stringify({ arcminutes }),
+        headers: headersJSONRequest,
+    },
+    onSuccess,
+    onError, 
+);
+
 export const getImages = (dispatch, type, onSuccess) => fetchJSON(dispatch, `/api/images/${type}`, {}, onSuccess);
 export const searchImages = (dispatch, type, params, onSuccess) => fetchJSON(dispatch, `/api/images/${type}/search`, {
     method: 'POST',

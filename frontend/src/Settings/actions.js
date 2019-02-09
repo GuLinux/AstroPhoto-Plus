@@ -1,4 +1,5 @@
-import { getSettingsApi, updateSettingsApi } from '../middleware/api'
+import { getSettingsApi, updateSettingsApi, downloadAstrometryIndexesApi } from '../middleware/api'
+import Actions from '../actions';
 
 const Settings = {
     setPending: (key, value) => ({ type: 'SETTINGS_SET_PENDING', key, value }),
@@ -17,7 +18,37 @@ const Settings = {
     update: (settings) => dispatch => {
         dispatch({ type: 'UPDATE_SETTINGS', settings });
         return updateSettingsApi(dispatch, settings, data => dispatch(Settings.updated(data)) );
-    }
+    },
+
+    downloadIndexes: arcminutes => dispatch => {
+        downloadAstrometryIndexesApi(dispatch, arcminutes,
+            () => dispatch({ type: 'SETTINGS_DOWNLOAD_ASTROMETRY_INDEXES' }),
+            () => dispatch(Actions.Notifications.add('Error', 'An error occured downloading astrometry indexes. Please look server logs for details', 'error'))
+        );
+    },
+
+    downloadIndexesProgress: ({file, downloaded, total, all_downloaded, all_total}) => ({
+        type: 'SETTINGS_DOWNLOAD_ASTROMETRY_INDEXES_PROGRESS',
+        file,
+        downloaded,
+        total,
+        allDownloaded: all_downloaded,
+        allTotal: all_total,
+    }),
+
+    downloadIndexesError: ({file, error_message}) => ({
+            type: 'SETTINGS_DOWNLOAD_ASTROMETRY_INDEXES_ERROR',
+            file,
+            errorMessage: error_message,
+    }),
+
+    downloadIndexesFinished: () => ({
+        type: 'SETTINGS_DOWNLOAD_ASTROMETRY_INDEXES_FINISHED',
+    }),
+
+    resetAstrometryDownloadIndexesStatus: () => ({
+        type: 'SETTINGS_DOWNLOAD_ASTROMETRY_INDEXES_RESET',
+    }),
 };
 
 export default Settings;

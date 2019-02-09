@@ -6,6 +6,7 @@ import time
 import os
 from astropy.io import fits
 from io import BytesIO
+from system import settings
 
 class Astrometry:
 
@@ -92,16 +93,25 @@ class Astrometry:
         self.client.finishBlob()
 
     def __set_astrometry_options(self, options):
+        os.makedirs(settings.astrometry_path(), exist_ok=True)
+        astrometry_cfg = settings.astrometry_path('astrometry.cfg')
+        with open(astrometry_cfg, 'w') as astrometry_cfg_file:
+            astrometry_cfg_file.write('cpulimit 300\n')
+            astrometry_cfg_file.write('add_path {}\n'.format(settings.astrometry_path()))
+            astrometry_cfg_file.write('autoindex\n')
         settings_property = self.device.get_property('ASTROMETRY_SETTINGS')
-        settings_property.set_values({'ASTROMETRY_SETTINGS_OPTIONS': self.__build_astrometry_options(options)})
+        settings_property.set_values({'ASTROMETRY_SETTINGS_OPTIONS': self.__build_astrometry_options(options, astrometry_cfg)})
+        self.device.get_property('DEBUG').set_values({'ENABLE': True})
+        self.device.get_property('DEBUG_LEVEL').set_values({'DBG_DEBUG': True})
 
 
-    def __build_astrometry_options(self, options):
-        cli_options = ['--no-verify', '--no-plots', '--resort', '-O']
+    def __build_astrometry_options(self, options, config_file):
+        cli_options = ['--no-verify', '--no-plots', '--resort', '-O', '--config', '"{}"'.format(config_file)]
         if 'fov' in options:
             fov = options['fov']
             if 'minimumWidth' in fov and 'maximumWidth' in fov and fov['minimumWidth'] < fov['maximumWidth']:
                 cli_options.extend(['-L', fov['minimumWidth'], '-H', fov['maximumWidth'], '-u', 'arcminwidth'])
         if 'downsample' in options:
             cli_options.extend(['--downsample', options['downsample']])
+        logger.debug(cli_options)
         return ' '.join([str(x) for x in cli_options])

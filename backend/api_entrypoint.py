@@ -476,6 +476,12 @@ def astrometry_solve_field(astrometry_id, json):
     return lookup_astrometry(astrometry_id).solve_field(json)
 
 
+@app.route('/api/astrometry/download_indexes', methods=['POST'])
+@json_input
+@json_api
+def astrometry_download_indexes(json):
+    return controller.astrometry_downloader.download(json['arcminutes'])
+
 # filesystem
 @app.route('/api/mkdir', methods=['POST'])
 @json_input

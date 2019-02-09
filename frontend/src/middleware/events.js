@@ -77,6 +77,25 @@ const indiserviceEvents = (event, dispatch) => {
     }
 }
 
+const astrometryIndexDownloader = (event, dispatch) => {
+    let eventObject = JSON.parse(event.data);
+    switch(eventObject.event) {
+        case 'progress':
+            dispatch(Actions.Settings.downloadIndexesProgress(eventObject.payload));
+            break;
+        case 'error':
+            dispatch(Actions.Settings.downloadIndexesError(eventObject.payload));
+            break;
+        case 'finished':
+            dispatch(Actions.Settings.downloadIndexesFinished());
+            break;
+        default:
+            // ignoring other events
+            // logEvent(event);
+            break;
+    }
+}
+
 const listenToEvents = (dispatch) => {
     var es = new EventSource("/api/events");
 
@@ -91,6 +110,9 @@ const listenToEvents = (dispatch) => {
             case 'indi_service':
                 indiserviceEvents(event, dispatch);
                 break
+            case 'astrometry_index_downloader':
+                astrometryIndexDownloader(event, dispatch);
+                break;
             default:
                 logEvent(event);
         }
@@ -98,6 +120,7 @@ const listenToEvents = (dispatch) => {
     es.addEventListener('indi_server', serverListener);
     es.addEventListener('sequences', serverListener);
     es.addEventListener('indi_service', serverListener);
+    es.addEventListener('astrometry_index_downloader', serverListener);
     es.onerror = e => dispatch(Actions.Server.error('event_source', 'event', e));
 }
 

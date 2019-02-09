@@ -1,6 +1,6 @@
 import React from 'react';
 
-const formatBytes = (bytes, precision) => {
+export const formatBytes = (bytes, precision) => {
     let current = bytes;
     if(current < 1024)
         return `${current.toFixed(precision)} bytes`;
@@ -14,12 +14,12 @@ const formatBytes = (bytes, precision) => {
     return `${current.toFixed(precision)} GB`;
 }
 
-const Filesize = ({bytes, precision=2}) => {
+export const Filesize = ({bytes, precision=2, as='span'}) => {
     let size = 'unknown';
+    const Element = as;
     if(bytes)
         size = formatBytes(bytes, precision);
-    return <span>{size}</span>
+    return <Element>{size}</Element>
 }
 
 
-export default Filesize;

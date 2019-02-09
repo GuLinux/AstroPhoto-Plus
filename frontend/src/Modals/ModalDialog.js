@@ -59,16 +59,23 @@ export class ModalDialog extends React.Component {
 
 ModalDialog.CloseButton = ModalDialogCloseButton;
 
-export const ConfirmDialog = ({confirmButton, cancelButton, header, content, onCancel=null, onConfirm=null, ...rest}) => (
-    <ModalDialog {...rest} >
-        <Modal.Header>{header}</Modal.Header>
-        <Modal.Content>{content}</Modal.Content>
-        <Modal.Actions>
-            <ModalDialog.CloseButton onClose={() => onCancel && onCancel()} content={cancelButton} />
-            <ModalDialog.CloseButton onClose={() => onConfirm && onConfirm()} primary content={confirmButton} />
-        </Modal.Actions>
-    </ModalDialog>
-)
+export class ConfirmDialog extends React.Component {
+    onCancel = () => this.props.onCancel && this.props.onCancel();
+    onConfirm = () => this.props.onConfirm && this.props.onConfirm();
+    render = () => {
+        const { confirmButton, cancelButton, header, content, onCancel=null, onConfirm=null, ...rest } = this.props;
+        return (
+            <ModalDialog {...rest} >
+                <Modal.Header>{header}</Modal.Header>
+                <Modal.Content>{content}</Modal.Content>
+                <Modal.Actions>
+                    <ModalDialog.CloseButton onClose={this.onCancel} content={cancelButton} />
+                    <ModalDialog.CloseButton onClose={this.onConfirm} primary content={confirmButton} />
+                </Modal.Actions>
+            </ModalDialog>
+        );
+    }
+}
 
 export class ConfirmFlagsDialog extends React.Component {
     constructor(props) {

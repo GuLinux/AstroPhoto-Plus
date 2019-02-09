@@ -1,9 +1,10 @@
 import React from 'react';
-import { Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header, Label} from 'semantic-ui-react';
+import { Button, Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header, Label} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
 import { CommandsContainer } from '../Commands/CommandsContainer';
 import { CheckButton } from '../components/CheckButton';
 import { get } from 'lodash'; 
+import { DownloadIndexesModalContainer } from './DownloadIndexesModalContainer';
  
 export class Settings extends React.Component {
 
@@ -121,6 +122,19 @@ export class Settings extends React.Component {
                             {this.checkbox('indi_drivers_autostart', {label: 'Autostart INDI drivers', toggle: true})}
                             <Message>Autostart INDI drivers on connection</Message>
                         </Segment>
+                        <Segment>
+                            <Header content='Plate Solving' />
+                            <DownloadIndexesModalContainer
+                                trigger={
+                                    <Button
+                                        icon='download'
+                                        content='Download Astrometry.net Index files'
+                                        primary
+                                        disabled={this.props.astrometryIsDownloading}
+                                    />}
+                            />
+                        </Segment>
+
                         <Segment>
                             <Header content='Misc' />
                             <Form.Group inline>

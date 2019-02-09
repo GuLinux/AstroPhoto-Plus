@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+import requests
+import sys
+import os
+
+def get_arcmin(filename):
+    if filename == 'index-4219.fits':
+        return 1400
+    elif filename == 'index-4218.fits':
+        return 1000
+    elif filename == 'index-4217.fits':
+        return 680
+    elif filename == 'index-4216.fits':
+        return 480
+    elif filename == 'index-4215.fits':
+        return 340
+    elif filename == 'index-4214.fits':
+        return 240
+    elif filename == 'index-4213.fits':
+        return 170
+    elif filename == 'index-4212.fits':
+        return 120
+    elif filename == 'index-4211.fits':
+        return 85
+    elif filename == 'index-4210.fits':
+        return 60
+    elif filename == 'index-4209.fits':
+        return 42
+    elif filename == 'index-4208.fits':
+        return 30
+    elif filename.startswith('index-4207'):
+        return 22
+    elif filename.startswith('index-4206'):
+        return 16
+    elif filename.startswith('index-4205'):
+        return 11
+    elif filename.startswith('index-4204'):
+        return 8
+    elif filename.startswith('index-4203'):
+        return 5.6
+    elif filename.startswith('index-4202'):
+        return 4.0
+    elif filename.startswith('index-4201'):
+        return 2.8
+    elif filename.startswith('index-4200'):
+        return 2.0
+
+if len(sys.argv) != 2:
+    raise RuntimeError('Usage: {} astrometry-base-url (example: http://data.astrometry.net)')
+
+base_url = sys.argv[1]
+
+
+index_template = '''    {{
+        "filename": "{}",
+        "md5sum": "{}",
+        "arcminutes": {},
+        "url": "{}",
+    }},
+'''
+
+
+
+md5_url = os.path.join(base_url, '4200', 'md5sums.txt')
+md5sums = requests.get(md5_url)
+md5sums.raise_for_status()
+
+ 
+with open('astrometry_indexes.py', 'w') as downloader:
+    downloader.write('''# indexes data: https://github.com/dstndstn/astrometry.net/tree/master/doc
+base_url = '{}'
+astrometry_indexes = [
+'''.format(base_url))
+    for line in md5sums.text.splitlines():
+        md5sum, filename = line.split(' ')
+        filename = filename.replace('*', '').strip()
+        arcminutes = get_arcmin(filename)
+        downloader.write(index_template.format(filename, md5sum, arcminutes, os.path.join(base_url, '4200', filename)))
+    downloader.write(']')
+
+            
+  

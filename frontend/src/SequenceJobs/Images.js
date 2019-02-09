@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, Table, Button, Container, Image, Header, Pagination } from 'semantic-ui-react';
-import Filesize from '../components/Filesize';
+import { Filesize } from '../components/Filesize';
 import DateTime from '../components/DateTime';
 import { Link } from 'react-router-dom';
 import { NavbarSectionMenu } from '../Navigation/NavbarMenu';
