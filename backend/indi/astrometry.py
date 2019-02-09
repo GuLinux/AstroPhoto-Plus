@@ -101,7 +101,14 @@ class Astrometry:
             astrometry_cfg_file.write('autoindex\n')
         settings_property = self.device.get_property('ASTROMETRY_SETTINGS')
         settings_property.set_values({'ASTROMETRY_SETTINGS_OPTIONS': self.__build_astrometry_options(options, astrometry_cfg)})
+
         self.device.get_property('DEBUG').set_values({'ENABLE': True})
+
+        wait_for_property_retry = 0
+        while not self.device.get_property('DEBUG_LEVEL') and wait_for_property_retry < 20:
+            time.sleep(0.5)
+            wait_for_property_retry += 1
+
         self.device.get_property('DEBUG_LEVEL').set_values({'DBG_DEBUG': True})
 
 
