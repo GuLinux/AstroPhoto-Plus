@@ -10,16 +10,52 @@ from errors import NotFoundError
 from .blob_client import BLOBClient
 import threading
 
+class INDIEventListener:
+    def __init__(self):
+        self.listeners = []
+
+    def add(self, name, listener):
+        self.listeners.append({ 'name': name, 'listener': listener })
+
+    def remove(self, name):
+        self.listeners = [l for l in self.listeners if l['name'] != name]
+
+    def on_indi_message(self, device, message):
+        self.__callback('on_indi_message', device, message)
+
+    def on_indiserver_disconnected(self, error_code):
+        self.__callback('on_indiserver_disconnected', error_code)
+
+    def on_indi_property_updated(self, property):
+        self.__callback('on_indi_property_updated', property)
+
+    def on_indi_property_added(self, property):
+        self.__callback('on_indi_property_added', property)
+
+    def on_indi_property_removed(self, property):
+        self.__callback('on_indi_property_removed', property)
+
+    def on_device_added(self, device):
+        self.__callback('on_device_added', device)
+
+    def on_device_removed(self, device):
+        self.__callback('on_device_removed', device)
+
+    def __callback(self, callback_name, *args, **kwargs):
+        for l in self.listeners:
+            listener = l['listener']
+            if hasattr(listener, callback_name):
+                getattr(listener, callback_name)(*args, **kwargs)
 
 class Server:
     DEFAULT_PORT = INDIClient.DEFAULT_PORT
 
-    def __init__(self, logger, settings, event_listener):
+    def __init__(self, logger, settings):
         self.logger = logger
         self.settings = settings
         self.client = None
         self.__disconnect_requested = 0
-        self.event_listener = event_listener
+        self.event_listener = INDIEventListener()
         self.blob_client = BLOBClient()
 
     def to_map(self):

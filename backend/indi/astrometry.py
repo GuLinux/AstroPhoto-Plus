@@ -6,7 +6,29 @@ import time
 import os
 from astropy.io import fits
 from io import BytesIO
-from system import settings
+from system import settings, controller
+import threading
+
+
+class AstrometryEventListener:
+    def __init__(self, device):
+        self.device = device
+        self.property_state = None
+
+    def on_indi_property_updated(self, property):
+        if property.device == self.device.name and property.name == 'ASTROMETRY_SOLVER':
+            self.property_state = property.state()
+
+    def wait_for_solver(self, initial_state):
+        self.error = None
+        self.property_state = initial_state
+        if initial_state == 'BUSY':
+            self.error = BadRequestError('Solver already in busy state')
+            return
+        while self.property_state != 'BUSY':
+            time.sleep(0.1)
+        while self.property_state == 'BUSY':
+            time.sleep(0.1)
 
 class Astrometry:
 
@@ -15,6 +37,7 @@ class Astrometry:
     def __init__(self, server, device=None, name=None):
         self.server = server
         self.client = server.client
+
         if device:
             self.device = Device(self.client, logger, device)
         elif name:
@@ -22,6 +45,8 @@ class Astrometry:
             self.device = device if device else None
         if not self.device:
            raise NotFoundError('Astrometry device not found: {}'.format(name)) 
+
+        self.event_listener = AstrometryEventListener(self.device)
 
     @property
     def id(self):
@@ -51,14 +76,15 @@ class Astrometry:
 
         self.__set_enabled(True)
         try:
+            controller.controller.indi_server.event_listener.add('astrometry', self.event_listener)
             self.__set_astrometry_options(options)
+            wait_for_solver_thread = threading.Thread(target=self.event_listener.wait_for_solver, args=(self.__solver_status(), ))
+            wait_for_solver_thread.start()
             self.__upload_blob(data)
             logger.debug('Waiting for solver to finish')
-            started = time.time()
-            while self.__solver_status() != 'BUSY' and time.time() - started < 5:
-                time.sleep(1)
-            while self.__solver_status() == 'BUSY':
-                time.sleep(1)
+            wait_for_solver_thread.join()
+            if self.event_listener.error:
+                raise self.event_listener.error
 
             final_status = self.__solver_status()
             if final_status == 'OK':
@@ -79,6 +105,7 @@ class Astrometry:
             else:
                 raise FailedMethodError('Plate solving failed, check astrometry driver log')
         finally:
+            controller.controller.indi_server.event_listener.remove('astrometry')
             self.__set_enabled(False)
 
     def __solver_status(self):
