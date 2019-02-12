@@ -13,6 +13,7 @@ const settingsUpdated = (state, settings) => {
     const pending = {...state.pending };
     Object.keys(settings).forEach(k => delete pending[k]);
     return {
+        ...state,
         current: {...state.current, ...settings },
         pending,
     }

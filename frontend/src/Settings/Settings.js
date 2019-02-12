@@ -5,6 +5,7 @@ import { CommandsContainer } from '../Commands/CommandsContainer';
 import { CheckButton } from '../components/CheckButton';
 import { get } from 'lodash'; 
 import { DownloadIndexesModalContainer } from './DownloadIndexesModalContainer';
+import { NumericInput } from '../components/NumericInput';
  
 export class Settings extends React.Component {
 
@@ -46,11 +47,14 @@ export class Settings extends React.Component {
         {...props}
     />;
 
+    onAstrometryTimeoutChanged = value => this.props.update('astrometry_cpu_limit', value);
+
 
     render = () => {
         const {onChange, showCommands, version='N/A'} = this.props;
         const currentSequencesDir = this.displayTextValue('sequences_dir', '');
         const currentINDIPath = this.displayTextValue('indi_prefix', '');
+        const currentAstrometryTimeout = this.displayValue('astrometry_cpu_limit');
         return (
             <Container>
                 <Segment>
@@ -124,15 +128,21 @@ export class Settings extends React.Component {
                         </Segment>
                         <Segment>
                             <Header content='Plate Solving' />
-                            <DownloadIndexesModalContainer
-                                trigger={
-                                    <Button
-                                        icon='download'
-                                        content='Download Astrometry.net Index files'
-                                        primary
-                                        disabled={this.props.astrometryIsDownloading}
-                                    />}
-                            />
+                            <Form.Field>
+                                <DownloadIndexesModalContainer
+                                    trigger={
+                                        <Button
+                                            icon='download'
+                                            content='Download Astrometry.net Index files'
+                                            primary
+                                            disabled={this.props.astrometryIsDownloading}
+                                        />}
+                                />
+                            </Form.Field>
+                            <Form.Field>
+                                <label>Timeout for field solving</label>
+                                <NumericInput min={150} max={9999} step={1} value={currentAstrometryTimeout} label='seconds' onChange={this.onAstrometryTimeoutChanged} />
+                            </Form.Field>
                         </Segment>
 
                         <Segment>

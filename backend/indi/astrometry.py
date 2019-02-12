@@ -96,7 +96,7 @@ class Astrometry:
         os.makedirs(settings.astrometry_path(), exist_ok=True)
         astrometry_cfg = settings.astrometry_path('astrometry.cfg')
         with open(astrometry_cfg, 'w') as astrometry_cfg_file:
-            astrometry_cfg_file.write('cpulimit 300\n')
+            astrometry_cfg_file.write('cpulimit {}\n'.format(settings.astrometry_cpu_limit))
             astrometry_cfg_file.write('add_path {}\n'.format(settings.astrometry_path()))
             astrometry_cfg_file.write('autoindex\n')
         settings_property = self.device.get_property('ASTROMETRY_SETTINGS')

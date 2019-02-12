@@ -42,6 +42,7 @@ class Settings:
             'sequence_async',
             'indi_server_autoconnect',
             'indi_drivers_autostart',
+            'astrometry_cpu_limit',
         ]
 
         self.on_update = None
@@ -108,6 +109,10 @@ class Settings:
     @property
     def log_level(self):
         return lookup_level(logger.getEffectiveLevel())
+
+    @property
+    def astrometry_cpu_limit(self):
+        return int(self.json_map.get('astrometry_cpu_limit', 600))
 
     def astrometry_path(self, filename=None):
         if filename:
