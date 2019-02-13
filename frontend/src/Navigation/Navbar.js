@@ -2,7 +2,7 @@ import React from 'react';
 import { Menu, Sidebar, Responsive } from 'semantic-ui-react';
 
 
-import { NavbarMenuItemsContainer } from './NavbarMenuItemsContainer';
+import { NavbarMenuItems } from './NavbarMenuItems';
 import { NavbarMenu } from './NavbarMenu';
 import { withRouter } from 'react-router';
 import { Routes } from '../routes';
@@ -24,7 +24,7 @@ class DesktopNavbarComponent extends React.PureComponent {
             <div className='fullHeight desktop-sidebar'>
                 <NavbarMenu vertical attached className='fullHeight' size='small' fluid>
                     <SiteMenuHeader />
-                    <NavbarMenuItemsContainer />
+                    <NavbarMenuItems key={this.props.location.pathname}/>
                 </NavbarMenu>
             </div>
             <div className='desktop-content'>
@@ -53,7 +53,7 @@ class ResponsiveNavbar extends React.Component {
             <Sidebar.Pushable className='astrophotoplus-sidebar'>
                 <Sidebar as={NavbarMenu} vertical animation='overlay' size='small' width='wide' direction='left' visible={this.state.visible} onHide={this.hide}>
                     <SiteMenuHeader onClick={this.hide} />
-                    <NavbarMenuItemsContainer onClick={this.hide} />
+                    <NavbarMenuItems onClick={this.hide} key={this.props.location.pathname}/>
                 </Sidebar>
                 <Sidebar.Pusher style={{overflow: 'initial'}}>
                     <Menu inverted size='small' attached>
@@ -70,7 +70,7 @@ class ResponsiveNavbar extends React.Component {
 
 
 export class Navbar extends React.PureComponent {
-    render = () => (
+    render = () => this.props.disableNavbar ? this.props.children : (
          <React.Fragment>
             <Responsive maxWidth={TRIGGER_SIZE}>
                  <ResponsiveNavbar children={this.props.children} />
