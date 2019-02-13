@@ -1,5 +1,6 @@
 import { sprintf } from 'printj'
 
+export const isDevelopmentMode = process.env.NODE_ENV === 'development';
 
 export const sanitizePath = (name) => name.replace('/', '-');
 
