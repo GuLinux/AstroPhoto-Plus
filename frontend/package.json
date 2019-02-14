@@ -32,7 +32,7 @@
         "react-router": "^4.3.1",
         "react-router-dom": "^4.3.1",
         "react-scripts": "^2.1.1",
-        "react-native": "0.57.4",
+        "react-native": "0.58.4",
         "react-native-eventsource": "^0.0.2",
         "react-router-native": "^4.3.0",
         "react-web-notification": "^0.5.0",
@@ -44,7 +44,7 @@
         "semantic-ui-css": "^2.4.1",
         "semantic-ui-react": "^0.84.0"
     },
-    "name": "AstroPhotoPlus-frontend",
+    "name": "AstroPhotoPlus_frontend",
     "private": true,
     "scripts": {
         "build": "yarn run copy:assets && react-scripts build",

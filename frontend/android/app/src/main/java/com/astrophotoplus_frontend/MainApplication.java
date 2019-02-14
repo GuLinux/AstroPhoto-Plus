@@ -1,4 +1,4 @@
-package com.starquew;
+package com.astrophotoplus_frontend;
 
 import android.app.Application;
 
@@ -28,7 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected String getJSMainModuleName() {
-      return "index.native";
+      return "index";
     }
   };
 

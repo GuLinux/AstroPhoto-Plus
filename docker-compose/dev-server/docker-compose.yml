@@ -25,6 +25,7 @@ services:
         - "5678"
     ports:
         - "5678:5678"
+        - "5000:5000"
     environment:
         - INDI_SERVER_HOST
         - INDI_SERVER_PORT
