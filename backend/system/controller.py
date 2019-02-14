@@ -1,6 +1,6 @@
 from functools import wraps
 import os
-from indi import Server, Device, Property, INDIService, INDIProfile
+from indi import Server, Device, Property, INDIService, INDIProfile, AstrometryIndexDownloader
 from models import SavedList
 from .settings import settings
 from .server_sent_events import SSE
@@ -55,6 +55,9 @@ class EventListener:
     
     def on_sequence_paused(self, sequence_job_id, notification_message, timeout):
         self.sse.publish({'event': 'sequence_paused', 'payload': { 'sequence_job': sequence_job_id, 'notification_message': notification_message, 'notification_timeout': timeout}}, type='sequences')
+    
+    def on_astrometry_index_downloader(self, event_type, payload=None):
+        self.sse.publish({'event': event_type, 'payload': payload}, type='astrometry_index_downloader')
 
 
     def on_indi_service_exit(self, service):
@@ -84,6 +87,7 @@ class Controller:
         self.__create_indi_service()
         self.__create_indi_server()
         self.sequences = SavedList(Sequence)
+        self.astrometry_downloader = AstrometryIndexDownloader(self.event_listener)
 
     def notification(self, event_type, event_name, payload, is_error, error_code=None, error_message=None):
         self.sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)
@@ -101,7 +105,8 @@ class Controller:
 
     def __create_indi_server(self):
         self.__disconnect_indi_server()
-        self.indi_server = Server(app.logger, self.settings, self.event_listener )
+        self.indi_server = Server(app.logger, self.settings)
+        self.indi_server.event_listener.add('sse', self.event_listener)
         self.event_listener.on_indi_server_reloaded()
             
     def __create_indi_service(self):

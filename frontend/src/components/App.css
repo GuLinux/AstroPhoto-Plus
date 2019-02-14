@@ -9,12 +9,36 @@
     overflow: auto;
 }
 
+body {
+    height: auto;
+}
 .desktop-content {
     margin-left: 22rem;
 }
 
+.home {
+    margin-left: 0;
+}
+
 .responsive-content {
     overflow: auto;
+}
+
+.responsive-content, .desktop-content {
+    margin-top: 0.8em;
+}
+
+.homeMenuList > .item {
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+}
+
+.homeMenuList > .item > .icon {
+    padding: 0px;
+}
+
+.homeMenuList .description {
+    margin-top: 0.5em;
 }
 
 #root {
@@ -93,7 +117,7 @@
     color: #555555;
 }
 
-.starquew-sidebar {
+.astrophotoplus-sidebar {
     min-height: 100%;
 }
 
@@ -113,6 +137,22 @@
 }
 .sectionMenu .item.disabled {
     color: #ffffff66!important;
+}
+
+
+.fade-enter {
+  opacity: 0;
+  z-index: 1;
+}
+
+.fade-exit {
+    opacity: 0;
+    z-index: 1;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 250ms ease-in;
 }
 
 

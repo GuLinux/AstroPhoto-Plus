@@ -1,9 +1,11 @@
 import React from 'react';
-import { Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header, Label} from 'semantic-ui-react';
+import { Button, Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header, Label} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
 import { CommandsContainer } from '../Commands/CommandsContainer';
 import { CheckButton } from '../components/CheckButton';
 import { get } from 'lodash'; 
+import { DownloadIndexesModalContainer } from './DownloadIndexesModalContainer';
+import { NumericInput } from '../components/NumericInput';
  
 export class Settings extends React.Component {
 
@@ -45,23 +47,26 @@ export class Settings extends React.Component {
         {...props}
     />;
 
+    onAstrometryTimeoutChanged = value => this.props.update('astrometry_cpu_limit', value);
+
 
     render = () => {
         const {onChange, showCommands, version='N/A'} = this.props;
         const currentSequencesDir = this.displayTextValue('sequences_dir', '');
         const currentINDIPath = this.displayTextValue('indi_prefix', '');
+        const currentAstrometryTimeout = this.displayValue('astrometry_cpu_limit');
         return (
             <Container>
                 <Segment>
                     <Header content='About' />
                     <Grid stackable>
                         <Grid.Column width={6} verticalAlign='middle'>
-                            StarQuew version {version}
+                            AstroPhoto Plus version {version}
                         </Grid.Column>
                         <Grid.Column textAlign='right' width={10} verticalAlign='middle'>
                             <Menu compact stackable>
-                                <Menu.Item content='Homepage' as='a' href='https://github.com/GuLinux/StarQuew' target='_blank' />
-                                <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/StarQuew/issues' target='_blank' />
+                                <Menu.Item content='Homepage' as='a' href='https://astrophotoplus.gulinux.net' target='_blank' />
+                                <Menu.Item content='Report an issue' as='a' href='https://github.com/GuLinux/AstroPhoto-Plus/issues' target='_blank' />
                                 <Menu.Item content='Author homepage' as='a' href='https://gulinux.net' target='_blank' />
                             </Menu>
                         </Grid.Column>
@@ -121,6 +126,25 @@ export class Settings extends React.Component {
                             {this.checkbox('indi_drivers_autostart', {label: 'Autostart INDI drivers', toggle: true})}
                             <Message>Autostart INDI drivers on connection</Message>
                         </Segment>
+                        <Segment>
+                            <Header content='Plate Solving' />
+                            <Form.Field>
+                                <DownloadIndexesModalContainer
+                                    trigger={
+                                        <Button
+                                            icon='download'
+                                            content='Download Astrometry.net Index files'
+                                            primary
+                                            disabled={this.props.astrometryIsDownloading}
+                                        />}
+                                />
+                            </Form.Field>
+                            <Form.Field>
+                                <label>Timeout for field solving</label>
+                                <NumericInput min={150} max={9999} step={1} value={currentAstrometryTimeout} label='seconds' onChange={this.onAstrometryTimeoutChanged} />
+                            </Form.Field>
+                        </Segment>
+
                         <Segment>
                             <Header content='Misc' />
                             <Form.Group inline>

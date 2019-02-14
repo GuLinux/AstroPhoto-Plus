@@ -7,9 +7,9 @@ file(
     PATTERN webserver-conf/nginx/* EXCLUDE
 )
 
-set(FRONTEND_ROOTDIR ${STARQUEW_INSTALL_PREFIX}/frontend)
-configure_file(${CMAKE_SOURCE_DIR}/config/prod-webserver-conf/nginx/starquew.conf ${CMAKE_CURRENT_BINARY_DIR}/webserver-conf/nginx/starquew.conf)
-configure_file(${CMAKE_SOURCE_DIR}/config/prod-webserver-conf/apache2/starquew.conf ${CMAKE_CURRENT_BINARY_DIR}/webserver-conf/apache2/starquew.conf)
+set(FRONTEND_ROOTDIR ${ASTRO_PHOTO_PLUS_INSTALL_PREFIX}/frontend)
+configure_file(${CMAKE_SOURCE_DIR}/config/prod-webserver-conf/nginx/astrophotoplus.conf ${CMAKE_CURRENT_BINARY_DIR}/webserver-conf/nginx/astrophotoplus.conf)
+configure_file(${CMAKE_SOURCE_DIR}/config/prod-webserver-conf/apache2/astrophotoplus.conf ${CMAKE_CURRENT_BINARY_DIR}/webserver-conf/apache2/astrophotoplus.conf)
 
 add_custom_target(
     yarn-dependencies
@@ -24,10 +24,10 @@ add_custom_target(
 
 install(
     DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/build/
-    DESTINATION ${STARQUEW_HOME}/frontend
+    DESTINATION ${ASTRO_PHOTO_PLUS_HOME}/frontend
 )
 
 install(
     DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/webserver-conf
-    DESTINATION ${STARQUEW_HOME}/frontend
+    DESTINATION ${ASTRO_PHOTO_PLUS_HOME}/frontend
 )

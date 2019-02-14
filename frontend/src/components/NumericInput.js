@@ -29,6 +29,9 @@ export class NumericInput extends React.Component {
 
     setValue = (newValue) => {
         let value = this.props.parse ? this.props.parse(newValue) : parseFloat(newValue) ;
+        if(isNaN(value)) {
+            value = this.props.value;
+        }
         if(this.props.min !== undefined) {
             value = Math.max(value, this.props.min);
         }

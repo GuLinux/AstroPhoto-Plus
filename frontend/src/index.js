@@ -7,9 +7,9 @@ import { Actions } from './actions';
 import thunkMiddleware from 'redux-thunk';
 import { Routes } from './routes';
 
-import { starQuewReducer } from './reducers'
+import { astroPhotoPlusReducer } from './reducers'
 import App from './components/App'
-
+import { isDevelopmentMode } from './utils';
 import 'react-image-crop/dist/ReactCrop.css';
 
 import './index.css';
@@ -18,7 +18,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
-// if (process.env.NODE_ENV !== 'production') {
+// if (isDevelopmentMode) {
 //   const whyDidYouRender = require('@welldone-software/why-did-you-render');
 //   whyDidYouRender(React, {include: [/SequenceListItem/]});
 // }
@@ -26,17 +26,16 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 const loggerMiddleware = createLogger()
 
 const createMiddleware = () => {
-    const devMode = process.env.NODE_ENV === 'development';
     const disableLogger = true;
-    //const composeEnhancers = (devMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({maxAge: 200})) || compose;
-    const composeEnhancers = (devMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+    //const composeEnhancers = (isDevelopmentMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({maxAge: 200})) || compose;
+    const composeEnhancers = (isDevelopmentMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
     const middlewares = [thunkMiddleware];
-    devMode && ! disableLogger && middlewares.push(loggerMiddleware);
+    isDevelopmentMode && ! disableLogger && middlewares.push(loggerMiddleware);
     return composeEnhancers(applyMiddleware(...middlewares));
 }
 
 let store = createStore(
-    starQuewReducer,
+    astroPhotoPlusReducer,
     createMiddleware()
 )
 

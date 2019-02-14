@@ -1,0 +1,168 @@
+#!/bin/bash
+
+ASTRO_PHOTO_PLUS_BASEPATH="@ASTRO_PHOTO_PLUS_INSTALL_PREFIX@"
+APP_DISPLAY_NAME="AstroPhoto Plus"
+APP_CONFIG_NAME="AstroPhotoPlus"
+SYSTEMCTL_UNIT="AstroPhotoPlus"
+
+print_help() {
+    cat >&2 <<EOF
+Usage: $0 <command> [options]
+
+Commands:
+
+ - autosetup [username]        Prepares everything automatically, asking confirmation about choices where necessary.
+ - setup-backend username      Setup the backend to run as the specified user.
+ - start-redis                 Starts the required Redis server, and enables autostart at boot
+ - setup-apache2               Prepares apache2 to serve ${APP_DISPLAY_NAME}.
+ - setup-nginx                 Prepares nginx to serve ${APP_DISPLAY_NAME}.
+ - start                       Starts ${APP_DISPLAY_NAME} daemon.
+ - autostart                   Starts ${APP_DISPLAY_NAME} daemon, and enables autostart on system boot.
+ - restart                     Restarts ${APP_DISPLAY_NAME} daemon after an upgrade.
+ - status                      Checks daemon status
+ - logs                        Show daemon logs
+ - wait-backend                Wait for backend server to be ready
+
+* Note: most commands require root access. If you see "access denied" errors, try running this command as root with:
+  sudo $0
+
+EOF
+    exit 1
+}
+
+is-chroot() {
+    [ "$(awk '$5=="/" {print $1}' </proc/1/mountinfo)" != "$(awk '$5=="/" {print $1}' </proc/$$/mountinfo)" ]
+}
+
+autosetup() {
+    if which nginx >/dev/null 2>&1; then
+        echo "Using nginx as web server"
+        setup-nginx
+    elif which apache2 >/dev/null 2>&1; then
+        echo "Using apache2 as web server"
+        setup-apache2
+    else
+        echo "Unable to find web servers, exiting"
+        exit 1
+    fi
+    if [ -n "$1" ]; then
+        ASTRO_PHOTO_PLUS_USER="$1"
+    else
+        read -p "Please enter the username for your ${APP_DISPLAY_NAME} backend server: " -i "${SUDO_USER:-$USER}" -e ASTRO_PHOTO_PLUS_USER
+    fi
+    start-redis
+    setup-backend "$ASTRO_PHOTO_PLUS_USER"
+    autostart
+    is-chroot || wait-backend
+    echo "Automatic setup complete. You can open your browser at http://localhost to start using your ${APP_DISPLAY_NAME} installation."
+    echo "If this is the first time installing ${APP_DISPLAY_NAME}, the server might not be ready yet and display an error page."
+    echo "If this is the case, run $0 logs to see if it's still installing packages, or if there is a problem with your setup."
+}
+
+start-redis() {
+    systemctl enable redis
+    is-chroot || systemctl start redis
+}
+
+setup-apache2() {
+    cp -avf "$ASTRO_PHOTO_PLUS_BASEPATH/frontend/webserver-conf/apache2/astrophotoplus.conf" /etc/apache2/sites-available
+    rm -f /etc/apache2/sites-enabled/*
+    ln -s /etc/apache2/sites-available/astrophotoplus.conf /etc/apache2/sites-enabled/
+    a2enmod proxy proxy_http rewrite
+    is-chroot || systemctl restart apache2
+}
+
+setup-nginx() {
+    cp -avf "$ASTRO_PHOTO_PLUS_BASEPATH/frontend/webserver-conf/nginx/astrophotoplus.conf" /etc/nginx/sites-available
+    rm -f /etc/nginx/sites-enabled/*
+    ln -s /etc/nginx/sites-available/astrophotoplus.conf /etc/nginx/sites-enabled/
+    is-chroot || systemctl restart nginx
+}
+
+is_valid_user() {
+    user="$1"
+    [ -n "$user" ] && cat /etc/passwd| cut -d':' -f1| grep -q "$user"
+}
+
+setup-backend() {
+    ASTRO_PHOTO_PLUS_USER="$1"
+    if ! is_valid_user "$ASTRO_PHOTO_PLUS_USER" ;then
+        echo "Please specify a valid user" >&2
+        print_help
+    fi
+    echo "Autoconfiguring $ASTRO_PHOTO_PLUS_USER as default ${APP_DISPLAY_NAME} user."
+    echo "Run 'systemctl edit ${SYSTEMCTL_UNIT}' to change user"
+    mkdir -p /etc/systemd/system/${SYSTEMCTL_UNIT}.service.d
+    cat > /etc/systemd/system/${SYSTEMCTL_UNIT}.service.d/override.conf <<EOF
+[Service]
+User=$ASTRO_PHOTO_PLUS_USER
+EOF
+    is-chroot || systemctl daemon-reload
+}
+
+start() {
+    is-chroot || systemctl start "${SYSTEMCTL_UNIT}"
+}
+
+autostart() {
+    systemctl enable "${SYSTEMCTL_UNIT}"
+    is-chroot || start
+}
+
+restart() {
+    if ! is-chroot; then
+        systemctl daemon-reload
+        systemctl restart "${SYSTEMCTL_UNIT}"
+    fi
+}
+
+status() {
+    systemctl status "${SYSTEMCTL_UNIT}"
+}
+
+logs() {
+    journalctl -xefu "${SYSTEMCTL_UNIT}"
+}
+
+check-url() {
+    url="$1"
+    if which curl >/dev/null 2>&1; then
+        curl -f -s "$url" >/dev/null
+    else
+        wget -q "$url" -O /dev/null
+    fi
+}
+
+wait-backend() {
+    echo -n "Waiting for backend server to be ready."
+    while ! check-url http://localhost:5000/api/version ; do
+        echo -n '.'
+        sleep 1
+    done
+    echo
+    echo "Backend ready. You can now start your browser."
+}
+
+original_command_line="$@"
+check_root() {
+    if [ "$EUID" != '0' ]; then
+        echo "Permission denied: this command must be execute as root. Try with" >&2
+        echo "sudo $0 $original_command_line " >&2
+        exit 1
+    fi
+}
+
+command="$1"; shift
+
+case "$command" in
+    autosetup|setup-apache2|setup-nginx|start|autostart|setup-backend|restart|start-redis)
+        check_root
+        "$command" "$@"
+        ;;
+    status|logs|wait-backend)
+        "$command" "$@"
+        ;;
+    *)
+        print_help
+        ;;
+esac

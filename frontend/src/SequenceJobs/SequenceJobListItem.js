@@ -77,7 +77,7 @@ export class SequenceJobListItem extends React.Component {
 
                         />
                         <Button title="Move up" size="small" disabled={!canMoveUp} onClick={this.moveUp} icon='angle up' />
-                        <Button title="Move down" size="small" disabled={canMoveDown} onClick={this.moveDown} icon='angle down' />
+                        <Button title="Move down" size="small" disabled={!canMoveDown} onClick={this.moveDown} icon='angle down' />
                         <Button title="Duplicate" size="small" onClick={this.duplicate} icon='copy' />
                         <ConfirmFlagsDialog
                             trigger={<Button title="Reset" size="small" icon='redo' disabled={!canReset} />}

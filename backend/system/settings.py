@@ -26,10 +26,10 @@ def lookup_level(level):
 
 class Settings:
     def __init__(self):
-        self.default_datadir = os.environ.get('STARQUEW_DATADIR', os.path.join(os.environ['HOME'], 'StarQuew-Data'))
-        self.config_dir = os.path.join(os.environ['HOME'], '.config', 'StarQuew')
+        self.default_datadir = os.environ.get('ASTROPHOTOPLUS_DATADIR', os.path.join(os.environ['HOME'], 'AstroPhoto Plus'))
+        self.config_dir = os.path.join(os.environ['HOME'], '.config', 'AstroPhotoPlus')
         self.system_config_dir = os.environ.get('SYSTEM_CONFDIR', '/etc')
-        self.indi_service_logs = self.__build_path(['.cache', 'StarQuew', 'logs', 'indi_service'], isdir=True)
+        self.indi_service_logs = self.__build_path(['.cache', 'AstroPhotoPlus', 'logs', 'indi_service'], isdir=True)
 
         self.ro_props = ['default_datadir', 'indi_service_logs', 'config_dir']
         self.rw_props = [
@@ -42,6 +42,7 @@ class Settings:
             'sequence_async',
             'indi_server_autoconnect',
             'indi_drivers_autostart',
+            'astrometry_cpu_limit',
         ]
 
         self.on_update = None
@@ -75,7 +76,7 @@ class Settings:
  
     @property
     def camera_tempdir(self):
-        return self.__build_path(['.cache', 'StarQuew', 'camera'], isdir=True)
+        return self.__build_path(['.cache', 'AstroPhotoPlus', 'camera'], isdir=True)
 
     @property
     def sequences_dir(self):
@@ -108,6 +109,15 @@ class Settings:
     @property
     def log_level(self):
         return lookup_level(logger.getEffectiveLevel())
+
+    @property
+    def astrometry_cpu_limit(self):
+        return int(self.json_map.get('astrometry_cpu_limit', 600))
+
+    def astrometry_path(self, filename=None):
+        if filename:
+            return os.path.join(self.astrometry_path(), filename)
+        return os.path.join(self.default_datadir, 'Astrometry.Net Data')
 
     def update(self, new_data):
         ro_props = [x for x in new_data.keys() if x in self.ro_props]

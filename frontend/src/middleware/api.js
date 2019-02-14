@@ -3,7 +3,7 @@ import { fetch } from './polyfills';
 import { normalize } from 'normalizr';
 import { commandsSchema, sequenceSchema, sequenceListSchema, sequenceJobSchema } from './schemas'
 
-const isJSON = response => response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
+export const isJSON = response => response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
 const headersJSONRequest = {
     'Content-Type': 'application/json',
 };
@@ -153,9 +153,15 @@ export const getINDIServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatc
 
 export const setINDIServerConnectionAPI = (dispatch, connect, onSuccess) => fetchJSON(dispatch, `/api/server/${ connect ? 'connect' : 'disconnect'}`, { method: 'PUT'}, onSuccess);
 
-export const getINDIDevicesAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/server/devices', {}, onSuccess);
+export const getINDIDevicesAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/server/devices', {}, onSuccess, onError);
 
-export const getINDIDevicePropertiesAPI = (dispatch, device, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties`, {}, onSuccess);
+export const getINDIDevicePropertiesAPI = (dispatch, device, onSuccess, onError) => fetchJSON(
+    dispatch,
+    `/api/server/devices/${device.name}/properties`,
+    {},
+    onSuccess,
+    onError,
+);
 
 export const setINDIValuesAPI = (dispatch, device, property, values, onSuccess) => fetchJSON(dispatch, `/api/server/devices/${device.name}/properties/${property.name}`, {
         method: 'PUT',
@@ -211,6 +217,18 @@ export const updateSettingsApi = (dispatch, settings, onSuccess) => fetchJSON(di
         headers: headersJSONRequest,
 }, onSuccess);
 
+
+export const downloadAstrometryIndexesApi = (dispatch, arcminutes, onSuccess, onError) => fetchJSON(
+    dispatch,
+    '/api/astrometry/download_indexes',
+    {
+        method: 'POST',
+        body: JSON.stringify({ arcminutes }),
+        headers: headersJSONRequest,
+    },
+    onSuccess,
+    onError, 
+);
 
 export const getImages = (dispatch, type, onSuccess) => fetchJSON(dispatch, `/api/images/${type}`, {}, onSuccess);
 export const searchImages = (dispatch, type, params, onSuccess) => fetchJSON(dispatch, `/api/images/${type}/search`, {

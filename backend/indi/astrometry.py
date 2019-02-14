@@ -6,6 +6,29 @@ import time
 import os
 from astropy.io import fits
 from io import BytesIO
+from system import settings, controller
+import threading
+
+
+class AstrometryEventListener:
+    def __init__(self, device):
+        self.device = device
+        self.property_state = None
+
+    def on_indi_property_updated(self, property):
+        if property.device == self.device.name and property.name == 'ASTROMETRY_SOLVER':
+            self.property_state = property.state()
+
+    def wait_for_solver(self, initial_state):
+        self.error = None
+        self.property_state = initial_state
+        if initial_state == 'BUSY':
+            self.error = BadRequestError('Solver already in busy state')
+            return
+        while self.property_state != 'BUSY':
+            time.sleep(0.1)
+        while self.property_state == 'BUSY':
+            time.sleep(0.1)
 
 class Astrometry:
 
@@ -14,6 +37,7 @@ class Astrometry:
     def __init__(self, server, device=None, name=None):
         self.server = server
         self.client = server.client
+
         if device:
             self.device = Device(self.client, logger, device)
         elif name:
@@ -21,6 +45,8 @@ class Astrometry:
             self.device = device if device else None
         if not self.device:
            raise NotFoundError('Astrometry device not found: {}'.format(name)) 
+
+        self.event_listener = AstrometryEventListener(self.device)
 
     @property
     def id(self):
@@ -50,14 +76,15 @@ class Astrometry:
 
         self.__set_enabled(True)
         try:
+            controller.controller.indi_server.event_listener.add('astrometry', self.event_listener)
             self.__set_astrometry_options(options)
+            wait_for_solver_thread = threading.Thread(target=self.event_listener.wait_for_solver, args=(self.__solver_status(), ))
+            wait_for_solver_thread.start()
             self.__upload_blob(data)
             logger.debug('Waiting for solver to finish')
-            started = time.time()
-            while self.__solver_status() != 'BUSY' and time.time() - started < 5:
-                time.sleep(1)
-            while self.__solver_status() == 'BUSY':
-                time.sleep(1)
+            wait_for_solver_thread.join()
+            if self.event_listener.error:
+                raise self.event_listener.error
 
             final_status = self.__solver_status()
             if final_status == 'OK':
@@ -78,6 +105,7 @@ class Astrometry:
             else:
                 raise FailedMethodError('Plate solving failed, check astrometry driver log')
         finally:
+            controller.controller.indi_server.event_listener.remove('astrometry')
             self.__set_enabled(False)
 
     def __solver_status(self):
@@ -92,16 +120,32 @@ class Astrometry:
         self.client.finishBlob()
 
     def __set_astrometry_options(self, options):
+        os.makedirs(settings.astrometry_path(), exist_ok=True)
+        astrometry_cfg = settings.astrometry_path('astrometry.cfg')
+        with open(astrometry_cfg, 'w') as astrometry_cfg_file:
+            astrometry_cfg_file.write('cpulimit {}\n'.format(settings.astrometry_cpu_limit))
+            astrometry_cfg_file.write('add_path {}\n'.format(settings.astrometry_path()))
+            astrometry_cfg_file.write('autoindex\n')
         settings_property = self.device.get_property('ASTROMETRY_SETTINGS')
-        settings_property.set_values({'ASTROMETRY_SETTINGS_OPTIONS': self.__build_astrometry_options(options)})
+        settings_property.set_values({'ASTROMETRY_SETTINGS_OPTIONS': self.__build_astrometry_options(options, astrometry_cfg)})
+
+        self.device.get_property('DEBUG').set_values({'ENABLE': True})
+
+        wait_for_property_retry = 0
+        while not self.device.get_property('DEBUG_LEVEL') and wait_for_property_retry < 20:
+            time.sleep(0.5)
+            wait_for_property_retry += 1
+
+        self.device.get_property('DEBUG_LEVEL').set_values({'DBG_DEBUG': True})
 
 
-    def __build_astrometry_options(self, options):
-        cli_options = ['--no-verify', '--no-plots', '--resort', '-O']
+    def __build_astrometry_options(self, options, config_file):
+        cli_options = ['--no-verify', '--no-plots', '--resort', '-O', '--config', '"{}"'.format(config_file)]
         if 'fov' in options:
             fov = options['fov']
             if 'minimumWidth' in fov and 'maximumWidth' in fov and fov['minimumWidth'] < fov['maximumWidth']:
                 cli_options.extend(['-L', fov['minimumWidth'], '-H', fov['maximumWidth'], '-u', 'arcminwidth'])
         if 'downsample' in options:
             cli_options.extend(['--downsample', options['downsample']])
+        logger.debug(cli_options)
         return ' '.join([str(x) for x in cli_options])

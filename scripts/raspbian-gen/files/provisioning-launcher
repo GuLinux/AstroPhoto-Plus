@@ -1,0 +1,21 @@
+#!/bin/bash
+export TARGET_USER=stargazer
+export ASTROPHOTOPLUS_AP=AstroPhoto-Plus
+export ASTROPHOTOPLUS_AP_PSK=AstroPhoto-Plus
+
+echo " *** Launching raspbian provisioning script" >&2
+bash /tmp/raspbian.sh
+rm -f /tmp/raspbian.sh
+
+# Extra step: install python dependencies
+sudo -H -u "$TARGET_USER" /usr/lib/AstroPhotoPlus/backend/start-server --only-deps
+
+# Set hostname
+raspi-config nonint do_hostname AstroPhoto-Plus
+
+# Change sudoers file to match current default user
+if [ -r /etc/sudoers.d/010_pi-nopasswd ]; then
+    mv /etc/sudoers.d/010_pi-nopasswd "/etc/sudoers.d/010_${TARGET_USER}-nopasswd"
+    sed -i "s/pi/$TARGET_USER/g" "/etc/sudoers.d/010_${TARGET_USER}-nopasswd"
+fi
+

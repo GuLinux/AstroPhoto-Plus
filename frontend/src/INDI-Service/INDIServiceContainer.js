@@ -1,16 +1,7 @@
 import { connect } from 'react-redux'
 import Actions from '../actions'
 import INDIServicePage from './INDIServicePage'
-import { getINDIEnabledDrivers } from './selectors'
-
-const mapStateToProps = (state, ownProps) => ({
-    serverFound: state.indiservice.server_found,
-    serverConnected: state.indiserver.state.connected,
-    serverRunning: state.indiservice.server_running,
-    drivers: getINDIEnabledDrivers(state),
-    startStopPending: state.indiservice.startStopPending,
-    lastError: state.indiservice.lastError,
-})
+import { indiServicePageSelector } from './selectors';
 
 const mapDispatchToProps = {
     startService: Actions.INDIService.startService,
@@ -19,7 +10,7 @@ const mapDispatchToProps = {
 };
 
 const INDIServiceContainer = connect(
-  mapStateToProps,
+  indiServicePageSelector,
   mapDispatchToProps,
 )(INDIServicePage)
 

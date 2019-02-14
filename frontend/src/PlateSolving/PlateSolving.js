@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader, Label, Grid, Container, Header, Button, Divider} from 'semantic-ui-react';
+import { Loader, Label, Grid, Container, Header, Button, Divider, Message} from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import { UploadFileDialog } from '../components/UploadFileDialog';
@@ -8,6 +8,7 @@ import { NumericInput } from '../components/NumericInput';
 import { formatDecimalNumber } from '../utils';
 import { CelestialPage } from '../components/CelestialPage';
 import { get } from 'lodash';
+import { getFieldOfView, getSensorSizeFromResolution } from './utils';
 
 const { Options } = PlateSolvingActions;
 
@@ -18,8 +19,8 @@ class SetCameraFOV extends React.PureComponent {
     componentDidUpdate = (prevProps) => this.props.camera !== prevProps.camera && this.setFOV();
     setFOV = () => {
         const { setOption, telescopeFocalLength, ccdInfo } = this.props;
-        const sensorWidth = (ccdInfo.ccdMaxX * ccdInfo.ccdPixelSizeX) / 1000;
-        const fieldOfView = 60 * 2 * Math.atan(sensorWidth / (2 * telescopeFocalLength) ) / (Math.PI / 180);
+        const sensorWidth = getSensorSizeFromResolution(ccdInfo.ccdMaxX, ccdInfo.ccdPixelSizeX);
+        const fieldOfView = getFieldOfView(telescopeFocalLength, sensorWidth);
         const fovRange = { minimumWidth: fieldOfView * 0.9, maximumWidth: fieldOfView * 1.1 };
         setOption(Options.fov, fovRange);
     }
@@ -151,7 +152,7 @@ export class PlateSolving extends React.PureComponent {
             { astrometryDrivers.length > MINIMUM_DRIVERS_CHOICE && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Astrometry driver' /></Grid.Column>
-                    <Grid.Column width={11}>
+                    <Grid.Column width={13}>
                         { astrometryDrivers.ids.map(this.astrometryDriverButton) }
                     </Grid.Column>
                 </Grid.Row>
@@ -159,7 +160,7 @@ export class PlateSolving extends React.PureComponent {
             { telescopes.length > MINIMUM_DRIVERS_CHOICE && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Telescope' /></Grid.Column>
-                    <Grid.Column width={11}>
+                    <Grid.Column width={13}>
                         { telescopes.ids.map(this.telescopeDriverButton)}
                     </Grid.Column>
                 </Grid.Row>
@@ -167,27 +168,27 @@ export class PlateSolving extends React.PureComponent {
             {this.props.telescopeFocalLength && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Telescope focal length' /></Grid.Column>
-                    <Grid.Column width={11}>
+                    <Grid.Column width={13}>
                         {this.props.telescopeFocalLength}mm
                     </Grid.Column>
                 </Grid.Row>)}
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Sync telescope on solve'/></Grid.Column>
-                    <Grid.Column width={11}>
+                    <Grid.Column width={13}>
                         {this.optionButton(Options.syncTelescope, false, {content: 'Off'})}
                         {this.optionButton(Options.syncTelescope, true, {content: 'On'})}
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Solve camera shot'/></Grid.Column>
-                    <Grid.Column width={11}>
+                    <Grid.Column width={13}>
                         {this.optionButton(Options.camera, false, {content: 'Off'})}
                         {this.optionButton(Options.camera, true, {content: 'On'})}
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Downsample image'/></Grid.Column>
-                    <Grid.Column width={11}>
+                    <Grid.Column width={13}>
                         {this.optionButton(Options.downsample, false, {content: 'Off'})}
                         {this.optionButton(Options.downsample, 2, {content: '2'})}
                         {this.optionButton(Options.downsample, 3, {content: '3'})}
@@ -196,7 +197,7 @@ export class PlateSolving extends React.PureComponent {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Field of View'/></Grid.Column>
-                    <Grid.Column width={11}>
+                    <Grid.Column width={13}>
                         {this.optionButton(Options.fovSource, false, {content: 'Off'})}
                         {this.optionButton(Options.fovSource, 'manual', {content: 'Manual'})}
                         { cameras.length > 0 && cameras.ids.map(this.cameraButton)}
@@ -206,12 +207,21 @@ export class PlateSolving extends React.PureComponent {
                                 telescopeFocalLength={this.props.telescopeFocalLength}
                                 setOption={setOption}
                             /> }
-                        { options[Options.fovSource] && (
-                        <Grid.Row>
-                            <Grid.Column width={8}><NumericInput min={0} label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'minimumWidth'], 0)} onChange={this.setMinimumFOV}/></Grid.Column>
-                            <Grid.Column width={8}><NumericInput min={get(options, [Options.fov, 'maximumWidth'], 0)} label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'maximumWidth'], 0)} onChange={this.setMaximumFOV}/></Grid.Column>
-                        </Grid.Row>
-                        )}
+                            { options[Options.fovSource] ? (
+                                <Grid.Row>
+                                <Grid.Column width={8}><NumericInput min={0} label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'minimumWidth'], 0)} onChange={this.setMinimumFOV}/></Grid.Column>
+                                <Grid.Column width={8}><NumericInput min={get(options, [Options.fov, 'maximumWidth'], 0)} label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'maximumWidth'], 0)} onChange={this.setMaximumFOV}/></Grid.Column>
+                            </Grid.Row>
+                            ) : (
+                                <Grid.Row>
+                                    <Message
+                                        size='tiny'
+                                        compact
+                                        icon='warning'
+                                        content='Please note that plate solving an image without selecting a field of view can be very slow, depending on your server capabilities.'
+                                    />
+                                </Grid.Row>
+                            )}
                     </Grid.Column>
                 </Grid.Row>
                 { !options[Options.camera] && (

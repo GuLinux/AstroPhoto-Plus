@@ -1,10 +1,11 @@
 import React from 'react';
-import { Form, Label, Divider } from 'semantic-ui-react';
+import { Form, Label, Divider, Accordion } from 'semantic-ui-react';
 import { sanitizePath, secs2time } from '../../utils'
 import { SequenceJobButtonsContainer } from '../SequenceJobButtonsContainer'
 import { formatDecimalNumber } from '../../utils';
 import { NumericInput } from '../../components/NumericInput';
 import { NotFoundPage } from '../../components/NotFoundPage';
+import { get } from 'lodash';
 
 export class ExposureSequenceJob extends React.Component {
     constructor(props) {
@@ -18,7 +19,17 @@ export class ExposureSequenceJob extends React.Component {
     }
 
     initialValues() {
-        let values = {filename: '{exposure}-{number:04}.fits', directory: '', count: '', exposure: '', globalExposure: '', ...this.props.sequenceJob}
+        let values = {
+            filename: '{exposure}-{number:04}.fits',
+            directory: '',
+            count: '',
+            exposure: '',
+            globalExposure: '',
+            shots_pause: 0,
+            shots_group: 1,
+            shots_group_pause: 0,
+            ...this.props.sequenceJob
+        };
         if(this.props.hasFilterWheel) {
             values.filename = '{filter}-' + values.filename;
         }
@@ -28,7 +39,7 @@ export class ExposureSequenceJob extends React.Component {
     }
 
     isChanged() {
-        return ['filename', 'directory', 'count', 'exposure', 'globalExposure']
+        return ['filename', 'directory', 'count', 'exposure', 'globalExposure', 'shots_pause', 'shots_group', 'shots_group_pause']
             .map(f => this.state.sequenceJob[f] !== this.initialValues()[f])
             .reduce( (isChanged, current) => isChanged || current, false)
     }
@@ -50,6 +61,28 @@ export class ExposureSequenceJob extends React.Component {
             return
         this.updateShootingParams('count', parseInt(count, 10))
     }
+
+    onShotsPauseChanged(seconds) {
+        if(isNaN(seconds))
+            return
+        this.updateShootingParams('shots_pause', parseInt(seconds, 10))
+    }
+
+
+    onShotsGroupPauseChanged(seconds) {
+        if(isNaN(seconds))
+            return
+        this.updateShootingParams('shots_group_pause', parseInt(seconds, 10))
+    }
+
+
+    onShotsGroupChanged(shots) {
+        if(isNaN(shots))
+            return
+        this.updateShootingParams('shots_group', parseInt(shots, 10))
+    }
+
+
 
     onExposureChanged(exposure) {
         if(isNaN(exposure))
@@ -108,6 +141,13 @@ export class ExposureSequenceJob extends React.Component {
             return ''
         return secs2time(time);
     }
+
+    toggleTimeLapse = () => this.setState({...this.state, activeAccordion: this.timeLapseActive() ? 0 : 1});
+
+    timeLapseActive = () =>
+        get(this.state, 'activeAccordion', 0) === 1 ||
+        get(this.state, 'sequenceJob.shots_pause', 0) > 0 ||
+        get(this.state, 'sequenceJob.shots_group', 1) > 1;
 
     render = () => {
         const { exposureValue } = this.props;
@@ -177,6 +217,7 @@ export class ExposureSequenceJob extends React.Component {
                 <Divider hidden />
 
 
+
                 <Form.Field>
                     <label>Total Exposure</label>
                     <NumericInput
@@ -191,6 +232,72 @@ export class ExposureSequenceJob extends React.Component {
                     />
                 </Form.Field>
                 <Label size='tiny'>Total exposure time for this sequence</Label>
+
+                <Divider hidden />
+
+                <Accordion>
+                    <Accordion.Title active={this.timeLapseActive()} onClick={this.toggleTimeLapse} index={1} content='Time lapse and groups options'/>
+                    <Accordion.Content active={this.timeLapseActive()}>
+                        <Form.Field>
+                            <label>Pause between shots</label>
+                            <NumericInput
+                                label={{basic: true, content: this.renderTime(this.state.sequenceJob.shots_pause)}}
+                                placeholder='seconds'
+                                value={this.state.sequenceJob.shots_pause}
+                                min={0}
+                                max={99999}
+                                step={1}
+                                parse={v => v === '' ? '' : parseInt(v, 10)}
+                                format={v => v.toString()}
+                                onChange={v => this.onShotsPauseChanged(v)}
+                            />
+                        </Form.Field>
+                        <Label size='tiny'>Pause between each shot (useful for timelapses, use 0 otherwise)</Label>
+                        <Divider hidden />
+
+                        <Form.Field>
+                            <label>Group shots</label>
+                            <NumericInput
+                                placeholder='shots per group'
+                                value={this.state.sequenceJob.shots_group}
+                                min={1}
+                                max={this.state.sequenceJob.count}
+                                step={1}
+                                parse={v => v === '' ? '' : parseInt(v, 10)}
+                                format={v => v.toString()}
+                                onChange={v => this.onShotsGroupChanged(v)}
+                            />
+                        </Form.Field>
+                        <Label size='tiny'>Instead of shooting regularly, group shots. This means that, if you set "Group shots" to 5, "Pause between shots" to 2, and "Pause between groups" to 10, this will be the sequence of shots:
+                            <ul>
+                                <li>5 shots, with 2 seconds pause between each shot</li>
+                                <li>pause for 10 seconds</li>
+                                <li>another 5 shots, with 2 seconds pause between each shot</li>
+                            </ul>
+                            until "Count" shots will be taken.
+                        </Label>
+                        <Divider hidden />
+
+                        <Form.Field>
+                            <label>Pause between groups</label>
+                            <NumericInput
+                                placeholder='seconds'
+                                value={this.state.sequenceJob.shots_group_pause}
+                                disabled={this.state.sequenceJob.shots_group < 2}
+                                label={{basic: true, content: this.renderTime(this.state.sequenceJob.shots_group_pause)}}
+                                min={0}
+                                max={99999}
+                                step={1}
+                                parse={v => v === '' ? '' : parseInt(v, 10)}
+                                format={v => v.toString()}
+                                onChange={v => this.onShotsGroupPauseChanged(v)}
+                            />
+                        </Form.Field>
+                        <Label size='tiny'>Pause between each group. See previous field for an example.</Label>
+                        <Divider hidden />
+
+                    </Accordion.Content>
+                </Accordion>
 
                 <Divider section />
                 <SequenceJobButtonsContainer isValid={this.isValid()} isChanged={this.isChanged()} sequenceJob={this.state.sequenceJob} />

@@ -1,0 +1,53 @@
+[
+    {
+        "id": "1",
+        "name": "Shutdown",
+        "arguments": ["sudo", "systemctl", "poweroff"],
+        "category": "System",
+        "confirmation_message": "Are you sure you want to shutdown?",
+        "check": ["sudo", "systemctl", "get-default"],
+        "ui_properties": {
+            "icon": "shutdown",
+            "color": "red"
+        }
+    },
+    {
+        "id": "2",
+        "name": "Reboot",
+        "confirmation_message": "Are you sure you want to reboot?",
+        "arguments": ["sudo", "systemctl", "reboot"],
+        "check": ["sudo", "systemctl", "get-default"],
+        "category": "System",
+        "ui_properties": {
+            "icon": "redo",
+            "color": "red"
+        }
+    },
+
+    {
+        "id": "3",
+        "name": "Activate connection (NetworkManager)",
+        "arguments": ["sudo", "nmcli", "connection", "up"],
+        "check": ["sudo", "nmcli", "general", "status"],
+        "category": "Network",
+        "request_parameters": {
+            "message": "Connection name",
+            "variables": [
+                { "label": "Name", "name": "CONNECTION_NAME", "type": "text", "required": true }
+            ]
+        },
+        "ui_properties": {
+            "icon": "wifi"
+        }
+    },
+    {
+        "id": "4",
+        "name": "List connections (NetworkManager)",
+        "arguments": ["nmcli", "connection", "show"],
+        "check": ["nmcli", "general", "status"],
+        "category": "Network",
+        "ui_properties": {
+            "icon": "wifi"
+        }
+    }
+]

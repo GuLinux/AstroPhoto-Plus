@@ -1,15 +1,16 @@
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/StarQuew.service ${CMAKE_CURRENT_BINARY_DIR}/StarQuew.service @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/AstroPhotoPlus.service ${CMAKE_CURRENT_BINARY_DIR}/AstroPhotoPlus.service @ONLY)
 install(
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DESTINATION ${STARQUEW_HOME}/
+    DESTINATION ${ASTRO_PHOTO_PLUS_HOME}/
     PATTERN "*pyc" EXCLUDE
     PATTERN "__pycache__" EXCLUDE
     PATTERN "start-server" EXCLUDE
+    PATTERN "access.log" EXCLUDE
 )
 
 INSTALL(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/StarQuew.service
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/AstroPhotoPlus.service
     DESTINATION lib/systemd/system/
 )
-install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/start-server DESTINATION ${STARQUEW_HOME}/backend)
-install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/start-debug-server DESTINATION ${STARQUEW_HOME}/backend)
+install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/start-server DESTINATION ${ASTRO_PHOTO_PLUS_HOME}/backend)
+install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/start-debug-server DESTINATION ${ASTRO_PHOTO_PLUS_HOME}/backend)

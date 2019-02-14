@@ -1,0 +1,45 @@
+#!/bin/bash
+cd "$( dirname "$0")"
+
+if ! [ -r deploy-image-settings ]; then
+    cat >&2 <<EOF
+    You need to write a file named deploy-image-settings with the following content:
+DEPLOY_HOST="user@your-ssh-deploy-host"
+DEPLOY_PATH="/remote/path/for/file"
+run-before-deploy() {
+    # put in here anything you want to be execute on server before deploy.
+    true
+}
+run-after-deploy() {
+    # put in here anything you want to be execute on server after deploy.
+    # the first parameter will be the image file path on the remote server.
+    echo "\$1"
+    true
+}
+EOF
+    exit 1
+fi
+
+. deploy-image-settings
+image="$( find pi-gen/deploy -name image*zip )"
+if ! [ -r "$image" ]; then
+    echo "You need to run raspbian-gen before deploying an image" >&2
+    exit 1
+fi
+
+ssh "${DEPLOY_HOST}" <<EOF
+$( cat deploy-image-settings )
+echo "Running *run-before-deploy*"
+run-before-deploy
+EOF
+
+
+echo "** Copying $image to ${DEPLOY_HOST}:${DEPLOY_PATH}"
+#scp "$image" "$DEPLOY_HOST":"$DEPLOY_PATH"
+
+ssh "${DEPLOY_HOST}" <<EOF
+$( cat deploy-image-settings )
+echo "Running *run-after-deploy*"
+run-after-deploy "$DEPLOY_PATH/$( basename "$image")"
+EOF
+

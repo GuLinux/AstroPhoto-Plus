@@ -1,4 +1,5 @@
 #!/bin/sh
+set -x
 package_json_checksum="$( md5sum package.json | cut -d' ' -f1 )"
 
 if [ "$package_json_checksum" != "$( cat node_modules/last_package_json_checksum 2>/dev/null )" ]; then

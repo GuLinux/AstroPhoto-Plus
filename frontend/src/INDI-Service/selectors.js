@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { getServerState, getINDIServerBusySelector } from '../INDI-Server/selectors';
 
 export const getINDIServiceDriversInputSelector = state => state.indiservice.drivers;
 export const getINDIServiceGroupsInputSelector = state => state.indiservice.groups;
@@ -17,3 +18,18 @@ export const getINDIServiceGroups = createSelector([getINDIServiceGroupsInputSel
 }); 
 
 export const getINDIEnabledDrivers = createSelector([getINDIServiceDrivers], (drivers) => Object.keys(drivers).filter(d => drivers[d].selected))
+
+export const indiServicePageSelector = createSelector([
+    state => state.indiservice,
+    getServerState,
+    getINDIEnabledDrivers,
+    getINDIServerBusySelector,
+], (indiservice, indiServerState, drivers, isBusy) => ({
+    serverFound: indiservice.server_found,
+    serverConnected: indiServerState.connected,
+    serverRunning: indiservice.server_running,
+    startStopPending: indiservice.startStopPending,
+    lastError: indiservice.lastError,
+    drivers,
+    isBusy,
+}));

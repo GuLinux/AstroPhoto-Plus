@@ -28,6 +28,8 @@ const defaultState = {
         port: '',
     },
     ...devicesDefaultState,
+    fetchingDeviceProperties: [],
+    autoloadingDeviceConfig: [],
     messages: [],
 };
 
@@ -102,12 +104,29 @@ const propertyUpdated = ({values, ...property}, prevState) => {
     return state;
 }
 
+const fetchDevicePropertiesFinished = (state, deviceName) => ({
+    ...state,
+    fetchingDeviceProperties: state.fetchingDeviceProperties.filter( (d, index) => index !== state.fetchingDeviceProperties.indexOf(deviceName)),
+});
+
+const autoloadingDeviceConfigFinished = (state, deviceName) => ({
+    ...state,
+    autoloadingDeviceConfig: state.autoloadingDeviceConfig.filter( (d, index) => index !== state.autoloadingDeviceConfig.indexOf(deviceName)),
+});
+
+const indiConfigAutoloadRequest = (state, deviceName) => {
+    state = set(['properties', 'entities', getPropertyId(deviceName, 'CONFIG_PROCESS'), 'state'], 'CHANGED_BUSY', state)
+    return {
+        ...state,
+        autoloadingDeviceConfig: [...state.autoloadingDeviceConfig, deviceName],
+    };
+}
 
 const receivedDeviceProperties = (state, device, deviceProperties) => {
     deviceProperties.forEach(property => {
         state = propertyUpdated(property, state);
     })
-    return state;
+    return fetchDevicePropertiesFinished(state, device.name);
 }
 
 const indiPropertyUpdated = (state, property) => propertyUpdated(property, state);
@@ -169,8 +188,12 @@ const indiserver = (state = defaultState, action) => {
     switch(action.type) {
         case 'RECEIVED_SERVER_STATE':
             return receivedServerState(state, action);
+        case 'FETCH_INDI_DEVICES':
+            return set('fetchingDevices', true, state);
+        case 'FETCH_INDI_DEVICES_FAILED':
+            return set('fetchingDevices', false, state);
         case 'RECEIVED_INDI_DEVICES':
-            return receivedINDIDevices(state, action.devices);
+            return set('fetchingDevices', false, receivedINDIDevices(state, action.devices));
         case 'RECEIVED_DEVICE_PROPERTIES':
             return receivedDeviceProperties(state, action.device, action.properties)
         case 'INDI_REQUEST_SET_PROPERTY_VALUES':
@@ -192,10 +215,16 @@ const indiserver = (state = defaultState, action) => {
         case 'INDI_DEVICE_DISCONNECTED':
             return set(['devices', 'entities', action.device, 'connected'], false, state);
         case 'INDI_CONFIG_AUTOLOAD_REQUEST':
-            return set(['properties', 'entities', getPropertyId(action.deviceName, 'CONFIG_PROCESS'), 'state'], 'CHANGED_BUSY', state)
+            return indiConfigAutoloadRequest(state, action.deviceName);
         case 'INDI_AUTOCONNECT_DEVICE':
             return set(['devices', 'entities', action.device, 'autoconnectRequested'], true, state);
+        case 'FETCH_INDI_DEVICE_PROPERTIES':
+            return {...state, fetchingDeviceProperties: [...state.fetchingDeviceProperties, action.device]};
+        case 'FETCH_INDI_DEVICE_PROPERTIES_FAILED':
+            return fetchDevicePropertiesFinished(state, action.device);
         case 'INDI_CONFIG_AUTOLOADED':
+        case 'INDI_CONFIG_AUTOLOAD_REQUEST_FAILED':
+            return autoloadingDeviceConfigFinished(state, action.deviceName);
         default:
             return state;
     }

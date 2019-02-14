@@ -19,7 +19,7 @@ sys.stderr.write('version: major={}, minor={}, patch={}, version_full: {}\n'.for
 
 if 'SKIP_CMAKE' not in os.environ:
     with open(os.path.join(project_dir, 'project_version.cmake'), 'w') as cmake_version_file:
-        cmake_version_file.write('set(STARQUEW_PROJECT_VERSION {})\n'.format(version_full))
+        cmake_version_file.write('set(ASTRO_PHOTO_PLUS_PROJECT_VERSION {})\n'.format(version_full))
 
 frontend_package_json = None
 with open('frontend/package.json', 'r') as frontend_json_file:

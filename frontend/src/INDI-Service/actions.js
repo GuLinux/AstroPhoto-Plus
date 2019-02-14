@@ -56,7 +56,6 @@ export const INDIService = {
     },
 
     serviceStarted: (data) => dispatch => {
-        dispatch(Actions.INDIServer.autoconnectServer());
         dispatch({
             type: 'INDI_SERVICE_STARTED',
             ...data

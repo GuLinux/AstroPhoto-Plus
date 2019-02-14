@@ -22,6 +22,9 @@ class ExposureSequenceJob:
         self.last_message = data.get('last_message', '')
         self.saved_images = data.get('saved_images', [])
         self.save_directory = data.get('save_directory')
+        self.shots_pause = data.get('shots_pause', 0)
+        self.shots_group = data.get('shots_group', 1)
+        self.shots_group_pause = data.get('shots_group_pause', 0)
         self.__validate(self.filename)
         self.job_runner = None
 
@@ -62,6 +65,9 @@ class ExposureSequenceJob:
             'saved_images': self.saved_images,
             'save_directory': self.save_directory,
             'has_files': len(self.saved_images) > 0,
+            'shots_pause': self.shots_pause,
+            'shots_group': self.shots_group,
+            'shots_group_pause': self.shots_group_pause,
         }
 
     def stop(self):
@@ -82,7 +88,19 @@ class ExposureSequenceJob:
 
         upload_path = os.path.join(root_path, self.directory)
         self.save_directory = upload_path
-        self.job_runner = ExposureSequenceJobRunner(server, devices['camera'].indi_sequence_camera(), self.exposure, self.count, upload_path, progress=self.progress, filename_template=self.filename, filename_template_params=filename_template_params)
+        self.job_runner = ExposureSequenceJobRunner(
+            server,
+            devices['camera'].indi_sequence_camera(),
+            self.exposure,
+            self.count,
+            upload_path,
+            progress=self.progress,
+            filename_template=self.filename,
+            filename_template_params=filename_template_params,
+            shots_pause=self.shots_pause,
+            shots_group=self.shots_group,
+            shots_group_pause=self.shots_group_pause
+        )
 
         def on_started(job_runner):
             pass

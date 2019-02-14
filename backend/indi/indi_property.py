@@ -79,6 +79,9 @@ class Property:
             self.label = self.indi_property['label']
         return self.label
 
+    @with_indi_property
+    def state(self):
+        return self.indi_property['state']
 
     @with_type
     def set_values(self, property_values, sync=False, timeout=None):

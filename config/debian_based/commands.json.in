@@ -1,41 +1,21 @@
 [
     {
-        "id": "1",
-        "name": "Shutdown",
-        "arguments": ["sudo", "systemctl", "poweroff"],
-        "category": "System",
-        "confirmation_message": "Are you sure you want to shutdown?",
-        "check": ["sudo", "systemctl", "get-default"],
-        "ui_properties": {
-            "icon": "shutdown",
-            "color": "red"
-        }
+      "type": "include",
+      "filename": "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/linux_generic/commands.json"
     },
     {
-        "id": "2",
-        "name": "Reboot",
-        "confirmation_message": "Are you sure you want to reboot?",
-        "arguments": ["sudo", "systemctl", "reboot"],
-        "check": ["sudo", "systemctl", "get-default"],
-        "category": "System",
-        "ui_properties": {
-            "icon": "redo",
-            "color": "red"
-        }
-    },
-    {
-        "id": "7",
-        "name": "Update StarQuew",
-        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/debian_based/starquew-deb-updater", "update"],
+        "id": "10",
+        "name": "Update AstroPhoto Plus",
+        "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/astrophotoplus-deb-updater", "update"],
         "category": "Updates",
-        "check": ["${CMAKE_INSTALL_PREFIX}/share/StarQuew/config/debian_based/starquew-deb-updater", "get-latest-info"],
-        "confirmation_message": "This will restart StarQuew, and any job in progress. Are you sure?",
+        "check": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/astrophotoplus-deb-updater", "get-latest-info"],
+        "confirmation_message": "This will restart AstroPhotoPlus, and any job in progress. Are you sure?",
         "ui_properties": {
             "icon": "sync"
         }
     },
     {
-        "id": "8",
+        "id": "11",
         "name": "Update System",
         "arguments": ["sudo", "bash", "-c", "apt-get update && apt-get dist-upgrade -y"],
         "category": "Updates",
