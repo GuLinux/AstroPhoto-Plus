@@ -55,7 +55,7 @@
         "forest:clean": "rm -rf public/themes; mkdir -p public/themes",
         "start": "yarn run copy:assets && react-scripts start",
         "test": "react-scripts test --env=jsdom",
-        "start:native": "node node_modules/react-native/local-cli/cli.js start --projectRoot src",
+        "start:native": "node node_modules/react-native/local-cli/cli.js start",
         "test:native": "jest"
     },
     "version": "1.0.0"
