@@ -14,10 +14,12 @@ import { Route, Switch} from "react-router-dom";
 import { Routes } from '../routes';
 import { Home } from './Home';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
+import { VersionCheckContainer } from '../Version/VersionCheckContainer';
 
 
 const App = ({location}) => (
   <div className="App">
+    <VersionCheckContainer />
     <NavbarContainer location={location}>
         <NotificationsContainer />
         <ErrorPageContainer>
