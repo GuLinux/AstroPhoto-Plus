@@ -11,15 +11,22 @@ import Commands from './Commands/actions';
 import { PlateSolving } from './PlateSolving/actions';
 import { fetchBackendVersion } from './middleware/api';
 import listenToEvents from './middleware/events';
+import { isError } from './Errors/selectors.js';
 
 const Server = {
-    error: (source, payloadType, payload, responseBody) => ({ type: 'SERVER_ERROR', source, payloadType, payload, responseBody }),
+    error: (source, payloadType, payload, responseBody) => dispatch => {
+        dispatch({ type: 'SERVER_ERROR', source, payloadType, payload, responseBody });
+        setTimeout(() => dispatch(Actions.init()), 1000);
+    },
     fetchBackendVersion: () => dispatch => fetchBackendVersion(dispatch, version => dispatch({ type: 'BACKEND_VERSION_FETCHED', version })), 
-
 };
 
-const init = () => async (dispatch) => {
+const init = () => async (dispatch, getState) => {
     await dispatch(Actions.Server.fetchBackendVersion());
+    if(isError(getState())) {
+        setTimeout(() => dispatch(Actions.init()), 1000);
+        return;
+    }
     await dispatch(Actions.Settings.fetch());
     await dispatch(Actions.INDIServer.fetchServerState(true));
     await dispatch(Actions.INDIServer.autoconnectServer());

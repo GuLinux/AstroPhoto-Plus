@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar } from '../Navigation/Navbar';
+import { NavbarContainer } from '../Navigation/NavbarContainer';
 import LoadingContainer from '../containers/LoadingContainer';
 import SequencesPage from '../Sequences/SequencesPage';
 import INDIServerContainer from '../INDI-Server/INDIServerContainer';
@@ -18,7 +18,7 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 const App = ({location}) => (
   <div className="App">
-    <Navbar location={location}>
+    <NavbarContainer location={location}>
         <NotificationsContainer />
         <ErrorPageContainer>
           <TransitionGroup>
@@ -36,7 +36,7 @@ const App = ({location}) => (
           </TransitionGroup>
         </ErrorPageContainer>
         <LoadingContainer />
-    </Navbar>
+    </NavbarContainer>
   </div>
 );
 
