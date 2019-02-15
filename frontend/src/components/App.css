@@ -10,7 +10,7 @@
 }
 
 body {
-    height: auto;
+    height: 100%;
 }
 .desktop-content {
     margin-left: 22rem;
@@ -25,7 +25,7 @@ body {
 }
 
 .responsive-content, .desktop-content {
-    margin-top: 0.8em;
+    padding-top: 0.8em;
 }
 
 .homeMenuList > .item {
