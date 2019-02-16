@@ -1,19 +1,12 @@
-import { connect } from 'react-redux'
-import { Notifications } from './Notifications'
-import Actions from '../actions'
-
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    notifications: state.notifications
-  }
-}
+import { connect } from 'react-redux';
+import { Notifications } from './Notifications';
+import Actions from '../actions';
+import { notificationsSelector } from './selectors';
 
 const mapDispatchToProps = {
     onClosed: Actions.Notifications.remove,
+    onHTML5Blocked: Actions.Notifications.html5Blocked,
 }
 
-const NotificationsContainer = connect(mapStateToProps, mapDispatchToProps)(Notifications)
-
-export default NotificationsContainer
+export const NotificationsContainer = connect(notificationsSelector, mapDispatchToProps)(Notifications)
 
