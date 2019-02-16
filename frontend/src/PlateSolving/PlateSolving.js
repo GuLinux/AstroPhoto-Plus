@@ -209,8 +209,8 @@ export class PlateSolving extends React.PureComponent {
                             /> }
                             { options[Options.fovSource] ? (
                                 <Grid.Row>
-                                <Grid.Column width={8}><NumericInput min={0} label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'minimumWidth'], 0)} onChange={this.setMinimumFOV}/></Grid.Column>
-                                <Grid.Column width={8}><NumericInput min={get(options, [Options.fov, 'maximumWidth'], 0)} label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'maximumWidth'], 0)} onChange={this.setMaximumFOV}/></Grid.Column>
+                                <Grid.Column width={8}><NumericInput min={0} max={get(options, [Options.fov, 'maximumWidth'], 0)} label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'minimumWidth'], 0)} onChange={this.setMinimumFOV}/></Grid.Column>
+                                <Grid.Column width={8}><NumericInput min={get(options, [Options.fov, 'minimumWidth'], 0)} label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'maximumWidth'], 0)} onChange={this.setMaximumFOV}/></Grid.Column>
                             </Grid.Row>
                             ) : (
                                 <Grid.Row>
