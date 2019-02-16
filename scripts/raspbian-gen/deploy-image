@@ -35,7 +35,7 @@ EOF
 
 
 echo "** Copying $image to ${DEPLOY_HOST}:${DEPLOY_PATH}"
-#scp "$image" "$DEPLOY_HOST":"$DEPLOY_PATH"
+scp "$image" "$DEPLOY_HOST":"$DEPLOY_PATH"
 
 ssh "${DEPLOY_HOST}" <<EOF
 $( cat deploy-image-settings )
