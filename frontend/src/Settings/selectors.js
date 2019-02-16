@@ -4,7 +4,7 @@ import { getConnectedCameras, getConnectedTelescopes, getCCDWidthPix, getCCDPixe
 
 export const getSettings = state => state.settings;
 export const getCurrentSettings = state => getSettings(state).current;
-const getVersion = state => get(state, 'version.version');
+const getVersion = state => get(state, 'version.backend.version');
 const getCommands = state => state.commands;
 
 const getAstrometryIsDownloading = state => state.settings.astrometry.isDownloading;
