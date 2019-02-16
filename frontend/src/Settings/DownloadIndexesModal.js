@@ -1,12 +1,23 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { ModalDialog } from '../Modals/ModalDialog';
 import { NumericInput } from '../components/NumericInput';
-import { Modal, Button, Form, Divider, Progress, Header, Container, Message } from 'semantic-ui-react';
+import { Modal, Button, Form, Divider, Progress, Header, Container, Message, Label, Dropdown } from 'semantic-ui-react';
 import { set } from 'lodash/fp'
 import { getFieldOfView, getSensorSizeFromResolution } from '../PlateSolving/utils';
 import { formatDecimalNumber } from '../utils';
 import { Filesize } from '../components/Filesize';
+import { cameraDropdownItemSelector, telescopeDropdownItemSelector } from './selectors';
 
+const CameraDropdownItemContainer = connect(cameraDropdownItemSelector)(
+    ({onClick, cameraId, cameraPixelWidth, cameraPixelPitch}) => 
+        <Dropdown.Item content={cameraId} onClick={() => onClick(cameraPixelWidth, cameraPixelPitch)} />
+);
+
+const TelescopeDropdownItemContainer = connect(telescopeDropdownItemSelector)(
+    ({onClick, telescopeId, focalLength}) => 
+        <Dropdown.Item content={telescopeId} onClick={() => onClick(focalLength)} />
+);
 export class DownloadIndexesModal extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -46,6 +57,12 @@ export class DownloadIndexesModal extends React.PureComponent {
     useSensorRes = () => this.setState(set('calculateBy', 'sensor_resolution', this.state));
 
     formatArchMinutes = value => formatDecimalNumber('%0.6f', value);
+
+    renderTelescopeDropdownItem = item => <TelescopeDropdownItemContainer key={item} telescopeId={item} onClick={this.onFocalLengthChanged} />
+    renderCameraDropdownItem = item => <CameraDropdownItemContainer key={item} cameraId={item} onClick={this.onCameraSelected} />
+
+    onCameraSelected = (cameraPixelWidth, cameraPixelPitch) =>
+        this.setState({...this.state, sensorResolution: cameraPixelWidth, sensorPixelSize: cameraPixelPitch}, this.updateSensorResolutionCalculator)
 
     render = () => (
         <ModalDialog closeOnEscape={false} trigger={this.props.trigger} centered={false} basic>
@@ -96,13 +113,23 @@ export class DownloadIndexesModal extends React.PureComponent {
                     <Form>
                         <Form.Field>
                             <label>Minimum field of view</label>
-                            <NumericInput format={this.formatArchMinutes} label='arcminutes' value={this.state.fov || ''} onChange={this.onFoVChanged} />
+                            <NumericInput format={this.formatArchMinutes} labelPosition='right' label='arcminutes' value={this.state.fov || ''} onChange={this.onFoVChanged} />
                         </Form.Field>
                         <Divider />
                         <p>You can also use this calculator, entering the focal lenght of your <b>longest</b> telescope/lens, and the sensor information of your <b>smallest</b> camera.</p>
                         <Form.Field>
                             <label>Telescope focal length</label>
-                            <NumericInput label='mm' value={this.state.focalLength || ''} onChange={this.onFocalLengthChanged} />
+                            <NumericInput labelPosition='right' value={this.state.focalLength || ''} onChange={this.onFocalLengthChanged}>
+                                { this.props.telescopes.length > 0 && (
+                                    <Dropdown button text='Get from telescope...'>
+                                        <Dropdown.Menu>
+                                            {this.props.telescopes.map(this.renderTelescopeDropdownItem)}
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                )}
+                                <input />
+                                <Label content='mm' />
+                            </NumericInput>
                         </Form.Field>
                         <Form.Group grouped>
                             <Form.Radio toggle label='Use sensor size in mm' checked={this.state.calculateBy === 'sensor_size'} onChange={this.useSensorSize} />
@@ -111,18 +138,28 @@ export class DownloadIndexesModal extends React.PureComponent {
                         { this.state.calculateBy === 'sensor_size' && 
                             <Form.Field>
                                 <label>Sensor size</label>
-                                <NumericInput label='mm' value={this.state.sensorWidth || ''} onChange={this.onSensorWidthChanged} />
+                                <NumericInput labelPosition='right' value={this.state.sensorWidth || ''} onChange={this.onSensorWidthChanged}>
+                                { this.props.cameras.length > 0 && (
+                                    <Dropdown button text='Get from camera...'>
+                                        <Dropdown.Menu>
+                                            {this.props.cameras.map(this.renderCameraDropdownItem)}
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                )}
+                                    <input />
+                                    <Label content='mm' />
+                                </NumericInput>
                             </Form.Field>
                         }
                         { this.state.calculateBy === 'sensor_resolution' && ( 
                             <Form.Group>
                                 <Form.Field>
                                     <label>Sensor horizontal resolution</label>
-                                    <NumericInput label='pixels' value={this.state.sensorResolution || ''} onChange={this.onSensorResolutionChanged} />
+                                    <NumericInput label='pixels' labelPosition='right' value={this.state.sensorResolution || ''} onChange={this.onSensorResolutionChanged} />
                                 </Form.Field>
                                 <Form.Field>
                                     <label>Sensor pixel size</label>
-                                    <NumericInput label='um' value={this.state.sensorPixelSize || ''} onChange={this.onPixelSizeChanged} />
+                                    <NumericInput label='um' labelPosition='right' value={this.state.sensorPixelSize || ''} onChange={this.onPixelSizeChanged} />
                                 </Form.Field>
                             </Form.Group>
                         )}

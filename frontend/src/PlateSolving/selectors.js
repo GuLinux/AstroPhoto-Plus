@@ -4,8 +4,11 @@ import {
     getConnectedAstrometry,
     getConnectedCameras,
     getConnectedTelescopes,
+    getCCDWidthPix,
+    getCCDPixelPitch,
+    getTelescopeFocalLength,
 } from '../Gear/selectors';
-import { getMessages, getDevices, getValueInputSelector} from '../INDI-Server/selectors';
+import { getMessages, getDevices } from '../INDI-Server/selectors';
 import { PlateSolving } from './actions';
 import { get } from 'lodash';
 
@@ -35,9 +38,9 @@ export const plateSolvingContainerSelector = createSelector([
     getPlateSolvingOptions,
     getSolution,
     state => state.plateSolving.loading,
-    state => getValueInputSelector(getDeviceId(PlateSolving.Options.fovSource, state), 'CCD_INFO', 'CCD_MAX_X')(state),
-    state => getValueInputSelector(getDeviceId(PlateSolving.Options.fovSource, state), 'CCD_INFO', 'CCD_PIXEL_SIZE_X')(state),
-    state => getValueInputSelector(getDeviceId(PlateSolving.Options.telescope, state), 'TELESCOPE_INFO', 'TELESCOPE_FOCAL_LENGTH')(state),
+    state => getCCDWidthPix(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
+    state => getCCDPixelPitch(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
+    state => getTelescopeFocalLength(state, {telescopeId: getDeviceId(PlateSolving.Options.telescope, state)}),
 ], (plateSolvingDevices, messages, options, solution, loading, ccdMaxX, ccdPixelSizeX, telescopeFocalLength) => ({
     ...plateSolvingDevices,
     messages: messages[options.astrometryDriver],

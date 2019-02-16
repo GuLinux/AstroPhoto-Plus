@@ -73,10 +73,10 @@ export class Navbar extends React.PureComponent {
     render = () => this.props.disableNavbar ? this.props.children : (
          <React.Fragment>
             <Responsive maxWidth={TRIGGER_SIZE}>
-                 <ResponsiveNavbar children={this.props.children} />
+                 <ResponsiveNavbar children={this.props.children} location={this.props.location} />
             </Responsive>
             <Responsive minWidth={TRIGGER_SIZE + 1}>
-                <DesktopNavbar children={this.props.children} />
+                <DesktopNavbar children={this.props.children} location={this.props.location} />
             </Responsive>
          </React.Fragment>
     );

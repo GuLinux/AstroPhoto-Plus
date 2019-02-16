@@ -10,7 +10,6 @@ import { ImageSectionMenuContainer } from '../Image/ImageContainer';
 import { NavItem } from './NavbarMenu';
 import { PlateSolvingSectionMenuContainer } from '../PlateSolving/PlateSolvingPageContainer';
 import { CameraSectionMenu } from '../Camera/Camera';
-import { withRouter } from 'react-router';
 
 export class NavbarMenuItems extends React.PureComponent {
 

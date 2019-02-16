@@ -3453,7 +3453,6 @@ d3-celestial-react@GuLinux/d3-celestial-react:
   resolved "https://codeload.github.com/GuLinux/d3-celestial-react/tar.gz/3dd3e05af00819de4b4fb6fafa32b360b987d7e6"
   dependencies:
     d3-celestial ofrohn/d3-celestial
-    lodash "^4.17.11"
     react "^16.6.3"
     react-dom "^16.6.3"
 
@@ -10681,6 +10680,11 @@ react-transition-group@^2.5.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
+
+react-web-notification@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-web-notification/-/react-web-notification-0.5.0.tgz#011fceadcb9eb974f41dd7b7eb8dbeb5408b4431"
+  integrity sha512-xdUHyOMBP+RlhAwuvYd0WlNvT11tW7V4/vXnp3ApbmChyT6FE/4KYEcmeXw+RtP1cJH8B1KbT7RiYNHFnY/bcQ==
 
 react@^16.4.0, react@^16.6.3:
   version "16.6.3"

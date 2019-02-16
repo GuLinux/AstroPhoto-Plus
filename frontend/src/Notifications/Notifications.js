@@ -1,5 +1,6 @@
 import React from 'react';
 import { Message, Icon} from 'semantic-ui-react';
+import HTML5Notification from 'react-web-notification';
 
 const icons = {
     error: 'times circle',
@@ -27,6 +28,23 @@ const AlertNotification = ({notification, onDismiss}) => (
     </Message>
 )
 
+const html5NotificationOptions = notification => ({
+    icon: '/icon-256.png',
+    body: Array.isArray(notification.text) ? notification.text.join('\n') : notification.text,
+    tag: `app-notification-{notification.id}`,
+    requireInteraction: !notification.timeout,
+});
+
+const HTML5NotificationComponent = ({notification, onDismiss}) => (
+    <HTML5Notification
+        title={notification.title}
+        timeout={notification.timeout || 9999}
+        options={html5NotificationOptions(notification)}
+        onClick={onDismiss}
+        onClosed={onDismiss}
+    />
+);
+
 
 export class Notifications extends React.PureComponent {
 
@@ -34,13 +52,18 @@ export class Notifications extends React.PureComponent {
 
     renderNotification = (notification, index) => {
         setAutoclose(notification, this.onClosed(notification));
-        return <AlertNotification key={index} notification={notification} onDismiss={this.onClosed(notification)} />
+        let NotificationComponent = AlertNotification;
+        if(this.props.html5Enabled) {
+            NotificationComponent = HTML5NotificationComponent;
+        }
+        return <NotificationComponent key={index} notification={notification} onDismiss={this.onClosed(notification)} />
     }
 
     render = () => {
         const {notifications } = this.props;
         return (
             <div className="notifications-container">
+                <HTML5Notification ignore onPermissionDenied={this.props.onHTML5Blocked} title='Request Notification Permission' />
                 {notifications.map(this.renderNotification)}
             </div>
         )
