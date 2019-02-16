@@ -36,6 +36,7 @@ listenToEvents(store.dispatch);
 
 const renderIndex = () => (
     <Provider store={store}>
+        <Text>hello</Text>
         <Router>
             <Route path={Routes.ROOT}>
                 {({location}) => <App location={location} /> }
