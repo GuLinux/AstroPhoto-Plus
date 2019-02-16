@@ -21,7 +21,7 @@ class SetCameraFOV extends React.PureComponent {
         const { setOption, telescopeFocalLength, ccdInfo } = this.props;
         const sensorWidth = getSensorSizeFromResolution(ccdInfo.ccdMaxX, ccdInfo.ccdPixelSizeX);
         const fieldOfView = getFieldOfView(telescopeFocalLength, sensorWidth);
-        const fovRange = { minimumWidth: fieldOfView * 0.9, maximumWidth: fieldOfView * 1.1 };
+        const fovRange = { minimumWidth: fieldOfView * 0.95, maximumWidth: fieldOfView * 1.05 };
         setOption(Options.fov, fovRange);
     }
     render = () => null;
