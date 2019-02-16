@@ -63,7 +63,7 @@ export class ConfirmDialog extends React.Component {
     onCancel = () => this.props.onCancel && this.props.onCancel();
     onConfirm = () => this.props.onConfirm && this.props.onConfirm();
     render = () => {
-        const { confirmButton, cancelButton, header, content, onCancel=null, onConfirm=null, ...rest } = this.props;
+        const { confirmButton, cancelButton, header, content, onCancel, onConfirm, ...rest } = this.props;
         return (
             <ModalDialog {...rest} >
                 <Modal.Header>{header}</Modal.Header>

@@ -63,7 +63,7 @@ export class Notifications extends React.PureComponent {
         const {notifications } = this.props;
         return (
             <div className="notifications-container">
-                <HTML5Notification ignore onPermissionDenied={this.props.onHTML5Blocked} />
+                <HTML5Notification ignore onPermissionDenied={this.props.onHTML5Blocked} title='Request Notification Permission' />
                 {notifications.map(this.renderNotification)}
             </div>
         )

@@ -54,7 +54,7 @@ export class Settings extends React.Component {
         const {onChange, showCommands, version='N/A'} = this.props;
         const currentSequencesDir = this.displayTextValue('sequences_dir', '');
         const currentINDIPath = this.displayTextValue('indi_prefix', '');
-        const currentAstrometryTimeout = this.displayValue('astrometry_cpu_limit');
+        const currentAstrometryTimeout = this.displayValue('astrometry_cpu_limit') || '';
         return (
             <Container>
                 <Segment>
@@ -144,7 +144,6 @@ export class Settings extends React.Component {
                                 <NumericInput min={150} max={9999} step={1} value={currentAstrometryTimeout} label='seconds' onChange={this.onAstrometryTimeoutChanged} />
                             </Form.Field>
                         </Segment>
-
                         <Segment>
                             <Header content='Misc' />
                             <Form.Group inline>
