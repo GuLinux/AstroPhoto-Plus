@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0] - Unreleased
+## [1.0.0] - 17/02/2019
 ### First major release - Also renaming to Astro Photo Plus
 
 ### New features:
