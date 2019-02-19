@@ -1,1 +1,1 @@
-import "./src/index.native";
+import "./src/index";

@@ -10,14 +10,17 @@ import { SettingsContainer } from '../Settings/SettingsContainer';
 import { ImagePage } from '../Image/ImagePage';
 import { PlateSolvingPageContainer } from '../PlateSolving/PlateSolvingPageContainer';
 import './App.css';
-import { Route, Redirect, Switch} from "react-router";
+import { Route, Switch} from "react-router";
+import { BrowserRouter as Router } from 'react-router-dom'
 import { Routes } from '../routes';
 import { Home } from './Home';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { VersionCheckContainer } from '../Version/VersionCheckContainer';
 
+import 'react-image-crop/dist/ReactCrop.css';
+import '../index.css';
 
-const App = ({location}) => (
+const AppRouter = ({location}) => (
   <div className="App">
     <VersionCheckContainer />
     <NavbarContainer location={location}>
@@ -42,4 +45,10 @@ const App = ({location}) => (
   </div>
 );
 
-export default App;
+export const App = () => (
+  <Router>
+      <Route path={Routes.ROOT}>
+          {({location}) => <AppRouter location={location} /> }
+      </Route>
+  </Router>
+)
