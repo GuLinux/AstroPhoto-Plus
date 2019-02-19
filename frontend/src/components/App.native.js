@@ -1,23 +1,35 @@
 import React from 'react';
-import { View, Text, Button } from "react-native";
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import { Subtitle, Container, Content, Icon, Left, Right, Title, Body, Header, Text, Button } from "native-base";
+import { createDrawerNavigator, createAppContainer } from "react-navigation";
 import { BackendSelectionContainer } from '../BackendSelection/BackendSelectionContainer';
 
-class HomeScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Home Screen</Text>
-        <Button
-          title="Go to Backend selection"
-          onPress={() => this.props.navigation.navigate('BackendSelection')}
-        />
-      </View>
-    );
-  }
-}
+const Navbar = ({navigation, pageName}) => (
+    <Header>
+        <Left>
+            <Button transparent onPress={() => navigation.toggleDrawer()} >
+                <Icon name='menu'/>
+            </Button>
+        </Left>
+        <Body>
+            <Title>{pageName}</Title>
+            <Subtitle>AstroPhoto Plus</Subtitle>
+        </Body>
+        <Right />
+    </Header>
+);
 
-const AppNavigator = createStackNavigator({
+const HomeScreen = ({navigation}) => (
+    <Container>
+        <Navbar navigation={navigation} pageName='Home' />
+        <Content>
+            <Button onPress={() => navigation.navigate('BackendSelection')}>
+                <Text>Go to Backend selection</Text>
+            </Button>
+        </Content>
+    </Container>
+);
+
+const AppNavigator = createDrawerNavigator({
     Home: HomeScreen,
     BackendSelection: BackendSelectionContainer,
 },{
