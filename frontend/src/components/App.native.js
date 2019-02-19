@@ -1,23 +1,38 @@
 import React from 'react';
-import { View, Text, Button } from "react-native";
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import { View} from "react-native";
+import { createDrawerNavigator, createAppContainer } from "react-navigation";
 import { BackendSelectionContainer } from '../BackendSelection/BackendSelectionContainer';
+import { Icon, ThemeProvider, Button, Text, Header } from 'react-native-elements';
 
-class HomeScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Home Screen</Text>
-        <Button
-          title="Go to Backend selection"
-          onPress={() => this.props.navigation.navigate('BackendSelection')}
-        />
-      </View>
-    );
-  }
-}
+const HamburgerMenu = ({navigation}) => (
+    <Icon
+      color="#fff"
+      name="menu"
+      onPress={() => navigation.toggleDrawer()}
+    />
+);
 
-const AppNavigator = createStackNavigator({
+const Navbar = ({navigation}) => (
+    <Header
+        leftComponent={<HamburgerMenu navigation={navigation} />}
+        centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
+        rightComponent={{ icon: 'home', color: '#fff' }}
+    />
+);
+
+const HomeScreen = ({navigation}) => (
+  <View> 
+    <Navbar navigation={navigation} />
+    <Text>Home Screen</Text>
+    <Button
+      title="Go to Backend selection"
+      onPress={() => navigation.navigate('BackendSelection')}
+    />
+  </View>
+);
+
+
+const AppNavigator = createDrawerNavigator({
     Home: HomeScreen,
     BackendSelection: BackendSelectionContainer,
 },{
@@ -25,4 +40,3 @@ const AppNavigator = createStackNavigator({
 });
 
 export const App = createAppContainer(AppNavigator);
-
