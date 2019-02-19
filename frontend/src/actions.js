@@ -9,7 +9,7 @@ import Image from './Image/actions';
 import Navigation from './Navigation/actions';
 import Commands from './Commands/actions';
 import { PlateSolving } from './PlateSolving/actions';
-import { fetchBackendVersion, API } from './middleware/api';
+import { fetchBackendVersion } from './middleware/api';
 import listenToEvents from './middleware/events';
 import { BackendSelection } from './BackendSelection/actions';
 import { isError } from './Errors/selectors.js';
@@ -34,7 +34,6 @@ const init = () => async (dispatch, getState) => {
         console.log('No backend address found');
         return;
     }
-    API.setBackendURL(address);
     await dispatch(Actions.Server.fetchBackendVersion());
     if(isError(getState())) {
         console.log('error getting state')
