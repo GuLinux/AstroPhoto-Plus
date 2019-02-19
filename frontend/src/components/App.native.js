@@ -1,11 +1,28 @@
 import React from 'react';
-import { Navbar } from '../Navigation/Navbar';
-import { View, Button} from 'react-native';
+import { View, Text, Button } from "react-native";
+import { createStackNavigator, createAppContainer } from "react-navigation";
+import { BackendSelectionContainer } from '../BackendSelection/BackendSelectionContainer';
 
-// TODO: delete, and replace with common App.js
+class HomeScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>Home Screen</Text>
+        <Button
+          title="Go to Backend selection"
+          onPress={() => this.props.navigation.navigate('BackendSelection')}
+        />
+      </View>
+    );
+  }
+}
 
-export const App = ({location}) => (
-    <Navbar location={location}>
-    </Navbar>
-);
+const AppNavigator = createStackNavigator({
+    Home: HomeScreen,
+    BackendSelection: BackendSelectionContainer,
+},{
+    initialRouteName: 'Home',
+});
+
+export const App = createAppContainer(AppNavigator);
 
