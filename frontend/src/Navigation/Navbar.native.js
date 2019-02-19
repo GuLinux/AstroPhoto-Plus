@@ -1,8 +1,17 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Header, Left, Button, Icon, Body, Title, Subtitle, Right } from "native-base";
 
-export const Navbar = () => (
-    <View>
-        <Text color='#555555'>Hello world!</Text>
-    </View>
+export const Navbar = ({navigation, pageName}) => (
+    <Header>
+        <Left>
+            <Button transparent onPress={() => navigation.toggleDrawer()} >
+                <Icon name='menu'/>
+            </Button>
+        </Left>
+        <Body>
+            <Title>{pageName}</Title>
+            <Subtitle>AstroPhoto Plus</Subtitle>
+        </Body>
+        <Right />
+    </Header>
 );

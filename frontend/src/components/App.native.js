@@ -1,27 +1,14 @@
 import React from 'react';
-import { Subtitle, Container, Content, Icon, Left, Right, Title, Body, Header, Text, Button } from "native-base";
+import { Container, Content, Text, Button } from "native-base";
 import { createDrawerNavigator, createAppContainer } from "react-navigation";
 import { BackendSelectionContainer } from '../BackendSelection/BackendSelectionContainer';
+import { Navbar } from '../Navigation/Navbar.native';
 
-const Navbar = ({navigation, pageName}) => (
-    <Header>
-        <Left>
-            <Button transparent onPress={() => navigation.toggleDrawer()} >
-                <Icon name='menu'/>
-            </Button>
-        </Left>
-        <Body>
-            <Title>{pageName}</Title>
-            <Subtitle>AstroPhoto Plus</Subtitle>
-        </Body>
-        <Right />
-    </Header>
-);
 
 const HomeScreen = ({navigation}) => (
     <Container>
         <Navbar navigation={navigation} pageName='Home' />
-        <Content>
+        <Content padder>
             <Button onPress={() => navigation.navigate('BackendSelection')}>
                 <Text>Go to Backend selection</Text>
             </Button>

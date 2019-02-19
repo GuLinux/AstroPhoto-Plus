@@ -9,22 +9,35 @@ import Image from './Image/actions';
 import Navigation from './Navigation/actions';
 import Commands from './Commands/actions';
 import { PlateSolving } from './PlateSolving/actions';
-import { fetchBackendVersion } from './middleware/api';
+import { fetchBackendVersion, API } from './middleware/api';
 import listenToEvents from './middleware/events';
+import { BackendSelection } from './BackendSelection/actions';
 import { isError } from './Errors/selectors.js';
 
 const Server = {
+
+    retryTimer: null,
+
     error: (source, payloadType, payload, responseBody) => dispatch => {
         dispatch({ type: 'SERVER_ERROR', source, payloadType, payload, responseBody });
-        setTimeout(() => dispatch(Actions.init()), 1000);
+        Actions.Server.retryTimer = setTimeout(() => dispatch(Actions.init()), 1000);
     },
     fetchBackendVersion: () => dispatch => fetchBackendVersion(dispatch, version => dispatch({ type: 'BACKEND_VERSION_FETCHED', version })), 
 };
 
 const init = () => async (dispatch, getState) => {
+    if(Server.retryTimer) {
+        clearTimeout(Server.retryTimer);
+    }
+    const address = await Actions.BackendSelection.getAddress(dispatch);
+    if(address === null) {
+        console.log('No backend address found');
+        return;
+    }
+    API.setBackendURL(address);
     await dispatch(Actions.Server.fetchBackendVersion());
     if(isError(getState())) {
-        setTimeout(() => dispatch(Actions.init()), 1000);
+        console.log('error getting state')
         return;
     }
     await dispatch(Actions.Settings.fetch());
@@ -49,6 +62,7 @@ export const Actions = {
     Navigation,
     Commands,
     PlateSolving,
+    BackendSelection,
     Server,
     init,
 }
