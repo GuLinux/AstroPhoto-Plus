@@ -1,9 +1,8 @@
-import 'eventsource'
 import { normalize } from 'normalizr'
 import { sequenceSchema } from './schemas'
 import Actions from '../actions';
-declare var EventSourcePolyfill: any;
-
+import { EventSource } from './polyfills';
+import { API } from './api';
 
 
 const logEvent = event => {
@@ -97,7 +96,7 @@ const astrometryIndexDownloader = (event, dispatch) => {
 }
 
 const listenToEvents = (dispatch) => {
-    var es = new EventSource("/api/events");
+    var es = new EventSource(API.getFullURL('/api/events'));
 
     var serverListener = event => {
         switch(event.type) {

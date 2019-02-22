@@ -1,8 +1,13 @@
-import fetch from 'isomorphic-fetch'
-import Actions from '../actions'
-
-import { normalize } from 'normalizr'
+import Actions from '../actions';
+import { fetch } from './polyfills';
+import { normalize } from 'normalizr';
 import { commandsSchema, sequenceSchema, sequenceListSchema, sequenceJobSchema } from './schemas'
+
+export class API {
+    static backendURL = null;
+    static setBackendURL = url => API.backendURL = url;
+    static getFullURL = url => API.backendURL + url;
+}
 
 export const isJSON = response => response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
 const headersJSONRequest = {
@@ -10,7 +15,7 @@ const headersJSONRequest = {
 };
 
 export const apiFetch = async (url, options) => {
-    const response = await fetch(url, options);
+    const response = await fetch(API.getFullURL(url), options);
 
     let reply = { response };
     if(isJSON(response)) {
@@ -38,7 +43,7 @@ const fetchJSON = async (dispatch, url, options, onSuccess, onError) => {
         dispatchError(response);
     }
     try {
-        const response = await fetch(url, options);
+        const response = await fetch(API.getFullURL(url), options);
         if(! response.ok) {
             throw response;
         }

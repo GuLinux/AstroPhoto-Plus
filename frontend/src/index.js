@@ -1,27 +1,17 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore, applyMiddleware, compose } from 'redux'
-import { createLogger } from 'redux-logger'
-import { Actions } from './actions'
-import thunkMiddleware from 'redux-thunk'
-import { Routes } from './routes'
+import { createStore, applyMiddleware, compose } from 'redux';
+import { createLogger } from 'redux-logger';
+import { Actions } from './actions';
+import thunkMiddleware from 'redux-thunk';
 
 import { astroPhotoPlusReducer } from './reducers'
-import App from './components/App'
 import { isDevelopmentMode } from './utils';
-import 'react-image-crop/dist/ReactCrop.css';
 
-import './index.css';
+import { initialiseApp } from './initialiseApp';
 
-import registerServiceWorker from './registerServiceWorker';
+ import React from 'react';
+import { Provider } from 'react-redux';
 
-import { BrowserRouter as Router, Route } from 'react-router-dom'
-
-// if (isDevelopmentMode) {
-//   const whyDidYouRender = require('@welldone-software/why-did-you-render');
-//   whyDidYouRender(React, {include: [/SequenceListItem/]});
-// }
+import { App } from './components/App';
 
 const loggerMiddleware = createLogger()
 
@@ -41,15 +31,8 @@ let store = createStore(
 
 store.dispatch(Actions.init());
 
-render(
-  <Provider store={store}>
-    <Router>
-        <Route path={Routes.ROOT}>
-            {({location}) => <App location={location} /> }
-        </Route>
-    </Router>
-  </Provider>,
-  document.getElementById('root')
-)
 
-registerServiceWorker();
+initialiseApp(
+    <Provider store={store}>
+        <App />
+    </Provider>);
