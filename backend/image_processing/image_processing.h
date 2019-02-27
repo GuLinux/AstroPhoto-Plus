@@ -26,7 +26,7 @@ private:
     std::string bayerPattern;
     bool debug_log;
     cv::Mat image;
-    std::vector<uint16_t> image_data;
+    std::vector<uint8_t> image_data;
 };
 
 #endif

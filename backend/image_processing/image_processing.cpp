@@ -67,8 +67,9 @@ ImageProcessing::ImageProcessing(const string &fitsfile, bool debug_log) : debug
         LOG() << "read keyword: " << kk.first;
     }
  
-    LOG() << "bitpix: " << fits_image.bitpix() << ", axes: " << fits_image.axes();
+
 #endif
+    LOG() << "bitpix: " << fits_image.bitpix() << ", axes: " << fits_image.axes();
 
     try {
         fits_image.readKey("BAYERPAT", this->bayerPattern);
@@ -79,11 +80,21 @@ ImageProcessing::ImageProcessing(const string &fitsfile, bool debug_log) : debug
     try {
         fits_image.read(contents);
         LOG() << "read " << contents.size() << " values";
-        image_data = vector<uint16_t>(contents.size());
-        move(begin(contents), end(contents), image_data.begin());
+
+        int bytesPerPixel = fits_image.bitpix() == 16 ? 2 : 1;
+
+        image_data = vector<uint8_t>(contents.size() * bytesPerPixel);
+        if(bytesPerPixel == 1) {
+            move(begin(contents), end(contents), image_data.begin());
+        } else {
+            uint16_t *data_p = reinterpret_cast<uint16_t*>(image_data.data());
+            move(begin(contents), end(contents), data_p);
+        }
         LOG() << "moved " << image_data.size() << " values";
+
         // TODO: datatype check
-        this->image = cv::Mat(fits_image.axis(1), fits_image.axis(0), fits_image.bitpix() == 16 ? CV_16UC1 : CV_8UC1, image_data.data());
+
+        this->image = cv::Mat(fits_image.axis(1), fits_image.axis(0), bytesPerPixel == 2 ? CV_16UC1 : CV_8UC1, image_data.data());
         LOG() << "created cv::Mat";
     }  catch(const CCfits::FitsException &e) {
         std::cerr << "Error while reading FITS image: " << e.message() << std::endl;
@@ -94,18 +105,30 @@ ImageProcessing::ImageProcessing(const string &fitsfile, bool debug_log) : debug
 ImageProcessing::~ImageProcessing() {
 }
 
+struct BayerConversion {
+    std::string source;
+    std::string cvName;
+    int cvCode;
+};
+
+#define MAP_BAYER(name, cvCode) { name, { name, #cvCode, cv::COLOR_Bayer ## cvCode  ## 2BGR } }
+
 void ImageProcessing::debayer(std::string pattern) {
     if(pattern.empty() || pattern == "auto") {
         pattern = this->bayerPattern;
     }
-    static const std::unordered_map<std::string, int> patterns = {
-        {"RGGB", cv::COLOR_BayerRG2RGB},
-        {"GRBG", cv::COLOR_BayerGR2RGB},
-        {"GBRG", cv::COLOR_BayerGB2RGB},
-        {"BGGR", cv::COLOR_BayerBG2RGB},
+    static const std::unordered_map<std::string, BayerConversion> patterns = {
+        MAP_BAYER("RGGB", BG),
+        MAP_BAYER("GRBG", GB),
+        MAP_BAYER("GBRG", GR),
+        MAP_BAYER("BGGR", RG),
     };
     try {
-        cv::cvtColor(this->image, this->image, patterns.at(pattern));
+        auto &bayerConversion = patterns.at(pattern);
+        LOG() << "Converting from "<< bayerConversion.source << " to cv::COLOR_Bayer" << bayerConversion.cvName << "2BGR (" << bayerConversion.cvCode << ")";
+        cv::Mat result;
+        cv::cvtColor(this->image, result, bayerConversion.cvCode);
+        this->image = result;
     } catch(const std::out_of_range &) {
     }
 }
