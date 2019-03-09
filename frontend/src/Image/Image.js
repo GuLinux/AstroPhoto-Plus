@@ -82,7 +82,7 @@ export class ImageLoader extends React.Component {
 export const ImageSectionMenu = ({id, history}) => id && (
     <NavbarSectionMenu sectionName='Image'>
         <Form>
-            <ImageViewOptionsContainer />
+            <ImageViewOptionsContainer imageId={id} imageType='main' />
         </Form>
         <Divider />
         <Menu.Item onClick={() => history.goBack() } content='back' icon='arrow left' />

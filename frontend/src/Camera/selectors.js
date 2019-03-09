@@ -23,7 +23,6 @@ const getCurrentImage = state => state.camera.currentImage;
 const getImageLoading = state => state.camera.imageLoading;
 
 
-
 export const getCurrentCamera = createSelector([getCurrentCameraId, getConnectedCameras, getDevices], (currentCameraId, connectedCameras, devices) => {
     if(! currentCameraId || ! connectedCameras.includes(currentCameraId)) {
         return null;
@@ -89,14 +88,17 @@ export const cameraImageOptionsSectionMenuEntriesSelector = createSelector([
     getConnectedCameras,
     getCrop,
     getCanCrop,
+    getCurrentImage,
 ], (
     cameras,
     crop,
     canCrop,
+    currentImage,
 ) => ({
     cameras,
     crop,
     canCrop,
+    imageId: currentImage && currentImage.id,
 }));
 
 
@@ -136,7 +138,7 @@ export const filterSelectionSelector = createSelector([
 export const currentImageSelector = createSelector(
     [
         getCurrentCamera,
-        state => state.camera.currentImage,
+        getCurrentImage,
         state => state.camera.options,
         state => state.camera.crop,
     ],

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Header } from 'semantic-ui-react';
+import { Form, Header, Button } from 'semantic-ui-react';
 import { NumericInput } from '../components/NumericInput';
 export class ImageViewOptions extends React.Component{
     onStretchChanged = (e, data) => this.props.setOption({stretch: data.checked});
@@ -10,6 +10,10 @@ export class ImageViewOptions extends React.Component{
     onShowHistogramChanged = (e, data) => this.props.setOption({showHistogram: data.checked});
     onHistogramLogaritmicChanged = (e, data) => this.props.setOption({histogramLogarithmic: data.checked});
     onHistogramBinsChanged = value => this.props.setOption({histogramBins: value});
+
+    downloadFITS = () => {
+
+    }
 
     render = () => (
         <React.Fragment>
@@ -41,6 +45,7 @@ export class ImageViewOptions extends React.Component{
                     </Form.Field>
                 </React.Fragment>
             )}
+            {this.props.imageId && <Button icon='download' content='Download FITS' as='a' target='_blank' href={`/api/images/${this.props.imageType}/${this.props.imageId}?format=original&download=true`} size='tiny' fluid/> }
         </React.Fragment>
     );
 }

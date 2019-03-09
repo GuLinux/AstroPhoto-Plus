@@ -406,7 +406,7 @@ def image_is_ready(type, image):
     if get_image_database(type).lookup(image, file_required=False).is_ready():
         return { 'ready': True }
     else:
-        raise NotFoundError('Image with type {} and id {} not found'.format(type, imag))
+        raise NotFoundError('Image with type {} and id {} not found'.format(type, image))
 
 
 @app.route('/api/images/<type>', methods=['GET'])
