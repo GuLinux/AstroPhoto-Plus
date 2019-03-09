@@ -10,7 +10,17 @@ import { Routes } from '../routes';
 const TRIGGER_SIZE = 1200;
 
 
-const SiteMenuHeader = (props) => <Menu.Item header {...props} content='AstroPhoto Plus' />
+const SiteMenuHeader = ({serverName, ...props}) => (
+    <Menu.Item {...props}>
+        <Menu.Header content='AstroPhoto Plus' />
+        {serverName && (
+            <Menu.Menu>
+                <Menu.Item icon='globe' content={serverName} />
+            </Menu.Menu>
+        )}
+    </Menu.Item>
+
+);
 
 class DesktopNavbarComponent extends React.PureComponent {
     isHome = () => this.props.location.pathname === Routes.ROOT;
@@ -23,7 +33,7 @@ class DesktopNavbarComponent extends React.PureComponent {
         <React.Fragment>
             <div className='fullHeight desktop-sidebar'>
                 <NavbarMenu vertical attached className='fullHeight' size='small' fluid>
-                    <SiteMenuHeader />
+                    <SiteMenuHeader serverName={this.props.serverName} />
                     <NavbarMenuItems key={this.props.location.pathname}/>
                 </NavbarMenu>
             </div>
@@ -57,7 +67,7 @@ class ResponsiveNavbar extends React.Component {
                 </Sidebar>
                 <Sidebar.Pusher style={{overflow: 'initial'}}>
                     <Menu inverted size='small' attached>
-                        <SiteMenuHeader as='a' icon='sidebar' onClick={this.show} />
+                        <SiteMenuHeader as='a' icon='sidebar' onClick={this.show} serverName={this.props.serverName} />
                     </Menu>
                     <div className='responsive-content'>
                         {children}
@@ -73,10 +83,10 @@ export class Navbar extends React.PureComponent {
     render = () => this.props.disableNavbar ? this.props.children : (
          <React.Fragment>
             <Responsive maxWidth={TRIGGER_SIZE}>
-                 <ResponsiveNavbar children={this.props.children} location={this.props.location} />
+                 <ResponsiveNavbar children={this.props.children} location={this.props.location} serverName={this.props.serverName} />
             </Responsive>
             <Responsive minWidth={TRIGGER_SIZE + 1}>
-                <DesktopNavbar children={this.props.children} location={this.props.location} />
+                <DesktopNavbar children={this.props.children} location={this.props.location} serverName={this.props.serverName} />
             </Responsive>
          </React.Fragment>
     );

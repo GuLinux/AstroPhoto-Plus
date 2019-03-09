@@ -11,7 +11,7 @@ import { initialiseApp } from './initialiseApp';
  import React from 'react';
 import { Provider } from 'react-redux';
 
-import { App } from './components/App';
+import { AppContainer } from './App/AppContainer';
 
 const loggerMiddleware = createLogger()
 
@@ -34,5 +34,5 @@ store.dispatch(Actions.init());
 
 initialiseApp(
     <Provider store={store}>
-        <App />
+        <AppContainer />
     </Provider>);

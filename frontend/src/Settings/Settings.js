@@ -48,6 +48,7 @@ export class Settings extends React.Component {
     />;
 
     onAstrometryTimeoutChanged = value => this.props.update('astrometry_cpu_limit', value);
+    onServerNameChanged = value => this.props.update('server_name', value);
 
 
     render = () => {
@@ -81,6 +82,19 @@ export class Settings extends React.Component {
                 <Form>
                     <Segment>
                         <Header content='Settings' />
+                        <Segment>
+                            <Header content='Application Settings' />
+                            <Form.Input
+                                label='Server name'
+                                fluid
+                                type='text'
+                                value={this.displayTextValue('server_name')}
+                                onChange={this.onInputChange('server_name')}
+                                action={this.inputButtons('server_name')}
+                            />
+                            {this.changedItemWarning('server_name')}
+                        </Segment>
+
                         <Segment>
                             <Header content='Paths' />
                             <Form.Input

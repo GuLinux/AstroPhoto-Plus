@@ -13,12 +13,12 @@ import './App.css';
 import { Route, Switch} from "react-router";
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Routes } from '../routes';
-import { Home } from './Home';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { VersionCheckContainer } from '../Version/VersionCheckContainer';
 
 import 'react-image-crop/dist/ReactCrop.css';
 import '../index.css';
+import { HomeContainer } from '../Home/HomeContainer';
 
 const AppRouter = ({location}) => (
   <div className="App">
@@ -29,7 +29,7 @@ const AppRouter = ({location}) => (
           <TransitionGroup>
             <CSSTransition key={location.key} classNames='fade' timeout={500}>
               <Switch location={location}>
-                <Route exact path={Routes.ROOT} component={Home}/>
+                <Route exact path={Routes.ROOT} component={HomeContainer}/>
                 <Route path={Routes.SEQUENCES_PAGE} component={SequencesPage} />
                 <Route path={Routes.INDI_PAGE} component={INDIServerContainer} />
                 <Route path={Routes.CAMERA_PAGE} component={CameraContainer} />
@@ -45,10 +45,23 @@ const AppRouter = ({location}) => (
   </div>
 );
 
-export const App = () => (
-  <Router>
-      <Route path={Routes.ROOT}>
-          {({location}) => <AppRouter location={location} /> }
-      </Route>
-  </Router>
-)
+export class App extends React.Component {
+  setTitle = () => {
+    if(this.props.serverName) {
+      document.title = `${this.props.serverName} - AstroPhoto Plus`;
+    } else {
+      document.title = `AstroPhoto Plus`;
+    }
+  }
+
+  componentDidMount = () => this.setTitle();
+  componentDidUpdate = ({serverName: previousServerName}) => (previousServerName !== this.props.serverName) && this.setTitle();
+
+  render = () => (
+    <Router>
+        <Route path={Routes.ROOT}>
+            {({location}) => <AppRouter location={location} /> }
+        </Route>
+    </Router>
+  )
+};

@@ -9,6 +9,8 @@ const getCommands = state => state.commands;
 
 const getAstrometryIsDownloading = state => state.settings.astrometry.isDownloading;
 
+export const getServerName = state => get(state, 'settings.current.server_name', '');
+
 export const settingsSelector = createSelector([
     getSettings,
     getVersion,

@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { isError } from '../Errors/selectors';
 import { Routes } from '../routes';
+import { getServerName } from '../Settings/selectors';
 
 const getLandingPaths = state => state.navigation.landingPaths;
 
@@ -10,8 +11,10 @@ export const makeHistoryLandingSelector = () => createSelector([getLandingPath],
 
 export const navbarContainerSelector = createSelector([
     isError,
+    getServerName,
     (_, props) => props.location,
-], (isError, location) => ({
+], (isError, serverName, location) => ({
     disableNavbar: isError || location.pathname === Routes.ROOT,
+    serverName
 }));
 

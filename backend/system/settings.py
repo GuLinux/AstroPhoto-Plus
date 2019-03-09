@@ -43,6 +43,7 @@ class Settings:
             'indi_server_autoconnect',
             'indi_drivers_autostart',
             'astrometry_cpu_limit',
+            'server_name',
         ]
 
         self.on_update = None
@@ -109,6 +110,10 @@ class Settings:
     @property
     def log_level(self):
         return lookup_level(logger.getEffectiveLevel())
+
+    @property
+    def server_name(self):
+        return self.json_map.get('server_name', '')
 
     @property
     def astrometry_cpu_limit(self):

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Image, Container, Segment, Divider, List } from "semantic-ui-react";
+import { Image, Container, Segment, Divider, List, Header } from "semantic-ui-react";
 import { Link } from 'react-router-dom'
 
-export const Home = () => (
+export const Home = ({serverName}) => (
     <Container>
         <Segment>
             <Image src='/images/site-logo-dark-bg.svg'/>
+            { serverName && <Header size='small' icon='globe' content={serverName} /> }
             <Divider hidden />
             <p>AstroPhoto Plus is a lightweight, web based sequence generator and INDI client written in Python and React.</p>
             <p>AstroPhoto Plus allows you to start and manage an astrophotography sequence directly from your browser.</p>
