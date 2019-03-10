@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
 import { getPropertyId, getGroupId, getValueId } from './utils';
-import { get } from 'lodash';
+import { get, sortBy } from 'lodash';
 
 export const getDevices = state => state.indiserver.devices;
 export const getGroups = state => state.indiserver.groups;
@@ -27,7 +27,7 @@ export const getMessages = createSelector([state => state.indiserver.messages], 
 
 export const indiServerContainerSelector = createSelector([getDevices, getServerState, getServiceServerFound],
     (devices, serverState, serviceServerFound) => ({
-        devices: devices.ids.map(id => devices.entities[id]),
+        devices: sortBy(devices.ids.map(id => devices.entities[id]), ['name']),
         hasLocalServer: serviceServerFound && serverState.host === 'localhost',
     })
 );
@@ -37,7 +37,7 @@ const getCurrentDevice = createSelector([getDeviceProp, getDevices], (deviceId, 
 
 export const indiDeviceContainerSelector = createCachedSelector([getCurrentDevice, getGroups, getMessages],
     (device, groups, messages) => ({
-        device,
+        device: device && {...device, groups: sortBy(device.groups, g => get(groups, ['entities', g, 'name']) )},
         groups,
         messages,
     })
@@ -47,7 +47,7 @@ const getCurrentGroupProp = (state, {deviceId, groupName}) => getGroupId({device
 const getCurrentGroup = createCachedSelector([getCurrentGroupProp, getGroups], (groupId, groups) => groups.entities[groupId])(getCurrentGroupProp);
 
 export const indiDeviceGroupSelector = createCachedSelector([getCurrentGroup], (group) => ({
-    group,
+    group: group && {...group, properties: sortBy(group.properties) },
 }))(getCurrentGroupProp);
 
 const getPropertyIdProp = (state, {propertyId}) => propertyId;
@@ -66,7 +66,7 @@ export const indiPropertySelector = createCachedSelector(
     (propertyId, devices, properties, readOnly) => {
         const property = properties.entities[propertyId];
         return {
-            property,
+            property: property && {...property, values: sortBy(property.values)},
             device: devices.entities[property.device],
             isWriteable: property.perm_write && property.state !== 'CHANGED_BUSY' && ! readOnly,
         };
