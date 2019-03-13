@@ -24,7 +24,7 @@ export class NavbarMenuItems extends React.PureComponent {
             <NavItem icon='list' content='Sequences' to={Routes.SEQUENCES_PAGE} onClick={this.onClick} />
             <NavItem icon='computer' content='INDI Server' to={Routes.INDI_PAGE} onClick={this.onClick} />
             <NavItem icon='camera' content='Camera' to={Routes.CAMERA_PAGE} onClick={this.onClick}/>
-            <NavItem icon='target' content='Plate Solving' to={Routes.PLATE_SOLVING_PAGE} onClick={this.onClick}/>
+            <NavItem icon='map outline' content='Plate Solving' to={Routes.PLATE_SOLVING_PAGE} onClick={this.onClick}/>
             <NavItem icon='settings' content='System & Settings' to={Routes.SETTINGS_PAGE} onClick={this.onClick} />
             <Route exact path={Routes.SEQUENCES_LIST} component={SequencesListSectionMenu} />
             <Route path={Routes.SEQUENCE_PAGE.route} exact={true} render={this.renderSequenceSectionMenu} />

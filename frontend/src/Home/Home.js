@@ -47,7 +47,7 @@ export const Home = ({serverName}) => (
                 </List.Item>
 
                 <List.Item>
-                    <List.Icon name='target' />
+                    <List.Icon name='map outline' />
                     <List.Content>
                         <List.Header as={Link} to='/plate-solving' content='Plate Solving' />
                         <List.Description>

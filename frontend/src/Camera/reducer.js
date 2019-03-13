@@ -57,7 +57,7 @@ const onINDIPropertyUpdated = (state, action) => {
     return state;
 }
 
-const camera = (state = defaultState, action) => {
+export const camera = (state = defaultState, action) => {
     switch(action.type) {
         case 'SET_CURRENT_CAMERA':
             return {...state, currentCamera: action.camera };
@@ -90,5 +90,3 @@ const camera = (state = defaultState, action) => {
             return state;
     }
 };
-
-export default camera;
