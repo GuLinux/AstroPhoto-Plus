@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { createLogger } from 'redux-logger';
-import { Actions } from './actions';
+import { init } from './App/actions';
 import thunkMiddleware from 'redux-thunk';
 
 import { astroPhotoPlusReducer } from './reducers'
@@ -29,7 +29,7 @@ let store = createStore(
     createMiddleware()
 )
 
-store.dispatch(Actions.init());
+store.dispatch(init());
 
 
 initialiseApp(

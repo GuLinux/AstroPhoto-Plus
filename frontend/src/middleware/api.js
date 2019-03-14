@@ -1,7 +1,7 @@
-import Actions from '../actions';
 import { fetch } from './polyfills';
 import { normalize } from 'normalizr';
 import { commandsSchema, sequenceSchema, sequenceListSchema, sequenceJobSchema } from './schemas'
+import { serverError } from '../App/actions';
 
 export class API {
     static backendURL = null;
@@ -30,7 +30,7 @@ export const apiFetch = async (url, options) => {
 // TODO: refactor using apiFetch
 const fetchJSON = async (dispatch, url, options, onSuccess, onError) => {
     const dispatchError = response => {
-        response.text().then( body => { dispatch(Actions.Server.error('network_request', 'response', response, body)) })
+        response.text().then( body => { dispatch(serverError('network_request', 'response', response, body)) })
     }
 
     const errorHandler = response => {
@@ -53,7 +53,7 @@ const fetchJSON = async (dispatch, url, options, onSuccess, onError) => {
         if('status' in error) {
             errorHandler(error)
         } else {
-            dispatch(Actions.Server.error('network_request', 'exception', error))
+            dispatch(serverError('network_request', 'exception', error))
         }
     }
 }

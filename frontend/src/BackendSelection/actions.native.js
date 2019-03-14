@@ -1,6 +1,7 @@
 import Actions from '../actions';
 import {AsyncStorage} from 'react-native';
 import { API } from '../middleware/api';
+import { init } from '../App/actions';
 
 export const BackendSelection = {
     setBackend: address => {
@@ -10,7 +11,7 @@ export const BackendSelection = {
 
     saveBackend: address => dispatch => {
         dispatch(Actions.BackendSelection.setBackend(address));
-        dispatch(Actions.init());
+        dispatch(init());
         AsyncStorage.setItem('backend_address', address);
     },
 

@@ -3,6 +3,7 @@ import { sequenceSchema } from './schemas'
 import Actions from '../actions';
 import { EventSource } from './polyfills';
 import { API } from './api';
+import { serverError } from '../App/actions';
 
 
 const logEvent = event => {
@@ -120,7 +121,7 @@ const listenToEvents = (dispatch) => {
     es.addEventListener('sequences', serverListener);
     es.addEventListener('indi_service', serverListener);
     es.addEventListener('astrometry_index_downloader', serverListener);
-    es.onerror = e => dispatch(Actions.Server.error('event_source', 'event', e));
+    es.onerror = e => dispatch(serverError('event_source', 'event', e));
 }
 
 export default listenToEvents;
