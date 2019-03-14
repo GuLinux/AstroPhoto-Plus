@@ -252,3 +252,4 @@ export const solveFieldAPI = (dispatch, onSuccess, onError, astrometryDriver,opt
     headers: headersJSONRequest,
 }, onSuccess, onError);
 
+export const fetchAutoguidingStateAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/phd2/status', {}, json => onSuccess(json));

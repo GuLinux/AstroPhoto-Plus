@@ -2,6 +2,7 @@ import { fetchBackendVersion } from '../middleware/api';
 import listenToEvents from '../middleware/events';
 import { isError } from '../Errors/selectors.js';
 import Actions from '../actions';
+import { getAutoguidingStatus } from '../Autoguiding/actions';
 
 let retryTimer = null;
 
@@ -33,5 +34,6 @@ export const init = () => async (dispatch, getState) => {
     dispatch(Actions.INDIService.fetchService());
     dispatch(Actions.INDIService.fetchProfiles());
     dispatch(Actions.Commands.get());
+    dispatch(getAutoguidingStatus());
     listenToEvents(dispatch);
 }
