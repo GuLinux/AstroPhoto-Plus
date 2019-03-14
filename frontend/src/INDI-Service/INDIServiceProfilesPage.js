@@ -7,6 +7,7 @@ class ProfileNameDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = { name: props.initialValue, open: false};
+        this.modal = React.createRef();
     }
 
     hasChanged = () => this.state.name === this.props.initialValue;
@@ -47,7 +48,7 @@ class ProfileNameDialog extends React.Component {
     )
 
     render = () => (
-        <ModalDialog trigger={this.props.trigger} centered={false} size='mini' basic>
+        <ModalDialog trigger={this.props.trigger} centered={false} size='mini' basic ref={this.modal}>
             <Modal.Header content={this.props.title} />
             {this.modalContent()}
             <Modal.Actions>
