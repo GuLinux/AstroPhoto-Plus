@@ -8,6 +8,7 @@ from app import app
 import time
 from sequences import SequencesRunner, Sequence
 from utils.threads import start_thread
+from phd2 import PHD2Service
 
 
 class EventListener:
@@ -59,6 +60,12 @@ class EventListener:
     def on_astrometry_index_downloader(self, event_type, payload=None):
         self.sse.publish({'event': event_type, 'payload': payload}, type='astrometry_index_downloader')
 
+    def on_phd2_started(self, payload):
+        self.sse.publish({'event': 'phd2_started', 'payload': payload}, type='phd2')
+
+    def on_phd2_exited(self, payload):
+        self.sse.publish({'event': 'phd2_exited', 'payload': payload}, type='phd2')
+
 
     def on_indi_service_exit(self, service):
         service_stdout, service_stderr = None, None
@@ -78,9 +85,12 @@ class Controller:
     def __init__(self):
         self.sse = SSE(app.logger)
         self.settings = settings
+
         settings.on_update = self.__on_settings_update
         self.indi_profiles = SavedList(INDIProfile)
         self.event_listener = EventListener(self.sse)
+
+        self.phd2_service = PHD2Service(self.event_listener)
         self.sequences_runner = SequencesRunner(app.logger, self)
         self.sequences = None
         self.ping_thread = start_thread(self.__ping_clients)

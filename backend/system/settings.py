@@ -30,8 +30,9 @@ class Settings:
         self.config_dir = os.path.join(os.environ['HOME'], '.config', 'AstroPhotoPlus')
         self.system_config_dir = os.environ.get('SYSTEM_CONFDIR', '/etc')
         self.indi_service_logs = self.__build_path(['.cache', 'AstroPhotoPlus', 'logs', 'indi_service'], isdir=True)
+        self.phd2_service_logs = self.__build_path(['.cache', 'AstroPhotoPlus', 'logs', 'phd2_service'], isdir=True)
 
-        self.ro_props = ['default_datadir', 'indi_service_logs', 'config_dir']
+        self.ro_props = ['default_datadir', 'indi_service_logs', 'config_dir', 'phd2_service_logs']
         self.rw_props = [
             'sequences_dir',
             'indi_prefix',

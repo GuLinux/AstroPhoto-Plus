@@ -1,11 +1,18 @@
-FROM ubuntu:artful
+FROM ubuntu:bionic
 VOLUME /app
 
 ENV PYINDI_CLIENT_VERSION=0.2.2
 
-RUN apt-get update && apt-get install -y swig build-essential libnova-dev  python3 python3-pip python3-venv dirmngr swig build-essential libnova-dev libcfitsio-dev zlib1g-dev curl libopencv-dev libccfits-dev
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y swig build-essential libnova-dev  python3 python3-pip python3-venv dirmngr swig build-essential libnova-dev libcfitsio-dev zlib1g-dev curl libopencv-dev libccfits-dev tigervnc-standalone-server openbox
+
 COPY indi-ppa.list /etc/apt/sources.list.d/
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3F33A288 && apt-get update && apt-get install -y libindi-dev astrometry.net gsc
+COPY phd2-ppa.list /etc/apt/sources.list.d/
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E3DBD5D75CFABF12 && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3F33A288 && \
+    apt-get update && \
+    apt-get install -y libindi-dev astrometry.net gsc phd2
+
 RUN curl -o pyindi-client-$PYINDI_CLIENT_VERSION.tar.gz "https://files.pythonhosted.org/packages/3d/2c/66e96ab58e2cb5137986c53d8747edc8fb3001340120c62a4dab998f0a2b/pyindi-client-${PYINDI_CLIENT_VERSION}.tar.gz" && tar xzf pyindi-client-$PYINDI_CLIENT_VERSION.tar.gz && cd pyindi-client-$PYINDI_CLIENT_VERSION && python3 setup.py install && cd / && rm -rf pyindi-client-$PYINDI_CLIENT_VERSION
 VOLUME /usr/local/lib/python3.6/dist-packages
 

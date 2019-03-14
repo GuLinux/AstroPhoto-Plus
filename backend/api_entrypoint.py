@@ -539,3 +539,32 @@ def get_available_commands():
 def run_command(id, json):
     return commands.run(id, json)
 
+# PHD2
+@app.route('/api/phd2/status', methods=['GET'])
+@json_api
+def get_phd2_status():
+    return controller.phd2_service.status()
+
+@app.route('/api/phd2/start', methods=['POST'])
+@json_input
+@json_api
+def start_phd2(json):
+    controller.phd2_service.start(json)
+    return { 'status': 'starting' }
+
+@app.route('/api/phd2/stop', methods=['POST'])
+@json_api
+def stop_phd2():
+    controller.phd2_service.stop()
+    return { 'status': 'stopping' }
+
+@app.route('/api/phd2/reset', methods=['POST'])
+@json_api
+def reset_phd2():
+    controller.phd2_service.reset()
+    return { 'status': 'OK' }
+
+
+
+
+

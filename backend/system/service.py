@@ -9,6 +9,7 @@ class Service:
     def __init__(self, name, logs_directory):
         self.name = name
         self.process = None
+        logger.debug('Logs directory for service {}: {}'.format(name, logs_directory))
         os.makedirs(logs_directory, exist_ok=True)
         self.stdout_path = os.path.join(logs_directory, name + '-stdout.log')
         self.stderr_path = os.path.join(logs_directory, name + '-stderr.log')
@@ -66,12 +67,14 @@ class Service:
     def get_stdout(self):
         if not os.path.isfile(self.stdout_path):
             raise RuntimeError('stdout logfile for {} not existing'.format(self.name))
-        return open(self.stdout_path, 'r')
+        with open(self.stdout_path, 'r') as out:
+            return out.read()
 
     def get_stderr(self):
         if not os.path.isfile(self.stderr_path):
             raise RuntimeError('stderr logfile for {} not existing'.format(self.name))
-        return open(self.stderr_path, 'r')
+        with open(self.stderr_path, 'r') as err:
+            return err.read()
 
     def __has_process(self):
         return self.process != None

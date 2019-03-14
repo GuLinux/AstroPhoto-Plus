@@ -57,6 +57,17 @@ export const Home = ({serverName}) => (
                 </List.Item>
 
                 <List.Item>
+                    <List.Icon name='dot circle outline' />
+                    <List.Content>
+                        <List.Header as={Link} to='/autoguiding' content='Autoguiding' />
+                        <List.Description>
+                            Use the well known and powerful <a rel="noopener noreferrer" href='https://openphdguiding.org/' target="_BLANK">PHD2</a> engine to guide your mount and get better shots.
+                            Know where your camera is pointing, via an easy to use offline plate solved, powered by .
+                        </List.Description>
+                    </List.Content>
+                </List.Item>
+
+                <List.Item>
                     <List.Icon name='settings' />
                     <List.Content>
                         <List.Header as={Link} to='/settings' content='Settings' />
