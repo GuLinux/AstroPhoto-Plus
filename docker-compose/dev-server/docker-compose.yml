@@ -23,8 +23,10 @@ services:
     expose:
         - "5000"
         - "5678"
+        - "5910"
     ports:
         - "5678:5678"
+        - "5910:5910"
     environment:
         - INDI_SERVER_HOST
         - INDI_SERVER_PORT
