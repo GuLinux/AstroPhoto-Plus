@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.1] - 16/03/2019
+### Minor fixes and enhancements
+
+### Improvements
+
+ - Download FITS files from Camera page
+ - Allow to set server name (shown in Menu, Homepage and title bar)
+ - Sort INDI devices, groups and properties alphabetically in order to have a more consistent UI
+ 
+### Bugfixes
+
+ - Fix crash when pressing Enter in INDI Profile dialogue
+ - Fix debayer issue
+ - Fix 8 bit images not properly previewed
+
 ## [1.0.0] - 17/02/2019
 ### First major release - Also renaming to Astro Photo Plus
 
