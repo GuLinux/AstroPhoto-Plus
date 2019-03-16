@@ -252,4 +252,15 @@ export const solveFieldAPI = (dispatch, onSuccess, onError, astrometryDriver,opt
     headers: headersJSONRequest,
 }, onSuccess, onError);
 
-export const fetchAutoguidingStateAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/phd2/status', {}, json => onSuccess(json));
+export const fetchPHD2ServerStatusAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/phd2/status', {}, json => onSuccess(json));
+
+export const startPHD2API = (dispatch, options, onSuccess) => fetchJSON(dispatch, '/api/phd2/start', {
+    method: 'POST',
+    body: JSON.stringify(options),
+    headers: headersJSONRequest,
+}, onSuccess);
+
+export const stopPHD2API = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/phd2/stop', { method: 'POST' }, onSuccess);
+
+export const resetPHD2API = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/phd2/reset', { method: 'POST' }, onSuccess);
+

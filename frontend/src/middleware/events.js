@@ -4,6 +4,7 @@ import Actions from '../actions';
 import { EventSource } from './polyfills';
 import { API } from './api';
 import { serverError } from '../App/actions';
+import { phd2Started, phd2Exited } from '../Autoguiding/actions';
 
 
 const logEvent = event => {
@@ -11,7 +12,7 @@ const logEvent = event => {
     console.log(event);
 }
 
-const indiserverEvents = (event, dispatch) => {
+const indiserverEvents = dispatch => event => {
     let eventObject = JSON.parse(event.data);
     switch(eventObject.event) {
         case 'indi_server_connect':
@@ -46,7 +47,7 @@ const indiserverEvents = (event, dispatch) => {
     }
 }
 
-const sequences = (event, dispatch) => {
+const sequences = dispatch => event => {
     let eventObject = JSON.parse(event.data);
     switch(eventObject.event) {
         case 'sequence_updated':
@@ -63,7 +64,7 @@ const sequences = (event, dispatch) => {
     }
 }
 
-const indiserviceEvents = (event, dispatch) => {
+const indiserviceEvents = dispatch => event => {
     let eventObject = JSON.parse(event.data);
     switch(eventObject.event) {
         case 'started':
@@ -77,7 +78,7 @@ const indiserviceEvents = (event, dispatch) => {
     }
 }
 
-const astrometryIndexDownloader = (event, dispatch) => {
+const astrometryIndexDownloader = dispatch => event => {
     let eventObject = JSON.parse(event.data);
     switch(eventObject.event) {
         case 'progress':
@@ -96,32 +97,34 @@ const astrometryIndexDownloader = (event, dispatch) => {
     }
 }
 
-const listenToEvents = (dispatch) => {
-    var es = new EventSource(API.getFullURL('/api/events'));
-
-    var serverListener = event => {
-        switch(event.type) {
-            case 'indi_server':
-                indiserverEvents(event, dispatch);
-                break;
-            case 'sequences':
-                sequences(event, dispatch);
-                break;
-            case 'indi_service':
-                indiserviceEvents(event, dispatch);
-                break
-            case 'astrometry_index_downloader':
-                astrometryIndexDownloader(event, dispatch);
-                break;
-            default:
-                logEvent(event);
-        }
+const phdEventsListener = dispatch => event => {
+    let eventObject = JSON.parse(event.data);
+    switch(eventObject.event) {
+        case 'phd2_started':
+            dispatch(phd2Started());
+            break;
+        case 'phd2_exited':
+            dispatch(phd2Exited(eventObject.payload));
+            break;
+        default:
+            logEvent(eventObject);
     }
-    es.addEventListener('indi_server', serverListener);
-    es.addEventListener('sequences', serverListener);
-    es.addEventListener('indi_service', serverListener);
-    es.addEventListener('astrometry_index_downloader', serverListener);
-    es.onerror = e => dispatch(serverError('event_source', 'event', e));
+};
+
+var eventSourceInstance;
+
+
+const listenToEvents = (dispatch) => {
+    eventSourceInstance = new EventSource(API.getFullURL('/api/events'));
+    eventSourceInstance.addEventListener('indi_server', indiserverEvents(dispatch));
+    eventSourceInstance.addEventListener('sequences', sequences(dispatch));
+    eventSourceInstance.addEventListener('indi_service', indiserviceEvents(dispatch));
+    eventSourceInstance.addEventListener('astrometry_index_downloader', astrometryIndexDownloader(dispatch));
+    eventSourceInstance.addEventListener('phd2', phdEventsListener(dispatch));
+    eventSourceInstance.onerror = e => {
+        dispatch(serverError('event_source', 'event', e));
+        eventSourceInstance.close();
+    }
 }
 
 export default listenToEvents;

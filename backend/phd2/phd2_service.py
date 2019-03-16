@@ -15,25 +15,30 @@ class PHD2Service:
     def status(self):
         return {
             'is_running': self.service.is_running(),
+            'display': self.display_number,
         }
 
     def start(self, options):
-        self.service.start(self.__vnc_server_binary, self.__build_server_options(options), on_started=self.__on_started, on_exit=self.__on_exit)
-        return self.status()
+        try:
+            self.service.start(self.__vnc_server_binary, self.__build_server_options(options), on_started=self.__on_started, on_exit=self.__on_exit)
+            return self.status()
+        except RuntimeError as e:
+            raise BadRequestError(str(e))
+ 
 
-    def stop(self, kill=False):
-        self.service.stop(kill=kill, wait=True)
-        return self.status()
+    def stop(self):
+        self.reset()
 
     def reset(self):
-        subprocess.run([self.__vnc_server_binary, '-kill', self.display_number])
- 
+       subprocess.run([self.__vnc_server_binary, '-kill', self.display_number])
+
     def __build_server_options(self, options):
         return [
             '-SecurityTypes', 'None',
             '--I-KNOW-THIS-IS-INSECURE',
             '-geometry', '{}x{}'.format(options.get('width', 1024), options.get('height', 768)),
             '-localhost', 'no',
+            '-cleanstale',
             '-fg',
             '-xstartup', self.__path('xstartup'),
             self.display_number,
@@ -43,6 +48,9 @@ class PHD2Service:
         return os.path.join(self.module_path, entry)
 
     def __on_started(self, service):
+        time.sleep(1.5)
+        if not self.service.is_running():
+            return
         payload = self.__service_logs()
         logger.debug('PHD service started: {}'.format(payload))
         self.event_listener.on_phd2_started({ 'stdout': self.__service_logs() })
