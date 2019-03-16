@@ -57,6 +57,16 @@ export const Home = ({serverName}) => (
                 </List.Item>
 
                 <List.Item>
+                    <List.Icon name='dot circle outline' />
+                    <List.Content>
+                        <List.Header as={Link} to='/autoguiding' content='Autoguiding' />
+                        <List.Description>
+                            Simple and versatile autoguiding engine, powered by <a rel="noopener noreferrer" href='https://github.com/jmccormac01/Donuts' target="_BLANK">Donuts</a>.
+                        </List.Description>
+                    </List.Content>
+                </List.Item>
+
+                <List.Item>
                     <List.Icon name='settings' />
                     <List.Content>
                         <List.Header as={Link} to='/settings' content='Settings' />

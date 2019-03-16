@@ -19,6 +19,7 @@ import { VersionCheckContainer } from '../Version/VersionCheckContainer';
 import 'react-image-crop/dist/ReactCrop.css';
 import '../index.css';
 import { HomeContainer } from '../Home/HomeContainer';
+import { AutoguidingContainer } from '../Autoguiding/AutoguidingContainer';
 
 const AppRouter = ({location}) => (
   <div className="App">
@@ -36,6 +37,7 @@ const AppRouter = ({location}) => (
                 <Route path={Routes.PLATE_SOLVING_PAGE} component={PlateSolvingPageContainer} />
                 <Route path={Routes.SETTINGS_PAGE} component={SettingsContainer} />
                 <Route path={Routes.IMAGE_PAGE} render={({match, location}) => <ImagePage id={match.params.id} type={match.params.type} />} />
+                <Route path={Routes.AUTOGUIDING} component={AutoguidingContainer} />
               </Switch>
             </CSSTransition>
           </TransitionGroup>

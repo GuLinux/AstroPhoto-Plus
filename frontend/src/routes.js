@@ -13,4 +13,5 @@ export const Routes = {
     },
     SEQUENCE_JOB_PAGE: '/sequences/:id/items/:itemId',
     SEQUENCE_JOB_IMAGES: '/sequences/:id/items/:itemId/images',
+    AUTOGUIDING: '/autoguiding',
 }

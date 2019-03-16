@@ -15,6 +15,7 @@ import commands from './Commands/reducer';
 import { plateSolving } from './PlateSolving/reducer';
 import { network } from './Network/reducer';
 import { backendSelection } from './BackendSelection/reducer';
+import { autoguiding } from './Autoguiding/reducer';
 
 export const astroPhotoPlusReducer = combineReducers({
     version,
@@ -33,5 +34,6 @@ export const astroPhotoPlusReducer = combineReducers({
     commands,
     plateSolving,
     backendSelection,
+    autoguiding,
 });
 

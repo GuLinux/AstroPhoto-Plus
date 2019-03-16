@@ -251,4 +251,3 @@ export const solveFieldAPI = (dispatch, onSuccess, onError, astrometryDriver,opt
     body: JSON.stringify(options),
     headers: headersJSONRequest,
 }, onSuccess, onError);
-
