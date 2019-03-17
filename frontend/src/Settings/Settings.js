@@ -52,7 +52,7 @@ export class Settings extends React.Component {
 
 
     render = () => {
-        const {onChange, showCommands, version='N/A'} = this.props;
+        const {onChange, showCommands, backendVersion='N/A', frontendVersion} = this.props;
         const currentSequencesDir = this.displayTextValue('sequences_dir', '');
         const currentINDIPath = this.displayTextValue('indi_prefix', '');
         const currentAstrometryTimeout = this.displayValue('astrometry_cpu_limit') || '';
@@ -62,7 +62,12 @@ export class Settings extends React.Component {
                     <Header content='About' />
                     <Grid stackable>
                         <Grid.Column width={6} verticalAlign='middle'>
-                            AstroPhoto Plus version {version}
+                            {
+                                backendVersion === frontendVersion ?
+                                    `AstroPhoto Plus version ${backendVersion}`
+                                :
+                                    `AstroPhoto Plus: backend version ${backendVersion}, frontend: ${frontendVersion}`
+                            }
                         </Grid.Column>
                         <Grid.Column textAlign='right' width={10} verticalAlign='middle'>
                             <Menu compact stackable>
