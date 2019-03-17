@@ -23,7 +23,7 @@ export class ExposureInput extends React.Component {
     shoot = () => this.props.onShoot(this.props.shotParameters);
 
     render = () => {
-        const {shotParameters, cameraExposureValue, onExposureChanged, disabled, isShooting, size='tiny'} = this.props;
+        const {shotParameters, cameraExposureValue, onExposureChanged, disabled, isShooting, size='mini'} = this.props;
         return (
             <NumericInput
                 placeholder='seconds'

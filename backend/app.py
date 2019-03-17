@@ -1,7 +1,6 @@
 from flask import Flask
 import json
 import os
-from flask_sse import sse
 
 
 REDIS_HOST = os.environ.get('REDIS_SERVER', '127.0.0.1')
@@ -20,5 +19,3 @@ with open('version.json', 'r') as version_json:
     app.config['version'] = json.load(version_json)
 
 logger = app.logger
-
-app.register_blueprint(sse, url_prefix='/api/events')

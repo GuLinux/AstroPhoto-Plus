@@ -14,7 +14,6 @@ import { Route, Switch} from "react-router";
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Routes } from '../routes';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
-import { VersionCheckContainer } from '../Version/VersionCheckContainer';
 
 import 'react-image-crop/dist/ReactCrop.css';
 import '../index.css';
@@ -22,12 +21,9 @@ import { HomeContainer } from '../Home/HomeContainer';
 
 const AppRouter = ({location}) => (
   <div className="App">
-    <VersionCheckContainer />
     <NavbarContainer location={location}>
         <NotificationsContainer />
         <ErrorPageContainer>
-          <TransitionGroup>
-            <CSSTransition key={location.key} classNames='fade' timeout={500}>
               <Switch location={location}>
                 <Route exact path={Routes.ROOT} component={HomeContainer}/>
                 <Route path={Routes.SEQUENCES_PAGE} component={SequencesPage} />
@@ -37,8 +33,6 @@ const AppRouter = ({location}) => (
                 <Route path={Routes.SETTINGS_PAGE} component={SettingsContainer} />
                 <Route path={Routes.IMAGE_PAGE} render={({match, location}) => <ImagePage id={match.params.id} type={match.params.type} />} />
               </Switch>
-            </CSSTransition>
-          </TransitionGroup>
         </ErrorPageContainer>
         <LoadingContainer />
     </NavbarContainer>

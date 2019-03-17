@@ -4,7 +4,7 @@ import React from 'react';
 class HistoryLandingRoutes extends React.PureComponent {
 
     setLandingPath = () => {
-        if(this.props.currentPath !== this.props.route) {
+        if(this.props.landingPath !== this.props.currentPath && this.props.currentPath !== this.props.route) {
             this.props.setLandingPath(this.props.route, this.props.currentPath);
         }
     }

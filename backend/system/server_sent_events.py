@@ -41,14 +41,6 @@ class SSEClient:
  
 class SSE:
     def __init__(self, logger):
-        self.logger = logger
-
-    def publish(self, data, type):
-        with app.app_context():
-            sse.publish(data, type=type, id=str(int(time.time() * 1000)))
-
-class SSE_Old:
-    def __init__(self, logger):
         self.clients = []
         self.logger = logger
 

@@ -63,7 +63,7 @@ export class CameraShootingSectionMenuEntries extends React.Component {
                 }
                 <Header size='tiny' content='Exposure' textAlign='center' />
                 <Form.Field>
-                    <ExposureInputContainer cameraId={currentCamera && currentCamera.id} disabled={!currentCamera || isShooting} size='tiny' />
+                    <ExposureInputContainer cameraId={currentCamera && currentCamera.id} disabled={!currentCamera || isShooting} size='mini' />
                     { !currentCamera && <Message content='Please select a camera first' size='tiny'/> }
                 </Form.Field>
                 <Form.Checkbox label='Continuous' disabled={!currentCamera} toggle size='mini' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} />
