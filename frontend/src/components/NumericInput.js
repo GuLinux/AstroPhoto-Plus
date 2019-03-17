@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button, Input } from 'semantic-ui-react'
 
-export class NumericInput extends React.Component {
+export class NumericInput extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = { value: null };
     }
 
-    onChange = (data) => {
+    onChange = (e, data) => {
         if(this.valueChangedTimer) {
             clearTimeout(this.valueChangedTimer);
         }
@@ -56,31 +56,45 @@ export class NumericInput extends React.Component {
 
     onKeyUp = (keyEvent) => {
         if(keyEvent.key === 'ArrowUp') {
-            this.step(+1);
+            this.increaseStep();
         }
         if(keyEvent.key === 'ArrowDown') {
-            this.step(-1);
+            this.decreaseStep();
         }
     }
 
+    increaseStep = () => this.step(+1);
+    decreaseStep = () => this.step(-1);
     render = () => {
         const  { value, format, parse, min, max, step, onChange, ...args } = this.props;
         return (
             <Input
-                onKeyUp={e => this.onKeyUp(e)}
-                onBlur={() => this.mergeState()}
+                onKeyUp={this.onKeyUp}
+                onBlur={this.mergeState}
                 value={this.value()}
-                onChange={(e, data) => this.onChange(data)}
+                onChange={this.onChange}
                 type='text'
                 {...args}
-                action={ step > 0 && !args.readOnly && (
-                    <Button.Group vertical size='mini' className='number-steps'>
-                        <Button icon='caret up' onClick={() => this.step(+1)} />
-                        <Button icon='caret down'onClick={() => this.step(-1)} />
-                    </Button.Group>
-                )}
+                action={<StepButtons
+                    step={step}
+                    readOnly={args.readOnly}
+                    increaseStep={this.increaseStep}
+                    decreaseStep={this.decreaseStep}
+                />}
             />
         )
     }
+}
+
+const StepButtons = ({step, readOnly, increaseStep, decreaseStep}) => {
+    if(step <= 0 || readOnly) {
+        return null;
+    }
+    return (
+        <Button.Group vertical size='mini' className='number-steps'>
+            <Button icon='caret up' onClick={increaseStep} />
+            <Button icon='caret down'onClick={decreaseStep} />
+        </Button.Group>
+    );
 }
 

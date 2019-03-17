@@ -24,10 +24,10 @@ const createMiddleware = () => {
     return composeEnhancers(applyMiddleware(...middlewares));
 }
 
-//if(isDevelopmentMode) {
-//    const whyDidYouRender = require('@welldone-software/why-did-you-render');
-//    whyDidYouRender(React, {include: [/.*/]});
-//}
+// if(isDevelopmentMode) {
+//     const whyDidYouRender = require('@welldone-software/why-did-you-render');
+//     whyDidYouRender(React, {include: [/.*/]});
+// }
 
 let store = createStore(
     astroPhotoPlusReducer,
