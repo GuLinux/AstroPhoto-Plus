@@ -50,9 +50,11 @@ def catch_all(path):
 def backend_version():
     return app.config['version']
 
-@app.route('/api/events')
-def events():
-    return Response(controller.sse.subscribe().feed(), mimetype='text/event-stream')
+# @app.route('/api/events')
+# def events():
+#     response = Response(controller.sse.subscribe().feed(), mimetype='text/event-stream')
+#     response.headers['Access-Control-Allow-Origin'] = '*'
+#     return response
 
 @app.route('/api/settings', methods=['GET'])
 @json_api

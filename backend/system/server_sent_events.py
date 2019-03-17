@@ -2,6 +2,8 @@ import json
 import uuid
 import time
 from utils.threads import start_thread, thread_queue
+from flask_sse import sse
+from app import app
 
 
 class SSEMessage:
@@ -28,6 +30,7 @@ class SSEClient:
 
     def feed(self):
         def gen():
+            yield ':{}\n'.format(' ' * 2049)
             while True:
                 try:
                     yield self.queue.get().to_str()
@@ -36,8 +39,15 @@ class SSEClient:
                     return
         return gen()
  
-
 class SSE:
+    def __init__(self, logger):
+        self.logger = logger
+
+    def publish(self, data, type):
+        with app.app_context():
+            sse.publish(data, type=type, id=str(int(time.time() * 1000)))
+
+class SSE_Old:
     def __init__(self, logger):
         self.clients = []
         self.logger = logger

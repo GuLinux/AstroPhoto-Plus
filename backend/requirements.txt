@@ -1,6 +1,7 @@
 pyindi-client>=0.2.3
 astropy
 flask
+flask-sse
 gunicorn
 gevent
 greenlet
