@@ -1,5 +1,5 @@
 import React from 'react';
-import { INDISwitchContainer } from './INDIValueContainer';
+import { INDISwitchContainer } from './INDIValueContainers';
 import { switchValues } from './utils';
 
 export class INDISwitchProperty extends React.PureComponent {
