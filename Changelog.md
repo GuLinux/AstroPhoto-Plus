@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.1] - 16/03/2019
+## [1.0.1] - 18/03/2019
 ### Minor fixes and enhancements
 
 ### Improvements
