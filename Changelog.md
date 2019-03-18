@@ -14,6 +14,7 @@
  - Fix crash when pressing Enter in INDI Profile dialogue
  - Fix debayer issue
  - Fix 8 bit images not properly previewed
+ - Instead of forcing reload of app, just warn the user if backend version != frontend version.
 
 ## [1.0.0] - 17/02/2019
 ### First major release - Also renaming to Astro Photo Plus
