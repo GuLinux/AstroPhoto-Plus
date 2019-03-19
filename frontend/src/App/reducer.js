@@ -5,7 +5,7 @@ const defaultState = {
     backend: {},
 };
 
-export const version = (state = defaultState, action) => {
+export const app = (state = defaultState, action) => {
     switch (action.type) {
         case 'BACKEND_VERSION_FETCHED':
             return { ...state, backend: action.version };

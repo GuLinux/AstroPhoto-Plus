@@ -73,9 +73,9 @@ export const indiPropertySelector = createCachedSelector(
     }
 )(getPropertyIdProp);
 
-const getValueIdProp = (state, {valueId}) => valueId;
+const getValueIdProp = (state, {valueId, device, property, valueName}) => valueId || `${device}/${property}/${valueName}`;
 
-export const getValueInputSelectorById = (state, {valueId}) => get(getValues(state), ['entities', valueId]);
+export const getValueInputSelectorById = (state, props) => get(getValues(state), ['entities', getValueIdProp(state, props)]);
 
 export const getValueInputSelector = (deviceId, propertyName, valueName, defaultValue) => state => {
     const valueId = getValueId({device: deviceId, name: propertyName}, {name: valueName});

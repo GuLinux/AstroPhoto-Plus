@@ -8,7 +8,7 @@ import { isDevelopmentMode } from './utils';
 
 import { initialiseApp } from './initialiseApp';
 
- import React from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 
 import { AppContainer } from './App/AppContainer';
@@ -23,6 +23,11 @@ const createMiddleware = () => {
     isDevelopmentMode && ! disableLogger && middlewares.push(loggerMiddleware);
     return composeEnhancers(applyMiddleware(...middlewares));
 }
+
+// if(isDevelopmentMode) {
+//     const whyDidYouRender = require('@welldone-software/why-did-you-render');
+//     whyDidYouRender(React, {include: [/.*/]});
+// }
 
 let store = createStore(
     astroPhotoPlusReducer,

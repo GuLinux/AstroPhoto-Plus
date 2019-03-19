@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
 import { get } from 'lodash';
 import { getConnectedCameras, getConnectedTelescopes, getCCDWidthPix, getCCDPixelPitch, getTelescopeFocalLength } from '../Gear/selectors';
+import { getBackendVersion, getFrontendVersion } from '../App/selectors';
 
 export const getSettings = state => state.settings;
 export const getCurrentSettings = state => getSettings(state).current;
-const getVersion = state => get(state, 'version.backend.version');
 const getCommands = state => state.commands;
 
 const getAstrometryIsDownloading = state => state.settings.astrometry.isDownloading;
@@ -13,12 +13,14 @@ export const getServerName = state => get(state, 'settings.current.server_name',
 
 export const settingsSelector = createSelector([
     getSettings,
-    getVersion,
+    getBackendVersion,
+    getFrontendVersion,
     getCommands,
     getAstrometryIsDownloading,
-], (settings, version, commands, astrometryIsDownloading) => ({
+], (settings, backendVersion, frontendVersion, commands, astrometryIsDownloading) => ({
     settings,
-    version,
+    backendVersion,
+    frontendVersion,
     showCommands: commands.ids.length > 0 || commands.fetching,
     astrometryIsDownloading,
 }));

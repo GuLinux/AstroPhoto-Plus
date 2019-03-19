@@ -52,7 +52,9 @@ def backend_version():
 
 @app.route('/api/events')
 def events():
-    return Response(controller.sse.subscribe().feed(), mimetype='text/event-stream')
+    response = Response(controller.sse.subscribe().feed(), mimetype='text/event-stream')
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 @app.route('/api/settings', methods=['GET'])
 @json_api

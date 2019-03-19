@@ -1,12 +1,11 @@
 import { connect } from 'react-redux';
 import { HistoryLandingPage } from './HistoryLandingPage';
-import { makeHistoryLandingSelector } from './selectors';
-import Actions from '../actions';
-
+import { historyLandingSelector } from './selectors';
+import { setLandingPath } from './actions';
 const mapDispatchToProps = {
-    setLandingPath: Actions.Navigation.setLandingPath,
+    setLandingPath, 
 };
 
 
-export const HistoryLandingContainer = connect(makeHistoryLandingSelector, mapDispatchToProps)(HistoryLandingPage);
+export const HistoryLandingContainer = connect(historyLandingSelector, mapDispatchToProps)(HistoryLandingPage);
 

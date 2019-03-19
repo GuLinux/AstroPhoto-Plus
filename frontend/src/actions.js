@@ -6,7 +6,6 @@ import INDIService from './INDI-Service/actions';
 import Camera from './Camera/actions';
 import Settings from './Settings/actions';
 import Image from './Image/actions';
-import Navigation from './Navigation/actions';
 import Commands from './Commands/actions';
 import { PlateSolving } from './PlateSolving/actions';
 import { BackendSelection } from './BackendSelection/actions';
@@ -22,7 +21,6 @@ export const Actions = {
     Camera,
     Settings,
     Image,
-    Navigation,
     Commands,
     PlateSolving,
     BackendSelection,

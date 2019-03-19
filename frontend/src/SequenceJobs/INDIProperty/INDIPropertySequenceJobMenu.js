@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu } from 'semantic-ui-react';
 import { INDIPropertySequenceJobGroupItemContainer, INDIPropertySequenceJobPropertyItemContainer } from './INDIPropertySequenceJobMenuItem';
-import { INDISwitchContainer, INDITextContainer, INDINumberContainer } from '../../INDI-Server/INDIValueContainer';
+import { INDISwitchContainer, INDITextContainer, INDINumberContainer } from '../../INDI-Server/INDIValueContainers';
 import { get } from 'lodash';
 import { getValueName, switchValues } from '../../INDI-Server/utils';
 

@@ -2,7 +2,7 @@ from redis import StrictRedis, exceptions
 import os
 from functools import wraps
 import json
-from app import logger
+from app import logger, REDIS_HOST, REDIS_PORT
 import time
 
 
@@ -29,10 +29,8 @@ class RedisClient:
     PREFIX='ap+_'
 
     def __init__(self):
-        redis_host = os.environ.get('REDIS_SERVER', '127.0.0.1')
-        redis_port = os.environ.get('REDIS_PORT', 6379) 
-        logger.info('Connecting to redis server at {}:{}'.format(redis_host, redis_port))
-        self.client = StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
+        logger.info('Connecting to redis server at {}:{}'.format(REDIS_HOST, REDIS_PORT))
+        self.client = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
         self.version = self.get_version()
         logger.info('Initialized redis, schema version: {}'.format(self.version))
         if self.version != RedisClient.CURRENT_VERSION:

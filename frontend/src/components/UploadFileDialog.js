@@ -10,6 +10,10 @@ export class UploadFileDialog extends React.Component {
         this.state = {};
     }
 
+    onAcceptedFiles = acceptedFiles => {
+        this.setState({...this.state, file: acceptedFiles && acceptedFiles.length === 1 ? acceptedFiles[0] : null });
+    }
+
     render = () => {
         return (
             <ModalDialog trigger={this.props.trigger} basic size='mini' centered={false}>
@@ -17,18 +21,20 @@ export class UploadFileDialog extends React.Component {
                 <Modal.Content>
                     <Grid columns={1}>
                         <Grid.Row centered textAlign='center' verticalAlign='middle'>
-                            <Dropzone accept={this.props.acceptMimeType} disablePreview={true} multiple={false} onDrop={ (acceptedFiles) => {
-                                this.setState({...this.state, file: acceptedFiles && acceptedFiles.length === 1 ? acceptedFiles[0] : null });
-                            }}
-                            >
-                                <Grid columns={1}>
-                                    <Grid.Row centered textAlign='center' verticalAlign='middle'>
-                                        <Icon name='upload' size='massive' />
-                                    </Grid.Row>
-                                    <Grid.Row centered textAlign='center' verticalAlign='middle'>
-                                        Drop files here, or click to select
-                                    </Grid.Row>
-                                </Grid>
+                            <Dropzone accept={this.props.acceptMimeType} disablePreview={true} multiple={false} onDrop={this.onAcceptedFiles}>
+                                {({getRootProps, getInputProps}) => (
+                                    <div {...getRootProps()}>
+                                        <Grid columns={1}>
+                                            <Grid.Row centered textAlign='center' verticalAlign='middle'>
+                                                <Icon name='upload' size='massive' />
+                                            </Grid.Row>
+                                            <Grid.Row centered textAlign='center' verticalAlign='middle'>
+                                                Drop files here, or click to select
+                                                <input {...getInputProps()} />
+                                            </Grid.Row>
+                                        </Grid>
+                                    </div>
+                                )}
                             </Dropzone>
                         </Grid.Row>
                         <Grid.Row centered textAlign='center' verticalAlign='middle'>

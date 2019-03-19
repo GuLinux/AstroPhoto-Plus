@@ -1,13 +1,4 @@
 {
-    "devDependencies": {
-        "babel-jest": "23.6.0",
-        "jest": "23.6.0",
-        "metro-react-native-babel-preset": "0.49.0",
-        "react-test-renderer": "16.6.0-alpha.8af6728"
-    },
-    "jest": {
-        "preset": "react-native"
-    },
     "browserslist": [
         ">0.2%",
         "not dead",
@@ -20,31 +11,38 @@
         "event-source-polyfill": "1.0.5",
         "forest-themes": "semantic-ui-forest/forest-themes#7f472cfbcc2093bb8c90cc56fba18ca8e3818028",
         "isomorphic-fetch": "^2.2.1",
-        "native-base": "^2.11.0",
-        "normalizr": "^3.2.4",
-        "npm": "^6.4.0",
+        "native-base": "^2.12.1",
+        "normalizr": "^3.3.0",
         "printj": "^1.2.1",
-        "re-reselect": "^2.2.0",
-        "react": "^16.4.0",
-        "react-dom": "^16.4.0",
-        "react-dropzone": "^5.0.1",
-        "react-image-crop": "^6.0.9",
-        "react-native": "0.58.4",
-        "react-native-gesture-handler": "^1.0.15",
-        "react-navigation": "^3.3.0",
-        "react-redux": "^5.0.6",
-        "react-router": "^4.3.1",
-        "react-router-dom": "^4.3.1",
-        "react-router-native": "^4.3.0",
-        "react-scripts": "^2.1.1",
+        "re-reselect": "^3.0.0",
+        "react": "^16.8.4",
+        "react-dom": "^16.8.4",
+        "react-dropzone": "^10.0.4",
+        "react-image-crop": "^6.0.18",
+        "react-native": "0.59.1",
+        "react-native-gesture-handler": "^1.1.0",
+        "react-navigation": "^3.4.1",
+        "react-redux": "^6.0.1",
+        "react-router": "^4.4.0",
+        "react-router-dom": "^4.4.0",
+        "react-scripts": "^2.1.8",
         "react-web-notification": "^0.5.0",
-        "recharts": "^1.2.0",
-        "redux": "^3.7.2",
+        "recharts": "^1.5.0",
+        "redux": "^4.0.1",
         "redux-logger": "^3.0.6",
-        "redux-thunk": "^2.2.0",
-        "reselect": "^3.0.1",
+        "redux-thunk": "^2.3.0",
+        "reselect": "^4.0.0",
         "semantic-ui-css": "^2.4.1",
-        "semantic-ui-react": "^0.84.0"
+        "semantic-ui-react": "^0.86.0"
+    },
+    "devDependencies": {
+        "babel-jest": "23.6.0",
+        "jest": "23.6.0",
+        "metro-react-native-babel-preset": "0.49.0",
+        "react-test-renderer": "16.6.0-alpha.8af6728"
+    },
+    "jest": {
+        "preset": "react-native"
     },
     "name": "AstroPhotoPlus_frontend",
     "private": true,
@@ -55,12 +53,12 @@
         "copy:themes": "yarn run forest:clean && cp -a node_modules/forest-themes/dist/* public/themes/ && cp -a node_modules/semantic-ui-css/themes public/themes/bootswatch-v3/ && cp -a node_modules/semantic-ui-css/themes public/themes/bootswatch-v4/",
         "eject": "react-scripts eject",
         "forest:clean": "rm -rf public/themes; mkdir -p public/themes",
-        "start": "yarn run copy:assets && react-scripts start",
-        "test": "react-scripts test --env=jsdom",
-        "start:native": "node node_modules/react-native/local-cli/cli.js start",
-        "test:native": "jest",
         "run:android": "react-native run-android",
-        "run:ios": "react-native run-ios"
+        "run:ios": "react-native run-ios",
+        "start": "yarn run copy:assets && react-scripts start",
+        "start:native": "node node_modules/react-native/local-cli/cli.js start",
+        "test": "react-scripts test --env=jsdom",
+        "test:native": "jest"
     },
-    "version": "1.0.0"
+    "version": "1.0.1"
 }

@@ -96,18 +96,35 @@ const astrometryIndexDownloader = dispatch => event => {
     }
 }
 
-var eventSourceInstance;
-
-
 const listenToEvents = (dispatch) => {
-    eventSourceInstance = new EventSource(API.getFullURL('/api/events'));
-    eventSourceInstance.addEventListener('indi_server', indiserverEvents(dispatch));
-    eventSourceInstance.addEventListener('sequences', sequences(dispatch));
-    eventSourceInstance.addEventListener('indi_service', indiserviceEvents(dispatch));
-    eventSourceInstance.addEventListener('astrometry_index_downloader', astrometryIndexDownloader(dispatch));
-    eventSourceInstance.onerror = e => {
+    var es = new EventSource(API.getFullURL('/api/events'));
+
+    var serverListener = event => {
+        switch(event.type) {
+            case 'indi_server':
+                indiserverEvents(event, dispatch);
+                break;
+            case 'sequences':
+                sequences(event, dispatch);
+                break;
+            case 'indi_service':
+                indiserviceEvents(event, dispatch);
+                break
+            case 'astrometry_index_downloader':
+                astrometryIndexDownloader(event, dispatch);
+                break;
+            default:
+                logEvent(event);
+        }
+    }
+    es.addEventListener('indi_server', serverListener);
+    es.addEventListener('sequences', serverListener);
+    es.addEventListener('indi_service', serverListener);
+    es.addEventListener('astrometry_index_downloader', serverListener);
+    es.onerror = e => {
         dispatch(serverError('event_source', 'event', e));
-        eventSourceInstance.close();
+        es.close();
+        es = null;
     }
 }
 

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { version } from './Version/reducer';
+import { app } from './App/reducer';
 import sequenceJobs from './SequenceJobs/reducer';
 import sequences from './Sequences/reducer';
 import indiserver from './INDI-Server/reducer';
@@ -18,7 +18,7 @@ import { backendSelection } from './BackendSelection/reducer';
 import { autoguiding } from './Autoguiding/reducer';
 
 export const astroPhotoPlusReducer = combineReducers({
-    version,
+    app,
     sequenceJobs,
     sequences,
     network,
