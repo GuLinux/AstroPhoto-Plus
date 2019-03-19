@@ -548,12 +548,6 @@ def set_autoguider_engine(json):
 def autoguider_stat_guiding(json):
     return controller.autoguider.guide(json.get('recalibrate', True))
 
-@app.route('/api/autoguider/dither', methods=['POST'])
-@json_input
-@json_api
-def autoguider_dither(json):
-    return controller.autoguider.dither(json.get('pixels', 5))
-
 @app.route('/api/autoguider/stop', methods=['POST'])
 @json_input
 @json_api

@@ -15,6 +15,7 @@ class PHD2Autoguider:
         self.recv_queue = Queue()
         self.out_queue = Queue()
         self.settle = {'pixels': 1.5, 'time': 8, 'timeout': 40} 
+        self.__id = 0
         
     def connect(self, hostname, port):
         if not hostname:
@@ -40,26 +41,26 @@ class PHD2Autoguider:
         self.__thread.join()
 
     def guide(self, recalibrate=True, settle={}):
-        self.__send_method('guide', [self.settle, recalibrate])
+        return self.__send_method('guide', [self.settle, recalibrate])
 
     def dither(self, pixels, settle={}):
-        self.__send_method('dither', [pixels, False, self.settle])
+        return self.__send_method('dither', [pixels, False, self.settle])
 
     def stop(self):
-        self.__send_method('stop_capture')
-        pass
+        return self.__send_method('stop_capture')
 
     def status(self):
         return {}
 
     def __send_method(self, method_name, parameters=[]):
-        id = int(time.time() * 1000)
+        id = self.__id
+        self.__id += 1
         self.out_queue.put({
             'method': method_name,
             'params': parameters,
             'id': id,
         })
-        return id
+        return { 'success': self.recv_queue.get().get('result', 1) == 0 }
 
     def __connect_socket(self, address, port):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as connection:
@@ -74,11 +75,24 @@ class PHD2Autoguider:
             while self.__connect:
                 infds, outfds, errfds = select.select(inout, inout, [], 0)
                 if infds:
-                    line = fileobj.readline()
-                    logger.debug(line)
+                    self.__handle_message(fileobj.readline())
                 if outfds:
                     try:
                         message = self.out_queue.get_nowait()
                         connection.send('{}\r\n'.format(json.dumps(message)).encode() )
                     except Empty:
                         pass
+
+    def __handle_message(self, message):
+        data = json.loads(message)
+        if data.get('jsonrpc'):
+            self.recv_queue.put(data)
+        elif data.get('Event'):
+            self.__handle_event(data)
+        else:
+            logger.warning('Received unknown message: {}'.format(message))
+
+    def __handle_event(self, event):
+        logger.debug('event: {}'.format(event))
+
+
