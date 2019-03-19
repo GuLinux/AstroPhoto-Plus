@@ -370,19 +370,12 @@ def get_cameras():
     return [x.to_map() for x in controller.indi_server.cameras()]
 
 
-def lookup_camera(id):
-    camera = [c for c in controller.indi_server.cameras() if c.id == id]
-    if not camera:
-        raise NotFoundError('Camera {} not found'.format(id))
-    return camera[0]
-
-
 @app.route('/api/cameras/<camera>/image', methods=['POST'])
 @json_input
 @json_api
 @indi_connected
 def shoot_image(camera, json):
-    return lookup_camera(camera).shoot_image(json)
+    return controller.indi_server.lookup_camera(camera).shoot_image(json)
 
 
 def get_image_database(type):
@@ -461,19 +454,13 @@ def get_telescopes():
 def get_astrometry():
     return [x.to_map() for x in controller.indi_server.astrometry_drivers()]
 
-def lookup_astrometry(id):
-    astrometry = [a for a in controller.indi_server.astrometry_drivers() if a.id == id]
-    if not astrometry:
-        raise NotFoundError('Astrometry driver {} not found'.format(id))
-    return astrometry[0]
-
 
 @app.route('/api/astrometry/<astrometry_id>/solveField', methods=['POST'])
 @json_input
 @json_api
 @indi_connected
 def astrometry_solve_field(astrometry_id, json):
-    return lookup_astrometry(astrometry_id).solve_field(json)
+    return controller.indi_server.lookup_astrometry(astrometry_id).solve_field(json)
 
 
 @app.route('/api/astrometry/download_indexes', methods=['POST'])

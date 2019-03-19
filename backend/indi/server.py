@@ -109,6 +109,24 @@ class Server:
     def filter_wheels(self):
         return [FilterWheel(self.client, self.logger, filter_wheel=f) for f in self.client.filter_wheels()]
 
+    def lookup_camera(self, name):
+        return self.__lookup_device(name, 'cameras', 'Camera')
+
+    def lookup_telescope(self, name):
+        return self.__lookup_device(name, 'telescopes', 'Telescope')
+
+    def lookup_astrometry(self, name):
+        return self.__lookup_device(name, 'astrometry_drivers', 'Astrometry Driver')
+
+
+    def __lookup_device(self, id, method_name, device_classname):
+        device = [d for d in getattr(self, method_name)() if d.id == id]
+        if not device:
+            raise NotFoundError('{} {} not found'.format(device_classname, id))
+        return device[0]
+
+
+
     def __on_message(self, device, message):
         self.event_listener.on_indi_message(self.device(indi_device=device), message)
 
