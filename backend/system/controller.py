@@ -8,14 +8,19 @@ from app import app
 import time
 from sequences import SequencesRunner, Sequence
 from utils.threads import start_thread
+from autoguider import Autoguider
 
 
 class EventListener:
     def __init__(self, sse):
         self.sse = sse
 
+    # TODO: tech debt: make everything call `event`
+    def event(self, event_type, event_name, payload, is_error, error_code=None, error_message=None):
+        self.sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)
+
     def on_indiserver_disconnected(self, error_code):
-        controller.notification('indi_server', 'indi_server_disconnect_error', controller.indi_server.to_map(), True, error_code=error_code)
+        self.event('indi_server', 'indi_server_disconnect_error', controller.indi_server.to_map(), True, error_code=error_code)
 
     def on_indi_message(self, device, message):
         self.sse.publish({'event': 'indi_message', 'payload': {'device': device.to_map(), 'message': message}, 'is_error': False}, type='indi_server')
@@ -86,11 +91,9 @@ class Controller:
         self.ping_thread = start_thread(self.__ping_clients)
         self.__create_indi_service()
         self.__create_indi_server()
+        self.autoguider = Autoguider(self.event_listener, self.indi_server)
         self.sequences = SavedList(Sequence)
         self.astrometry_downloader = AstrometryIndexDownloader(self.event_listener)
-
-    def notification(self, event_type, event_name, payload, is_error, error_code=None, error_message=None):
-        self.sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)
 
 
     def __on_settings_update(self, value_name, old_value, new_value):

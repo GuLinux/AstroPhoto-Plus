@@ -10,7 +10,7 @@ def api_error(code, title, message=None, payload=None):
     }), code
 
 def notify(event_type, event_name, payload, is_error=False):
-    controller.notification(event_type, event_name, payload, is_error)
+    controller.event_listener.event(event_type, event_name, payload, is_error)
     return payload
 
 def api_bad_json_error(message=None, payload=None):

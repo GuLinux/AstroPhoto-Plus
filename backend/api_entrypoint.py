@@ -528,3 +528,51 @@ def get_available_commands():
 def run_command(id, json):
     return commands.run(id, json)
 
+
+# Autoguider
+@app.route('/api/autoguider/status', methods=['GET'])
+@json_api
+def get_autoguider_status():
+    return controller.autoguider.status()
+
+@app.route('/api/autoguider/set_engine', methods=['POST'])
+@json_input
+@json_api
+def set_autoguider_engine(json):
+    controller.autoguider.set_engine(json.get('engine'))
+    return controller.autoguider.status()
+
+@app.route('/api/autoguider/guide', methods=['POST'])
+@json_input
+@json_api
+def autoguider_stat_guiding(json):
+    return controller.autoguider.guide(json.get('recalibrate', True))
+
+@app.route('/api/autoguider/dither', methods=['POST'])
+@json_input
+@json_api
+def autoguider_dither(json):
+    return controller.autoguider.dither(json.get('pixels', 5))
+
+@app.route('/api/autoguider/stop', methods=['POST'])
+@json_input
+@json_api
+def autoguider_stop(json):
+    return controller.autoguider.stop()
+
+
+
+## PHD2
+
+@app.route('/api/autoguider/phd2/connect', methods=['POST'])
+@json_input
+@json_api
+def phd2_connect(json):
+    return controller.autoguider.phd2.connect(json.get('hostname'), json.get('port'))
+
+@app.route('/api/autoguider/phd2/disconnect', methods=['POST'])
+@json_api
+def phd2_disconnect():
+    return controller.autoguider.phd2.disconnect()
+
+
