@@ -48,6 +48,7 @@ install-prerequisites() {
 setup-indi-ppa() {
     notify "Adding INDI stable PPA"
     add-apt-repository -y ppa:mutlaqja/ppa
+    apt update
     notify "Installing INDI full"
     apt-get install -y -q indi-full
 }
