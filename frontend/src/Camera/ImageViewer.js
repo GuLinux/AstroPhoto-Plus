@@ -17,9 +17,13 @@ class ImageCrop extends React.Component {
         this.state = props.crop && props.crop.relative ? { crop: props.crop.relative } : {};
     }
 
-    setCrop = (crop) => this.setState({...this.state, crop});
+    setCrop = (crop, percentCrop) => {
+        this.setState({...this.state, crop});
+    }
 
-    onComplete = (crop, pixelCrop) => this.props.setCrop({ relative: crop, pixel: pixelCrop });
+    onComplete = (crop, percentCrop) => {
+        this.props.setCrop({ relative: percentCrop, pixel: crop});
+    }
 
     toggleMove = () => this.setState({...this.state, move: !this.state.move})
 
