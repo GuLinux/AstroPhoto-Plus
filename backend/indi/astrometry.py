@@ -22,13 +22,16 @@ class AstrometryEventListener:
     def wait_for_solver(self, initial_state):
         self.error = None
         self.property_state = initial_state
+        logger.debug('PlateSolving::wait_for_solver Initial property state: {}'.format(self.property_state))
         if initial_state == 'BUSY':
             self.error = BadRequestError('Solver already in busy state')
             return
+        logger.debug('PlateSolving::wait_for_solver: Waiting for status to become BUSY...')
         while self.property_state != 'BUSY':
-            time.sleep(0.1)
+            pass
+        logger.debug('PlateSolving::wait_for_solver: Waiting for status to be NOT BUSY')
         while self.property_state == 'BUSY':
-            time.sleep(0.1)
+            pass
 
 class Astrometry:
 
