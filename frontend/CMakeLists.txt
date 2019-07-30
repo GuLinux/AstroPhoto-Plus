@@ -17,9 +17,14 @@ add_custom_target(
 )
 
 add_custom_target(
+    remove_googleapis
+    COMMAND bash ${CMAKE_SOURCE_DIR}/scripts/remove_googlefonts_call
+)
+
+add_custom_target(
     frontend-bundle ALL
     COMMAND yarn run build
-    DEPENDS yarn-dependencies
+    DEPENDS yarn-dependencies remove_googleapis
 )
 
 install(
