@@ -48,8 +48,9 @@
     "private": true,
     "scripts": {
         "build": "yarn run copy:assets && react-scripts build",
-        "copy:assets": "yarn run copy:celestial && yarn run copy:themes",
+        "copy:assets": "yarn run copy:celestial && yarn run copy:themes && yarn run remove_googlefonts_call",
         "copy:celestial": "mkdir -p public/celestial && cp -a node_modules/d3-celestial-react/assets/* public/celestial",
+        "remove_googlefonts_call": "../scripts/remove_googlefonts_call",
         "copy:themes": "yarn run forest:clean && cp -a node_modules/forest-themes/dist/* public/themes/ && cp -a node_modules/semantic-ui-css/themes public/themes/bootswatch-v3/ && cp -a node_modules/semantic-ui-css/themes public/themes/bootswatch-v4/",
         "eject": "react-scripts eject",
         "forest:clean": "rm -rf public/themes; mkdir -p public/themes",
