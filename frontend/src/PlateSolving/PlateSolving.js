@@ -92,9 +92,11 @@ const SolutionPanel = ({solution}) => {
                     <Grid.Row>
                         <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_PIXSCALE} format={v => formatDecimalNumber('%0.2f', v)} />
                     </Grid.Row>
+                    { solution.ASTROMETRY_RESULTS_ORIENTATION && (
                     <Grid.Row>
                         <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_ORIENTATION} format={v => formatDecimalNumber('%0.2f', v)} />
                     </Grid.Row>
+                    )}
                     <Grid.Row>
                         <Grid.Column width={4}><Label content='Link to Aladin' /></Grid.Column>
                         <Grid.Column width={5}>
