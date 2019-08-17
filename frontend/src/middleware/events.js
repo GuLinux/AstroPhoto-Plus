@@ -78,7 +78,7 @@ const indiserviceEvents = (event, dispatch) => {
 }
 
 const astrometryIndexDownloader = (event, dispatch) => {
-    let eventObject = JSON.parse(event.data);
+    const eventObject = JSON.parse(event.data);
     switch(eventObject.event) {
         case 'progress':
             dispatch(Actions.Settings.downloadIndexesProgress(eventObject.payload));
@@ -93,6 +93,17 @@ const astrometryIndexDownloader = (event, dispatch) => {
             // ignoring other events
             // logEvent(event);
             break;
+    }
+}
+
+const plateslvingEvents = (event, dispatch) => {
+    const eventObject = JSON.parse(event.data);
+    switch(eventObject.event) {
+        case 'platesolving_message':
+            dispatch(Actions.PlateSolving.message(eventObject.payload.message));
+            break;
+        default:
+            logEvent(event);
     }
 }
 
@@ -113,6 +124,9 @@ const listenToEvents = (dispatch) => {
             case 'astrometry_index_downloader':
                 astrometryIndexDownloader(event, dispatch);
                 break;
+            case 'platesolving':
+                plateslvingEvents(event, dispatch);
+                break;
             default:
                 logEvent(event);
         }
@@ -120,6 +134,7 @@ const listenToEvents = (dispatch) => {
     es.addEventListener('indi_server', serverListener);
     es.addEventListener('sequences', serverListener);
     es.addEventListener('indi_service', serverListener);
+    es.addEventListener('platesolving', serverListener);
     es.addEventListener('astrometry_index_downloader', serverListener);
     es.onerror = e => {
         dispatch(serverError('event_source', 'event', e));

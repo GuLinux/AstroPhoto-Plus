@@ -9,6 +9,7 @@ from system import settings, controller
 import threading
 import subprocess
 import shutil
+import re
 
 class PlateSolving:
 
@@ -52,6 +53,9 @@ class PlateSolving:
         with fits.open(fits_file_path) as fits_file:
             resolution = fits_file[0].data.shape
 
+        return self.__wait_for_solution(options, resolution, fits_file_path, temp_path)
+
+    def __wait_for_solution(self, options, resolution, fits_file_path, temp_path):
         try:
             solved, solution = self.__run_solve_field(options, fits_file_path, temp_path)
             logger.debug('Waiting for solver to finish')
@@ -62,6 +66,9 @@ class PlateSolving:
                 solution_property['values'].append({ 'label': 'Pixel scale', 'name': 'ASTROMETRY_RESULTS_PIXSCALE', 'value': solution['ASTROMETRY_RESULTS_PIXSCALE'] })
                 solution_property['values'].append({ 'label': 'Field width', 'name': 'ASTROMETRY_RESULTS_WIDTH', 'value': resolution[1] * solution['ASTROMETRY_RESULTS_PIXSCALE'] / 3600. })
                 solution_property['values'].append({ 'label': 'Field height', 'name': 'ASTROMETRY_RESULTS_HEIGHT', 'value': resolution[0] * solution['ASTROMETRY_RESULTS_PIXSCALE'] / 3600. })
+                if solution['ASTROMETRY_RESULTS_ORIENTATION'] is not None:
+                    solution_property['values'].append({ 'label': 'Field rotation (degrees E of N)', 'name': 'ASTROMETRY_RESULTS_ORIENTATION', 'value': solution['ASTROMETRY_RESULTS_ORIENTATION'] })
+                    
 
                 if options['syncTelescope']:
                     telescope = [t for t in self.server.telescopes() if t.id == options['telescope']]
@@ -78,6 +85,7 @@ class PlateSolving:
 #            shutil.rmtree(temp_path, True)
             pass
 
+
     def __run_solve_field(self, options, fits_file_path, temp_path):
         astrometry_cfg = settings.astrometry_path('astrometry.cfg')
         with open(astrometry_cfg, 'w') as astrometry_cfg_file:
@@ -86,7 +94,21 @@ class PlateSolving:
             astrometry_cfg_file.write('autoindex\n')
         cli = self.__build_astrometry_options(options, fits_file_path, astrometry_cfg, temp_path)
         logger.debug('[Astrometry] running solve-field with cli: %s', str(cli))
-        subprocess.run(cli)
+        solve_field = subprocess.Popen(cli, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        rotation_angle = None
+        with solve_field.stdout:
+            for b_line in iter(solve_field.stdout.readline, b'\n'):
+                line = b_line.decode('utf-8').strip()
+                logger.debug('[PlateSolving]: %s', line)
+                if 'Field rotation angle: up is' in line:
+                    re_rotation_angle = re.findall('Field rotation angle: up is ([\d.-]+) degrees', line)
+                    logger.debug('[PlateSolving]: rotation angle regex detected: {}'.format(re_rotation_angle))
+                    if re_rotation_angle:
+                        rotation_angle = float(re_rotation_angle[0])
+                self.event_listener.on_platesolving_message(line)
+
+        solve_field.wait() # check error status
+
         solved = os.path.exists(os.path.join(temp_path, 'solve-field.solved'))
         solution = dict()
         if solved:
@@ -94,6 +116,7 @@ class PlateSolving:
                 solution['ASTROMETRY_RESULTS_RA'] = fits_file[0].header['CRVAL1']
                 solution['ASTROMETRY_RESULTS_DE'] = fits_file[0].header['CRVAL2']
                 solution['ASTROMETRY_RESULTS_PIXSCALE'] = fits_file[0].header['SCALE']
+                solution['ASTROMETRY_RESULTS_ORIENTATION'] = rotation_angle
 
         return solved, solution
 

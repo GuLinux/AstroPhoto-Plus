@@ -13,6 +13,17 @@ import { getFieldOfView, getSensorSizeFromResolution } from './utils';
 const { Options } = PlateSolvingActions;
 
 const MINIMUM_DRIVERS_CHOICE = 1;
+const PlateSolvingMessage = (message, index) => <Message.Item key={index} content={message} />;
+
+const PlateSolvingMessagesPanel = ({messages}) => (
+    <Message>
+        <Message.Header content='Messages' />
+        <Message.List>
+             {messages.map(PlateSolvingMessage)}
+        </Message.List>
+    </Message>
+);
+
 
 class SetCameraFOV extends React.PureComponent {
     componentDidMount = () => this.setFOV();
@@ -263,7 +274,7 @@ export class PlateSolving extends React.PureComponent {
                 </Grid.Row>)}
             </Grid>
             { solution && <SolutionPanel solution={solution} /> }
-            {messages && <INDIMessagesPanel messages={messages} /> }
+            {messages && messages.length > 0 && <PlateSolvingMessagesPanel messages={messages} /> }
         </Container>
         );
     }

@@ -7,7 +7,7 @@ import {
     getCCDPixelPitch,
     getTelescopeFocalLength,
 } from '../Gear/selectors';
-import { getMessages, getDevices } from '../INDI-Server/selectors';
+import { getDevices } from '../INDI-Server/selectors';
 import { PlateSolving } from './actions';
 import { get } from 'lodash';
 
@@ -31,16 +31,16 @@ const getDeviceId = (deviceOptionName, state) => getOption(state, deviceOptionNa
 
 export const plateSolvingContainerSelector = createSelector([
     getPlateSolvingDevices,
-    getMessages,
     getPlateSolvingOptions,
     getSolution,
     state => state.plateSolving.loading,
+    state => state.plateSolving.messages,
     state => getCCDWidthPix(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
     state => getCCDPixelPitch(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
     state => getTelescopeFocalLength(state, {telescopeId: getDeviceId(PlateSolving.Options.telescope, state)}),
-], (plateSolvingDevices, messages, options, solution, loading, ccdMaxX, ccdPixelSizeX, telescopeFocalLength) => ({
+], (plateSolvingDevices, options, solution, loading, messages, ccdMaxX, ccdPixelSizeX, telescopeFocalLength) => ({
     ...plateSolvingDevices,
-    messages: [],
+    messages,
     options,
     solution,
     loading,

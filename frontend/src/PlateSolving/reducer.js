@@ -73,6 +73,7 @@ const defaultState = {
         [Actions.Options.syncTelescope]: true,
         [Actions.Options.downsample]: 2,
     },
+    messages: [],
     //solution: testSolution,
 };
 
@@ -98,6 +99,10 @@ export const plateSolving = (state = defaultState, action) => {
             return {...state, solution: list2object(action.payload.solution.values, 'name'), loading: false };
         case 'FETCH_PLATESOLVING_SOLVE_FIELD':
             return {...state, loading: true, solution: undefined };
+        case 'PLATESOLVING_MESSAGE':
+            return {...state, messages: [action.message, ...state.messages]};
+        case 'PLATESOLVING_RESET_MESSAGES':
+            return {...state, messages: []};
         default:
         return state;
     }

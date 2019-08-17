@@ -61,6 +61,8 @@ class EventListener:
     def on_astrometry_index_downloader(self, event_type, payload=None):
         self.sse.publish({'event': event_type, 'payload': payload}, type='astrometry_index_downloader')
 
+    def on_platesolving_message(self, message):
+        self.sse.publish({'event': 'platesolving_message', 'payload': {'message': message}, 'is_error': False}, type='platesolving')
 
     def on_indi_service_exit(self, service):
         service_stdout, service_stderr = None, None

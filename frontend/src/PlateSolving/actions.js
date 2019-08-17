@@ -13,6 +13,8 @@ export const PlateSolving = {
         downsample: 'downsample',
     },
     setOption: (option, value) => ({ type: 'PLATESOLVING_SET_OPTION', option, value }),
+    resetMessages: () => ({ type: 'PLATESOLVING_RESET_MESSAGES' }),
+    message: message => ({ type: 'PLATESOLVING_MESSAGE', message }),
 
     fieldSolved: payload => ({ type: 'PLATESOLVING_SOLVED', payload }),
     solvingFailed: payload => ({ type: 'PLATESOLVING_FAILED', payload }),
@@ -28,6 +30,7 @@ export const PlateSolving = {
 
     solveField: options => dispatch => {
         dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD' });
+        dispatch(Actions.PlateSolving.resetMessages());
         const onSuccess = result => {
             dispatch(Actions.Notifications.add('Platesolving successful', '', 'success', 5000));
             dispatch(Actions.PlateSolving.fieldSolved(result));
