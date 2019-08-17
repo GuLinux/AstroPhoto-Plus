@@ -67,6 +67,7 @@ const testSolution = {
 
 const defaultState = {
     options: {
+        has_astrometry: false,
         [Actions.Options.camera]: false,
         [Actions.Options.fov]: {},
         [Actions.Options.syncTelescope]: true,
@@ -85,6 +86,10 @@ const setOption = (state, {option, value}) => {
 
 export const plateSolving = (state = defaultState, action) => {
     switch(action.type) {
+        case 'FETCH_PLATESOLVING_STATUS':
+            return {...state, has_astrometry: false };
+        case 'RESPONSE_PLATESOLVING_STATUS':
+            return {...state, ...action.response};
         case 'PLATESOLVING_SET_OPTION':
             return setOption(state, action);
         case 'PLATESOLVING_FAILED':

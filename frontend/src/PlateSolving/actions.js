@@ -1,4 +1,4 @@
-import { solveFieldAPI } from "../middleware/api";
+import { solveFieldAPI, fetchPlatesolvingStatus } from "../middleware/api";
 import Actions from '../actions';
 import { solveFromCameraSelector } from './selectors';
 
@@ -7,7 +7,6 @@ export const PlateSolving = {
     Options: {
         camera: 'camera',
         telescope: 'telescope',
-        astrometryDriver: 'astrometryDriver',
         fov: 'fov',
         fovSource: 'fovSource',
         syncTelescope: 'syncTelescope',
@@ -18,7 +17,16 @@ export const PlateSolving = {
     fieldSolved: payload => ({ type: 'PLATESOLVING_SOLVED', payload }),
     solvingFailed: payload => ({ type: 'PLATESOLVING_FAILED', payload }),
 
-    solveField: ({astrometryDriver, ...options}) => dispatch => {
+    getStatus: () => dispatch => {
+        dispatch({ type: 'FETCH_PLATESOLVING_STATUS'});
+        fetchPlatesolvingStatus(
+            dispatch,
+            response => dispatch({ type: 'RESPONSE_PLATESOLVING_STATUS', response}),
+            error => dispatch({ type: 'ERROR_FETCHING_PLATESOLVING_STATUS', error}),
+        );
+    },
+
+    solveField: options => dispatch => {
         dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD' });
         const onSuccess = result => {
             dispatch(Actions.Notifications.add('Platesolving successful', '', 'success', 5000));
@@ -41,13 +49,12 @@ export const PlateSolving = {
             });
             return true;
         }
-
-        solveFieldAPI(dispatch, onSuccess, onError, astrometryDriver, options);
+        solveFieldAPI(dispatch, onSuccess, onError, options);
     },
 
     solveCameraImage: filePath => (dispatch, getState) => {
         const { options } = solveFromCameraSelector(getState());
-        if(!options.camera || ! options.astrometryDriver || ! options.telescope)
+        if(!options.camera || ! options.telescope)
             return;
         dispatch({ type: 'PLATESOLVING_SOLVING_CAMERAFILE'});
         dispatch(Actions.PlateSolving.solveField({ filePath, ...options }));

@@ -1,7 +1,6 @@
 from pyindi_sequence import INDIClient
 from .camera import Camera
 from .telescope import Telescope
-from .astrometry import Astrometry
 from .filter_wheel import FilterWheel
 from .device import Device
 from .indi_property import Property
@@ -102,9 +101,6 @@ class Server:
 
     def telescopes(self):
         return [Telescope(self.settings, self.client, device=d) for d in self.client.telescopes()]
-
-    def astrometry_drivers(self):
-        return [Astrometry(self, device=d.find_indi_device()) for d in self.devices() if 'astrometry' in d.name.lower()]
 
     def filter_wheels(self):
         return [FilterWheel(self.client, self.logger, filter_wheel=f) for f in self.client.filter_wheels()]

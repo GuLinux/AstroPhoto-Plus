@@ -1,6 +1,5 @@
-from .device import Device
 from app import logger
-from errors import NotFoundError, FailedMethodError
+from errors import NotFoundError, FailedMethodError, BadRequestError
 import base64
 import time
 import os
@@ -11,35 +10,29 @@ import threading
 import subprocess
 import shutil
 
-class Astrometry:
+class PlateSolving:
 
     DATAURL_SEPARATOR=';base64,'
 
-    def __init__(self, server, device=None, name=None):
+    def __init__(self, server, event_listener):
         self.server = server
-        self.client = server.client
+        self.event_listener = event_listener
+        self.status = 'idle'
 
-        if device:
-            self.device = Device(self.client, logger, device)
-        elif name:
-            device = [c for c in self.client.devices() if c.name == name]
-            self.device = device if device else None
-        if not self.device:
-           raise NotFoundError('Astrometry device not found: {}'.format(name)) 
-
-
-    @property
-    def id(self):
-        return self.device.id
+    def is_available(self):
+        return settings.astrometry_solve_field_path and os.path.isfile(settings.astrometry_solve_field_path)
 
     def to_map(self):
         return {
-            'id': self.id,
-            'device': self.device.to_map(),
-            'connected': self.device.connected(),
+            'available': self.is_available(),
+            'status': self.status,
         }
 
     def solve_field(self, options):
+        if not self.is_available():
+            raise BadRequestError('Astrometry.net solve-field not found in {}'.format(settings.astrometry_solve_field_path))
+
+        self.status = 'solving'
         temp_path = os.path.join(settings.astrometry_path(), 'solve_field_{}'.format(time.time()))
         os.makedirs(temp_path, exist_ok=True)
  
@@ -47,7 +40,7 @@ class Astrometry:
         logger.debug('Solve field options: %s', str(['{}: {}'.format(key, '<blob>' if key == 'fileBuffer' else value)  for key, value in options.items()]))
         if 'fileBuffer' in options:
             fits_file_path = os.path.join(temp_path, 'solve_field_input.fits')
-            data = base64.b64decode(options['fileBuffer'][options['fileBuffer'].find(Astrometry.DATAURL_SEPARATOR) + len(Astrometry.DATAURL_SEPARATOR):])
+            data = base64.b64decode(options['fileBuffer'][options['fileBuffer'].find(PlateSolving.DATAURL_SEPARATOR) + len(PlateSolving.DATAURL_SEPARATOR):])
             with open(fits_file_path, 'wb') as file:
                 file.write(data)
 
@@ -81,6 +74,7 @@ class Astrometry:
             else:
                 raise FailedMethodError('Plate solving failed, check astrometry driver log')
         finally:
+            self.status = 'idle'
 #            shutil.rmtree(temp_path, True)
             pass
 

@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 import {
     filterDevices,
-    getConnectedAstrometry,
     getConnectedCameras,
     getConnectedTelescopes,
     getCCDWidthPix,
@@ -19,12 +18,10 @@ const getSolution = state => state.plateSolving.solution;
 
 
 const getPlateSolvingDevices = createSelector([
-    getConnectedAstrometry,
     getConnectedCameras,
     getConnectedTelescopes,
     getDevices,
-], (astrometryIds, camerasIds, telescopesIds, devices) => ({
-    astrometryDrivers: filterDevices(devices, astrometryIds),
+], (camerasIds, telescopesIds, devices) => ({
     telescopes: filterDevices(devices, telescopesIds),
     cameras:    filterDevices(devices, camerasIds),
 }))
@@ -43,7 +40,7 @@ export const plateSolvingContainerSelector = createSelector([
     state => getTelescopeFocalLength(state, {telescopeId: getDeviceId(PlateSolving.Options.telescope, state)}),
 ], (plateSolvingDevices, messages, options, solution, loading, ccdMaxX, ccdPixelSizeX, telescopeFocalLength) => ({
     ...plateSolvingDevices,
-    messages: messages[options.astrometryDriver],
+    messages: [],
     options,
     solution,
     loading,
@@ -61,8 +58,10 @@ export const plateSolvingSectionMenuSelector = createSelector([getPlateSolvingOp
 
 export const solveFromCameraSelector = createSelector([getPlateSolvingOptions], options => ({options}));
 
-export const plateSolvingPageContainerSelector = createSelector([getConnectedAstrometry, getConnectedTelescopes], (astrometryDrivers, telescopes) => ({
-    hasAstrometry: astrometryDrivers.length > 0,
+const getAstrometryAvailable = state => state.plateSolving.available;
+
+export const plateSolvingPageContainerSelector = createSelector([getAstrometryAvailable, getConnectedTelescopes], (astrometryAvailable, telescopes) => ({
+    hasAstrometry: astrometryAvailable,
     hasTelescopes: telescopes.length > 0,
 }));
 

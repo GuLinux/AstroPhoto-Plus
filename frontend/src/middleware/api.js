@@ -246,7 +246,11 @@ export const searchImages = (dispatch, type, params, onSuccess) => fetchJSON(dis
 
 export const fetchCommandsAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/commands', {}, json => onSuccess(normalize(json, commandsSchema)));
 
-export const solveFieldAPI = (dispatch, onSuccess, onError, astrometryDriver,options) => fetchJSON(dispatch, `/api/astrometry/${astrometryDriver}/solveField`, {
+export const fetchPlatesolvingStatus = (dispatch, onSuccess, onError) => {
+    return fetchJSON(dispatch, '/api/platesolving', {}, onSuccess, onError);
+}
+
+export const solveFieldAPI = (dispatch, onSuccess, onError, options) => fetchJSON(dispatch, '/api/platesolving/solveField', {
     method: 'POST',
     body: JSON.stringify(options),
     headers: headersJSONRequest,

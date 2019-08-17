@@ -46,6 +46,7 @@ export const init = () => async (dispatch, getState) => {
     await dispatch(Actions.INDIServer.fetchServerState(true));
     await dispatch(Actions.INDIServer.autoconnectServer());
     dispatch(Actions.Sequences.fetch());
+    dispatch(Actions.PlateSolving.getStatus());
     dispatch(Actions.INDIService.fetchService());
     dispatch(Actions.INDIService.fetchProfiles());
     dispatch(Actions.Commands.get());

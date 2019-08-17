@@ -457,32 +457,25 @@ def get_telescopes():
     return [x.to_map() for x in controller.indi_server.telescopes()]
 
 # astrometry module
-@app.route('/api/astrometry', methods=['GET'])
+@app.route('/api/platesolving', methods=['GET'])
 @json_api
-@indi_connected
-def get_astrometry():
-    return [x.to_map() for x in controller.indi_server.astrometry_drivers()]
-
-def lookup_astrometry(id):
-    astrometry = [a for a in controller.indi_server.astrometry_drivers() if a.id == id]
-    if not astrometry:
-        raise NotFoundError('Astrometry driver {} not found'.format(id))
-    return astrometry[0]
+def get_platesolving():
+    return controller.platesolving.to_map()
 
 
-@app.route('/api/astrometry/<astrometry_id>/solveField', methods=['POST'])
+@app.route('/api/platesolving/solveField', methods=['POST'])
 @json_input
 @json_api
-@indi_connected
-def astrometry_solve_field(astrometry_id, json):
-    return lookup_astrometry(astrometry_id).solve_field(json)
+def platesolving_solve_field(json):
+    return controller.platesolving.solve_field(json)
 
 
-@app.route('/api/astrometry/download_indexes', methods=['POST'])
+@app.route('/api/platesolving/download_indexes', methods=['POST'])
 @json_input
 @json_api
 def astrometry_download_indexes(json):
     return controller.astrometry_downloader.download(json['arcminutes'])
+
 
 # filesystem
 @app.route('/api/mkdir', methods=['POST'])
