@@ -31,9 +31,8 @@ export const PlateSolving = {
     solveField: options => dispatch => {
         dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD' });
         dispatch(Actions.PlateSolving.resetMessages());
-        const onSuccess = result => {
-            dispatch(Actions.Notifications.add('Platesolving successful', '', 'success', 5000));
-            dispatch(Actions.PlateSolving.fieldSolved(result));
+        const onSuccess = response => {
+            dispatch({ type: 'RESPONSE_PLATESOLVING_STATUS', response });
         };
         const onError = (error, isJSON) => {
             if(!isJSON) {

@@ -102,6 +102,19 @@ const plateslvingEvents = (event, dispatch) => {
         case 'platesolving_message':
             dispatch(Actions.PlateSolving.message(eventObject.payload.message));
             break;
+        case 'platesolving_finished':
+            if(eventObject.is_error) {
+                dispatch(Actions.Notifications.add('Platesolving failed', eventObject.payload.error, 'warning', 5000));
+                dispatch(Actions.PlateSolving.solvingFailed(eventObject.payload.error));
+            }
+
+            if(eventObject.payload.status === 'solved') {
+                dispatch(Actions.Notifications.add('Platesolving successful', '', 'success', 5000));
+                dispatch(Actions.PlateSolving.fieldSolved({ solution: eventObject.payload.solution }));
+
+            }
+            console.log(eventObject);
+            break;
         default:
             logEvent(event);
     }

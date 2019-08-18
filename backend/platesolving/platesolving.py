@@ -6,7 +6,7 @@ import os
 from astropy.io import fits
 from io import BytesIO
 from system import settings, controller
-import threading
+from utils.threads import start_thread
 import subprocess
 import shutil
 import re
@@ -19,6 +19,8 @@ class PlateSolving:
         self.server = server
         self.event_listener = event_listener
         self.status = 'idle'
+        self.solver_thread = None
+        self.solver_process = None
 
     def is_available(self):
         return settings.astrometry_solve_field_path and os.path.isfile(settings.astrometry_solve_field_path)
@@ -53,7 +55,9 @@ class PlateSolving:
         with fits.open(fits_file_path) as fits_file:
             resolution = fits_file[0].data.shape
 
-        return self.__wait_for_solution(options, resolution, fits_file_path, temp_path)
+        
+        self.solver_thread = start_thread(self.__wait_for_solution, options, resolution, fits_file_path, temp_path)
+        return self.to_map()
 
     def __wait_for_solution(self, options, resolution, fits_file_path, temp_path):
         try:
@@ -77,13 +81,21 @@ class PlateSolving:
                     telescope = telescope[0]
                     telescope_coordinates = { 'ra': solution['ASTROMETRY_RESULTS_RA'] * (24./360.), 'dec': solution['ASTROMETRY_RESULTS_DE'] }
                     telescope.sync(telescope_coordinates)
-                return { 'status': 'OK', 'solution': solution_property }
+                self.event_listener.on_platesolving_finished({
+                    'status': 'solved',
+                    'solution': solution_property,
+                })
             else:
                 raise FailedMethodError('Plate solving failed, check astrometry driver log')
+        except Exception as e:
+            self.event_listener.on_platesolving_finished({
+                'status': 'error',
+                'error': str(e),
+            })
         finally:
             self.status = 'idle'
-#            shutil.rmtree(temp_path, True)
-            pass
+            shutil.rmtree(temp_path, True)
+            self.solver_thread = None
 
 
     def __run_solve_field(self, options, fits_file_path, temp_path):
@@ -94,10 +106,10 @@ class PlateSolving:
             astrometry_cfg_file.write('autoindex\n')
         cli = self.__build_astrometry_options(options, fits_file_path, astrometry_cfg, temp_path)
         logger.debug('[Astrometry] running solve-field with cli: %s', str(cli))
-        solve_field = subprocess.Popen(cli, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.solver_process = subprocess.Popen(cli, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         rotation_angle = None
-        with solve_field.stdout:
-            for b_line in iter(solve_field.stdout.readline, b'\n'):
+        with self.solver_process.stdout:
+            for b_line in iter(self.solver_process.stdout.readline, b'\n'):
                 line = b_line.decode('utf-8').strip()
                 logger.debug('[PlateSolving]: %s', line)
                 if 'Field rotation angle: up is' in line:
@@ -107,7 +119,8 @@ class PlateSolving:
                         rotation_angle = float(re_rotation_angle[0])
                 self.event_listener.on_platesolving_message(line)
 
-        solve_field.wait() # check error status
+        self.solver_process.wait() # check error status
+        self.solver_process = None
 
         solved = os.path.exists(os.path.join(temp_path, 'solve-field.solved'))
         solution = dict()
