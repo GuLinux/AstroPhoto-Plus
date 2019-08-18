@@ -31,6 +31,23 @@ class PlateSolving:
             'status': self.status,
         }
 
+    def abort(self):
+        if self.status is not 'solving':
+            raise BadRequestError('Solver is not running')
+        if self.solver_process:
+            self.solver_process.terminate()
+            try:
+                self.solver_process.wait(timeout=15)
+            except subprocess.TimeoutExpired:
+                self.solver_process.kill()
+                self.solver_process.wait()
+            finally:
+                self.solver_process = None
+        if self.solver_thread:
+            self.solver_thread.join()
+        self.solver_thread = None
+        return self.to_map()
+
     def solve_field(self, options):
         if not self.is_available():
             raise BadRequestError('Astrometry.net solve-field not found in {}'.format(settings.astrometry_solve_field_path))
@@ -111,7 +128,8 @@ class PlateSolving:
         with self.solver_process.stdout:
             for b_line in iter(self.solver_process.stdout.readline, b'\n'):
                 line = b_line.decode('utf-8').strip()
-                logger.debug('[PlateSolving]: %s', line)
+                if line:
+                    logger.debug('[PlateSolving]: %s', line)
                 if 'Field rotation angle: up is' in line:
                     re_rotation_angle = re.findall('Field rotation angle: up is ([\d.-]+) degrees', line)
                     logger.debug('[PlateSolving]: rotation angle regex detected: {}'.format(re_rotation_angle))

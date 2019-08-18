@@ -163,7 +163,7 @@ export class PlateSolving extends React.PureComponent {
         })
 
     render = () => {
-        const { astrometryDrivers, telescopes, cameras, messages, options, setOption, solution, loading, isManualFOV} = this.props;
+        const { astrometryDrivers, telescopes, cameras, messages, options, setOption, solution, loading, isManualFOV, abortSolveField } = this.props;
         return (
         <Container>
             <Header content='Plate Solver options' />
@@ -268,7 +268,7 @@ export class PlateSolving extends React.PureComponent {
                     </Grid.Row>
             )}
                 { loading && (<Grid.Row>
-                    <Grid.Column width={16} textAlign='center'>
+                    <Grid.Column width={8} textAlign='center'>
                         <Loader active inline />
                     </Grid.Column>
                 </Grid.Row>)}

@@ -469,6 +469,11 @@ def get_platesolving():
 def platesolving_solve_field(json):
     return controller.platesolving.solve_field(json)
 
+@app.route('/api/platesolving/abortSolveField', methods=['DELETE'])
+@json_api
+def platesolving_abort_solve_field():
+    return controller.platesolving.abort()
+
 
 @app.route('/api/platesolving/download_indexes', methods=['POST'])
 @json_input

@@ -1,4 +1,4 @@
-import { solveFieldAPI, fetchPlatesolvingStatus } from "../middleware/api";
+import { solveFieldAPI, fetchPlatesolvingStatus, abortSolveFieldAPI } from "../middleware/api";
 import Actions from '../actions';
 import { solveFromCameraSelector } from './selectors';
 
@@ -26,6 +26,14 @@ export const PlateSolving = {
             response => dispatch({ type: 'RESPONSE_PLATESOLVING_STATUS', response}),
             error => dispatch({ type: 'ERROR_FETCHING_PLATESOLVING_STATUS', error}),
         );
+    },
+
+    abortSolveField: () => dispatch => {
+        dispatch({ type: 'SOLVE_FIELD_ABORTING' });
+        const onSuccess = response => {
+            dispatch({ type: 'RESPONSE_PLATESOLVING_STATUS', response });
+        };
+        abortSolveFieldAPI(dispatch, onSuccess);
     },
 
     solveField: options => dispatch => {

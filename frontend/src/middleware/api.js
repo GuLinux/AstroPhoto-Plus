@@ -256,3 +256,6 @@ export const solveFieldAPI = (dispatch, onSuccess, onError, options) => fetchJSO
     headers: headersJSONRequest,
 }, onSuccess, onError);
 
+export const abortSolveFieldAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/platesolving/abortSolveField', {
+    method: 'DELETE',
+}, onSuccess, onError);
