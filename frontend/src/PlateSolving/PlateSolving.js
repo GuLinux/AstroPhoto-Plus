@@ -13,6 +13,17 @@ import { getFieldOfView, getSensorSizeFromResolution } from './utils';
 const { Options } = PlateSolvingActions;
 
 const MINIMUM_DRIVERS_CHOICE = 1;
+const PlateSolvingMessage = (message, index) => <Message.Item key={index} content={message} />;
+
+const PlateSolvingMessagesPanel = ({messages}) => (
+    <Message>
+        <Message.Header content='Messages' />
+        <Message.List>
+             {messages.map(PlateSolvingMessage)}
+        </Message.List>
+    </Message>
+);
+
 
 class SetCameraFOV extends React.PureComponent {
     componentDidMount = () => this.setFOV();
@@ -92,9 +103,11 @@ const SolutionPanel = ({solution}) => {
                     <Grid.Row>
                         <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_PIXSCALE} format={v => formatDecimalNumber('%0.2f', v)} />
                     </Grid.Row>
+                    { solution.ASTROMETRY_RESULTS_ORIENTATION && (
                     <Grid.Row>
                         <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_ORIENTATION} format={v => formatDecimalNumber('%0.2f', v)} />
                     </Grid.Row>
+                    )}
                     <Grid.Row>
                         <Grid.Column width={4}><Label content='Link to Aladin' /></Grid.Column>
                         <Grid.Column width={5}>
@@ -114,7 +127,6 @@ export class PlateSolving extends React.PureComponent {
 
     componentDidMount = () => {
         this.setDefaultDevice(Options.telescope, this.props.telescopes);
-        this.setDefaultDevice(Options.astrometryDriver, this.props.astrometryDrivers);
         if(! this.props.options[Options.fovSource]) {
             this.props.setOption(Options.fovSource, false);
         }
@@ -129,8 +141,15 @@ export class PlateSolving extends React.PureComponent {
     optionButton = (option, value, props={}) => 
         <CheckButton disabled={ props.disabled || this.props.loading} size='mini' active={this.props.options[option] === value} onClick={() => this.props.setOption(option, value)} {...props} />
 
-    setMinimumFOV = (value) => this.props.setOption(Options.fov, {...this.props.options[Options.fov], minimumWidth: value});
-    setMaximumFOV = (value) => this.props.setOption(Options.fov, {...this.props.options[Options.fov], maximumWidth: value});
+    setMinimumFOV = minimumWidth => {
+        const maximumWidth = Math.max(minimumWidth+1, this.props.options[Options.fov].maximumWidth || 0);
+        this.props.setOption(Options.fov, {...this.props.options[Options.fov], minimumWidth, maximumWidth});
+    }
+
+    setMaximumFOV = maximumWidth => {
+        const minimumWidth = Math.min(maximumWidth-1, this.props.options[Options.fov].minimumWidth || 0);
+        this.props.setOption(Options.fov, {...this.props.options[Options.fov], maximumWidth, minimumWidth });
+    }
 
     driver = (type, id) => this.props[type].entities[id];
 
@@ -144,19 +163,11 @@ export class PlateSolving extends React.PureComponent {
         })
 
     render = () => {
-        const { astrometryDrivers, telescopes, cameras, messages, options, setOption, solution, loading, isManualFOV} = this.props;
+        const { astrometryDrivers, telescopes, cameras, messages, options, setOption, solution, loading, isManualFOV, abortSolveField } = this.props;
         return (
         <Container>
             <Header content='Plate Solver options' />
             <Grid stackable>
-            { astrometryDrivers.length > MINIMUM_DRIVERS_CHOICE && (
-                <Grid.Row>
-                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Astrometry driver' /></Grid.Column>
-                    <Grid.Column width={13}>
-                        { astrometryDrivers.ids.map(this.astrometryDriverButton) }
-                    </Grid.Column>
-                </Grid.Row>
-            )}
             { telescopes.length > MINIMUM_DRIVERS_CHOICE && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Telescope' /></Grid.Column>
@@ -209,8 +220,28 @@ export class PlateSolving extends React.PureComponent {
                             /> }
                             { options[Options.fovSource] ? (
                                 <Grid.Row>
-                                <Grid.Column width={8}><NumericInput min={0} max={get(options, [Options.fov, 'maximumWidth'], 0)} label='Minimum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'minimumWidth'], 0)} onChange={this.setMinimumFOV}/></Grid.Column>
-                                <Grid.Column width={8}><NumericInput min={get(options, [Options.fov, 'minimumWidth'], 0)} label='Maximum width (arcminutes)' size='mini' readOnly={!isManualFOV || loading } disabled={!isManualFOV || loading } value={get(options, [Options.fov, 'maximumWidth'], 0)} onChange={this.setMaximumFOV}/></Grid.Column>
+                                <Grid.Column width={8}>
+                                    <NumericInput
+                                        min={0}
+                                        label='Minimum width (arcminutes)'
+                                        size='mini'
+                                        readOnly={!isManualFOV || loading }
+                                        disabled={!isManualFOV || loading }
+                                        value={get(options, [Options.fov, 'minimumWidth'], 0)}
+                                        onChange={this.setMinimumFOV}
+                                    />
+                                </Grid.Column>
+                                <Grid.Column width={8}>
+                                    <NumericInput
+                                        min={0}
+                                        label='Maximum width (arcminutes)'
+                                        size='mini'
+                                        readOnly={!isManualFOV || loading }
+                                        disabled={!isManualFOV || loading }
+                                        value={get(options, [Options.fov, 'maximumWidth'], 0)}
+                                        onChange={this.setMaximumFOV}
+                                    />
+                                </Grid.Column>
                             </Grid.Row>
                             ) : (
                                 <Grid.Row>
@@ -237,13 +268,13 @@ export class PlateSolving extends React.PureComponent {
                     </Grid.Row>
             )}
                 { loading && (<Grid.Row>
-                    <Grid.Column width={16} textAlign='center'>
+                    <Grid.Column width={8} textAlign='center'>
                         <Loader active inline />
                     </Grid.Column>
                 </Grid.Row>)}
             </Grid>
             { solution && <SolutionPanel solution={solution} /> }
-            {messages && <INDIMessagesPanel messages={messages} /> }
+            {messages && messages.length > 0 && <PlateSolvingMessagesPanel messages={messages} /> }
         </Container>
         );
     }

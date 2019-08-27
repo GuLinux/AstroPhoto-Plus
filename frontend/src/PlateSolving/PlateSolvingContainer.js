@@ -6,6 +6,7 @@ import { plateSolvingContainerSelector } from './selectors';
 const mapDispatchToProps = {
   setOption: Actions.PlateSolving.setOption,
   solveField: Actions.PlateSolving.solveField,
+  abortSolveField: Actions.PlateSolving.abortSolveField,
 }
 
 export const PlateSolvingContainer = connect(

@@ -44,6 +44,7 @@ class Settings:
             'indi_drivers_autostart',
             'astrometry_cpu_limit',
             'server_name',
+            'astrometry_solve_field_path',
         ]
 
         self.on_update = None
@@ -74,6 +75,10 @@ class Settings:
     @property
     def indi_drivers_autostart(self):
         return self.__get_bool('indi_drivers_autostart', True)
+
+    @property
+    def astrometry_solve_field_path(self):
+        return self.json_map.get('astrometry_solve_field_path', '/usr/bin/solve-field')
  
     @property
     def camera_tempdir(self):

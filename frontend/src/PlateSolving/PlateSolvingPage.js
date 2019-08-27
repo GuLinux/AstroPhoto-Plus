@@ -19,8 +19,8 @@ export const PlateSolvingPage = ({hasAstrometry, hasTelescopes}) => {
     if(!hasAstrometry)
         return <NotFoundPage
             backToUrl='/indi/server'
-            title='No Astrometry driver found'
-            message='Astrometry drivers not found. Please double check that your INDI server is connected, with at least one connected astrometry device.'
+            title='No Astrometry installation found'
+            message='The local Astrometry.net installation was not found. Please install it, and adjust the solve-field binary path in the Settings page if necessary.'
             backButtonText='INDI server page'
         />;
     if(!hasTelescopes)

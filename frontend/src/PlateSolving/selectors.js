@@ -1,14 +1,13 @@
 import { createSelector } from 'reselect';
 import {
     filterDevices,
-    getConnectedAstrometry,
     getConnectedCameras,
     getConnectedTelescopes,
     getCCDWidthPix,
     getCCDPixelPitch,
     getTelescopeFocalLength,
 } from '../Gear/selectors';
-import { getMessages, getDevices } from '../INDI-Server/selectors';
+import { getDevices } from '../INDI-Server/selectors';
 import { PlateSolving } from './actions';
 import { get } from 'lodash';
 
@@ -19,12 +18,10 @@ const getSolution = state => state.plateSolving.solution;
 
 
 const getPlateSolvingDevices = createSelector([
-    getConnectedAstrometry,
     getConnectedCameras,
     getConnectedTelescopes,
     getDevices,
-], (astrometryIds, camerasIds, telescopesIds, devices) => ({
-    astrometryDrivers: filterDevices(devices, astrometryIds),
+], (camerasIds, telescopesIds, devices) => ({
     telescopes: filterDevices(devices, telescopesIds),
     cameras:    filterDevices(devices, camerasIds),
 }))
@@ -34,16 +31,16 @@ const getDeviceId = (deviceOptionName, state) => getOption(state, deviceOptionNa
 
 export const plateSolvingContainerSelector = createSelector([
     getPlateSolvingDevices,
-    getMessages,
     getPlateSolvingOptions,
     getSolution,
     state => state.plateSolving.loading,
+    state => state.plateSolving.messages,
     state => getCCDWidthPix(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
     state => getCCDPixelPitch(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
     state => getTelescopeFocalLength(state, {telescopeId: getDeviceId(PlateSolving.Options.telescope, state)}),
-], (plateSolvingDevices, messages, options, solution, loading, ccdMaxX, ccdPixelSizeX, telescopeFocalLength) => ({
+], (plateSolvingDevices, options, solution, loading, messages, ccdMaxX, ccdPixelSizeX, telescopeFocalLength) => ({
     ...plateSolvingDevices,
-    messages: messages[options.astrometryDriver],
+    messages,
     options,
     solution,
     loading,
@@ -61,8 +58,10 @@ export const plateSolvingSectionMenuSelector = createSelector([getPlateSolvingOp
 
 export const solveFromCameraSelector = createSelector([getPlateSolvingOptions], options => ({options}));
 
-export const plateSolvingPageContainerSelector = createSelector([getConnectedAstrometry, getConnectedTelescopes], (astrometryDrivers, telescopes) => ({
-    hasAstrometry: astrometryDrivers.length > 0,
+const getAstrometryAvailable = state => state.plateSolving.available;
+
+export const plateSolvingPageContainerSelector = createSelector([getAstrometryAvailable, getConnectedTelescopes], (astrometryAvailable, telescopes) => ({
+    hasAstrometry: astrometryAvailable,
     hasTelescopes: telescopes.length > 0,
 }));
 

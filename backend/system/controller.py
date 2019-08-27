@@ -1,6 +1,7 @@
 from functools import wraps
 import os
-from indi import Server, Device, Property, INDIService, INDIProfile, AstrometryIndexDownloader
+from indi import Server, Device, Property, INDIService, INDIProfile
+from platesolving import PlateSolving, AstrometryIndexDownloader
 from models import SavedList
 from .settings import settings
 from .server_sent_events import SSE
@@ -8,6 +9,7 @@ from app import app
 import time
 from sequences import SequencesRunner, Sequence
 from utils.threads import start_thread
+
 
 
 class EventListener:
@@ -59,6 +61,11 @@ class EventListener:
     def on_astrometry_index_downloader(self, event_type, payload=None):
         self.sse.publish({'event': event_type, 'payload': payload}, type='astrometry_index_downloader')
 
+    def on_platesolving_message(self, message):
+        self.sse.publish({'event': 'platesolving_message', 'payload': {'message': message}, 'is_error': False}, type='platesolving')
+
+    def on_platesolving_finished(self, payload):
+        self.sse.publish({'event': 'platesolving_finished', 'payload': payload, 'is_error': payload['status'] == 'error'}, type='platesolving')
 
     def on_indi_service_exit(self, service):
         service_stdout, service_stderr = None, None
@@ -88,6 +95,7 @@ class Controller:
         self.__create_indi_server()
         self.sequences = SavedList(Sequence)
         self.astrometry_downloader = AstrometryIndexDownloader(self.event_listener)
+        self.platesolving = PlateSolving(self.indi_server, self.event_listener)
 
     def notification(self, event_type, event_name, payload, is_error, error_code=None, error_message=None):
         self.sse.publish({'event': event_name, 'payload': payload, 'is_error': is_error}, type=event_type)
