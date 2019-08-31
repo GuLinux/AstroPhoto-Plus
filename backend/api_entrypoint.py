@@ -553,12 +553,12 @@ def get_available_catalogs():
     return catalog_importer.available_catalogs()
 
 
-@app.route('/api/catalog/import/ngc_ic', methods=['POST'])
+@app.route('/api/catalogs/import/<name>', methods=['POST'])
 @json_api
-def catalog_import_ngc_ic():
-    return catalog_importer.import_ngc_ic()
+def catalog_import(name):
+    return catalog_importer.import_catalog(name)
 
-@app.route('/api/catalog/<catalog>/<name>', methods=['GET'])
+@app.route('/api/catalogs/<catalog>/<name>', methods=['GET'])
 @json_api
 def catalog_lookup(catalog, name):
     return catalogs.lookup(catalog, name)

@@ -15,6 +15,7 @@ import commands from './Commands/reducer';
 import { plateSolving } from './PlateSolving/reducer';
 import { network } from './Network/reducer';
 import { backendSelection } from './BackendSelection/reducer';
+import { catalogs } from './Catalogs/reducer.js';
 
 export const astroPhotoPlusReducer = combineReducers({
     app,
@@ -33,5 +34,6 @@ export const astroPhotoPlusReducer = combineReducers({
     commands,
     plateSolving,
     backendSelection,
+    catalogs,
 });
 

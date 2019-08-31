@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header, Label} from 'semantic-ui-react';
+import { List, Button, Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header, Label} from 'semantic-ui-react';
 import { DirectoryPicker } from '../components/DirectoryPicker'; 
 import { CommandsContainer } from '../Commands/CommandsContainer';
 import { CheckButton } from '../components/CheckButton';
@@ -50,9 +50,8 @@ export class Settings extends React.Component {
     onAstrometryTimeoutChanged = value => this.props.update('astrometry_cpu_limit', value);
     onServerNameChanged = value => this.props.update('server_name', value);
 
-
     render = () => {
-        const {onChange, showCommands, backendVersion='N/A', frontendVersion} = this.props;
+        const {onChange, showCommands, backendVersion='N/A', frontendVersion, catalogs, availableCatalogs, importCatalog } = this.props;
         const currentSequencesDir = this.displayTextValue('sequences_dir', '');
         const currentINDIPath = this.displayTextValue('indi_prefix', '');
         const currentAstrometryTimeout = this.displayValue('astrometry_cpu_limit') || '';
@@ -160,6 +159,34 @@ export class Settings extends React.Component {
                                 <NumericInput min={150} max={9999} step={1} value={currentAstrometryTimeout} label='seconds' onChange={this.onAstrometryTimeoutChanged} />
                             </Form.Field>
                         </Segment>
+                        <Segment>
+                            <Header content='Catalogs' />
+                            {catalogs && catalogs.length > 0 && (
+                                <React.Fragment>
+                                    <Header size='small' content='Current catalogs:' />
+                                    <List>
+                                        {catalogs.map(catalog => (
+                                            <List.Item key={catalog.catalogName}>
+                                                <List.Header content={catalog.display_name} /> {catalog.items} entries.
+                                            </List.Item>
+                                        ))}
+                                    </List>
+                                </React.Fragment>
+                            )}
+                            {availableCatalogs && availableCatalogs.length > 0 && (
+                                <React.Fragment>
+                                    <Header size='small' content='Download catalogs' />
+                                    <Menu vertical fluid>
+                                        <Dropdown direction='left' floating item text='Select a catalog to download'>
+                                            <Dropdown.Menu>
+                                                {availableCatalogs.map(catalog => <Dropdown.Item onClick={() => importCatalog(catalog.catalogDownloadName, catalog.display_name)} key={catalog.catalogDownloadName} text={catalog.display_name} />)}
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </Menu>
+                                </React.Fragment>
+                            )}
+                        </Segment>
+
                         <Segment>
                             <Header content='Misc' />
                             <Form.Group inline>

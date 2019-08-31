@@ -5,6 +5,7 @@ from astropy.coordinates import SkyCoord
 import json
 from app import logger
 from redis_client import redis_client
+from errors import BadRequestError
 from .catalogs import Catalogs
 
 class CatalogEntry:
@@ -52,6 +53,11 @@ class CatalogVizierImporter:
                 'provides': ['NGC', 'IC', 'M', 'common_names'],
             },
         }
+
+    def import_catalog(self, name):
+        if name == 'ngc_ic':
+            return self.import_ngc_ic()
+        raise BadRequestError('Catalog {} not supported'.format(name))
 
     def import_ngc_ic(self):
         def get_catalog_and_name(object_name):
@@ -109,7 +115,7 @@ class CatalogVizierImporter:
         if expected_length == len(items):
             logger.debug('Importing %s catalog with %d items to Redis', catalog_name, len(items))
             current_catalogs = redis_client.dict_get(Catalogs.CATALOGS_KEY)
-            current_catalogs.update({ catalog_name: json.dumps({ 'display_name': catalog_display_name, 'itmes': len(items)}) })
+            current_catalogs.update({ catalog_name: json.dumps({ 'display_name': catalog_display_name, 'items': len(items)}) })
             redis_client.dict_set('catalogs', current_catalogs)
             for _, item in items.items():
     #            logger.debug('Adding entry %s [%s] to catalog %s', item.name, item.id, catalog_name)
