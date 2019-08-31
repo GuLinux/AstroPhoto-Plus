@@ -1,5 +1,6 @@
 from flask import jsonify, Response, send_from_directory, send_file, request
 from app import app
+from catalogs import catalog_importer, catalogs
 import logging
 import os
 # Init logger, before we import anything else
@@ -539,3 +540,14 @@ def get_available_commands():
 def run_command(id, json):
     return commands.run(id, json)
 
+
+# Catalog
+@app.route('/api/catalog/import/ngc_ic', methods=['POST'])
+@json_api
+def catalog_import_ngc_ic():
+    return catalog_importer.import_ngc_ic()
+
+@app.route('/api/catalog/<catalog>/<name>', methods=['GET'])
+@json_api
+def catalog_lookup(catalog, name):
+    return catalogs.lookup(catalog, name)

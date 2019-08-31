@@ -11,3 +11,4 @@ six
 redis
 requests
 pkgconfig
+astroquery
