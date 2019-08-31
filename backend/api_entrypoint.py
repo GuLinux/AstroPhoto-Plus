@@ -547,6 +547,12 @@ def run_command(id, json):
 def get_catalogs():
     return catalogs.all()
 
+@app.route('/api/catalogs/available', methods=['GET'])
+@json_api
+def get_available_catalogs():
+    return catalog_importer.available_catalogs()
+
+
 @app.route('/api/catalog/import/ngc_ic', methods=['POST'])
 @json_api
 def catalog_import_ngc_ic():

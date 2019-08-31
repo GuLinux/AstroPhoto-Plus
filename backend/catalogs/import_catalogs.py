@@ -45,6 +45,14 @@ class CatalogVizierImporter:
     def __init__(self):
         self.vizier = Vizier(columns=['*', '_RAJ2000', '_DEJ2000'], row_limit=-1)
 
+    def available_catalogs(self):
+        return {
+            'ngc_ic': {
+                'display_name': 'NGC/IC, Messier and Common Names',
+                'provides': ['NGC', 'IC', 'M', 'common_names'],
+            },
+        }
+
     def import_ngc_ic(self):
         def get_catalog_and_name(object_name):
             if object_name.startswith('I '):
