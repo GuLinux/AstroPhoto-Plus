@@ -101,7 +101,7 @@ class CatalogVizierImporter:
         if expected_length == len(items):
             logger.debug('Importing %s catalog with %d items to Redis', catalog_name, len(items))
             current_catalogs = redis_client.dict_get(Catalogs.CATALOGS_KEY)
-            current_catalogs.update({ catalog_name: catalog_display_name })
+            current_catalogs.update({ catalog_name: json.dumps({ 'display_name': catalog_display_name, 'itmes': len(items)}) })
             redis_client.dict_set('catalogs', current_catalogs)
             for _, item in items.items():
     #            logger.debug('Adding entry %s [%s] to catalog %s', item.name, item.id, catalog_name)

@@ -542,6 +542,11 @@ def run_command(id, json):
 
 
 # Catalog
+@app.route('/api/catalogs', methods=['GET'])
+@json_api
+def get_catalogs():
+    return catalogs.all()
+
 @app.route('/api/catalog/import/ngc_ic', methods=['POST'])
 @json_api
 def catalog_import_ngc_ic():
@@ -551,3 +556,4 @@ def catalog_import_ngc_ic():
 @json_api
 def catalog_lookup(catalog, name):
     return catalogs.lookup(catalog, name)
+

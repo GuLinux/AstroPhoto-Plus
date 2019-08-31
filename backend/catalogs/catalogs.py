@@ -3,6 +3,7 @@ from redis_client import redis_client
 import astropy.units as u
 from astropy.coordinates import SkyCoord
 from errors import NotFoundError
+import json
 
 class Catalogs:
     CATALOGS_KEY = 'catalogs'
@@ -21,6 +22,12 @@ class Catalogs:
     def catalog_key(catalog_name):
         return 'catalog_{}'.format(catalog_name)
 
+    def all(self):
+        all_catalogs = redis_client.dict_get('catalogs')
+        for key, catalog in all_catalogs.items():
+            all_catalogs[key] = json.loads(catalog)
+        return all_catalogs
+
     def lookup(self, catalog_name, entry_name):
         entry_key = Catalogs.entry_key(catalog=catalog_name, name=entry_name)
         logger.debug('Looking up for %s on catalog %s with Redis key %s', entry_name, catalog_name, entry_key)
@@ -37,6 +44,8 @@ class Catalogs:
             entry['ra_hms'] = entry_coords.ra.to_string(sep=':', unit=u.hourangle, fields=3)
             entry['dec_dms'] = entry_coords.dec.to_string(sep=':', unit=u.degree, fields=3)
         return entry
+
+
         
 
 catalogs = Catalogs()
