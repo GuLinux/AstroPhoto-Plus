@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, Popup, List, Loader, Label, Grid, Container, Header, Button, Divider, Message, Form, Input } from 'semantic-ui-react';
+import { Icon, Segment, Dropdown, Popup, List, Loader, Label, Grid, Container, Header, Button, Divider, Message, Form, Input } from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import { UploadFileDialog } from '../components/UploadFileDialog';
@@ -125,7 +125,8 @@ const SolutionPanel = ({solution, previousSolution, targets}) => {
 }
 
 
-export class PlateSolving extends React.PureComponent {
+export class PlateSolving extends React.Component {
+    state = {};
 
     componentDidMount = () => {
         this.setDefaultDevice(Options.telescope, this.props.telescopes);
@@ -259,15 +260,7 @@ export class PlateSolving extends React.PureComponent {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Targets'/></Grid.Column>
-                    <Grid.Column width={13}>
-                        <CatalogSearch sectionKey='platesolving' onObjectSelected={this.props.addTargetObject} clearOnSelected={true} />
-                        {this.props.targets.length > 0 && (
-                            <List horizontal>
-                                {this.props.targets.map(target => this.renderTarget(target))}
-                            </List>
-                        )}
-                        {this.props.mainTarget && this.targetSolvingOptions()}
-                    </Grid.Column>
+                    <Grid.Column width={13}>{this.renderTargets()}</Grid.Column>
                 </Grid.Row>
 
                 { !options[Options.camera] && (
@@ -294,16 +287,47 @@ export class PlateSolving extends React.PureComponent {
         );
     }
 
+    renderCatalogSearch = () => (
+        <Segment>
+            <CatalogSearch sectionKey='platesolving' onObjectSelected={this.addTargetObject} clearOnSelected={true} />
+        </Segment>
+    );
+
+    renderTargets = () => this.state.showTargetSearch ? this.renderCatalogSearch() : this.renderTargetsList();
+
+    renderTargetsList = () => (
+        <React.Fragment>
+            <List horizontal>
+                {this.props.targets.map(target => this.renderTarget(target))}
+                {this.addTargetListItem()}
+            </List>
+            {this.props.mainTarget && this.targetSolvingOptions()}
+        </React.Fragment>
+    );
+
     renderTarget = target => (
         <List.Item key={target.id}>
             <List.Header>{target.displayName}</List.Header>
             <Button.Group size='mini'>
-                {this.props.mainTarget === target.id && <Popup content='Main target' trigger={<Button icon='checkmark' basic />} /> }
+                {this.props.mainTarget === target.id && <Popup content='Main target' trigger={<Button icon={<Icon color='green' name='checkmark' />} basic />} /> }
                 {this.props.mainTarget !== target.id && <Popup content='Set as main target' trigger={<Button icon='target' basic onClick={() => this.props.setMainTarget(target.id)} />} /> }
                 <Popup content='Remove' trigger={<Button icon='remove' basic onClick={() => this.props.removeTarget(target.id)} />} />
             </Button.Group>
         </List.Item>
     );
+
+    addTargetListItem = () => (
+        <List.Item key='add-target'>
+            <Button size='mini' icon='add' onClick={this.toggleSearchTarget}/>
+        </List.Item>
+    );
+
+    toggleSearchTarget = () => this.setState({ showTargetSearch: !this.state.showTargetSearch });
+
+    addTargetObject = object => {
+        this.props.addTargetObject(object);
+        this.toggleSearchTarget();
+    }
 
     targetSolvingOptions = () => {
         const options = [1, 5, 10, 20, 50].map(degs => ({
