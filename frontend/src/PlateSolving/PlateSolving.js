@@ -38,86 +38,66 @@ class SetCameraFOV extends React.PureComponent {
     render = () => null;
 }
 
-const toSexagesimal = value => {
-    const degrees = parseInt(value);
-    let remainder = Math.abs(60 * (value - degrees));
-    const minutes = parseInt(remainder);
-    remainder = 60 * (remainder - minutes);
-    const seconds = parseInt(remainder);
-    return { degrees, minutes, seconds, fractionalSeconds: remainder };
-}
-
-const formatDegrees = degrees => {
-    const sexagesimal = toSexagesimal(degrees);
-    return `${sexagesimal.degrees}\u00B0 ${sexagesimal.minutes}' ${formatDecimalNumber('%0.2f', sexagesimal.fractionalSeconds)}"`;
-}
-
-
-const deg2hours = deg => deg * (24.0 / 360.0);
-const formatRA = degrees => {
-    const hours = deg2hours(degrees);
-    const sexagesimal = toSexagesimal(hours);
-    return `${sexagesimal.degrees}:${sexagesimal.minutes}:${formatDecimalNumber('%0.2f', sexagesimal.fractionalSeconds)}`;
-}
-
-const SolutionField = ({field, width=11, format = v => v}) => ( <React.Fragment>
-    <Grid.Column width={4}><Label content={field.label} /></Grid.Column>
-    <Grid.Column width={width}>{format(field.value)}</Grid.Column>
-</React.Fragment>
+const SolutionField = ({label, value, width=11}) => (
+    <React.Fragment>
+        <Grid.Column width={4}><Label content={label} /></Grid.Column>
+        <Grid.Column width={width}>{value}</Grid.Column>
+    </React.Fragment>
 );
 
-const formatAladinParams = (solution) => {
-    const ra = toSexagesimal(solution.ASTROMETRY_RESULTS_RA.value * (24.0 / 360.0));
-    const dec = toSexagesimal(solution.ASTROMETRY_RESULTS_DE.value);
-    const decSign = dec.degrees >= 0 ? '%2B' : ''
-    return 'target=' +
-        encodeURI(`${ra.degrees} ${ra.minutes} ${formatDecimalNumber('%0.3f', ra.fractionalSeconds)}`) +
-        decSign + encodeURI(`${dec.degrees} ${dec.minutes} ${formatDecimalNumber('%0.2f', dec.fractionalSeconds)}`) +
-        '&fov=' + encodeURI(formatDecimalNumber('%0.2f', solution.ASTROMETRY_RESULTS_WIDTH.value * 5));
-}
-
-const SolutionPanel = ({solution}) => {
-    const celestialMarker = {
-        center: true,
-        symbolFill: '#FF113322',
-        symbolStroke: '#FF1111',
-        textFill: '#FF5555',
-        ra: deg2hours(solution.ASTROMETRY_RESULTS_RA.value),
-        dec: solution.ASTROMETRY_RESULTS_DE.value,
-        name: '  Plate Solving solution',
-        size: 500,
-    };
+const SolutionPanel = ({solution, previousSolution}) => {
+    const markers = [
+        {
+            ...solution,
+            center: true,
+            symbolFill: '#FF113322',
+            symbolStroke: '#FF1111',
+            textFill: '#FF5555',
+            name: '  Plate Solving solution',
+            size: 500,
+            objectsClass: 'solutionMarker',
+        },
+    ];
+    if(previousSolution) {
+        markers.push({
+            ...previousSolution,
+            symbolFill: '#77113322',
+            symbolStroke: '#771111',
+            textFill: '#775555',
+            name: '  Previous solution',
+            size: 500,
+            objectsClass: 'previousSolutionMarker',
+        });
+    }
     return (
         <Container>
             <Container text>
                 <Header content='Solution' />
                 <Grid stackable>
                     <Grid.Row>
-                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_RA} format={formatRA} />
-                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_DE} format={formatDegrees} />
+                        <SolutionField width={3} label='RA (J2000)' value={solution.raLabel} />
+                        <SolutionField width={3} label='DEC (J2000)' value={solution.decLabel} />
                     </Grid.Row>
                     <Grid.Row>
-                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_WIDTH} format={formatDegrees} />
-                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_HEIGHT} format={formatDegrees} />
+                        <SolutionField width={3} label='Field width' value={solution.width} />
+                        <SolutionField width={3} label='Field height' value={solution.height} />
                     </Grid.Row>
                     <Grid.Row>
-                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_PIXSCALE} format={v => formatDecimalNumber('%0.2f', v)} />
+                        <SolutionField width={3} label='Scale (arcsec/pixel)' value={solution.pixScale} />
                     </Grid.Row>
                     { solution.ASTROMETRY_RESULTS_ORIENTATION && (
                     <Grid.Row>
-                        <SolutionField width={3} field={solution.ASTROMETRY_RESULTS_ORIENTATION} format={v => formatDecimalNumber('%0.2f', v)} />
+                        <SolutionField width={3} label='Orientation (East of North)' value={solution.orientation} />
                     </Grid.Row>
                     )}
                     <Grid.Row>
                         <Grid.Column width={4}><Label content='Link to Aladin' /></Grid.Column>
-                        <Grid.Column width={5}>
-                            <a href={`http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`} rel='noopener noreferrer' target='_blank'>click here</a>
-                        </Grid.Column>
+                        <Grid.Column width={5}><a href={solution.aladinURL} rel='noopener noreferrer' target='_blank'>click here</a></Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Container>
             <Divider hidden />
-            <CelestialPage form={true} dsosLimit={9} dsosNameLimit={6} marker={celestialMarker} zoom={5} />
+            <CelestialPage zoomextend={50} form={true} dsosLimit={9} dsosNameLimit={6} markers={markers} zoom={5} />
         </Container>
     );
 }
@@ -163,7 +143,7 @@ export class PlateSolving extends React.PureComponent {
         })
 
     render = () => {
-        const { astrometryDrivers, telescopes, cameras, messages, options, setOption, solution, loading, isManualFOV, abortSolveField } = this.props;
+        const { astrometryDrivers, telescopes, cameras, messages, options, setOption, solution, previousSolution, loading, isManualFOV, abortSolveField } = this.props;
         return (
         <Container>
             <Header content='Plate Solver options' />
@@ -273,7 +253,7 @@ export class PlateSolving extends React.PureComponent {
                     </Grid.Column>
                 </Grid.Row>)}
             </Grid>
-            { solution && <SolutionPanel solution={solution} /> }
+            { solution && <SolutionPanel solution={solution} previousSolution={previousSolution} /> }
             {messages && messages.length > 0 && <PlateSolvingMessagesPanel messages={messages} /> }
         </Container>
         );

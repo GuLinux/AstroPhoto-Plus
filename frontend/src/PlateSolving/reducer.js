@@ -73,7 +73,8 @@ const defaultState = {
         [Actions.Options.downsample]: 2,
     },
     messages: [],
-    //solution: testSolution,
+    solution: testSolution,
+    previousSolution: {...testSolution, ASTROMETRY_RESULTS_DE: {...testSolution.ASTROMETRY_RESULTS_DE, value: testSolution.ASTROMETRY_RESULTS_DE.value + 2 } },
 };
 
 const setOption = (state, {option, value}) => {
@@ -82,6 +83,11 @@ const setOption = (state, {option, value}) => {
         newState.options[Actions.Options.fov] = {};
     }
     return newState;
+}
+
+const receivedPlatesolvingSolution = (state, action) => {
+    const solution = list2object(action.payload.solution.values, 'name')
+    return {...state, loading: false, solution, previousSolution: state.solution};
 }
 
 export const plateSolving = (state = defaultState, action) => {
@@ -95,7 +101,7 @@ export const plateSolving = (state = defaultState, action) => {
         case 'PLATESOLVING_FAILED':
             return {...state, solution: undefined, loading: false };
         case 'PLATESOLVING_SOLVED':
-            return {...state, solution: list2object(action.payload.solution.values, 'name'), loading: false };
+            return receivedPlatesolvingSolution(state, action);
         case 'FETCH_PLATESOLVING_SOLVE_FIELD':
             return {...state, loading: true, solution: undefined };
         case 'PLATESOLVING_MESSAGE':

@@ -46,21 +46,24 @@ const buildConfig = (config) => {
         dsos: {
             ...dsos,
             data: getDataFile(dsos.limit, 'dsos'),
-        }
+        },
+        interactive: false,
     }
 }
 
 export class CelestialPage extends React.Component {
     constructor(props) {
         super(props);
+        const centerMarker = this.props.markers.find(m => m.center);
         const config = {
             ...defaultConfig,
-            center: [get(props, 'marker.ra', 0), get(props, 'marker.dec', 0)],
+            center: (centerMarker ? [get(centerMarker, 'ra', 0), get(centerMarker, 'dec', 0)] : [0.0]),
         };
 
         props.starsLimit && set(config, 'stars.limit', props.starsLimit);
         props.dsosLimit && set(config, 'dsos.limit', props.dsosLimit);
         props.dsosNameLimit && set(config, 'dsos.namelimit', props.dsosNameLimit);
+        props.zoomextend && set(config, 'zoomextend', props.zoomextend);
 
         this.state = {
             zoom: props.zoom,
@@ -68,6 +71,7 @@ export class CelestialPage extends React.Component {
             pending: {},
         };
         this.celestial = React.createRef();
+        window.celestial = this.celestial;
     }
 
     setConfig = (key, value) => {
@@ -85,28 +89,34 @@ export class CelestialPage extends React.Component {
         this.setState({...this.state, pending: {}, config: buildConfig(config)});
     }
 
+    renderMarker = marker => {
+        const key = `${marker.ra}-${marker.dec}-${marker.name}`;
+        return (
+            <Celestial.FeaturesCollection
+            key={key}
+            objectsClass={marker.objectClass || 'marker'}
+            symbolStyle={{ stroke: get(marker, 'symbolStroke', '#ffffff'), fill: get(marker, 'symbolFill', '#ffffff')}}
+            textStyle={{
+                fill: marker.textFill || '#ffffff',
+                font: marker.font || 'bold 15px Helvetica, Arial, sans-serif',
+                align: marker.textAlign || 'left', 
+                baseline: marker.textBaseline || 'bottom', 
+            }}
+            >
+                <Celestial.Point ra={marker.ra} dec={marker.dec} size={marker.size || 100} name={marker.name}/>
+            </Celestial.FeaturesCollection>
+        )
+    }
+
     render = () => {
         const { config, zoom } = this.state;
-        const { marker, form } = this.props;
+        const { markers, form } = this.props;
         return (
             <React.Fragment>
                 <Celestial config={config} zoom={zoom} ref={this.celestial}>
-                    {marker && (
-                        <Celestial.FeaturesCollection
-                        objectsClass={marker.objectClass || 'marker'}
-                        symbolStyle={{ stroke: marker.symbolStroke || '#ffffff', fill: marker.symbolFill || '#ffffff'}}
-                        textStyle={{
-                            fill: marker.textFill || '#ffffff',
-                            font: marker.font || 'bold 15px Helvetica, Arial, sans-serif',
-                            align: marker.textAlign || 'left', 
-                            baseline: marker.textBaseline || 'bottom', 
-                        }}
-                        >
-                            <Celestial.Point ra={marker.ra} dec={marker.dec} size={marker.size || 100} name={marker.name}/>
-                        </Celestial.FeaturesCollection>
-                    )}
+                    {markers.map(this.renderMarker)}
                 </Celestial>
-                { form && (
+                { form && this.celestial.current && (
                     <Form>
                         <div>
                             { get(this.state, ['pending', 'stars.limit'], 0) > 8 && 
@@ -118,9 +128,13 @@ export class CelestialPage extends React.Component {
                         </div>
                         <Form.Group>
                             <Form.Field inline>
-                                <Button.Group size='mini'>
-                                    <Button content='+' onClick={() => this.celestial.current.zoom(1.10)} />
-                                    <Button content='-' onClick={() => this.celestial.current.zoom(0.90)} />
+                                <Button.Group size='mini' vertical>
+                                    <Button content='+ 10%' onClick={() => this.celestial.current.zoom(1.10)} />
+                                    <Button content='- 10%' onClick={() => this.celestial.current.zoom(0.90)} />
+                                </Button.Group>
+                                <Button.Group size='mini' vertical>
+                                    <Button content='+ 50%' onClick={() => this.celestial.current.zoom(1.50)} />
+                                    <Button content='- 50%' onClick={() => this.celestial.current.zoom(0.50)} />
                                 </Button.Group>
                             </Form.Field>
                             <Form.Field inline>

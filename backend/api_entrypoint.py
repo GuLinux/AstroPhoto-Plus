@@ -2,6 +2,7 @@ from flask import jsonify, Response, send_from_directory, send_file, request
 from app import app
 from catalogs import catalog_importer, catalogs
 import logging
+from skychart import skychart
 import os
 # Init logger, before we import anything else
 gunicorn_logger = logging.getLogger('gunicorn.error')
@@ -563,3 +564,10 @@ def catalog_import(name):
 def catalog_lookup(catalog, name):
     return catalogs.lookup(catalog, name)
 
+# Star Chart
+@app.route('/api/starchart', methods=['GET'])
+def get_star_chart():
+    try:
+        return Response(skychart.chart(request.args), mimetype='image/svg+xml')
+    except BadRequestError as e:
+        return api_bad_request_error(e.message, e.payload) 

@@ -12,3 +12,5 @@ redis
 requests
 pkgconfig
 astroquery
+healpy
+svgwrite
