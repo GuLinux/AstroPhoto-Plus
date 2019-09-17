@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader, Label, Grid, Container, Header, Button, Divider, Message} from 'semantic-ui-react';
+import { Dropdown, Popup, List, Loader, Label, Grid, Container, Header, Button, Divider, Message, Form, Input } from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import { UploadFileDialog } from '../components/UploadFileDialog';
@@ -9,6 +9,7 @@ import { formatDecimalNumber } from '../utils';
 import { SkyChartComponent } from '../components/SkyChartsComponent';
 import { get } from 'lodash';
 import { getFieldOfView, getSensorSizeFromResolution } from './utils';
+import { CatalogSearch } from '../Catalogs/CatalogSearch.js';
 
 const { Options } = PlateSolvingActions;
 
@@ -45,7 +46,7 @@ const SolutionField = ({label, value, width=11}) => (
     </React.Fragment>
 );
 
-const SolutionPanel = ({solution, previousSolution}) => {
+const SolutionPanel = ({solution, previousSolution, targets}) => {
     const markers = [
         {
             ra: solution.ra,
@@ -60,6 +61,19 @@ const SolutionPanel = ({solution, previousSolution}) => {
                 stroke: 'red',
             },
         },
+        ...targets.map(target => ({
+            ra: target.raj2000/15.0,
+            dec: target.dej2000,
+            radius: 10,
+            label: target.displayName,
+            marker_opts: {
+                stroke: 'green',
+                'fill-opacity': 0,
+            },
+            label_opts: {
+                stroke: 'green',
+            },
+        }))
     ];
     if(previousSolution) {
         markers.push({
@@ -243,6 +257,19 @@ export class PlateSolving extends React.PureComponent {
                             )}
                     </Grid.Column>
                 </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Targets'/></Grid.Column>
+                    <Grid.Column width={13}>
+                        <CatalogSearch sectionKey='platesolving' onObjectSelected={this.props.addTargetObject} clearOnSelected={true} />
+                        {this.props.targets.length > 0 && (
+                            <List horizontal>
+                                {this.props.targets.map(target => this.renderTarget(target))}
+                            </List>
+                        )}
+                        {this.props.mainTarget && this.targetSolvingOptions()}
+                    </Grid.Column>
+                </Grid.Row>
+
                 { !options[Options.camera] && (
                     <Grid.Row>
                         <Grid.Column width={16} textAlign='center'>
@@ -261,10 +288,33 @@ export class PlateSolving extends React.PureComponent {
                     </Grid.Column>
                 </Grid.Row>)}
             </Grid>
-            { solution && <SolutionPanel solution={solution} previousSolution={previousSolution} /> }
+            { solution && <SolutionPanel solution={solution} previousSolution={previousSolution} targets={this.props.targets} /> }
             {messages && messages.length > 0 && <PlateSolvingMessagesPanel messages={messages} /> }
         </Container>
         );
     }
+
+    renderTarget = target => (
+        <List.Item key={target.id}>
+            <List.Header>{target.displayName}</List.Header>
+            <Button.Group size='mini'>
+                {this.props.mainTarget === target.id && <Popup content='Main target' trigger={<Button icon='checkmark' basic />} /> }
+                {this.props.mainTarget !== target.id && <Popup content='Set as main target' trigger={<Button icon='target' basic onClick={() => this.props.setMainTarget(target.id)} />} /> }
+                <Popup content='Remove' trigger={<Button icon='remove' basic onClick={() => this.props.removeTarget(target.id)} />} />
+            </Button.Group>
+        </List.Item>
+    );
+
+    targetSolvingOptions = () => {
+        const options = [1, 5, 10, 20, 50].map(degs => ({
+            key: degs,
+            text: degs,
+            value: degs,
+        }));
+        const searchRadius = this.props.options[Options.searchRadius];
+        return <div>Platesolving only around <Dropdown onChange={this.setSearchRadius} inline options={options} defaultValue={searchRadius} /> degrees from the selected target.</div>
+    };
+
+    setSearchRadius = (e, d) => this.props.setOption(Options.searchRadius, d.value);
 }
 

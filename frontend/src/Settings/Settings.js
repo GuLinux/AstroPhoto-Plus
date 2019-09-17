@@ -177,7 +177,7 @@ export class Settings extends React.Component {
                                 <React.Fragment>
                                     <Header size='small' content='Download catalogs' />
                                     <Menu vertical fluid>
-                                        <Dropdown direction='left' floating item text='Select a catalog to download'>
+                                        <Dropdown direction='left' floating item text='Select a catalog to download' disabled={this.props.catalogsImporting} >
                                             <Dropdown.Menu>
                                                 {availableCatalogs.map(catalog => <Dropdown.Item onClick={() => importCatalog(catalog.catalogDownloadName, catalog.display_name)} key={catalog.catalogDownloadName} text={catalog.display_name} />)}
                                             </Dropdown.Menu>

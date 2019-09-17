@@ -29,7 +29,7 @@ export class SkyChartComponent extends React.Component {
 
     componentDidUpdate = (prevProps, prevState) => {
         if(prevProps !== this.props) {
-            this.setState(this.getStateOptionsFromProps());
+            this.setState({ options: this.getStateOptionsFromProps()});
         }
         if(prevState.options !== this.state.options) {
             this.fetchMap();

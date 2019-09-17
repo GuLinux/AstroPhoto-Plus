@@ -68,6 +68,7 @@ const formatAladinParams = (solution) => {
 
 
 
+
 const transformSolution = solution => ({
     ra: deg2hours(solution.ASTROMETRY_RESULTS_RA.value),
     dec: solution.ASTROMETRY_RESULTS_DE.value,
@@ -82,6 +83,9 @@ const transformSolution = solution => ({
     aladinURL: `http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`,
 });
 
+export const getPlateSolvingTargets = state => state.plateSolving.targets;
+export const getPlateSolvingMainTarget = state => state.plateSolving.mainTarget;
+
 export const plateSolvingContainerSelector = createSelector([
     getPlateSolvingDevices,
     getPlateSolvingOptions,
@@ -92,7 +96,9 @@ export const plateSolvingContainerSelector = createSelector([
     state => getCCDWidthPix(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
     state => getCCDPixelPitch(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
     state => getTelescopeFocalLength(state, {telescopeId: getDeviceId(PlateSolving.Options.telescope, state)}),
-], (plateSolvingDevices, options, solution, previousSolution, loading, messages, ccdMaxX, ccdPixelSizeX, telescopeFocalLength) => ({
+    getPlateSolvingTargets,
+    getPlateSolvingMainTarget,
+], (plateSolvingDevices, options, solution, previousSolution, loading, messages, ccdMaxX, ccdPixelSizeX, telescopeFocalLength, targets, mainTarget) => ({
     ...plateSolvingDevices,
     messages,
     options,
@@ -105,6 +111,8 @@ export const plateSolvingContainerSelector = createSelector([
         ccdPixelSizeX: get(ccdPixelSizeX, 'value'),
     },
     telescopeFocalLength: get(telescopeFocalLength, 'value'),
+    targets,
+    mainTarget,
 }));
 
 export const plateSolvingSectionMenuSelector = createSelector([getPlateSolvingOptions], options => ({

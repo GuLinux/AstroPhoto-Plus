@@ -1,6 +1,6 @@
 import { solveFieldAPI, fetchPlatesolvingStatus, abortSolveFieldAPI } from "../middleware/api";
 import Actions from '../actions';
-import { solveFromCameraSelector } from './selectors';
+import { solveFromCameraSelector, getPlateSolvingMainTarget, getPlateSolvingTargets } from './selectors';
 
 
 export const PlateSolving = {
@@ -11,6 +11,7 @@ export const PlateSolving = {
         fovSource: 'fovSource',
         syncTelescope: 'syncTelescope',
         downsample: 'downsample',
+        searchRadius: 'searchRadius',
     },
     setOption: (option, value) => ({ type: 'PLATESOLVING_SET_OPTION', option, value }),
     resetMessages: () => ({ type: 'PLATESOLVING_RESET_MESSAGES' }),
@@ -36,7 +37,7 @@ export const PlateSolving = {
         abortSolveFieldAPI(dispatch, onSuccess);
     },
 
-    solveField: options => dispatch => {
+    solveField: options => (dispatch, getState) => {
         dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD' });
         dispatch(Actions.PlateSolving.resetMessages());
         const onSuccess = response => {
@@ -59,6 +60,11 @@ export const PlateSolving = {
             });
             return true;
         }
+        const state = getState();
+        const target = getPlateSolvingMainTarget(state);
+        if(target) {
+            options = {...options, target: getPlateSolvingTargets(state).find(t => t.id === target)};
+        }
         solveFieldAPI(dispatch, onSuccess, onError, options);
     },
 
@@ -68,5 +74,16 @@ export const PlateSolving = {
             return;
         dispatch({ type: 'PLATESOLVING_SOLVING_CAMERAFILE'});
         dispatch(Actions.PlateSolving.solveField({ filePath, ...options }));
-    }
+    },
+
+    addTargetObject: object => (dispatch, getState) => {
+        const targetsEmpty = getPlateSolvingTargets(getState()).length === 0
+        dispatch({ type: 'PLATESOLVING_ADD_TARGET', object });
+        if(targetsEmpty) {
+            dispatch(Actions.PlateSolving.setMainTarget(object.id));
+        }
+    },
+
+    setMainTarget: object => ({ type: 'PLATESOLVING_SET_MAIN_TARGET', object }),
+    removeTarget: object => ({ type: 'PLATESOLVING_REMOVE_TARGET', object }),
 };
