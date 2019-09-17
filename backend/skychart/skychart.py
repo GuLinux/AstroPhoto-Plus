@@ -64,9 +64,9 @@ class SkyChart:
                 drawn_labels += 1
         for marker in markers:
             svg_marker = Marker(marker['ra'] * u.hourangle, marker['dec'] * u.deg, frame)
-            marker_args = marker.get('marker_args', {})
-            label_args = marker.get('label_args', {})
-            svg_marker.circle(svg, 10, label=marker['label'], marker_opts=marker_args, label_opts=label_args)
+            marker_opts = marker.get('marker_opts', {})
+            label_opts = marker.get('label_opts', {})
+            svg_marker.circle(svg, 10, label=marker['label'], marker_opts=marker_opts, label_opts=label_opts)
 
         return svg.dwg.tostring()
 
