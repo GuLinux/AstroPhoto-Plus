@@ -105,7 +105,7 @@ const SolutionPanel = ({solution, previousSolution}) => {
                 </Grid>
             </Container>
             <Divider hidden />
-            <SkyChartComponent center={{ra: solution.ra, dec: solution.dec}} initialFoV={solution.widthDegrees * 10} form={true} markers={markers} />
+            <SkyChartComponent center={{ra: solution.ra, dec: solution.dec}} fov={solution.widthDegrees * 10} form={true} markers={markers} starsColor='white' />
         </Container>
     );
 }

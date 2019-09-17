@@ -96,8 +96,8 @@ export const plateSolvingContainerSelector = createSelector([
     ...plateSolvingDevices,
     messages,
     options,
-    solution: transformSolution(solution),
-    previousSolution: transformSolution(previousSolution),
+    solution: solution && transformSolution(solution),
+    previousSolution: previousSolution && transformSolution(previousSolution),
     loading,
     isManualFOV: options[PlateSolving.Options.fovSource] === 'manual',
     ccdInfo: {

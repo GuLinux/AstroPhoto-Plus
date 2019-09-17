@@ -36,7 +36,7 @@ class SkyChart:
         max_labels = int(options.get('max_labels', 10))
         image_size = int(options.get('size', '800'))
         markers = options.get('markers', [])
-        background_color = options.get('bg_color', 'white')
+        background_color = options.get('bg_color')
         stars_color = options.get('stars_color', 'black')
 
         logger.debug('StarChart: ra={}, dec={}, fov={}, magnitude={}, max_labels_magnitude={}, max_labels={}, size={}'.format(ra, dec, fov, magnitude, max_labels_magnitude, max_labels, image_size))
@@ -53,7 +53,8 @@ class SkyChart:
         magnitude_range = stars[0].magnitude, stars[-1].magnitude
 
         svg = SVG(image_size)
-        svg.rect(0, 0, svg.size, svg.size, stroke=background_color, fill=background_color)
+        if background_color:
+            svg.rect(0, 0, svg.size, svg.size, stroke=background_color, fill=background_color)
         drawn_labels = 0
         for star in stars:
             draw_label = drawn_labels < max_labels and star.magnitude <= max_labels_magnitude
