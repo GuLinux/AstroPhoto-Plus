@@ -73,6 +73,8 @@ const transformSolution = solution => ({
     dec: solution.ASTROMETRY_RESULTS_DE.value,
     raLabel: formatRA(solution.ASTROMETRY_RESULTS_RA.value),
     decLabel: formatDegrees(solution.ASTROMETRY_RESULTS_DE.value),
+    widthDegrees: solution.ASTROMETRY_RESULTS_WIDTH.value,
+    heightDegrees: solution.ASTROMETRY_RESULTS_HEIGHT.value,
     width: formatDegrees(solution.ASTROMETRY_RESULTS_WIDTH.value),
     height: formatDegrees(solution.ASTROMETRY_RESULTS_HEIGHT.value),
     pixScale: formatDecimalNumber('%0.2f', solution.ASTROMETRY_RESULTS_PIXSCALE.value),

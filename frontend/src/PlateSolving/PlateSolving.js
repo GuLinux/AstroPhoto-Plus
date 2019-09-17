@@ -6,7 +6,7 @@ import { UploadFileDialog } from '../components/UploadFileDialog';
 import { INDIMessagesPanel } from '../INDI-Server/INDIMessagesPanel';
 import { NumericInput } from '../components/NumericInput';
 import { formatDecimalNumber } from '../utils';
-import { CelestialPage } from '../components/CelestialPage';
+import { SkyChartComponent } from '../components/SkyChartsComponent';
 import { get } from 'lodash';
 import { getFieldOfView, getSensorSizeFromResolution } from './utils';
 
@@ -48,25 +48,33 @@ const SolutionField = ({label, value, width=11}) => (
 const SolutionPanel = ({solution, previousSolution}) => {
     const markers = [
         {
-            ...solution,
-            center: true,
-            symbolFill: '#FF113322',
-            symbolStroke: '#FF1111',
-            textFill: '#FF5555',
-            name: '  Plate Solving solution',
-            size: 500,
-            objectsClass: 'solutionMarker',
+            ra: solution.ra,
+            dec: solution.dec,
+            radius: 10,
+            label: 'Plate Solving solution',
+            marker_opts: {
+                stroke: 'red',
+                'fill-opacity': 0,
+            },
+            label_opts: {
+                stroke: 'red',
+            },
         },
     ];
     if(previousSolution) {
         markers.push({
-            ...previousSolution,
-            symbolFill: '#77113322',
-            symbolStroke: '#771111',
-            textFill: '#775555',
-            name: '  Previous solution',
-            size: 500,
-            objectsClass: 'previousSolutionMarker',
+            ra: previousSolution.ra,
+            dec: previousSolution.dec,
+            radius: 10,
+            label: 'Previous solution',
+            marker_opts: {
+                stroke: 'orange',
+                'fill-opacity': 0,
+            },
+            label_opts: {
+                stroke: 'orange',
+            },
+
         });
     }
     return (
@@ -97,7 +105,7 @@ const SolutionPanel = ({solution, previousSolution}) => {
                 </Grid>
             </Container>
             <Divider hidden />
-            <CelestialPage zoomextend={50} form={true} dsosLimit={9} dsosNameLimit={6} markers={markers} zoom={5} />
+            <SkyChartComponent center={{ra: solution.ra, dec: solution.dec}} initialFoV={solution.widthDegrees * 10} form={true} markers={markers} />
         </Container>
     );
 }

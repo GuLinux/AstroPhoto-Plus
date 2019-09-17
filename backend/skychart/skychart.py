@@ -38,8 +38,6 @@ class SkyChart:
         markers = options.get('markers', [])
         background_color = options.get('bg_color', 'white')
         stars_color = options.get('stars_color', 'black')
-        if type(markers) != type([]):
-            markers = json.loads(markers)
 
         logger.debug('StarChart: ra={}, dec={}, fov={}, magnitude={}, max_labels_magnitude={}, max_labels={}, size={}'.format(ra, dec, fov, magnitude, max_labels_magnitude, max_labels, image_size))
         logger.debug('markers: {}'.format(markers))
@@ -66,7 +64,7 @@ class SkyChart:
             svg_marker = Marker(marker['ra'] * u.hourangle, marker['dec'] * u.deg, frame)
             marker_opts = marker.get('marker_opts', {})
             label_opts = marker.get('label_opts', {})
-            svg_marker.circle(svg, 10, label=marker['label'], marker_opts=marker_opts, label_opts=label_opts)
+            svg_marker.circle(svg, marker['radius'], label=marker['label'], marker_opts=marker_opts, label_opts=label_opts)
 
         return svg.dwg.tostring()
 

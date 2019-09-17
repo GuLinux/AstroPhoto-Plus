@@ -565,9 +565,24 @@ def catalog_lookup(catalog, name):
     return catalogs.lookup(catalog, name)
 
 # Star Chart
-@app.route('/api/starchart', methods=['GET'])
-def get_star_chart():
+
+def build_star_chart(options):
     try:
-        return Response(skychart.chart(request.args), mimetype='image/svg+xml')
+        return Response(skychart.chart(options), mimetype='image/svg+xml')
     except BadRequestError as e:
         return api_bad_request_error(e.message, e.payload) 
+
+@app.route('/api/skychart', methods=['GET'])
+def get_star_chart():
+    app.logger.debug('sky chart: GET')
+    options = dict(request.args)
+    if 'markers' in options:
+        options['markers'] = json.loads(options['markers'])
+    return build_star_chart(options)
+
+
+@app.route('/api/skychart', methods=['POST'])
+@json_input
+def post_star_chart(json):
+    app.logger.debug('sky chart: POST')
+    return build_star_chart(json)
