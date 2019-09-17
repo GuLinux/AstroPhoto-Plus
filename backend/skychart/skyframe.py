@@ -9,13 +9,14 @@ class SkyFrame:
         self.nside = nside
         self.skycoord = SkyCoord(ra, dec)
         self.fov = fov
+        self.circle_fov = self.fov * math.sqrt(2)
         self.__build_wcs()
         self.__build_bounding_box()
 
 
     def get_healpix_disk(self):
         center_xyz = healpy.ang2vec(self.skycoord.ra.deg, self.skycoord.dec.deg, lonlat=True)
-        return healpy.query_disc(self.nside, center_xyz, (self.fov/2.0).to(u.rad).value, nest=True)
+        return healpy.query_disc(self.nside, center_xyz, (self.circle_fov/2.0).to(u.rad).value, nest=True)
 
     def get_xy(self, ra, dec):
         c = SkyCoord(ra, dec)
@@ -34,7 +35,7 @@ class SkyFrame:
         self.w.wcs.crpix = [0, 0]
 
     def __build_bounding_box(self):
-        bounding_box = [self.skycoord.directional_offset_by(position_angle=degs * u.deg, separation = self.fov/2) for degs in [0, 90, 180, 270]]
+        bounding_box = [self.skycoord.directional_offset_by(position_angle=degs * u.deg, separation = self.circle_fov/2) for degs in [0, 90, 180, 270]]
         bounding_box = [astropy.wcs.utils.skycoord_to_pixel(c, self.w) for c in bounding_box]
 
         x_coords = [c[0] for c in bounding_box]
