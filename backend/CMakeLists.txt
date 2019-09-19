@@ -6,6 +6,7 @@ install(
     PATTERN "__pycache__" EXCLUDE
     PATTERN "start-server" EXCLUDE
     PATTERN "access.log" EXCLUDE
+    PATTERN "*.json.gz" EXCLUDE
 )
 
 INSTALL(
