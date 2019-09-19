@@ -19,5 +19,4 @@ Please see the [website](https://astrophotoplus.gulinux.net).
 ## Credits
 
 Icon: [Space Exploration Set](https://www.iconfinder.com/icons/3088382/astronomy_galaxy_space_star_universe_icon#size=256)
-Sky map: [D3 Celestial](https://github.com/ofrohn/d3-celestial)
 Raspberry Pi image generator: [pi-gen](https://github.com/RPi-Distro/pi-gen)

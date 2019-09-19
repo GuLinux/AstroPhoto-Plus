@@ -5,6 +5,7 @@ import Actions from '../actions';
 import { getFrontendVersion } from './selectors';
 import { addNotification } from '../Notifications/actions';
 import { get } from 'lodash';
+import { getAvailableCatalogs, getCatalogs } from '../Catalogs/actions.js';
 
 let retryTimer = null;
 
@@ -50,5 +51,7 @@ export const init = () => async (dispatch, getState) => {
     dispatch(Actions.INDIService.fetchService());
     dispatch(Actions.INDIService.fetchProfiles());
     dispatch(Actions.Commands.get());
+    dispatch(getAvailableCatalogs());
+    dispatch(getCatalogs());
     listenToEvents(dispatch);
 }

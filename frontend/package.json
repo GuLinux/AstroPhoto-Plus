@@ -7,7 +7,6 @@
     ],
     "dependencies": {
         "@welldone-software/why-did-you-render": "^3.2.1",
-        "d3-celestial-react": "GuLinux/d3-celestial-react",
         "event-source-polyfill": "1.0.7",
         "forest-themes": "semantic-ui-forest/forest-themes#7f472cfbcc2093bb8c90cc56fba18ca8e3818028",
         "isomorphic-fetch": "^2.2.1",
@@ -48,8 +47,7 @@
     "private": true,
     "scripts": {
         "build": "yarn run copy:assets && react-scripts build",
-        "copy:assets": "yarn run copy:celestial && yarn run copy:themes && yarn run remove_googlefonts_call",
-        "copy:celestial": "mkdir -p public/celestial && cp -a node_modules/d3-celestial-react/assets/* public/celestial",
+        "copy:assets": "yarn run copy:themes && yarn run remove_googlefonts_call",
         "copy:themes": "yarn run forest:clean && cp -a node_modules/forest-themes/dist/* public/themes/ && cp -a node_modules/semantic-ui-css/themes public/themes/bootswatch-v3/ && cp -a node_modules/semantic-ui-css/themes public/themes/bootswatch-v4/",
         "eject": "react-scripts eject",
         "forest:clean": "rm -rf public/themes; mkdir -p public/themes",

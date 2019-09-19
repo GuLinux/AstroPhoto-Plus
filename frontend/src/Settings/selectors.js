@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import { get } from 'lodash';
 import { getConnectedCameras, getConnectedTelescopes, getCCDWidthPix, getCCDPixelPitch, getTelescopeFocalLength } from '../Gear/selectors';
 import { getBackendVersion, getFrontendVersion } from '../App/selectors';
+import { getDownloadableCatalogs, getCurrentCatalogs } from '../Catalogs/selectors';
 
 export const getSettings = state => state.settings;
 export const getCurrentSettings = state => getSettings(state).current;
@@ -17,12 +18,16 @@ export const settingsSelector = createSelector([
     getFrontendVersion,
     getCommands,
     getAstrometryIsDownloading,
-], (settings, backendVersion, frontendVersion, commands, astrometryIsDownloading) => ({
+    getCurrentCatalogs,
+    getDownloadableCatalogs,
+], (settings, backendVersion, frontendVersion, commands, astrometryIsDownloading, catalogs, availableCatalogs) => ({
     settings,
     backendVersion,
     frontendVersion,
     showCommands: commands.ids.length > 0 || commands.fetching,
     astrometryIsDownloading,
+    catalogs,
+    availableCatalogs,
 }));
 
 export const downloadIndexesSelector = createSelector([

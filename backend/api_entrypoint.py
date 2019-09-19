@@ -1,6 +1,8 @@
 from flask import jsonify, Response, send_from_directory, send_file, request
 from app import app
+from catalogs import catalog_importer, catalogs
 import logging
+from skychart import skychart
 import os
 # Init logger, before we import anything else
 gunicorn_logger = logging.getLogger('gunicorn.error')
@@ -539,3 +541,48 @@ def get_available_commands():
 def run_command(id, json):
     return commands.run(id, json)
 
+
+# Catalog
+@app.route('/api/catalogs', methods=['GET'])
+@json_api
+def get_catalogs():
+    return catalogs.all()
+
+@app.route('/api/catalogs/available', methods=['GET'])
+@json_api
+def get_available_catalogs():
+    return catalog_importer.available_catalogs()
+
+
+@app.route('/api/catalogs/import/<name>', methods=['POST'])
+@json_api
+def catalog_import(name):
+    return catalog_importer.import_catalog(name)
+
+@app.route('/api/catalogs/<catalog>/<name>', methods=['GET'])
+@json_api
+def catalog_lookup(catalog, name):
+    return catalogs.lookup(catalog, name)
+
+# Star Chart
+
+def build_star_chart(options):
+    try:
+        return Response(skychart.chart(options), mimetype='image/svg+xml')
+    except BadRequestError as e:
+        return api_bad_request_error(e.message, e.payload) 
+
+@app.route('/api/skychart', methods=['GET'])
+def get_star_chart():
+    app.logger.debug('sky chart: GET')
+    options = dict(request.args)
+    if 'markers' in options:
+        options['markers'] = json.loads(options['markers'])
+    return build_star_chart(options)
+
+
+@app.route('/api/skychart', methods=['POST'])
+@json_input
+def post_star_chart(json):
+    app.logger.debug('sky chart: POST')
+    return build_star_chart(json)

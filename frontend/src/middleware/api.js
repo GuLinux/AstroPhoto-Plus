@@ -259,3 +259,10 @@ export const solveFieldAPI = (dispatch, onSuccess, onError, options) => fetchJSO
 export const abortSolveFieldAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/platesolving/abortSolveField', {
     method: 'DELETE',
 }, onSuccess, onError);
+
+
+export const fetchAvailableCatalogsAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/catalogs/available', {}, onSuccess, onError);
+export const fetchCatalogsAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/catalogs', {}, onSuccess, onError);
+export const importCatalogAPI = (name, dispatch, onSuccess, onError) => fetchJSON(dispatch, `/api/catalogs/import/${name}`, { method: 'POST' }, onSuccess, onError);
+export const catalogLookupAPI = (catalog, object, dispatch, onSuccess, onError) => fetchJSON(dispatch, `/api/catalogs/${catalog}/${object}`, {}, onSuccess, onError);
+

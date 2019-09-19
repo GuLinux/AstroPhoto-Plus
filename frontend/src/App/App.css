@@ -12,6 +12,11 @@
 body {
     height: 100%;
 }
+
+.skychart, .skychart svg {
+    z-index: -1;
+}
+
 .desktop-content {
     margin-left: 22rem;
 }
