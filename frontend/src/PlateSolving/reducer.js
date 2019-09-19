@@ -87,7 +87,7 @@ const setOption = (state, {option, value}) => {
 
 const receivedPlatesolvingSolution = (state, action) => {
     const solution = list2object(action.payload.solution.values, 'name')
-    return {...state, loading: false, solution, previousSolution: state.solution};
+    return {...state, loading: false, solution};
 }
 
 export const plateSolving = (state = defaultState, action) => {
@@ -103,7 +103,8 @@ export const plateSolving = (state = defaultState, action) => {
         case 'PLATESOLVING_SOLVED':
             return receivedPlatesolvingSolution(state, action);
         case 'FETCH_PLATESOLVING_SOLVE_FIELD':
-            return {...state, loading: true, solution: undefined };
+            const previousSolution = state.solution || state.previousSolution;
+            return {...state, loading: true, solution: undefined, previousSolution };
         case 'PLATESOLVING_MESSAGE':
             return {...state, messages: [action.message, ...state.messages]};
         case 'PLATESOLVING_RESET_MESSAGES':
