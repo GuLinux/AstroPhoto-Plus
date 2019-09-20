@@ -14,7 +14,8 @@ def svg_element(f):
 class SVG:
     def __init__(self, size=500):
         self.size = size
-        self.dwg = svgwrite.Drawing(size=(size, size))
+        self.dwg = svgwrite.Drawing(size=('100%', '100%'))
+        self.dwg.viewbox(0, 0, size, size)
 
     @svg_element
     def rect(self, x, y, width, height, *args, **kwargs):
