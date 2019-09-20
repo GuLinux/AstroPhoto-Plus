@@ -7,6 +7,9 @@ const mapDispatchToProps = {
   setOption: Actions.PlateSolving.setOption,
   solveField: Actions.PlateSolving.solveField,
   abortSolveField: Actions.PlateSolving.abortSolveField,
+  addTargetObject: Actions.PlateSolving.addTargetObject,
+  setMainTarget: Actions.PlateSolving.setMainTarget,
+  removeTarget: Actions.PlateSolving.removeTarget,
 }
 
 export const PlateSolvingContainer = connect(

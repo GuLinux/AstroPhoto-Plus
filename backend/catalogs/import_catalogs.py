@@ -9,8 +9,9 @@ from errors import BadRequestError
 from .catalogs import Catalogs
 
 class CatalogEntry:
-    def __init__(self, catalog, name, raj2000=None, dej2000=None, parent_entry=None):
+    def __init__(self, catalog, name, displayName=None, raj2000=None, dej2000=None, parent_entry=None):
         self.id = Catalogs.entry_id(catalog, name)
+        self.displayName = displayName if displayName else '{} {}'.format(catalog, name)
         self.catalog = catalog
         self.name = name.strip()
         if raj2000 is not None and dej2000 is not None:
@@ -28,6 +29,7 @@ class CatalogEntry:
                 'id': self.id,
                 'catalog': self.catalog,
                 'name': self.name,
+                'displayName': self.displayName,
                 'raj2000': self.raj2000,
                 'dej2000': self.dej2000,
         }
@@ -76,6 +78,7 @@ class CatalogVizierImporter:
 
         for _, item in ngc_ic.items():
             item.catalog, item.name = get_catalog_and_name(item.name)
+            item.displayName = '{} {}'.format(item.catalog, item.name)
             item.id = Catalogs.entry_id(item.catalog, item.name)
             if item.catalog == 'NGC':
                 ngc[item.id] = item
@@ -90,11 +93,11 @@ class CatalogVizierImporter:
             if ngc_ic_name:
                 catalog, name = get_catalog_and_name(ngc_ic_name)
                 ngc_ic_id = Catalogs.entry_id('ngc/ic', ngc_ic_name)
-                entry = CatalogEntry('common_names', object_name, parent_entry=ngc_ic[ngc_ic_id])
+                entry = CatalogEntry('common_names', object_name, displayName=object_name, parent_entry=ngc_ic[ngc_ic_id])
             else:
                 simbad_entry = Simbad.query_object(object_name)
                 coords = SkyCoord(simbad_entry['RA'].data[0], simbad_entry['DEC'].data[0], unit=(u.hourangle, u.deg))
-                entry = CatalogEntry('column_names', object_name, raj2000=coords.ra.degree, dej2000=coords.dec.degree)
+                entry = CatalogEntry('common_names', object_name, displayName=object_name, raj2000=coords.ra.degree, dej2000=coords.dec.degree)
             common_names[entry.id] = entry
             if entry.name.startswith('M '):
                 messier_number = entry.name.split(' ')[-1]

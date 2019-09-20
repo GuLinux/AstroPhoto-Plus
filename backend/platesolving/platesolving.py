@@ -161,6 +161,8 @@ class PlateSolving:
                 cli_options.extend(['-L', fov['minimumWidth'], '-H', fov['maximumWidth'], '-u', 'arcminwidth'])
         if 'downsample' in options:
             cli_options.extend(['--downsample', options['downsample']])
+        if 'target' in options and 'searchRadius' in options:
+            cli_options.extend(['-3', options['target']['raj2000'], '-4', options['target']['dej2000'], '-5', options['searchRadius']])
         cli_options.append(input_file)
         logger.debug(cli_options)
         return [str(x) for x in cli_options]

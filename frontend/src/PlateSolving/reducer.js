@@ -71,10 +71,12 @@ const defaultState = {
         [Actions.Options.fov]: {},
         [Actions.Options.syncTelescope]: true,
         [Actions.Options.downsample]: 2,
+        [Actions.Options.searchRadius]: 5,
     },
     messages: [],
-    // solution: testSolution,
-    // previousSolution: {...testSolution, ASTROMETRY_RESULTS_DE: {...testSolution.ASTROMETRY_RESULTS_DE, value: testSolution.ASTROMETRY_RESULTS_DE.value + 2 } },
+    solution: testSolution,
+    previousSolution: {...testSolution, ASTROMETRY_RESULTS_DE: {...testSolution.ASTROMETRY_RESULTS_DE, value: testSolution.ASTROMETRY_RESULTS_DE.value + 2 } },
+    targets: [],
 };
 
 const setOption = (state, {option, value}) => {
@@ -88,6 +90,14 @@ const setOption = (state, {option, value}) => {
 const receivedPlatesolvingSolution = (state, action) => {
     const solution = list2object(action.payload.solution.values, 'name')
     return {...state, loading: false, solution};
+}
+
+const platesolvingRemoveTarget = (state, {object}) => {
+    let newState = {...state, targets: state.targets.filter(t => t.id !== object)};
+    if(state.mainTarget === object) {
+        newState.mainTarget = undefined;
+    }
+    return newState;
 }
 
 export const plateSolving = (state = defaultState, action) => {
@@ -109,6 +119,12 @@ export const plateSolving = (state = defaultState, action) => {
             return {...state, messages: [action.message, ...state.messages]};
         case 'PLATESOLVING_RESET_MESSAGES':
             return {...state, messages: []};
+        case 'PLATESOLVING_ADD_TARGET':
+            return {...state, targets: [...state.targets, action.object]};
+        case 'PLATESOLVING_SET_MAIN_TARGET':
+            return {...state, mainTarget: action.object };
+        case 'PLATESOLVING_REMOVE_TARGET':
+            return platesolvingRemoveTarget(state, action);
         default:
         return state;
     }
