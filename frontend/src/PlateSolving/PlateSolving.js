@@ -293,7 +293,7 @@ export class PlateSolving extends React.Component {
         </Segment>
     );
 
-    renderTargets = () => this.state.showTargetSearch ? this.renderCatalogSearch() : this.renderTargetsList();
+    renderTargets = () => (this.state.showTargetSearch && ! this.props.loading) ? this.renderCatalogSearch() : this.renderTargetsList();
 
     renderTargetsList = () => (
         <React.Fragment>
@@ -309,16 +309,16 @@ export class PlateSolving extends React.Component {
         <List.Item key={target.id}>
             <List.Header>{target.displayName}</List.Header>
             <Button.Group size='mini'>
-                {this.props.mainTarget === target.id && <Popup content='Main target' trigger={<Button icon={<Icon color='green' name='checkmark' />} basic />} /> }
-                {this.props.mainTarget !== target.id && <Popup content='Set as main target' trigger={<Button icon='target' basic onClick={() => this.props.setMainTarget(target.id)} />} /> }
-                <Popup content='Remove' trigger={<Button icon='remove' basic onClick={() => this.props.removeTarget(target.id)} />} />
+                {this.props.mainTarget === target.id && <Popup content='Main target' trigger={<Button icon={<Icon color='green' name='checkmark' />} basic disabled={this.props.loading} />} /> }
+                {this.props.mainTarget !== target.id && <Popup content='Set as main target' trigger={<Button icon='target' basic onClick={() => this.props.setMainTarget(target.id)} disabled={this.props.loading} />} /> }
+                <Popup content='Remove' trigger={<Button icon='remove' basic onClick={() => this.props.removeTarget(target.id)} disabled={this.props.loading} />} />
             </Button.Group>
         </List.Item>
     );
 
     addTargetListItem = () => (
         <List.Item key='add-target'>
-            <Button size='mini' icon='add' onClick={this.toggleSearchTarget}/>
+            <Button size='mini' icon='add' onClick={this.toggleSearchTarget} disabled={this.props.loading} />
         </List.Item>
     );
 
