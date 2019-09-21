@@ -71,7 +71,7 @@ const defaultState = {
         [Actions.Options.fov]: {},
         [Actions.Options.syncTelescope]: true,
         [Actions.Options.downsample]: 2,
-        [Actions.Options.searchRadius]: 5,
+        [Actions.Options.searchRadius]: 50,
     },
     messages: [],
 //    solution: testSolution,

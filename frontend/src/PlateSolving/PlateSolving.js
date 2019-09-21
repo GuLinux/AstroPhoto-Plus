@@ -330,7 +330,7 @@ export class PlateSolving extends React.Component {
     }
 
     targetSolvingOptions = () => {
-        const options = [1, 5, 10, 20, 50].map(degs => ({
+        const options = [1, 5, 10, 20, 50, 90].map(degs => ({
             key: degs,
             text: degs,
             value: degs,
