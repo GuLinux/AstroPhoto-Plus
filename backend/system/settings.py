@@ -45,6 +45,7 @@ class Settings:
             'astrometry_cpu_limit',
             'server_name',
             'astrometry_solve_field_path',
+            'autoguider_engine',
         ]
 
         self.on_update = None
@@ -123,6 +124,10 @@ class Settings:
     @property
     def astrometry_cpu_limit(self):
         return int(self.json_map.get('astrometry_cpu_limit', 600))
+
+    @property
+    def autoguider_engine(self):
+        return self.json_map.get('autoguider_engine', 'off')
 
     def astrometry_path(self, filename=None):
         if filename:

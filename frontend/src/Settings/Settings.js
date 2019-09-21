@@ -186,6 +186,15 @@ export class Settings extends React.Component {
                                 </React.Fragment>
                             )}
                         </Segment>
+                        <Segment>
+                            <Header content='Autoguider' />
+                            <Form.Group inline>
+                                <label>Autoguider engine</label>
+                                {this.settingButton('autoguider_engine', 'off', {size: 'mini', content: 'Off'})}
+                                {this.settingButton('autoguider_engine', 'phd2', {size: 'mini', content: 'PHD2'})}
+                            </Form.Group>
+                        </Segment>
+
 
                         <Segment>
                             <Header content='Misc' />
