@@ -1,7 +1,0 @@
-#!/bin/bash
-project_dir="$( cd "$( dirname "$0")/.."; pwd )";
-echo $project_dir
-echo "*** removing fonts.googleapis.com call from css" >&2
-sed -i 's|@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&subset=latin);||g' "$project_dir/frontend/public/themes/bootswatch-v3/semantic.slate.min.css"
-
-

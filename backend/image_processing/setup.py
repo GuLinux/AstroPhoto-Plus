@@ -18,6 +18,7 @@ opencv_ldflags = pkgconfig.libs(opencv)
 
 include_dirs = [x[2:] for x in opencv_cflags.split(' ') if x.startswith('-I')]
 include_dirs.append('/usr/include/CCfits')
+include_dirs.append('/usr/local/include/CCfits')
  
 
 library_dirs = set(['/usr/lib'])
