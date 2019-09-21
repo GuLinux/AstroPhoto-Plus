@@ -51,12 +51,17 @@ const SolutionPanel = ({solution, previousSolution, targets}) => {
         {
             ra: solution.ra,
             dec: solution.dec,
-            radius: 10,
+            width: solution.widthDegrees,
+            height: solution.heightDegrees,
+            rotate: -1.0 *solution.orientation,
+            unit: 'deg',
+            shape: 'rect',
             label: 'Plate Solving solution',
             marker_opts: {
                 stroke: 'red',
                 'fill-opacity': 0,
             },
+            label_offset: 10,
             label_opts: {
                 stroke: 'red',
             },
@@ -70,6 +75,7 @@ const SolutionPanel = ({solution, previousSolution, targets}) => {
                 stroke: 'green',
                 'fill-opacity': 0,
             },
+            label_offset: 10,
             label_opts: {
                 stroke: 'green',
             },
@@ -79,8 +85,13 @@ const SolutionPanel = ({solution, previousSolution, targets}) => {
         markers.push({
             ra: previousSolution.ra,
             dec: previousSolution.dec,
-            radius: 10,
+            width: previousSolution.widthDegrees,
+            height: previousSolution.heightDegrees,
+            rotate: -1.0 * previousSolution.orientation,
+            unit: 'deg',
+            shape: 'rect',
             label: 'Previous solution',
+            label_offset: 10,
             marker_opts: {
                 stroke: 'orange',
                 'fill-opacity': 0,
@@ -107,7 +118,7 @@ const SolutionPanel = ({solution, previousSolution, targets}) => {
                     <Grid.Row>
                         <SolutionField width={3} label='Scale (arcsec/pixel)' value={solution.pixScale} />
                     </Grid.Row>
-                    { solution.ASTROMETRY_RESULTS_ORIENTATION && (
+                    { solution.orientation && (
                     <Grid.Row>
                         <SolutionField width={3} label='Orientation (East of North)' value={solution.orientation} />
                     </Grid.Row>

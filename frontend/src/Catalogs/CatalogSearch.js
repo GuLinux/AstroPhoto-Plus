@@ -42,7 +42,7 @@ class CatalogSearchComponent extends React.Component {
                                 value={get(this.state.objectName, '')}
                             />
                         </Form.Field>
-                        <Form.Button content='Search' size='tiny' disabled={!this.canSearch()} onClick={this.lookupCatalogObject} />
+                        <Form.Button icon='search' content='Search' size='tiny' disabled={!this.canSearch()} onClick={this.lookupCatalogObject} />
                     </Form.Group>
                 </Form>
                 { this.props.search && ! this.props.search.fetching && this.props.search.error && this.renderError() }
@@ -70,7 +70,7 @@ class CatalogSearchComponent extends React.Component {
     );
 
     renderObject = (object) => (
-        <Button circular onClick={() => this.onObjectSelected(object)}>{object.displayName}</Button>
+        <Button icon='add' onClick={() => this.onObjectSelected(object)} content={object.displayName} circular />
     );
 
     onObjectSelected = (object) => {

@@ -125,6 +125,7 @@ class PlateSolving:
         logger.debug('[Astrometry] running solve-field with cli: %s', str(cli))
         self.solver_process = subprocess.Popen(cli, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         rotation_angle = None
+        pixscale = None
         with self.solver_process.stdout:
             for b_line in iter(self.solver_process.stdout.readline, b'\n'):
                 line = b_line.decode('utf-8').strip()
@@ -135,6 +136,11 @@ class PlateSolving:
                     logger.debug('[PlateSolving]: rotation angle regex detected: {}'.format(re_rotation_angle))
                     if re_rotation_angle:
                         rotation_angle = float(re_rotation_angle[0])
+                if 'pixel scale' in line:
+                    re_pixscale = re.findall('pixel scale ([\d.]+) arcsec/pix.', line)
+                    logger.debug('[PlateSolving]: pixel scale regex detected: {}'.format(re_pixscale))
+                    if re_pixscale:
+                        pixscale = float(re_pixscale[0])
                 self.event_listener.on_platesolving_message(line)
 
         self.solver_process.wait() # check error status
@@ -146,13 +152,13 @@ class PlateSolving:
             with fits.open(os.path.join(temp_path, 'solve-field.new')) as fits_file:
                 solution['ASTROMETRY_RESULTS_RA'] = fits_file[0].header['CRVAL1']
                 solution['ASTROMETRY_RESULTS_DE'] = fits_file[0].header['CRVAL2']
-                solution['ASTROMETRY_RESULTS_PIXSCALE'] = fits_file[0].header['SCALE']
+                solution['ASTROMETRY_RESULTS_PIXSCALE'] = fits_file[0].header['SCALE'] if 'SCALE' in fits_file[0].header else pixscale
                 solution['ASTROMETRY_RESULTS_ORIENTATION'] = rotation_angle
 
         return solved, solution
 
     def __build_astrometry_options(self, options, input_file, config_file, temp_path):
-        cli_options = ['solve-field', '-D', temp_path, '-o', 'solve-field', '--no-verify', '--resort', '-O', '--config', '{}'.format(config_file)]
+        cli_options = ['solve-field', '-D', temp_path, '-o', 'solve-field', '--no-verify', '--resort', '--crpix-center', '-O', '--config', '{}'.format(config_file)]
         if 'plot' not in options:
             cli_options.append('--no-plots')
         if 'fov' in options:

@@ -3,6 +3,7 @@ import astropy.wcs
 from astropy.coordinates import SkyCoord
 import healpy
 import math
+from app import logger
 
 class SkyFrame:
     def __init__(self, ra, dec, fov, nside=128):
@@ -25,6 +26,11 @@ class SkyFrame:
         y = (y - self.min_y) / (self.max_y - self.min_y)
         return 1 - x, 1 - y
 
+    def get_degs2pix(self, degrees):
+        degrees = degrees * u.deg
+        result = degrees / self.fov
+        logger.debug('degs2pix: {}, fov={}, result={}'.format(degrees, self.fov, result))
+        return result.value
 
 
     def __build_wcs(self):

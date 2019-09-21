@@ -21,7 +21,8 @@ class Star:
         area = (self.magnitude - magnitude_range[0]) / (magnitude_range[1] - magnitude_range[0])
         area = MAGNITUDE_MIN_AREA + (area * MAGNITUDE_AREA_RANGE )
         area = MAGNITUDE_MAX_AREA - area
-        self.marker.circle(svg, area, label=label, marker_opts={'stroke': color, 'fill': color}, label_opts={'fill': color})
+        self.marker.circle(svg, area, marker_opts={'stroke': color, 'fill': color})
+        self.marker.add_label(svg, label, offset=area, label_opts={'fill': color})
 
     def label(self):
         if self.names:

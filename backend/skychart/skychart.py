@@ -54,7 +54,7 @@ class SkyChart:
 
         svg = SVG(image_size)
         if background_color:
-            svg.rect(0, 0, svg.size, svg.size, stroke=background_color, fill=background_color)
+            svg.rect(0, 0, 1, 1, stroke=background_color, fill=background_color)
         drawn_labels = 0
         for star in stars:
             draw_label = drawn_labels < max_labels and star.magnitude <= max_labels_magnitude
@@ -63,9 +63,7 @@ class SkyChart:
                 drawn_labels += 1
         for marker in markers:
             svg_marker = Marker(marker['ra'] * u.hourangle, marker['dec'] * u.deg, frame)
-            marker_opts = marker.get('marker_opts', {})
-            label_opts = marker.get('label_opts', {})
-            svg_marker.circle(svg, marker['radius'], label=marker['label'], marker_opts=marker_opts, label_opts=label_opts)
+            svg_marker.draw(svg, marker)
 
         return svg.dwg.tostring()
 

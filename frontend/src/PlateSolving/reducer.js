@@ -74,8 +74,8 @@ const defaultState = {
         [Actions.Options.searchRadius]: 50,
     },
     messages: [],
-//    solution: testSolution,
-//    previousSolution: {...testSolution, ASTROMETRY_RESULTS_DE: {...testSolution.ASTROMETRY_RESULTS_DE, value: testSolution.ASTROMETRY_RESULTS_DE.value + 2 } },
+//   solution: testSolution,
+//   previousSolution: {...testSolution, ASTROMETRY_RESULTS_DE: {...testSolution.ASTROMETRY_RESULTS_DE, value: testSolution.ASTROMETRY_RESULTS_DE.value + 2 } },
     targets: [],
 };
 

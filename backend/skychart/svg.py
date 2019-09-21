@@ -18,12 +18,17 @@ class SVG:
         self.dwg.viewbox(0, 0, size, size)
 
     @svg_element
-    def rect(self, x, y, width, height, *args, **kwargs):
-        return self.dwg.rect(insert=(self.get_pixels(x), self.get_pixels(y)), size=(self.get_pixels(width), self.get_pixels(height)), *args, **kwargs)
+    def rect(self, x, y, width, height, rotate=None, *args, **kwargs):
+        x, y = self.get_pixels(x), self.get_pixels(y)
+        rect = self.dwg.rect(insert=(x, y), size=(self.get_pixels(width), self.get_pixels(height)), *args, **kwargs)
+        if rotate:
+            degs, center_x, center_y = rotate
+            rect.rotate(degs, center=(self.get_pixels(center_x), self.get_pixels(center_y)))
+        return rect
 
     @svg_element
     def circle(self, x, y, radius, *args, **kwargs):
-        return self.dwg.circle(center=(self.get_pixels(x), self.get_pixels(y)), r=radius, *args, **kwargs)
+        return self.dwg.circle(center=(self.get_pixels(x), self.get_pixels(y)), r=self.get_pixels(radius), *args, **kwargs)
 
     @svg_element
     def text(self, x, y, text, *args, **kwargs):
