@@ -41,14 +41,35 @@ class ImageCrop extends React.Component {
     }
 }
 
-export const ImageViewer = ({uri, id, type, onImageLoading, onImageLoaded, crop, setCrop, imageInfo}) => {
-    return id ? (
-        <div className='image-viewer'>
-            <HistogramContainer imageId={id} type={type} />
-            { crop && (crop.initial || crop.relative) ?
-                <ImageCrop src={uri} width={imageInfo.width} height={imageInfo.height} crop={crop} setCrop={setCrop} /> :
-                <ImageContainer key={id} id={id} type={type} {...{onImageLoading, onImageLoaded}} />
-            }
-        </div>
-    ): <Icon name='image outline' size='massive' disabled />;
+export class ImageViewer extends React.Component {
+    state = {}
+
+    onImageLoading = (uri) => {
+        this.setState({ uri: undefined });
+        this.props.onImageLoading(uri);
+    }
+
+    onImageLoaded = (uri) => {
+        this.setState({ uri });
+        this.props.onImageLoaded(uri);
+    }
+
+    imageContainerProps = () => ({
+        onImageLoading: this.onImageLoading,
+        onImageLoaded: this.onImageLoaded,
+    });
+
+    render = () => {
+        const {id, type, crop, setCrop, imageInfo} = this.props;
+        return id ? (
+            <div className='image-viewer'>
+                <HistogramContainer imageId={id} type={type} />
+                { this.state.uri && crop && (crop.initial || crop.relative) ?
+                    <ImageCrop src={this.state.uri} width={imageInfo.width} height={imageInfo.height} crop={crop} setCrop={setCrop} /> :
+                    <ImageContainer key={id} id={id} type={type} {...this.imageContainerProps()} />
+                }
+            </div>
+        ): <Icon name='image outline' size='massive' disabled />;
+    }
 }
+

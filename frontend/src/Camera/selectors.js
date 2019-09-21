@@ -11,7 +11,6 @@ import {
 } from '../Gear/selectors'
 import { getDevices } from '../INDI-Server/selectors';
 import { get } from 'lodash';
-import { imageUrlBuilder } from '../utils';
 
 const getCurrentCameraId = state => state.camera.currentCamera;
 export const getCurrentFilterWheelId = state => state.camera.currentFilterWheel;
@@ -147,7 +146,6 @@ export const currentImageSelector = createSelector(
             return { }
         }
         return {
-            uri: imageUrlBuilder(currentImage.id, {...options, type: 'camera' }),
             id: currentImage.id,
             type: 'camera',
             imageInfo: currentImage.image_info,
