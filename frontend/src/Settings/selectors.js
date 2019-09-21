@@ -11,6 +11,7 @@ const getCommands = state => state.commands;
 const getAstrometryIsDownloading = state => state.settings.astrometry.isDownloading;
 
 export const getServerName = state => get(state, 'settings.current.server_name', '');
+export const getAutoguiderEngine = state => get(state, 'settings.current.autoguider_engine', 'off');
 
 export const settingsSelector = createSelector([
     getSettings,

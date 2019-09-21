@@ -34,7 +34,7 @@ class DesktopNavbarComponent extends React.PureComponent {
             <div className='fullHeight desktop-sidebar'>
                 <NavbarMenu vertical attached className='fullHeight' size='small' fluid>
                     <SiteMenuHeader serverName={this.props.serverName} />
-                    <NavbarMenuItems key={this.props.location.pathname}/>
+                    <NavbarMenuItems key={this.props.location.pathname} autoguiderEngine={this.props.autoguiderEngine} />
                 </NavbarMenu>
             </div>
             <div className='desktop-content'>
@@ -63,7 +63,7 @@ class ResponsiveNavbar extends React.Component {
             <Sidebar.Pushable className='astrophotoplus-sidebar'>
                 <Sidebar as={NavbarMenu} vertical animation='overlay' size='small' width='wide' direction='left' visible={this.state.visible} onHide={this.hide}>
                     <SiteMenuHeader onClick={this.hide} />
-                    <NavbarMenuItems onClick={this.hide} key={this.props.location.pathname}/>
+                    <NavbarMenuItems onClick={this.hide} key={this.props.location.pathname} autoguiderEngine={this.props.autoguiderEngine} />
                 </Sidebar>
                 <Sidebar.Pusher style={{overflow: 'initial'}}>
                     <Menu inverted size='small' attached>
@@ -83,10 +83,10 @@ export class Navbar extends React.PureComponent {
     render = () => this.props.disableNavbar ? this.props.children : (
          <React.Fragment>
             <Responsive maxWidth={TRIGGER_SIZE}>
-                 <ResponsiveNavbar children={this.props.children} location={this.props.location} serverName={this.props.serverName} />
+                 <ResponsiveNavbar children={this.props.children} location={this.props.location} serverName={this.props.serverName} autoguiderEngine={this.props.autoguiderEngine} />
             </Responsive>
             <Responsive minWidth={TRIGGER_SIZE + 1}>
-                <DesktopNavbar children={this.props.children} location={this.props.location} serverName={this.props.serverName} />
+                <DesktopNavbar children={this.props.children} location={this.props.location} serverName={this.props.serverName} autoguiderEngine={this.props.autoguiderEngine} />
             </Responsive>
          </React.Fragment>
     );

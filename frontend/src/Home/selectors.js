@@ -1,4 +1,9 @@
 import { createSelector } from 'reselect';
-import { getServerName } from '../Settings/selectors';
+import { getServerName, getAutoguiderEngine } from '../Settings/selectors';
 
-export const homeSelector = createSelector([getServerName], serverName => ({ serverName }));
+export const homeSelector = createSelector([getServerName, getAutoguiderEngine],
+    (serverName, autoguiderEngine) => ({
+        serverName,
+        autoguiderEngine,
+    })
+);

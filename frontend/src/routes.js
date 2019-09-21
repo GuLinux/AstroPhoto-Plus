@@ -1,6 +1,7 @@
 export const Routes = {
     ROOT: '/',
     SEQUENCES_PAGE: '/sequences',
+    PHD2: '/phd2',
     SEQUENCES_LIST: '/sequences/all',
     INDI_PAGE: '/indi',
     CAMERA_PAGE: '/camera',
