@@ -1,4 +1,5 @@
 from errors import BadRequestError
+from system import event_listener
 import time
 from utils.threads import start_thread
 
@@ -11,7 +12,7 @@ class RunningSequence:
         self.on_finished = on_finished
 
     def __on_updated(self):
-        self.controller.event_listener.on_sequence_update(self.sequence)
+        event_listener.on_sequence_update(self.sequence)
         self.controller.sequences.save(self.sequence)
 
     def __run(self):
@@ -19,10 +20,10 @@ class RunningSequence:
         # Let the HTTP thread return a response, then start the thread
         time.sleep(1)
         try:
-            self.sequence.run(self.controller.indi_server, self.controller.settings.sequences_dir, self.controller.event_listener, self.logger, on_update=self.__on_updated)
+            self.sequence.run(self.controller.indi_server, self.controller.settings.sequences_dir, event_listener, self.logger, on_update=self.__on_updated)
         except Exception as e:
             self.logger.exception('unhandled exception while running sequence')
-            self.controller.event_listener.on_sequence_error(self.sequence, str(e))
+            event_listener.on_sequence_error(self.sequence, str(e))
         finally:
             if self.on_finished:
                 self.on_finished(self)

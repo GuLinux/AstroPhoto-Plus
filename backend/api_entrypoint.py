@@ -4,6 +4,8 @@ from catalogs import catalog_importer, catalogs
 import logging
 from skychart import skychart
 import os
+from phd2 import phd2
+
 # Init logger, before we import anything else
 gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers = gunicorn_logger.handlers
@@ -24,7 +26,7 @@ from api_utils import *
 from indi import Server, Property, Device, INDIProfile
 from errors import NotFoundError
 from images import ImagesDatabase, camera_images_db, main_images_db
-from system import commands, controller, settings
+from system import commands, controller, settings, sse
 from sequences import Sequence, SequenceJob
 
 import io
@@ -54,7 +56,7 @@ def backend_version():
 
 @app.route('/api/events')
 def events():
-    response = Response(controller.sse.subscribe().feed(), mimetype='text/event-stream')
+    response = Response(sse.subscribe().feed(), mimetype='text/event-stream')
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
@@ -574,7 +576,6 @@ def build_star_chart(options):
 
 @app.route('/api/skychart', methods=['GET'])
 def get_star_chart():
-    app.logger.debug('sky chart: GET')
     options = dict(request.args)
     if 'markers' in options:
         options['markers'] = json.loads(options['markers'])
@@ -584,5 +585,12 @@ def get_star_chart():
 @app.route('/api/skychart', methods=['POST'])
 @json_input
 def post_star_chart(json):
-    app.logger.debug('sky chart: POST')
     return build_star_chart(json)
+
+
+# Autoguiding
+
+@app.route('/api/phd2', methods=['GET'])
+@json_api
+def get_phd2_status():
+    return phd2.status()

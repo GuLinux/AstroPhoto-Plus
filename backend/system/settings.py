@@ -48,7 +48,7 @@ class Settings:
             'autoguider_engine',
         ]
 
-        self.on_update = None
+        self.on_update = []
         self.reload()
 
     def reload(self):
@@ -57,6 +57,9 @@ class Settings:
             self.json_map = redis_client.dict_get('settings')
         except FileNotFoundError:
             pass
+
+    def add_update_listener(self, listener):
+        self.on_update.append(listener)
 
     def to_map(self):
         props = []
@@ -149,10 +152,9 @@ class Settings:
             self.update_log_level()
 
         redis_client.dict_set('settings', self.to_map())
-
-        if self.on_update:
+        for on_update_listener in self.on_update:
             for new_item in on_update_args:
-                self.on_update(*new_item)
+                on_update_listener(*new_item)
 
     def update_log_level(self):
             settings_level = self.json_map.get('log_level', self.log_level)

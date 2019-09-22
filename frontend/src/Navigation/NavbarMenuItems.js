@@ -33,7 +33,6 @@ export class NavbarMenuItems extends React.PureComponent {
             <Route path={Routes.SEQUENCE_JOB_IMAGES} exact={true} render={this.renderSequenceJobImages} />
             <Route exact path={Routes.CAMERA_PAGE} component={CameraSectionMenu} />
             <Route exact path={Routes.PLATE_SOLVING_PAGE} component={PlateSolvingSectionMenuContainer} />
-            <Route exact path={Routes.PHD2} component={PHD2} />
             <Route path={Routes.IMAGE_PAGE} render={({match}) => <ImageSectionMenuContainer id={match.params.id} type={match.params.type} />} />
         </React.Fragment>
     );
