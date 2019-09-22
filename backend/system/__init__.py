@@ -1,4 +1,4 @@
-from .settings import settings
+from .settings import settings, syslog
 from .commands import commands
 from .service import Service
 from .server_sent_events import sse

@@ -4,7 +4,6 @@ from catalogs import catalog_importer, catalogs
 import logging
 from skychart import skychart
 import os
-from phd2 import phd2
 
 # Init logger, before we import anything else
 gunicorn_logger = logging.getLogger('gunicorn.error')
@@ -28,6 +27,7 @@ from errors import NotFoundError
 from images import ImagesDatabase, camera_images_db, main_images_db
 from system import commands, controller, settings, sse
 from sequences import Sequence, SequenceJob
+from phd2 import phd2
 
 import io
 import json
