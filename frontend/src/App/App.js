@@ -10,6 +10,7 @@ import { SettingsContainer } from '../Settings/SettingsContainer';
 import { ImagePage } from '../Image/ImagePage';
 import { PlateSolvingPageContainer } from '../PlateSolving/PlateSolvingPageContainer';
 import './App.css';
+import { PHD2 } from '../PHD2/PHD2';
 import { Route, Switch} from "react-router";
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Routes } from '../routes';
@@ -32,6 +33,7 @@ const AppRouter = ({location}) => (
                 <Route path={Routes.PLATE_SOLVING_PAGE} component={PlateSolvingPageContainer} />
                 <Route path={Routes.SETTINGS_PAGE} component={SettingsContainer} />
                 <Route path={Routes.IMAGE_PAGE} render={({match, location}) => <ImagePage id={match.params.id} type={match.params.type} />} />
+                <Route path={Routes.PHD2} component={PHD2} />
               </Switch>
         </ErrorPageContainer>
         <LoadingContainer />
