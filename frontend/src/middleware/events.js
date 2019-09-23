@@ -120,6 +120,11 @@ const plateslvingEvents = (event, dispatch) => {
     }
 }
 
+const phd2Events = (event, dispatch) => {
+    const eventObject = JSON.parse(event.data);
+    console.log(eventObject);
+};
+
 const listenToEvents = (dispatch) => {
     var es = new EventSource(API.getFullURL('/api/events'));
 
@@ -149,6 +154,7 @@ const listenToEvents = (dispatch) => {
     es.addEventListener('indi_service', serverListener);
     es.addEventListener('platesolving', serverListener);
     es.addEventListener('astrometry_index_downloader', serverListener);
+    es.addEventListener('phd2', phd2Events);
     es.onerror = e => {
         dispatch(serverError('event_source', 'event', e));
         es.close();

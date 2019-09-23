@@ -3,18 +3,19 @@ from app import logger
 import time
 import commands
 from .phd2_socket import PHD2Socket
-from system import sse
 
 CONNECTION_RETRY_SECONDS = 10
 
 
 class PHD2Service:
-    def __init__(self, input_queue, output_queue):
+    def __init__(self, input_queue, output_queue, events_queue):
         self.input_queue = input_queue
         self.output_queue = output_queue
+        self.events_queue = events_queue
         self.__running = True
         self.__socket = PHD2Socket()
         self.__last_connection_attempt = 0
+        self.state = { 'running': self.__running, 'connected': False }
 
     def run(self):
         logger.debug('Running PHD2 service')
@@ -26,13 +27,6 @@ class PHD2Service:
     def stop(self):
         self.__running = False
 
-    def state(self):
-        state = {
-            'running': self.__running,
-            'connected': self.__socket.connected,
-        }
-        return state
-
     def reply(self, response):
         self.output_queue.put(response)
 
@@ -40,16 +34,24 @@ class PHD2Service:
     def __check_connection(self):
         if self.__socket.connected:
             return
+        if self.state['connected']:
+            self.state['connected'] = False
+            self.__publish_event('phd2_disconnected', self.state)
+
         now = time.time()
         if now - self.__last_connection_attempt < CONNECTION_RETRY_SECONDS:
             return
         connection_result = self.__socket.connect()
         logger.debug('PHD2 connection check: {}'.format(connection_result))
-        connected = connection_result['connected']
-        if not connected:
+        self.state['connected'] = connection_result['connected']
+
+        if not self.state['connected']:
             self.__last_connection_attempt = now
         else:
-            sse.publish_event('phd2', 'phd2_connected', self.state())
+            self.__publish_event('phd2_connected', self.state)
+
+    def __publish_event(self, name, payload):
+            self.events_queue.put({ 'name': name, 'payload': payload})
 
 
     def __dequeue_command(self):

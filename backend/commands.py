@@ -5,4 +5,4 @@ class StopService:
 
 class GetState:
     def __call__(self, process=None):
-        process.reply(process.state()) 
+        process.reply(process.state) 
