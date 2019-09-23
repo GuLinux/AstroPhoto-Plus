@@ -47,8 +47,8 @@ class PHD2:
     def __stop(self):
         if self.__service:
             self.output_queue.put(commands.StopService())
-            self.__service = None
             self.__service.join()
+            self.__service = None
             self.__events_thread_running = False
             self.__events_thread.join()
 
@@ -58,12 +58,14 @@ class PHD2:
 
     def __process_events(self):
         self.__events_thread_running = True
+        logger.debug('PHD2: listening for events')
         while self.__events_thread_running:
             try:
                 event = self.events_queue.get()
                 sse.publish_event('phd2', event['name'], event['payload'])
             except queue.Empty:
                 pass
+        logger.debug('PHD2: stopping listening for events')
 
 
 phd2 = PHD2()
