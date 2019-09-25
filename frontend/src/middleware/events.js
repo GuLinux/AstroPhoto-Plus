@@ -4,6 +4,7 @@ import Actions from '../actions';
 import { EventSource } from './polyfills';
 import { API } from './api';
 import { serverError } from '../App/actions';
+import { phd2Disconnected, phd2Connected, updatePHD2Status } from '../PHD2/actions';
 
 
 const logEvent = event => {
@@ -113,7 +114,6 @@ const plateslvingEvents = (event, dispatch) => {
                 dispatch(Actions.PlateSolving.fieldSolved({ solution: eventObject.payload.solution }));
 
             }
-            console.log(eventObject);
             break;
         default:
             logEvent(event);
@@ -122,7 +122,18 @@ const plateslvingEvents = (event, dispatch) => {
 
 const phd2Events = (event, dispatch) => {
     const eventObject = JSON.parse(event.data);
-    console.log(eventObject);
+    switch(eventObject.event) {
+        case 'disconnected':
+            dispatch(phd2Disconnected(eventObject.payload));
+            break;
+        case 'connected':
+        case 'phd2_state':
+        case 'version':
+            dispatch(updatePHD2Status(eventObject.payload));
+            break;
+        default:
+            logEvent(event)
+    }
 };
 
 const listenToEvents = (dispatch) => {
@@ -145,6 +156,8 @@ const listenToEvents = (dispatch) => {
             case 'platesolving':
                 plateslvingEvents(event, dispatch);
                 break;
+            case 'phd2':
+                phd2Events(event, dispatch);
             default:
                 logEvent(event);
         }
@@ -154,7 +167,7 @@ const listenToEvents = (dispatch) => {
     es.addEventListener('indi_service', serverListener);
     es.addEventListener('platesolving', serverListener);
     es.addEventListener('astrometry_index_downloader', serverListener);
-    es.addEventListener('phd2', phd2Events);
+    es.addEventListener('phd2', serverListener);
     es.onerror = e => {
         dispatch(serverError('event_source', 'event', e));
         es.close();
