@@ -32,15 +32,19 @@ class PHD2Socket:
         self.__connect = False
         self.__thread.join()
 
-    def send_method(self, method_name, parameters=[]):
+    def send_method(self, method_name, *parameters):
         id = self.__id
         self.__id += 1
-        self.methods_queue.put({
+        method_object = {
             'method': method_name,
-            'params': parameters,
+            'params': list(*parameters),
             'id': id,
-        })
-        return { 'success': self.recv_queue.get().get('result', 1) == 0 }
+        }
+        logger.debug('Sending method object: {}'.format(method_object))
+        self.methods_queue.put(method_object)
+        result = self.__get_result()
+        logger.debug('result: {}'.format(result))
+        return result
 
     def __socket_loop(self, address, port):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as connection:

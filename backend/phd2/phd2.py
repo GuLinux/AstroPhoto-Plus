@@ -3,7 +3,7 @@ from system import settings, syslog
 from .phd2_service import PHD2Service
 from utils.mp import mp_start_process, mp_queue
 from utils.threads import start_thread
-import commands
+from . import commands
 from errors import FailedMethodError
 from system import sse
 import queue

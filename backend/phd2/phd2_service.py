@@ -1,7 +1,7 @@
 import queue
 from app import logger
 import time
-import commands
+from . import commands
 from .phd2_socket import PHD2Socket, PHDConnectionError
 
 PHD2_RECONNECTION_PAUSE = 5
@@ -31,6 +31,9 @@ class PHD2Service:
     def reply(self, response):
         self.output_queue.put(response)
 
+    def phd2_method(self, method_name, *args):
+        return self.__socket.send_method(method_name, *args)
+
     @property
     def connected(self):
         return self.state.get('connected', False)
@@ -44,6 +47,8 @@ class PHD2Service:
             self.state['connected'] = self.__socket.connect()
             self.__publish_state_event('connected')
             logger.debug('PHD2 Connected')
+            commands.GetPHD2State()(self)
+            self.__publish_state_event('phd2_state')
         except PHDConnectionError as e:
             logger.debug('PHD2 connection failed, sleeping for %d seconds', PHD2_RECONNECTION_PAUSE, exc_info=e)
             self.__disconnected(e.message)
@@ -88,6 +93,7 @@ class PHD2Service:
 
         if event['Event'] == 'AppState':
             self.state['phd2_state'] = event['State']
+            self.__publish_state_event('phd2_state')
 
 
 
