@@ -24,13 +24,40 @@ const PHD2Version = ({ version }) => version ? (
     </Grid.Row>
 ) : null;
 
+
+const uiState = state => {
+    switch(state) {
+        case 'Selected':
+            return 'Star selected';
+        case 'Looping':
+            return 'Looping exposures';
+        case 'LostLock':
+            return 'Lost lock position (star lost)';
+        default:
+            return state;
+    }
+}
+
+const stateColor = state => {
+    switch(state) {
+        case 'Calibrating':
+            return 'yellow';
+        case 'Looping':
+            return 'olive';
+        case 'Selected':
+            return 'teal';
+        default:
+            return null;
+    }
+}
+
 const PHD2State = ({ state }) => state ? (
     <Grid.Row>
         <Grid.Column width={3} verticalAlign='middle'>
             <Header size='small'>PHD2 State</Header>
         </Grid.Column>
         <Grid.Column width={9}>
-            <Message content={state} size='mini' />
+            <Message content={uiState(state)} size='mini' color={stateColor(state)} success={state==='Guiding'} error={state==='LostLock'}/>
         </Grid.Column>
     </Grid.Row>
 ) : null;
