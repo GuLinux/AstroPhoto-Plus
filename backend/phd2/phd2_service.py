@@ -125,16 +125,16 @@ class PHD2Service:
             self.__publish_state_event()
 
         if event_type == 'StartGuiding':
-            self.__publish_state_event()
+            self.__publish_state_event('guiding_started')
 
         if event_type == 'GuideStep':
-            self.__publish_state_event()
+            self.__publish_event('guide_step', { 'state': self.state, 'guide_step': event})
 
         if event_type == 'StarLost':
-            self.__publish_state_event()
+            self.__publish_state_event('star_lost')
 
         if event_type == 'GuidingStopped':
-            self.__publish_state_event()
+            self.__publish_state_event('guiding_stopped')
 
         if event_type == 'LoopingExposuresStopped':
             self.__publish_state_event()

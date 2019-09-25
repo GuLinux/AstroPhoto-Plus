@@ -4,7 +4,7 @@ import Actions from '../actions';
 import { EventSource } from './polyfills';
 import { API } from './api';
 import { serverError } from '../App/actions';
-import { phd2Disconnected, phd2Connected, updatePHD2Status } from '../PHD2/actions';
+import { phd2Disconnected, phd2Connected, updatePHD2Status, phd2GuidingStarted, phd2GuidingStopped, phd2StarLost, phd2GuideStep } from '../PHD2/actions';
 
 
 const logEvent = event => {
@@ -127,6 +127,20 @@ const phd2Events = (event, dispatch) => {
             dispatch(phd2Disconnected(eventObject.payload));
             break;
         case 'connected':
+            dispatch(phd2Connected(eventObject.payload));
+            break;
+        case 'guiding_started':
+            dispatch(phd2GuidingStarted(eventObject.payload));
+            break;
+        case 'guiding_stopped':
+            dispatch(phd2GuidingStopped(eventObject.payload));
+            break;
+        case 'star_lost':
+            dispatch(phd2StarLost(eventObject.payload));
+            break;
+        case 'guide_step':
+            dispatch(phd2GuideStep(eventObject.payload.guide_step, eventObject.payload.state));
+            break;
         case 'phd2_state':
             dispatch(updatePHD2Status(eventObject.payload));
             break;
