@@ -128,7 +128,6 @@ const phd2Events = (event, dispatch) => {
             break;
         case 'connected':
         case 'phd2_state':
-        case 'version':
             dispatch(updatePHD2Status(eventObject.payload));
             break;
         default:
@@ -158,6 +157,7 @@ const listenToEvents = (dispatch) => {
                 break;
             case 'phd2':
                 phd2Events(event, dispatch);
+                break;
             default:
                 logEvent(event);
         }

@@ -13,7 +13,7 @@ const connectionMessage = (connected, connectionError) => {
     return 'Disconnected';
 }
 
-const PHD2Version = ({ version }) => version && (
+const PHD2Version = ({ version }) => version ? (
     <Grid.Row>
         <Grid.Column width={3} verticalAlign='middle'>
             <Header size='small'>PHD2 Version</Header>
@@ -22,9 +22,9 @@ const PHD2Version = ({ version }) => version && (
             <Message content={version} size='mini' />
         </Grid.Column>
     </Grid.Row>
-);
+) : null;
 
-const PHD2State = ({ state }) => state && (
+const PHD2State = ({ state }) => state ? (
     <Grid.Row>
         <Grid.Column width={3} verticalAlign='middle'>
             <Header size='small'>PHD2 State</Header>
@@ -33,7 +33,7 @@ const PHD2State = ({ state }) => state && (
             <Message content={state} size='mini' />
         </Grid.Column>
     </Grid.Row>
-);
+) : null;
 
 const PHD2StatusComponent = ({version, phd2_state}) => (
     <React.Fragment>

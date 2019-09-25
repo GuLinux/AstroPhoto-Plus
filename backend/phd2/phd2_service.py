@@ -48,9 +48,9 @@ class PHD2Service:
             self.__publish_state_event('connected')
             logger.debug('PHD2 Connected')
             commands.GetPHD2State()(self)
-            self.__publish_state_event('phd2_state')
+            self.__publish_state_event()
         except PHDConnectionError as e:
-            logger.debug('PHD2 connection failed, sleeping for %d seconds', PHD2_RECONNECTION_PAUSE, exc_info=e)
+            logger.debug('PHD2 connection failed, sleeping for %d seconds: %s', PHD2_RECONNECTION_PAUSE, e.message)
             self.__disconnected(e.message)
 
     def __disconnected(self, message=None):
@@ -61,7 +61,7 @@ class PHD2Service:
     def __publish_event(self, name, payload=None):
         self.events_queue.put({ 'name': name, 'payload': payload})
 
-    def __publish_state_event(self, name):
+    def __publish_state_event(self, name='phd2_state'):
         self.__publish_event(name, payload=self.state)
 
     def __dequeue_command(self):
@@ -85,16 +85,60 @@ class PHD2Service:
         except queue.Empty:
             pass
 
+    def __change_state(self, key, value, publish=True):
+        self.state[key] = value
+        if publish:
+            self.__publish_state_event()
+
+    def __change_phd2_state(self, value, publish=True):
+        self.__change_state('phd2_state', value, publish)
+
     def __phd2_event(self, event):
-        logger.debug('PHD2 event: {}'.format(event))
-        if event['Event'] == 'Version':
-            self.state['version'] = event['PHDVersion']
-            self.__publish_state_event('version')
+        commands.GetPHD2State()(self)
+        logger.debug('PHD2 event: {}, state={}'.format(event, self.state['phd2_state']))
+        event_type = event['Event']
+        if event_type == 'Version':
+            self.__change_state('version', event['PHDVersion'])
 
-        if event['Event'] == 'AppState':
-            self.state['phd2_state'] = event['State']
-            self.__publish_state_event('phd2_state')
+        if event_type == 'AppState':
+            self.__change_phd2_state(event['State'])
 
+        if event_type == 'ConfigurationChange':
+            self.__publish_state_event()
 
+        if event_type == 'LoopingExposures':
+            self.__publish_state_event()
 
+        if event_type == 'LoopingExposuresStopped':
+            self.__publish_state_event()
+
+        if event_type == 'StarSelected':
+            self.__publish_state_event()
+
+        if event_type == 'Calibrating':
+            self.__publish_state_event()
+
+        if event_type == 'CalibrationComplete':
+            self.__publish_state_event()
+
+        if event_type == 'LockPositionSet':
+            self.__publish_state_event()
+
+        if event_type == 'StartGuiding':
+            self.__publish_state_event()
+
+        if event_type == 'GuideStep':
+            self.__publish_state_event()
+
+        if event_type == 'StarLost':
+            self.__publish_state_event()
+
+        if event_type == 'GuidingStopped':
+            self.__publish_state_event()
+
+        if event_type == 'LoopingExposuresStopped':
+            self.__publish_state_event()
+
+        if event_type == 'LockPositionLost':
+            self.__publish_state_event()
 
