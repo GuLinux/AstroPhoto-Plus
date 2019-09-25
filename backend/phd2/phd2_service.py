@@ -4,6 +4,8 @@ import time
 import commands
 from .phd2_socket import PHD2Socket, PHDConnectionError
 
+PHD2_RECONNECTION_PAUSE = 5
+
 
 class PHD2Service:
     def __init__(self, input_queue, output_queue, events_queue):
@@ -13,6 +15,7 @@ class PHD2Service:
         self.__running = True
         self.__socket = PHD2Socket()
         self.state = { 'running': self.__running, 'connected': False }
+        self.__last_connection_attempt = 0
 
     def run(self):
         logger.debug('Running PHD2 service')
@@ -20,7 +23,7 @@ class PHD2Service:
             self.__check_connection()
             self.__dequeue_command()
             self.__check_events()
-            time.sleep(0.01)
+            time.sleep(0.001)
 
     def stop(self):
         self.__running = False
@@ -33,23 +36,33 @@ class PHD2Service:
         return self.state.get('connected', False)
 
     def __check_connection(self):
-        if self.connected:
+        now = time.time()
+        if self.connected or now - self.__last_connection_attempt < PHD2_RECONNECTION_PAUSE:
             return
         try:
+            self.__last_connection_attempt = now
             self.state['connected'] = self.__socket.connect()
-            self.__publish_event('phd2_connected', self.state)
+            self.__publish_state_event('connected')
             logger.debug('PHD2 Connected')
         except PHDConnectionError as e:
-            logger.debug('PHD2 connection failed', exc_info=e)
-            self.__publish_event('phd2_disconnected', e.message)
-            time.sleep(5)
+            logger.debug('PHD2 connection failed, sleeping for %d seconds', PHD2_RECONNECTION_PAUSE, exc_info=e)
+            self.__disconnected(e.message)
+
+    def __disconnected(self, message=None):
+        self.state = { 'running': self.__running, 'connected': False }
+        self.__publish_event('disconnected', message)
+
 
     def __publish_event(self, name, payload=None):
-            self.events_queue.put({ 'name': name, 'payload': payload})
+        self.events_queue.put({ 'name': name, 'payload': payload})
+
+    def __publish_state_event(self, name):
+        self.__publish_event(name, payload=self.state)
 
     def __dequeue_command(self):
         try:
-            self.input_queue.get_nowait()(process=self)
+            command = self.input_queue.get_nowait()
+            command(process=self)
         except queue.Empty:
             pass
 
@@ -58,13 +71,24 @@ class PHD2Service:
             event = self.__socket.events_queue.get_nowait()
             if event['type'] == 'disconnected':
                 logger.debug('PHD2 disconnected')
-                self.state['connected'] = False
-                self.__publish_event('phd2_disconnected')
+                self.__disconnected()
+            if event['type'] == 'phd2_event':
+                self.__phd2_event(event['event'])
             else:
-                logger.debug('Unknown PHD2 event: {}'.format(event))
+                logger.debug('PHD2Service: Unknown event: {}'.format(event))
 
         except queue.Empty:
             pass
+
+    def __phd2_event(self, event):
+        logger.debug('PHD2 event: {}'.format(event))
+        if event['Event'] == 'Version':
+            self.state['version'] = event['PHDVersion']
+            self.__publish_state_event('version')
+
+        if event['Event'] == 'AppState':
+            self.state['phd2_state'] = event['State']
+
 
 
 
