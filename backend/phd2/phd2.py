@@ -22,13 +22,25 @@ class PHD2:
             return { 'running': False }
         return self.sync_command(commands.GetState())
 
+    def dither(self, pixels, settle_pixels, settle_time, settle_timeout, ra_only=False, wait_for_settle=False):
+        settle_object = {
+            'pixels': settle_pixels,
+            'time': settle_time,
+            'timeout': settle_timeout,
+        }
+        result = self.sync_command(commands.Dither(pixels, ra_only, settle_object, wait_for_settle))
+        if result.get('error', False):
+            raise FailedMethodError(result['error_message'])
+        return result
+
+
     def sync_command(self, command):
         self.output_queue.put(command)
         return self.get_reply()
 
-    def get_reply(self, timeout=10):
+    def get_reply(self):
         try: 
-            return self.input_queue.get(True, timeout)
+            return self.input_queue.get(True)
         except Exception as e:
             raise FailedMethodError('Error retrieving PHD2 status', str(e))
 

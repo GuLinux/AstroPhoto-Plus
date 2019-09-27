@@ -1,8 +1,10 @@
 import queue
 from app import logger
+from utils.threads import start_thread
 import time
 from . import commands
-from .phd2_socket import PHD2Socket, PHDConnectionError
+from .phd2_socket import PHD2Socket 
+from .errors import PHDConnectionError
 
 PHD2_RECONNECTION_PAUSE = 5
 
@@ -67,7 +69,7 @@ class PHD2Service:
     def __dequeue_command(self):
         try:
             command = self.input_queue.get_nowait()
-            command(process=self)
+            start_thread(command, process=self)
         except queue.Empty:
             pass
 
@@ -95,7 +97,7 @@ class PHD2Service:
 
     def __phd2_event(self, event):
         commands.GetPHD2State()(self)
-        logger.debug('PHD2 event: {}, state={}'.format(event, self.state['phd2_state']))
+        # logger.debug('PHD2 event: {}, state={}'.format(event, self.state['phd2_state']))
         event_type = event['Event']
         if event_type == 'Version':
             self.__change_state('version', event['PHDVersion'])
@@ -142,3 +144,20 @@ class PHD2Service:
         if event_type == 'LockPositionLost':
             self.__publish_state_event()
 
+        if event_type == 'GuidingDithered':
+            self.__publish_event('dithering', { 'state': self.state, 'dithering': event})
+
+        if event_type == 'SettleBegin':
+            self.__change_state('settling', True, publish=False)
+            self.__publish_state_event('settle_begin')
+
+        if event_type == 'Settling':
+            self.__publish_event('settling', { 'state': self.state, 'settling': event})
+
+        if event_type == 'SettleDone':
+            self.__change_state('settling_error', event['Status'] != 0, publish=False)
+            self.__change_state('settling_error_code', event['Status'], publish=False)
+            self.__change_state('settling_error_message', event.get('Error'), publish=False)
+            self.__change_state('settling', False, publish=False)
+            logger.debug('SettleDone: {}'.format(self.state))
+            self.__publish_event('settle_done', { 'state': self.state, 'settle_done': event})

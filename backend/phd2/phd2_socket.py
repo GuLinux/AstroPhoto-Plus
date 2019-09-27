@@ -7,25 +7,7 @@ from errors import FailedMethodError, BadRequestError
 from utils.threads import start_thread, thread_queue
 from queue import Empty
 import json
-
-class PHDConnectionError(Exception):
-    def __init__(self, message, parent=None):
-        self.message = message
-        self.parent = parent
-
-class PHD2MethodError(Exception):
-    def __init__(self, method, message, code):
-        self.message = message
-        self.code = code
-
-    def __str__(self):
-        return 'Error code {} calling PHD2 method {}: {}'.format(self.code, self.method, self.message)
-
-    def __repr__(self):
-        return self.__str__()
-
-
-
+from .errors import PHDConnectionError, PHD2MethodError
 
 class PHD2Socket:
     def __init__(self):
@@ -50,13 +32,13 @@ class PHD2Socket:
         self.__id += 1
         method_object = {
             'method': method_name,
-            'params': list(*parameters),
+            'params': list(parameters),
             'id': id,
         }
-        logger.debug('Sending method object: {}'.format(method_object))
+        # logger.debug('Sending method object: {}'.format(method_object))
         self.methods_queue.put(method_object)
         result = self.__get_result()
-        logger.debug('result: {}'.format(result))
+        # logger.debug('result: {}'.format(result))
         if 'error' in result:
             raise PHD2MethodError(method_name, result['message'], result['code'])
         return result

@@ -594,3 +594,11 @@ def post_star_chart(json):
 @json_api
 def get_phd2_status():
     return phd2.status()
+
+@app.route('/api/phd2/dither', methods=['POST'])
+@json_input
+@json_api
+def phd2_dither(json):
+    return phd2.dither(json['pixels'], json.get('settle_pixels', 1.5), json.get('settle_time', 5), json.get('settle_timeout', 60), ra_only=json.get('ra_only', False), wait_for_settle=True)
+
+
