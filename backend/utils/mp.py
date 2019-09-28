@@ -37,6 +37,10 @@ def ProcessWorker(Cls):
 
     def __run(self):
         on_run = getattr(self, 'on_run', None)
+        on_started = getattr(self, 'on_start', None)
+        on_stopped = getattr(self, 'on_stopped', None)
+        if on_started:
+            on_started()
         while True:
             try:
                 method, args, kwargs = self.methods_queue.get_nowait()
@@ -52,6 +56,8 @@ def ProcessWorker(Cls):
                 pass
             if on_run:
                 on_run()
+        if on_stopped:
+            on_stopped()
     
     def start(self):
         self.__process = mp_start_process(self.__run)
