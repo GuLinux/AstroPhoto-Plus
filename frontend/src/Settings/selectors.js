@@ -24,6 +24,11 @@ export const getSettingSelector = createCachedSelector(getCurrentSetting, (curre
 }))(settingSelectorKey);
 
 
+export const getCheckboxSettingSelector = createCachedSelector(getCurrentSetting, (currentValue) => {
+    const checked = (currentValue || 0) !== 0
+    return { checked };
+})(settingSelectorKey);
+
 export const settingsSelector = createSelector([
     getSettings,
     getBackendVersion,

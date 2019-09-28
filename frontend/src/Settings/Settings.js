@@ -1,27 +1,15 @@
 import React from 'react';
 import { List, Button, Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header, Label} from 'semantic-ui-react';
-import { DirectoryPicker } from '../components/DirectoryPicker'; 
 import { CommandsContainer } from '../Commands/CommandsContainer';
 import { CheckButton } from '../components/CheckButton';
 import { get } from 'lodash'; 
 import { DownloadIndexesModalContainer } from './DownloadIndexesModalContainer';
-import { NumericInput } from '../components/NumericInput';
 
 import { InputSetting } from './InputSetting';
+import { CheckboxSetting } from './CheckboxSetting';
+import { SettingButtonChoice } from './SettingButtonChoice';
  
 export class Settings extends React.Component {
-    settingButton = (setting, value, props) =>
-        <CheckButton active={get(this.props.settings, ['current', setting]) === value} onClick={() => this.props.update(setting, value)} {...props} />
-
-    checkbox = (valueName, props={}) => <Form.Checkbox
-        checked={get(this.props.settings, ['current', valueName], 0) !== 0}
-        onChange={(e, data) => this.props.update(valueName, data.checked)}
-        {...props}
-    />;
-
-    onAstrometryTimeoutChanged = value => this.props.update('astrometry_cpu_limit', value);
-    onServerNameChanged = value => this.props.update('server_name', value);
-
     render = () => {
         const {onChange, showCommands, backendVersion='N/A', frontendVersion, catalogs, availableCatalogs, importCatalog } = this.props;
         const versionString = backendVersion === frontendVersion ? `AstroPhoto Plus version ${backendVersion}` : `AstroPhoto Plus: backend version ${backendVersion}, frontend: ${frontendVersion}`;
@@ -71,9 +59,9 @@ export class Settings extends React.Component {
                         </Segment>
                         <Segment>
                             <Header content='INDI' />
-                            {this.checkbox('indi_server_autoconnect', {label: 'Autoconnect to INDI server', toggle: true})}
+                            <CheckboxSetting setting='indi_server_autoconnect' label='Autoconnect to INDI Server' toggle />
                             <Message>Connect automatically to INDI server</Message>
-                            {this.checkbox('indi_drivers_autostart', {label: 'Autostart INDI drivers', toggle: true})}
+                            <CheckboxSetting setting='indi_drivers_autostart' label='Autostart INDI drivers' toggle />
                             <Message>Autostart INDI drivers on connection</Message>
                         </Segment>
                         <Segment>
@@ -120,26 +108,24 @@ export class Settings extends React.Component {
                         </Segment>
                         <Segment>
                             <Header content='Autoguider' />
-                            <Form.Group inline>
-                                <label>Autoguider engine</label>
-                                {this.settingButton('autoguider_engine', 'off', {size: 'mini', content: 'Off'})}
-                                {this.settingButton('autoguider_engine', 'phd2', {size: 'mini', content: 'PHD2'})}
-                            </Form.Group>
+                            <SettingButtonChoice label='Autoguider engine' setting='autoguider_engine' choices={[
+                                { content: 'Off', value: 'off' },
+                                { content: 'PHD2', value: 'phd2' },
+                            ]} />
                         </Segment>
 
 
                         <Segment>
                             <Header content='Misc' />
-                            <Form.Group inline>
-                                <label>Log level</label>
-                                {this.settingButton('log_level', 'CRITICAL', {size: 'mini', content: 'Critical'})}
-                                {this.settingButton('log_level', 'ERROR', {size: 'mini', content: 'Error'})}
-                                {this.settingButton('log_level', 'WARNING', {size: 'mini', content: 'Warning'})}
-                                {this.settingButton('log_level', 'INFO', {size: 'mini', content: 'Info'})}
-                                {this.settingButton('log_level', 'DEBUG', {size: 'mini', content: 'Debug'})}
-                            </Form.Group>
+                            <SettingButtonChoice label='Log level' setting='log_level' choices={[
+                                { content: 'Critical', value: 'CRITICAL' },
+                                { content: 'Error', value: 'ERROR' },
+                                { content: 'Warning', value: 'WARNING' },
+                                { content: 'Info', value: 'INFO' },
+                                { content: 'Debug', value: 'DEBUG' },
+                            ]} />
                             <Divider hidden />
-                            {this.checkbox('sequence_async', {label: 'Asynchronous file saving', toggle: true})}
+                            <CheckboxSetting setting='sequence_async' label='Asynchronous file saving' toggle />
                             <Message>If enabled (default), will use memory buffering to improve sequences speed, saving a file while taking the next shot. Disable if you run on a low memory system</Message>
                         </Segment>
                     </Segment>
