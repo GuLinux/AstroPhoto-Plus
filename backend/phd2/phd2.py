@@ -20,6 +20,9 @@ class PHD2:
             return self.__service.execute('get_state')
         return { 'running': False }
 
+    def is_guiding(self):
+        status = self.status()
+        return status['running'] and status['connected'] and status['phd2_state'] == 'Guiding'
 
     def dither(self, pixels, settle_pixels, settle_time, settle_timeout, ra_only=False, wait_for_settle=False):
         settle_object = {
