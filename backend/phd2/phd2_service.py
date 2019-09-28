@@ -1,44 +1,63 @@
 import queue
 from app import logger
 from utils.threads import start_thread
+from utils.worker import Worker
 import time
-from . import commands
 from .phd2_socket import PHD2Socket 
 from .errors import PHDConnectionError
+from system import sse
 
 PHD2_RECONNECTION_PAUSE = 5
 
 
+@Worker(model='threading')
 class PHD2Service:
-    def __init__(self, input_queue, output_queue, events_queue):
-        self.input_queue = input_queue
-        self.output_queue = output_queue
-        self.events_queue = events_queue
-        self.__running = True
+    def __init__(self):
         self.__socket = PHD2Socket()
-        self.state = { 'running': self.__running, 'connected': False }
+        self.state = { 'running': False, 'connected': False }
         self.__last_connection_attempt = 0
 
-    def run(self):
-        logger.debug('Running PHD2 service')
-        while self.__running:
-            self.__check_connection()
-            self.__dequeue_command()
-            self.__check_events()
-            time.sleep(0.001)
-
-    def stop(self):
-        self.__running = False
-
-    def reply(self, response):
-        self.output_queue.put(response)
+    def on_run(self):
+        self.__check_connection()
+        time.sleep(0.0001)
 
     def phd2_method(self, method_name, *args):
         return self.__socket.send_method(method_name, *args)
 
+    def get_state(self):
+        return self.state
+
+    def dither(self, pixels, ra_only, settle_object, wait_for_settle=True):
+        self.__change_state(None, key='settle')
+        self.phd2_method('dither', pixels, ra_only, settle_object)
+        if wait_for_settle:
+            while not self.state.get('settle'):
+                pass # should be handled better. We need some time for phd2 to actually start settling
+            while self.state['settle']['settling']:
+                pass
+            if self.state['settle']['error']:
+                raise PHD2MethodError('dither', 'Dithering settling failed: {}'.format(self.state['settling']['error_message']), self.state['settling']['error_code'])
+        return {'success': True}
+
+    def get_phd2_state(self, publish=True):
+        state_reply = self.phd2_method('get_app_state')
+        self.__change_state(state_reply['result'], publish=publish)
+        return state_reply
+
     @property
     def connected(self):
         return self.state.get('connected', False)
+
+    def on_start(self):
+        logger.debug('PHD2 Service started')
+        self.state['running'] = True
+        self.__events_thread = start_thread(self.__check_events)
+
+    def on_stopped(self):
+        logger.debug('PHD2 Service stopped')
+        self.state['running'] = False
+        self.__events_thread.join()
+        self.__events_thread = None
 
     def __check_connection(self):
         now = time.time()
@@ -46,64 +65,65 @@ class PHD2Service:
             return
         try:
             self.__last_connection_attempt = now
-            self.state['connected'] = self.__socket.connect()
-            self.__publish_state_event('connected')
+            self.__change_state(self.__socket.connect(), key='connected', publish_event='connected')
             logger.debug('PHD2 Connected')
-            commands.GetPHD2State()(self)
-            self.__publish_state_event()
+            self.get_phd2_state()
         except PHDConnectionError as e:
             logger.debug('PHD2 connection failed, sleeping for %d seconds: %s', PHD2_RECONNECTION_PAUSE, e.message)
             self.__disconnected(e.message)
 
     def __disconnected(self, message=None):
-        self.state = { 'running': self.__running, 'connected': False }
+        self.state = { 'running': self.state['running'], 'connected': False }
         self.__publish_event('disconnected', message)
 
 
     def __publish_event(self, name, payload=None):
-        self.events_queue.put({ 'name': name, 'payload': payload})
+        sse.publish_event('phd2', name, payload)
 
     def __publish_state_event(self, name='phd2_state'):
         self.__publish_event(name, payload=self.state)
 
-    def __dequeue_command(self):
-        try:
-            command = self.input_queue.get_nowait()
-            start_thread(command, process=self)
-        except queue.Empty:
-            pass
+    def __change_state(self, value, publish=True, key='phd2_state', publish_event='phd2_state'):
+        self.state[key] = value
+        if publish:
+            self.__publish_state_event(name=publish_event)
 
     def __check_events(self):
         try:
-            event = self.__socket.events_queue.get_nowait()
-            if event['type'] == 'disconnected':
-                logger.debug('PHD2 disconnected')
-                self.__disconnected()
-            if event['type'] == 'phd2_event':
-                self.__phd2_event(event['event'])
-            else:
-                logger.debug('PHD2Service: Unknown event: {}'.format(event))
+            while self.state['running']:
+                try:
+                    event = self.__socket.events_queue.get_nowait()
+                    if event['type'] == 'disconnected':
+                        logger.debug('PHD2 disconnected')
+                        self.__disconnected()
+                    elif event['type'] == 'phd2_event':
+                        self.__on_phd2_socket_event(event['event'])
+                    else:
+                        logger.debug('PHD2Service: Unknown event: {}'.format(event))
+                except queue.Empty:
+                    pass
+                time.sleep(0.0001)
+        except Exception as e:
+            logger.warning('PHD2 Service: an error occured processing events', exc_info=e)
+        finally:
+            logger.debug('PHD2 Service: Stopped checking events')
 
-        except queue.Empty:
-            pass
+    def __on_phd2_socket_event(self, event):
+        try:
+            #logger.debug('Received event {}, querying status'.format(event))
+            self.get_phd2_state(publish=False)
+            #logger.debug('received status: {}'.format(self.state))
+        except PHDConnectionError:
+            #logger.debug('PHD2ConnectionError while waiting for state')
+            self.__disconnected()
+            return
 
-    def __change_state(self, key, value, publish=True):
-        self.state[key] = value
-        if publish:
-            self.__publish_state_event()
-
-    def __change_phd2_state(self, value, publish=True):
-        self.__change_state('phd2_state', value, publish)
-
-    def __phd2_event(self, event):
-        commands.GetPHD2State()(self)
-        # logger.debug('PHD2 event: {}, state={}'.format(event, self.state['phd2_state']))
         event_type = event['Event']
         if event_type == 'Version':
-            self.__change_state('version', event['PHDVersion'])
+            self.__change_state(event['PHDVersion'], key='version')
 
         if event_type == 'AppState':
-            self.__change_phd2_state(event['State'])
+            self.__change_state(event['State'])
 
         if event_type == 'ConfigurationChange':
             self.__publish_state_event()
@@ -148,16 +168,20 @@ class PHD2Service:
             self.__publish_event('dithering', { 'state': self.state, 'dithering': event})
 
         if event_type == 'SettleBegin':
-            self.__change_state('settling', True, publish=False)
+            self.__change_state({'settling': True}, key='settle', publish=False)
             self.__publish_state_event('settle_begin')
 
         if event_type == 'Settling':
             self.__publish_event('settling', { 'state': self.state, 'settling': event})
 
         if event_type == 'SettleDone':
-            self.__change_state('settling_error', event['Status'] != 0, publish=False)
-            self.__change_state('settling_error_code', event['Status'], publish=False)
-            self.__change_state('settling_error_message', event.get('Error'), publish=False)
-            self.__change_state('settling', False, publish=False)
+            self.__change_state({
+                'error': event['Status'] != 0,
+                'error_code': event['Status'],
+                'error_message': event.get('Error'),
+                'settling': False,
+            }, key='settle', publish=False)
             logger.debug('SettleDone: {}'.format(self.state))
             self.__publish_event('settle_done', { 'state': self.state, 'settle_done': event})
+
+

@@ -20,6 +20,9 @@ class Foo:
     def on_run(self):
         pass
 
+    def set_tag(self, tag):
+        self.tag = tag
+
 foo = Foo('Foo-Tag')
 foo.start()
 

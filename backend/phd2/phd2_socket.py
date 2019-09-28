@@ -19,7 +19,7 @@ class PHD2Socket:
     def connect(self, hostname='localhost', port=4400):
         self.__connect = True
         self.__thread = start_thread(self.__socket_loop, hostname, port)
-        return self.__get_result()
+        return self.__get_result().get('connected', False)
 
     def disconnect(self):
         if not self.__thread:
@@ -27,7 +27,9 @@ class PHD2Socket:
         self.__connect = False
         self.__thread.join()
 
-    def send_method(self, method_name, *parameters):
+    def send_method(self, method_name, *parameters, timeout=10):
+        if not self.__connected:
+            raise PHDConnectionError('Error running method {}: PHD2 socket not connected'.format(method_name))
         id = self.__id
         self.__id += 1
         method_object = {
@@ -35,27 +37,26 @@ class PHD2Socket:
             'params': list(parameters),
             'id': id,
         }
-        # logger.debug('Sending method object: {}'.format(method_object))
         self.methods_queue.put(method_object)
-        result = self.__get_result()
-        # logger.debug('result: {}'.format(result))
+        result = self.__get_result(timeout=timeout)
         if 'error' in result:
-            raise PHD2MethodError(method_name, result['message'], result['code'])
+            raise PHD2MethodError(method_name, result['error']['message'], result['error']['code'])
         return result
 
     def __socket_loop(self, address, port):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as connection:
             try:
                 connection.connect((address, port))
-                self.__put_result(True)
+                self.__put_result({'connected': True})
             except Exception as e:
                 self.__put_error(PHDConnectionError(str(e), e))
                 return 
+            self.__connected = True
             inout = [connection]
             fileobj = connection.makefile()
             try:
                 while self.__connect:
-                    infds, outfds, errfds = select.select(inout, inout, [], 0)
+                    infds, outfds, errfds = select.select(inout, inout, [], 2)
                     if infds:
                         self.__handle_message(fileobj.readline())
                     if outfds:
@@ -65,6 +66,9 @@ class PHD2Socket:
                         except Empty:
                             pass
             finally:
+                self.__connect = False
+                self.__connected = False
+                logger.debug('PHD2 socket disconnected')
                 self.__put_event('disconnected')
 
     def get_event(self):
@@ -85,6 +89,7 @@ class PHD2Socket:
 
     def __get_result(self, timeout=10):
         result, is_exception = self.recv_queue.get(timeout)
+        #logger.debug('__get_result: {}, {}'.format(result, is_exception))
         if is_exception:
             raise result
         return result

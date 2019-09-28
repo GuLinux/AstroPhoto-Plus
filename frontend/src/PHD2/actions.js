@@ -20,7 +20,7 @@ export const phd2Disconnected= errorMessage => (dispatch, getState) => {
 
 export const phd2Connected = status => (dispatch, getState) => {
     if(!getPHD2State(getState()).connected) {
-        dispatch(addNotification('PHD2 Connected', 'AstroPhoto Plus is now connected from PHD2', 'success', 5000));
+        dispatch(addNotification('PHD2 Connected', 'AstroPhoto Plus is now connected to PHD2', 'success', 5000));
     }
     dispatch(updatePHD2Status(status));
 };

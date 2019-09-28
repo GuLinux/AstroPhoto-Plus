@@ -56,6 +56,7 @@ def backend_version():
 
 @app.route('/api/events')
 def events():
+    app.logger.debug('sse object: {}'.format(sse))
     response = Response(sse.subscribe().feed(), mimetype='text/event-stream')
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
