@@ -2,7 +2,6 @@ import { get } from 'lodash';
 
 const defaultState = {
     current: {},
-    pending: {},
     astrometry: {
         isDownloading: false,
     },
@@ -10,12 +9,9 @@ const defaultState = {
 
 
 const settingsUpdated = (state, settings) => {
-    const pending = {...state.pending };
-    Object.keys(settings).forEach(k => delete pending[k]);
     return {
         ...state,
         current: {...state.current, ...settings },
-        pending,
     }
 }
 
@@ -46,10 +42,6 @@ const settings = (state = defaultState, action) => {
     switch(action.type) {
         case 'SETTINGS_RECEIVED':
             return action.settings ? {...state, current: action.settings } : state;
-        case 'SETTINGS_SET_PENDING':
-            return {...state, pending: {...state.pending, [action.key]: action.value === state.current[action.key] ? undefined : action.value }};
-        case 'SETTINGS_RESET_PENDING':
-            return {...state, pending: {...state.pending, [action.key]: undefined }};
         case 'SETTINGS_UPDATED':
             return settingsUpdated(state, action.settings);
         case 'SETTINGS_DOWNLOAD_ASTROMETRY_INDEXES':

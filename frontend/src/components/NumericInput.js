@@ -66,7 +66,7 @@ export class NumericInput extends React.PureComponent {
     increaseStep = () => this.step(+1);
     decreaseStep = () => this.step(-1);
     render = () => {
-        const  { value, format, parse, min, max, step, onChange, ...args } = this.props;
+        const  { value, format, parse, min, max, step, onChange, action=null, ...args } = this.props;
         return (
             <Input
                 onKeyUp={this.onKeyUp}
@@ -75,15 +75,22 @@ export class NumericInput extends React.PureComponent {
                 onChange={this.onChange}
                 type='text'
                 {...args}
-                action={<StepButtons
-                    step={step}
-                    readOnly={args.readOnly}
-                    increaseStep={this.increaseStep}
-                    decreaseStep={this.decreaseStep}
-                />}
+                action={this.renderInputActions(args.readOnly, action)}
             />
         )
     }
+
+    renderInputActions = (readOnly, action) => (
+        <React.Fragment>
+            <StepButtons
+                step={this.props.step}
+                readOnly={readOnly}
+                increaseStep={this.increaseStep}
+                decreaseStep={this.decreaseStep}
+            />
+            {action}
+        </React.Fragment>
+    )
 }
 
 const StepButtons = ({step, readOnly, increaseStep, decreaseStep}) => {
@@ -92,8 +99,8 @@ const StepButtons = ({step, readOnly, increaseStep, decreaseStep}) => {
     }
     return (
         <Button.Group vertical size='mini' className='number-steps'>
-            <Button icon='caret up' onClick={increaseStep} />
-            <Button icon='caret down'onClick={decreaseStep} />
+            <Button basic icon='caret up' onClick={increaseStep} />
+            <Button basic icon='caret down'onClick={decreaseStep} />
         </Button.Group>
     );
 }
