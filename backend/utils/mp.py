@@ -36,6 +36,7 @@ def ProcessWorker(Cls):
         self.__process = None
 
     def __run(self):
+        on_run = getattr(self, 'on_run', None)
         while True:
             try:
                 method, args, kwargs = self.methods_queue.get_nowait()
@@ -49,6 +50,8 @@ def ProcessWorker(Cls):
                     self.replies_queue.put((e.args, type(e)))
             except queue.Empty:
                 pass
+            if on_run:
+                on_run()
     
     def start(self):
         self.__process = mp_start_process(self.__run)

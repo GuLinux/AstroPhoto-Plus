@@ -17,6 +17,9 @@ class Foo:
     def get_tag(self):
         return self.tag
 
+    def on_run(self):
+        pass
+
 foo = Foo('Foo-Tag')
 foo.start()
 
