@@ -5,6 +5,7 @@ from queue import Queue
 from errors import BadRequestError
 from images import Image, main_images_db
 from .exposure_sequence_job_runner import ExposureSequenceJobRunner
+from .autoguider import autoguider
 
 from app import logger
 
@@ -111,6 +112,7 @@ class ExposureSequenceJob:
 
         def on_each_finished(job_runner, index, filename):
             self.last_message = 'finished exposure {} out of {}, saved to {}'.format(index+1, job_runner.count, filename)
+            autoguider.dither()
             on_update()
 
         def on_each_saved(job_runner, index, filename):
