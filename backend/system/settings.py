@@ -46,6 +46,12 @@ class Settings:
             'server_name',
             'astrometry_solve_field_path',
             'autoguider_engine',
+            'dithering_enabled',
+            'dithering_pixels',
+            'dithering_ra_only',
+            'dithering_settle_time',
+            'dithering_settle_timeout',
+            'dithering_settle_pixels',
         ]
 
         self.on_update = []
@@ -131,6 +137,31 @@ class Settings:
     @property
     def autoguider_engine(self):
         return self.json_map.get('autoguider_engine', 'off')
+
+    @property
+    def dithering_enabled(self):
+        return self.__get_bool('dithering_enabled', False)
+
+    @property
+    def dithering_ra_only(self):
+        return self.__get_bool('dithering_ra_only', False)
+
+    @property
+    def dithering_pixels(self):
+        return int(self.json_map.get('dithering_pixels', 5))
+
+    @property
+    def dithering_settle_pixels(self):
+        return float(self.json_map.get('dithering_settle_pixels', 1.5))
+
+    @property
+    def dithering_settle_time(self):
+        return int(self.json_map.get('dithering_settle_time', 5))
+
+    @property
+    def dithering_settle_timeout(self):
+        return int(self.json_map.get('dithering_settle_timeout', 60))
+
 
     def astrometry_path(self, filename=None):
         if filename:

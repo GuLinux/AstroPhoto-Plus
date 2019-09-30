@@ -2,6 +2,7 @@ import React from 'react';
 import { Header, Container, Grid, Message } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { phd2PageSelector } from './selectors';
+import { DitheringOptions } from '../Autoguider/DitheringOptions';
 
 const connectionMessage = (connected, connectionError) => {
     if(connected) {
@@ -82,6 +83,7 @@ const PHD2Component = ({connected, connectionError, ...rest}) => (
             </Grid.Row>
             { connected && <PHD2StatusComponent {...rest} /> }
         </Grid>
+        <DitheringOptions />
     </Container>
 );
 
