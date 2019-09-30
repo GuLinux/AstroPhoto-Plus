@@ -266,3 +266,6 @@ export const fetchCatalogsAPI = (dispatch, onSuccess, onError) => fetchJSON(disp
 export const importCatalogAPI = (name, dispatch, onSuccess, onError) => fetchJSON(dispatch, `/api/catalogs/import/${name}`, { method: 'POST' }, onSuccess, onError);
 export const catalogLookupAPI = (catalog, object, dispatch, onSuccess, onError) => fetchJSON(dispatch, `/api/catalogs/${catalog}/${object}`, {}, onSuccess, onError);
 
+export const fetchPHD2Status = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/phd2', {}, onSuccess, onError);
+
+

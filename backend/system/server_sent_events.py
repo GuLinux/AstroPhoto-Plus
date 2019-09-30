@@ -1,9 +1,9 @@
 import json
 import uuid
 import time
-from utils.threads import start_thread, thread_queue
+from utils.mp import mp_start_process, mp_queue
 from flask_sse import sse
-from app import app
+from app import logger 
 
 
 class SSEMessage:
@@ -22,7 +22,7 @@ class SSEMessage:
 
 class SSEClient:
     def __init__(self, sse):
-        self.queue = thread_queue()
+        self.queue = mp_queue()
         self.sse = sse
 
     def publish(self, message):
@@ -40,12 +40,14 @@ class SSEClient:
         return gen()
  
 class SSE:
-    def __init__(self, logger):
+    def __init__(self):
         self.clients = []
-        self.logger = logger
 
     def publish(self, data, type):
-        start_thread(self.__publish_to_clients, data, type)
+        mp_start_process(self.__publish_to_clients, data, type)
+
+    def publish_event(self, event_type, event_name, payload, is_error=False, error_code=None):
+        self.publish({'event': event_name, 'payload': payload, 'is_error': is_error, 'error_code': error_code}, type=event_type)
 
     def __publish_to_clients(self, data, type):
         for client in self.clients:
@@ -55,12 +57,13 @@ class SSE:
     def subscribe(self):
         new_client = SSEClient(self)
         self.clients.append(new_client)
-        self.logger.info('new client subscribed: {}'.format(new_client))
+        logger.info('new client subscribed: {}'.format(new_client))
         return new_client
 
     def unsubscribe(self, client):
-        self.logger.info('unsubscribing client: {} (clients: {})'.format(client, len(self.clients)))
+        logger.info('unsubscribing client: {} (clients: {})'.format(client, len(self.clients)))
         self.clients = [x for x in self.clients if x != client]
-        self.logger.debug('clients now: {}'.format(len(self.clients)))
+        logger.debug('clients now: {}'.format(len(self.clients)))
                
         
+sse = SSE()

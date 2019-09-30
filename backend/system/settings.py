@@ -45,9 +45,16 @@ class Settings:
             'astrometry_cpu_limit',
             'server_name',
             'astrometry_solve_field_path',
+            'autoguider_engine',
+            'dithering_enabled',
+            'dithering_pixels',
+            'dithering_ra_only',
+            'dithering_settle_time',
+            'dithering_settle_timeout',
+            'dithering_settle_pixels',
         ]
 
-        self.on_update = None
+        self.on_update = []
         self.reload()
 
     def reload(self):
@@ -56,6 +63,9 @@ class Settings:
             self.json_map = redis_client.dict_get('settings')
         except FileNotFoundError:
             pass
+
+    def add_update_listener(self, listener):
+        self.on_update.append(listener)
 
     def to_map(self):
         props = []
@@ -124,6 +134,35 @@ class Settings:
     def astrometry_cpu_limit(self):
         return int(self.json_map.get('astrometry_cpu_limit', 600))
 
+    @property
+    def autoguider_engine(self):
+        return self.json_map.get('autoguider_engine', 'off')
+
+    @property
+    def dithering_enabled(self):
+        return self.__get_bool('dithering_enabled', False)
+
+    @property
+    def dithering_ra_only(self):
+        return self.__get_bool('dithering_ra_only', False)
+
+    @property
+    def dithering_pixels(self):
+        return int(self.json_map.get('dithering_pixels', 5))
+
+    @property
+    def dithering_settle_pixels(self):
+        return float(self.json_map.get('dithering_settle_pixels', 1.5))
+
+    @property
+    def dithering_settle_time(self):
+        return int(self.json_map.get('dithering_settle_time', 5))
+
+    @property
+    def dithering_settle_timeout(self):
+        return int(self.json_map.get('dithering_settle_timeout', 60))
+
+
     def astrometry_path(self, filename=None):
         if filename:
             return os.path.join(self.astrometry_path(), filename)
@@ -144,10 +183,9 @@ class Settings:
             self.update_log_level()
 
         redis_client.dict_set('settings', self.to_map())
-
-        if self.on_update:
+        for on_update_listener in self.on_update:
             for new_item in on_update_args:
-                self.on_update(*new_item)
+                on_update_listener(*new_item)
 
     def update_log_level(self):
             settings_level = self.json_map.get('log_level', self.log_level)

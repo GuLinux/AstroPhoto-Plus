@@ -1,8 +1,9 @@
 import React from 'react';
 import { Image, Container, Segment, Divider, List, Header } from "semantic-ui-react";
 import { Link } from 'react-router-dom'
+import { Routes } from '../routes';
 
-export const Home = ({serverName}) => (
+export const Home = ({serverName, autoguiderEngine}) => (
     <Container>
         <Segment>
             <Image src='/images/site-logo-dark-bg.svg'/>
@@ -16,7 +17,7 @@ export const Home = ({serverName}) => (
                 <List.Item>
                     <List.Icon name='list' />
                     <List.Content>
-                        <List.Header as={Link} to='/sequences' content='Sequences' />
+                        <List.Header as={Link} to={Routes.SEQUENCES_PAGE} content='Sequences' />
                         <List.Description>
                             Manage your astrophotography sequences.
                             With sequences you can run shots, rotate your electronic filter wheel, set device properties, and much more.
@@ -25,21 +26,22 @@ export const Home = ({serverName}) => (
                     </List.Content>
                 </List.Item>
 
+                { autoguiderEngine === 'phd2' && (
                 <List.Item>
-                    <List.Icon name='computer' />
+                    <List.Icon name='dot circle outline' />
                     <List.Content>
-                        <List.Header as={Link} to='/indi' content='INDI Server' />
+                        <List.Header as={Link} to={Routes.PHD2} content='PHD2 Autoguider' />
                         <List.Description>
-                            Manage your astrophotography devices.
-                            You can start and stop the INDI server, define profiles, and change properties on connected devices.
+                            Simple integration with a running PHD2 autoguider instance.
                         </List.Description>
                     </List.Content>
                 </List.Item>
+                )}
 
                 <List.Item>
                     <List.Icon name='camera' />
                     <List.Content>
-                        <List.Header as={Link} to='/camera' content='Camera' />
+                        <List.Header as={Link} to={Routes.CAMERA} content='Camera' />
                         <List.Description>
                             Preview your field of view, refine focus, exposure, and get histogram information.
                         </List.Description>
@@ -49,7 +51,7 @@ export const Home = ({serverName}) => (
                 <List.Item>
                     <List.Icon name='map outline' />
                     <List.Content>
-                        <List.Header as={Link} to='/plate-solving' content='Plate Solving' />
+                        <List.Header as={Link} to={Routes.PLATE_SOLVING_PAGE} content='Plate Solving' />
                         <List.Description>
                             Know where your camera is pointing, via an easy to use offline plate solved, powered by <a rel="noopener noreferrer" href='http://astrometry.net' target="_BLANK">astrometry.net</a>.
                         </List.Description>
@@ -59,13 +61,12 @@ export const Home = ({serverName}) => (
                 <List.Item>
                     <List.Icon name='settings' />
                     <List.Content>
-                        <List.Header as={Link} to='/settings' content='Settings' />
+                        <List.Header as={Link} to={Routes.SETTINGS_PAGE} content='Settings' />
                         <List.Description>
                             Change various AstroPhoto Plus settings, such as images saving location. If supported by your platform, you will also find various commands available, for updating the app, or powering off the server.
                         </List.Description>
                     </List.Content>
                 </List.Item>
-
             </List>
         </Segment>
         <Segment>

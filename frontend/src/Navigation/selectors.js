@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { isError } from '../Errors/selectors';
 import { Routes } from '../routes';
-import { getServerName } from '../Settings/selectors';
+import { getServerName, getAutoguiderEngine } from '../Settings/selectors';
 import createCachedSelector from 're-reselect';
 
 const getLandingPaths = state => state.navigation.landingPaths;
@@ -13,9 +13,11 @@ export const historyLandingSelector = createCachedSelector([getLandingPath], lan
 export const navbarContainerSelector = createSelector([
     isError,
     getServerName,
+    getAutoguiderEngine,
     (_, props) => props.location,
-], (isError, serverName, location) => ({
+], (isError, serverName, autoguiderEngine, location) => ({
     disableNavbar: isError || location.pathname === Routes.ROOT,
-    serverName
+    serverName,
+    autoguiderEngine,
 }));
 

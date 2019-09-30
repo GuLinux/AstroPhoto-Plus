@@ -1,10 +1,13 @@
 import { getSettingsApi, updateSettingsApi, downloadAstrometryIndexesApi } from '../middleware/api'
 import Actions from '../actions';
 
-const Settings = {
-    setPending: (key, value) => ({ type: 'SETTINGS_SET_PENDING', key, value }),
-    resetPending: (key) => ({ type: 'SETTINGS_RESET_PENDING', key }),
+export const update = (settings) => dispatch => {
+    dispatch({ type: 'UPDATE_SETTINGS', settings });
+    return updateSettingsApi(dispatch, settings, data => dispatch(Settings.updated(data)) );
+};
 
+
+const Settings = {
     received: (settings) => ({ type: 'SETTINGS_RECEIVED', settings}),
     updated: (settings) => ({ type: 'SETTINGS_UPDATED', settings}),
 
@@ -15,11 +18,7 @@ const Settings = {
         }
     },
 
-    update: (settings) => dispatch => {
-        dispatch({ type: 'UPDATE_SETTINGS', settings });
-        return updateSettingsApi(dispatch, settings, data => dispatch(Settings.updated(data)) );
-    },
-
+    update,
     downloadIndexes: arcminutes => dispatch => {
         downloadAstrometryIndexesApi(dispatch, arcminutes,
             () => dispatch({ type: 'SETTINGS_DOWNLOAD_ASTROMETRY_INDEXES' }),

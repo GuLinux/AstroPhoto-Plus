@@ -10,6 +10,7 @@ import { ImageSectionMenuContainer } from '../Image/ImageContainer';
 import { NavItem } from './NavbarMenu';
 import { PlateSolvingSectionMenuContainer } from '../PlateSolving/PlateSolvingPageContainer';
 import { CameraSectionMenu } from '../Camera/Camera';
+import { PHD2 } from '../PHD2/PHD2';
 
 export class NavbarMenuItems extends React.PureComponent {
 
@@ -22,6 +23,7 @@ export class NavbarMenuItems extends React.PureComponent {
         <React.Fragment>
             <NavItem icon='home' content='Home' exact={true} to={Routes.ROOT} onClick={this.onClick} />
             <NavItem icon='list' content='Sequences' to={Routes.SEQUENCES_PAGE} onClick={this.onClick} />
+            { this.props.autoguiderEngine === 'phd2' && <NavItem icon='dot circle outline' content='PHD2' to={Routes.PHD2} onClick={this.onClick} /> }
             <NavItem icon='computer' content='INDI Server' to={Routes.INDI_PAGE} onClick={this.onClick} />
             <NavItem icon='camera' content='Camera' to={Routes.CAMERA_PAGE} onClick={this.onClick}/>
             <NavItem icon='map outline' content='Plate Solving' to={Routes.PLATE_SOLVING_PAGE} onClick={this.onClick}/>

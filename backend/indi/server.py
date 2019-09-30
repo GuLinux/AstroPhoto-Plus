@@ -10,7 +10,8 @@ from .blob_client import BLOBClient
 import threading
 
 class INDIEventListener:
-    def __init__(self):
+    def __init__(self, server):
+        self.server = server
         self.listeners = []
 
     def add(self, name, listener):
@@ -23,7 +24,7 @@ class INDIEventListener:
         self.__callback('on_indi_message', device, message)
 
     def on_indiserver_disconnected(self, error_code):
-        self.__callback('on_indiserver_disconnected', error_code)
+        self.__callback('on_indiserver_disconnected', self.server, error_code)
 
     def on_indi_property_updated(self, property):
         self.__callback('on_indi_property_updated', property)
@@ -54,7 +55,7 @@ class Server:
         self.settings = settings
         self.client = None
         self.__disconnect_requested = 0
-        self.event_listener = INDIEventListener()
+        self.event_listener = INDIEventListener(self)
         self.blob_client = BLOBClient()
 
     def to_map(self):

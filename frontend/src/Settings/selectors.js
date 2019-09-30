@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import createCachedSelector from 're-reselect';
 import { get } from 'lodash';
 import { getConnectedCameras, getConnectedTelescopes, getCCDWidthPix, getCCDPixelPitch, getTelescopeFocalLength } from '../Gear/selectors';
 import { getBackendVersion, getFrontendVersion } from '../App/selectors';
@@ -6,11 +7,27 @@ import { getDownloadableCatalogs, getCurrentCatalogs, getCatalogImportingStatus 
 
 export const getSettings = state => state.settings;
 export const getCurrentSettings = state => getSettings(state).current;
+
+export const getCurrentSetting = (state, {setting}) => get(getCurrentSettings(state), setting);
+
 const getCommands = state => state.commands;
 
 const getAstrometryIsDownloading = state => state.settings.astrometry.isDownloading;
 
 export const getServerName = state => get(state, 'settings.current.server_name', '');
+export const getAutoguiderEngine = state => get(state, 'settings.current.autoguider_engine', 'off');
+
+
+const settingSelectorKey = (state, {setting}) => setting;
+export const getSettingSelector = createCachedSelector(getCurrentSetting, (currentValue) => ({
+    currentValue,
+}))(settingSelectorKey);
+
+
+export const getCheckboxSettingSelector = createCachedSelector(getCurrentSetting, (currentValue) => {
+    const checked = (currentValue || 0) !== 0
+    return { checked };
+})(settingSelectorKey);
 
 export const settingsSelector = createSelector([
     getSettings,
@@ -57,3 +74,4 @@ export const cameraDropdownItemSelector = createSelector([
 }));
 
 export const telescopeDropdownItemSelector = createSelector([getTelescopeFocalLength], ({value: focalLength}) => ({focalLength}));
+

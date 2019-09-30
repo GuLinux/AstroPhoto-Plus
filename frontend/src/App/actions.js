@@ -6,6 +6,7 @@ import { getFrontendVersion } from './selectors';
 import { addNotification } from '../Notifications/actions';
 import { get } from 'lodash';
 import { getAvailableCatalogs, getCatalogs } from '../Catalogs/actions.js';
+import { getPHD2Status } from '../PHD2/actions';
 
 let retryTimer = null;
 
@@ -53,5 +54,6 @@ export const init = () => async (dispatch, getState) => {
     dispatch(Actions.Commands.get());
     dispatch(getAvailableCatalogs());
     dispatch(getCatalogs());
+    dispatch(getPHD2Status());
     listenToEvents(dispatch);
 }

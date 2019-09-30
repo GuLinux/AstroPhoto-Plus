@@ -4,7 +4,7 @@ RUN_AS_ROOT=no
 RELOAD_PARAM=""
 case "$( tr A-Z a-z <<<"$DEV_MODE" )" in
     y|yes|1)
-        RELOAD_PARAM=--reload
+        #RELOAD_PARAM=--reload
         RUN_AS_ROOT=yes
         ;;
 esac
