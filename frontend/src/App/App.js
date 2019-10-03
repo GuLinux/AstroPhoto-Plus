@@ -14,7 +14,7 @@ import { PHD2 } from '../PHD2/PHD2';
 import { Route, Switch} from "react-router";
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Routes } from '../routes';
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+// import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import 'react-image-crop/dist/ReactCrop.css';
 import './App.css';

@@ -1,7 +1,7 @@
 import json
 import uuid
 import time
-from utils.mp import mp_start_process, mp_queue
+from utils.threads import start_thread, thread_queue 
 from flask_sse import sse
 from app import logger 
 
@@ -22,7 +22,7 @@ class SSEMessage:
 
 class SSEClient:
     def __init__(self, sse):
-        self.queue = mp_queue()
+        self.queue = thread_queue()
         self.sse = sse
 
     def publish(self, message):
@@ -44,7 +44,7 @@ class SSE:
         self.clients = []
 
     def publish(self, data, type):
-        mp_start_process(self.__publish_to_clients, data, type)
+        start_thread(self.__publish_to_clients, data, type)
 
     def publish_event(self, event_type, event_name, payload, is_error=False, error_code=None):
         self.publish({'event': event_name, 'payload': payload, 'is_error': is_error, 'error_code': error_code}, type=event_type)

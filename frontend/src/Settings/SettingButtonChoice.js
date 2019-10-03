@@ -10,7 +10,7 @@ class SettingButtonChoiceComponent extends React.Component {
         <CheckButton key={value} value={value} active={value === currentValue} onClick={this.update} {...props} />
 
     render = () => {
-        const { size='mini', label, choices, currentValue, update } = this.props;
+        const { size='mini', label, choices, currentValue } = this.props;
         return (
             <Form.Group inline>
                 <label>{label}</label>

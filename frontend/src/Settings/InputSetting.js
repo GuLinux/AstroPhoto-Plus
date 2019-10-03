@@ -60,7 +60,7 @@ class InputSettingComponent extends React.Component {
         const { text, path, number } = this.props;
         const activeInputTypes = [text, path, number].filter(i => i).length;
         if(activeInputTypes !== 1) {
-            throw('You need to specify one (and only one) prop between `text`, `path` and `number`');
+            throw(new Error(('You need to specify one (and only one) prop between `text`, `path` and `number`')));
         }
         if(number) {
             return this.renderNumericInput();
