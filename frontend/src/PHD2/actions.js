@@ -1,4 +1,4 @@
-import { fetchPHD2Status } from '../middleware/api';
+import { fetchPHD2Status, fetchPHD2Start, fetchPHD2Stop } from '../middleware/api';
 import { addNotification } from '../Notifications/actions';
 import { getPHD2State } from './selectors';
 
@@ -11,11 +11,11 @@ export const getPHD2Status = () => dispatch => {
 };
 
 
-export const phd2Disconnected= errorMessage => (dispatch, getState) => {
+export const phd2Disconnected= payload => (dispatch, getState) => {
     if(getPHD2State(getState()).connected) {
         dispatch(addNotification('PHD2 Disconnected', 'AstroPhoto Plus was disconnected from PHD2', 'warning', 5000));
     }
-    dispatch({ type: 'PHD2_DISCONNECTED', errorMessage });
+    dispatch({ type: 'PHD2_DISCONNECTED', payload });
 };
 
 export const phd2Connected = status => (dispatch, getState) => {
@@ -50,3 +50,34 @@ export const phd2GuideStep = (guideStep, status) => (dispatch, getState) => {
 };
 
 
+
+
+export const startPHD2 = (phd2Path, display) => dispatch => {
+    dispatch({ type: 'PHD2_STARTING' });
+    const onError = (response, isJSON) => {
+        if(!isJSON) {
+            return false;
+        }
+        response.json().then(json => dispatch(addNotification('PHD2', `Error starting PHD2: ${json.error_message}`, 'warning', 5000)));
+        return true;
+    }
+    const onPHD2Started = payload => dispatch({ type: 'PHD2_STARTED', payload });
+    fetchPHD2Start({
+        phd2_path: phd2Path,
+        display
+    }, dispatch, onPHD2Started, onError);
+}
+
+export const stopPHD2 = () => dispatch => {
+    const onError = (response, isJSON) => {
+        if(!isJSON) {
+            return false;
+        }
+        response.json().then(json => dispatch(addNotification('PHD2', `Error stopping PHD2: ${json.error_message}`, 'warning', 5000)));
+        return true;
+    }
+
+    const onPHD2Stopped = payload => dispatch({ type: 'PHD2_STOPPED', payload });
+    dispatch({ type: 'PHD2_STOPPING' });
+    fetchPHD2Stop(dispatch, onPHD2Stopped, onError);
+}

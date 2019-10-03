@@ -20,6 +20,12 @@ class PHD2:
             return self.__service.execute('get_state')
         return { 'running': False }
 
+    def start_phd2(self, binary_path, display):
+        return self.__service.execute('start_phd2', binary_path, display)
+
+    def stop_phd2(self):
+        return self.__service.execute('stop_phd2') 
+
     def is_guiding(self):
         status = self.status()
         return status['running'] and status['connected'] and status['phd2_state'] == 'Guiding'

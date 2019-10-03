@@ -268,4 +268,11 @@ export const catalogLookupAPI = (catalog, object, dispatch, onSuccess, onError) 
 
 export const fetchPHD2Status = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/phd2', {}, onSuccess, onError);
 
+export const fetchPHD2Start = (options, dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/phd2/start', {
+    method: 'POST',
+    body: JSON.stringify(options),
+    headers: headersJSONRequest,
+}, onSuccess, onError);
+
+export const fetchPHD2Stop = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/phd2/stop', { method: 'POST' }, onSuccess, onError);
 

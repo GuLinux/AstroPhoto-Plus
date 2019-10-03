@@ -16,7 +16,7 @@ export const phd2 = (state = defaultState, action) => {
         case 'UPDATE_PHD2_STATUS':
             return {...state, ...action.status, connectionError: action.status.connectionError};
         case 'PHD2_DISCONNECTED':
-            return {...defaultState, connectionError: action.errorMessage};
+            return {...defaultState, ...action.payload};
         case 'PHD2_STAR_LOST':
             return {...state, starLost: true, lastStarLost: Date.now()};
         case 'PHD2_GUIDE_STEP':
