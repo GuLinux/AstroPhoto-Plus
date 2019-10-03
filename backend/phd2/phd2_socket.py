@@ -62,6 +62,7 @@ class PHD2Socket:
                     if outfds:
                         try:
                             message = self.methods_queue.get_nowait()
+                            # logger.debug('PHD2Socket: >>> {}'.format(message))
                             connection.send('{}\r\n'.format(json.dumps(message)).encode() )
                         except Empty:
                             pass
@@ -100,6 +101,7 @@ class PHD2Socket:
             # if we're here it's usually because we've been disconnected. TODO: improve checks
             self.__connect = False
             return
+        # logger.debug('PHD2Socket: <<< {}'.format(message.strip()))
         data = json.loads(message)
         if data.get('jsonrpc'):
             self.__put_result(data)

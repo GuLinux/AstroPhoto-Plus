@@ -1,11 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Message, Button, Dropdown, Input } from 'semantic-ui-react';
 import { apiFetch } from '../middleware/api';
+import { phd2ProcessSelector } from './selectors';
+import { startPHD2, stopPHD2 } from './actions';
 
-export class PHD2StartProcess extends React.Component {
+export class PHD2StartProcessComponent extends React.Component {
     state = { x11Displays: [], x11Display: null, phd2_path: '/usr/bin/phd2' };
 
     fetchX11Displays = async () => {
+        if(this.props.connected) {
+            return;
+        }
         const { json: displays } = await apiFetch('/api/x11_displays');
         this.setState({
             x11Displays: displays.map( ({display_variable}) => ({ key: display_variable, value: display_variable, text: display_variable })),
@@ -70,3 +76,7 @@ export class PHD2StartProcess extends React.Component {
     renderStop = () => <Button negative content='Stop' onClick={this.props.stopPHD2} />
     renderStart= () => <Button positive content='Run' onClick={this.startPHD2} disabled={!this.state.x11Display || ! this.state.phd2_path} />
 }
+
+
+export const PHD2StartProcess = connect(phd2ProcessSelector, { startPHD2, stopPHD2 })(PHD2StartProcessComponent);
+

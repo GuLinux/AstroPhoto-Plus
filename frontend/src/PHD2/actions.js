@@ -1,6 +1,6 @@
 import { fetchPHD2Status, fetchPHD2Start, fetchPHD2Stop } from '../middleware/api';
 import { addNotification } from '../Notifications/actions';
-import { getPHD2State } from './selectors';
+import { getPHD2Connected, getPHD2StarLost } from './selectors';
 
 
 export const updatePHD2Status = status => ({ type: 'UPDATE_PHD2_STATUS', status });
@@ -12,14 +12,14 @@ export const getPHD2Status = () => dispatch => {
 
 
 export const phd2Disconnected= payload => (dispatch, getState) => {
-    if(getPHD2State(getState()).connected) {
+    if(getPHD2Connected(getState())) {
         dispatch(addNotification('PHD2 Disconnected', 'AstroPhoto Plus was disconnected from PHD2', 'warning', 5000));
     }
     dispatch({ type: 'PHD2_DISCONNECTED', payload });
 };
 
 export const phd2Connected = status => (dispatch, getState) => {
-    if(!getPHD2State(getState()).connected) {
+    if(!getPHD2Connected(getState())) {
         dispatch(addNotification('PHD2 Connected', 'AstroPhoto Plus is now connected to PHD2', 'success', 5000));
     }
     dispatch(updatePHD2Status(status));
@@ -34,7 +34,7 @@ export const phd2GuidingStopped = status => (dispatch, getState) => {
     dispatch(updatePHD2Status(status));
 };
 export const phd2StarLost = status => (dispatch, getState) => {
-    if(!getPHD2State(getState()).starLost) {
+    if(!getPHD2StarLost(getState())) {
         dispatch(addNotification('PHD2 Star Lost', 'PHD2 has lost the autoguiding star. Please check your frame for clouds, and try selecting a different star.', 'error', 5000));
     }
     dispatch({ type: 'PHD2_STAR_LOST' });
@@ -42,7 +42,7 @@ export const phd2StarLost = status => (dispatch, getState) => {
 };
 
 export const phd2GuideStep = (guideStep, status) => (dispatch, getState) => {
-    if(getPHD2State(getState()).starLost) {
+    if(getPHD2StarLost(getState())) {
         dispatch(addNotification('PHD2 Guiding', 'PHD2 Resumed autoguiding', 'info', 5000));
     }
     dispatch({ type: 'PHD2_GUIDE_STEP', guideStep });

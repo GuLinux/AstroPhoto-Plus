@@ -5,11 +5,10 @@ from app import logger
 
 
 def Worker(model='threading'):
-
     def wrapper(Cls):
         default_init = Cls.__init__
 
-        def get_queue(self, maxsize=0):
+        def get_queue(self, maxsize=1):
             return multiprocessing.Queue(maxsize) if model == 'multiprocessing' else queue.Queue(maxsize)
 
         def new_init(self, *args, **kwargs):

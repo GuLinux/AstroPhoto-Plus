@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { phd2PageSelector } from './selectors';
 import { DitheringOptions } from '../Autoguider/DitheringOptions';
 import { PHD2StartProcess } from './PHD2StartProcess';
-import { startPHD2, stopPHD2 } from './actions';
+import { PHD2DevicesProfiles } from './PHD2DevicesProfiles';
 
 const connectionMessage = (connected, connectionError) => {
     if(connected) {
@@ -27,21 +27,27 @@ const PHD2Version = ({ version }) => version ? (
     </Grid.Row>
 ) : null;
 
-const PHD2ProcessRow = ({ connected, process, startPHD2, stopPHD2 }) => {
-    if(connected && !process) {
-        return null;
-    }
-    return (
-        <Grid.Row>
+const PHD2ProcessRow = () => (
+    <Grid.Row>
+        <Grid.Column width={3} verticalAlign='middle'>
+            <Header size='small'>Start PHD2</Header>
+        </Grid.Column>
+        <Grid.Column width={9}>
+            <PHD2StartProcess />
+        </Grid.Column>
+    </Grid.Row>
+)
+
+const PHD2DevicesProfilesRow = ({}) => (
+    <Grid.Row>
             <Grid.Column width={3} verticalAlign='middle'>
-                <Header size='small'>Start PHD2</Header>
+                <Header size='small'>Hardware Profiles</Header>
             </Grid.Column>
             <Grid.Column width={9}>
-                <PHD2StartProcess processRunning={process} startPHD2={startPHD2} stopPHD2={stopPHD2} />
+                <PHD2DevicesProfiles />
             </Grid.Column>
-        </Grid.Row>
-    )
-}
+    </Grid.Row>
+);
 
 const uiState = state => {
     switch(state) {
@@ -80,33 +86,31 @@ const PHD2State = ({ state }) => state ? (
     </Grid.Row>
 ) : null;
 
-const PHD2StatusComponent = ({version, phd2_state}) => (
+const PHD2StatusComponent = ({version, phd2State}) => (
     <React.Fragment>
         <PHD2Version version={version} />
-        <PHD2State state={phd2_state} />
+        <PHD2State state={phd2State} />
     </React.Fragment>
 );
 
-const PHD2Component = ({connected, connection_error, process, startPHD2, stopPHD2, ...rest}) => (
+const PHD2Component = ({connected, connectionError, showProcessRow, version, phd2State}) => (
     <Container>
         <Grid columns={12}>
-            <PHD2ProcessRow process={process} connected={connected} startPHD2={startPHD2} stopPHD2={stopPHD2} />
+            { showProcessRow && <PHD2ProcessRow process={process} connected={connected} /> }
             <Grid.Row>
                 <Grid.Column width={3} verticalAlign='middle'>
                     <Header size='small'>Connection</Header>
                 </Grid.Column>
                 <Grid.Column width={9}>
-                    <Message positive={connected} error={!connected} content={connectionMessage(connected, connection_error)} size='mini' />
+                    <Message positive={connected} error={!connected} content={connectionMessage(connected, connectionError)} size='mini' />
                 </Grid.Column>
             </Grid.Row>
-            { connected && <PHD2StatusComponent {...rest} /> }
+            { connected && <PHD2StatusComponent version={version} phd2State={phd2State} /> }
+            { connected && <PHD2DevicesProfilesRow /> }
         </Grid>
         <DitheringOptions />
     </Container>
 );
 
-export const PHD2 = connect(phd2PageSelector, {
-    startPHD2,
-    stopPHD2,
-})(PHD2Component);
+export const PHD2 = connect(phd2PageSelector, null)(PHD2Component);
 

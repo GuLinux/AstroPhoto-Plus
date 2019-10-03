@@ -142,6 +142,7 @@ const phd2Events = (event, dispatch) => {
             dispatch(phd2GuideStep(eventObject.payload.guide_step, eventObject.payload.state));
             break;
         case 'phd2_state':
+        case 'profiles':
             dispatch(updatePHD2Status(eventObject.payload));
             break;
         default:

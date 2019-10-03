@@ -50,6 +50,7 @@ class PHD2Service:
 
     def get_phd2_state(self, publish=True):
         state_reply = self.phd2_method('get_app_state')
+        #logger.debug('get_phd2_: state reply: {}'.format(state_reply))
         self.__change_state(state_reply['result'], publish=publish)
         return state_reply
 
@@ -58,6 +59,13 @@ class PHD2Service:
 
     def stop_phd2(self):
         return self.__phd2_process.stop()
+
+    def get_profiles(self):
+        profiles = self.phd2_method('get_profiles')['result']
+        equipment_connected = self.phd2_method('get_connected')['result']
+        logger.debug('PHD2 Profiles: {}, equipment_connected: {}'.format(profiles, equipment_connected))
+        self.__change_state(equipment_connected, key='equipment_connected', publish=False)
+        self.__change_state(profiles, key='profiles', publish=True, publish_event='profiles')
 
     @property
     def connected(self):
@@ -85,6 +93,7 @@ class PHD2Service:
             self.__change_state(connection_successful, key='connected', publish_event='connected')
             logger.debug('PHD2 Connected')
             self.get_phd2_state()
+            self.get_profiles()
         except PHDConnectionError as e:
             logger.debug('PHD2 connection failed, sleeping for %d seconds: %s', PHD2_RECONNECTION_PAUSE, e.message)
             self.__disconnected(e.message)
@@ -148,7 +157,8 @@ class PHD2Service:
             self.__change_state(event['State'])
 
         if event_type == 'ConfigurationChange':
-            self.__publish_state_event()
+            logger.debug('ConfigurationChange event: {}, querying profiles'.format(event))
+            self.get_profiles()
 
         if event_type == 'LoopingExposures':
             self.__publish_state_event()
