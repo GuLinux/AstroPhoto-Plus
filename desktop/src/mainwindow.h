@@ -2,12 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <memory>
 
 namespace Ui {
 class MainWindow;
 }
 
 class QWebEngineView;
+class QSettings;
 
 class MainWindow : public QMainWindow
 {
@@ -24,7 +26,8 @@ private slots:
     void onPageLoaded(bool ok);
 
 private:
-    Ui::MainWindow *ui;
+    std::unique_ptr<Ui::MainWindow> ui;
+    std::unique_ptr<QSettings> settings;
     QWebEngineView *webengine;
 };
 

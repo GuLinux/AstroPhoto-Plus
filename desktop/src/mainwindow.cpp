@@ -3,21 +3,28 @@
 #include <QInputDialog>
 #include <QtWebEngineWidgets/QWebEngineView>
 #include <QDebug>
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow()),
+    settings(new QSettings("GuLinux", "AstroPhoto-Plus"))
 {
     ui->setupUi(this);
     connect(ui->manualServerButton, &QPushButton::clicked, this, &MainWindow::on_actionRemote_server_triggered);
     webengine = new QWebEngineView(this);
     ui->stackedWidget->addWidget(webengine);
     connect(webengine, &QWebEngineView::loadFinished, this, &MainWindow::onPageLoaded);
+    connect(webengine->page(), &QWebEnginePage::featurePermissionRequested, [&] (const QUrl &origin, QWebEnginePage::Feature feature) {
+        qDebug() << "notification requested: " << origin << ", " << feature;
+        if (feature != QWebEnginePage::Notifications)
+            return;
+        webengine->page()->setFeaturePermission(origin, feature, QWebEnginePage::PermissionGrantedByUser);
+     });
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
 }
 
 void MainWindow::on_actionRemote_server_triggered()
@@ -41,12 +48,6 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::onPageLoaded(bool ok) {
     if(ok) {
         qDebug() << "connecting notifications handler";
-        connect(webengine->page(), &QWebEnginePage::featurePermissionRequested,
-         [&] (const QUrl &origin, QWebEnginePage::Feature feature) {
-            qDebug() << "notification requested: " << origin << ", " << feature;
-         if (feature != QWebEnginePage::Notifications)
-             return;
-         webengine->page()->setFeaturePermission(origin, feature, QWebEnginePage::PermissionGrantedByUser);
-         });
+        qDebug() << webengine->page()->url();
     }
 }
