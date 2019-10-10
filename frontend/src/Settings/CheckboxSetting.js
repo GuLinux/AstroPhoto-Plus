@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Form } from 'semantic-ui-react';
 import { update } from './actions';
 import { getCheckboxSettingSelector } from './selectors';
-import { CheckButton } from '../components/CheckButton';
 
 
 class CheckboxSettingComponent extends React.Component {

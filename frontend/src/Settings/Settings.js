@@ -1,8 +1,6 @@
 import React from 'react';
-import { List, Button, Dropdown, Menu, Grid, Form, Container, Message, Icon, Divider, Segment, Header, Label} from 'semantic-ui-react';
+import { List, Button, Dropdown, Menu, Grid, Form, Container, Message, Divider, Segment, Header } from 'semantic-ui-react';
 import { CommandsContainer } from '../Commands/CommandsContainer';
-import { CheckButton } from '../components/CheckButton';
-import { get } from 'lodash'; 
 import { DownloadIndexesModalContainer } from './DownloadIndexesModalContainer';
 
 import { InputSetting } from './InputSetting';
@@ -11,7 +9,7 @@ import { SettingButtonChoice } from './SettingButtonChoice';
  
 export class Settings extends React.Component {
     render = () => {
-        const {onChange, showCommands, backendVersion='N/A', frontendVersion, catalogs, availableCatalogs, importCatalog } = this.props;
+        const { showCommands, backendVersion='N/A', frontendVersion, catalogs, availableCatalogs, importCatalog } = this.props;
         const versionString = backendVersion === frontendVersion ? `AstroPhoto Plus version ${backendVersion}` : `AstroPhoto Plus: backend version ${backendVersion}, frontend: ${frontendVersion}`;
 
         return (

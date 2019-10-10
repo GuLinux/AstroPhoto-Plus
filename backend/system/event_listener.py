@@ -1,4 +1,5 @@
 from .server_sent_events import sse
+from app import logger
 
 
 class EventListener:
