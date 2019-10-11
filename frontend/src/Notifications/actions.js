@@ -4,6 +4,5 @@ export const addNotification = (title, text, type, timeout, isModal=false) =>
 export const Notifications = {
     add: addNotification,
     remove: notification => ({ type: 'NOTIFICATION_REMOVED', notification }),
-    html5Blocked: () => ({ type: 'NOTIFICATIONS_HTML5_BLOCKED'}),
 };
 

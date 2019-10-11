@@ -27,11 +27,13 @@ def lookup_level(level):
 class Settings:
     def __init__(self):
         self.default_datadir = os.environ.get('ASTROPHOTOPLUS_DATADIR', os.path.join(os.environ['HOME'], 'AstroPhoto Plus'))
+        self.default_web_protocol = os.environ.get('ASTROPHOTOPLUS_WEB_PROTOCOL', 'http')
+        self.default_web_port = int(os.environ.get('ASTROPHOTOPLUS_WEB_PORT', '80'))
         self.config_dir = os.path.join(os.environ['HOME'], '.config', 'AstroPhotoPlus')
         self.system_config_dir = os.environ.get('SYSTEM_CONFDIR', '/etc')
         self.indi_service_logs = self.__build_path(['.cache', 'AstroPhotoPlus', 'logs', 'indi_service'], isdir=True)
 
-        self.ro_props = ['default_datadir', 'indi_service_logs', 'config_dir']
+        self.ro_props = ['default_datadir', 'indi_service_logs', 'config_dir', 'web_application_port', 'web_protocol']
         self.rw_props = [
             'sequences_dir',
             'indi_prefix',
@@ -101,6 +103,14 @@ class Settings:
     @property
     def indi_prefix(self):
         return self.json_map.get('indi_prefix', '/usr')
+
+    @property
+    def web_application_port(self):
+        return self.default_web_port
+
+    @property
+    def web_protocol(self):
+        return self.default_web_protocol
 
     @property
     def indi_host(self):

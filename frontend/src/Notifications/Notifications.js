@@ -31,7 +31,7 @@ const AlertNotification = ({notification, onDismiss}) => (
 const html5NotificationOptions = notification => ({
     icon: '/icon-256.png',
     body: Array.isArray(notification.text) ? notification.text.join('\n') : notification.text,
-    tag: `app-notification-{notification.id}`,
+    tag: `ap+_${notification.type}_${notification.id}`,
     requireInteraction: !notification.timeout,
 });
 
@@ -48,23 +48,36 @@ const HTML5NotificationComponent = ({notification, onDismiss}) => (
 
 export class Notifications extends React.PureComponent {
 
+    constructor(props) {
+        super(props);
+        this.requestPermission();
+        this.state = {};
+    }
+
+    requestPermission = async () => {
+        const permission = await Notification.requestPermission();
+        this.setState({ permission });
+        console.log('******* HTML5Notification permission: ', permission);
+    }
+
     onClosed = notification => () => this.props.onClosed(notification);
 
     renderNotification = (notification, index) => {
         setAutoclose(notification, this.onClosed(notification));
         let NotificationComponent = AlertNotification;
-        if(this.props.html5Enabled) {
+        if(this.state.permission === 'granted') {
             NotificationComponent = HTML5NotificationComponent;
         }
         return <NotificationComponent key={index} notification={notification} onDismiss={this.onClosed(notification)} />
     }
 
     render = () => {
-        const {notifications } = this.props;
+        if(!this.state.permission) {
+            return null;
+        }
         return (
             <div className="notifications-container">
-                <HTML5Notification ignore onPermissionDenied={this.props.onHTML5Blocked} title='Request Notification Permission' />
-                {notifications.map(this.renderNotification)}
+                {this.props.notifications.map(this.renderNotification)}
             </div>
         )
     }
