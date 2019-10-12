@@ -57,7 +57,15 @@ export const Home = ({serverName, autoguiderEngine}) => (
                         </List.Description>
                     </List.Content>
                 </List.Item>
-
+                <List.Item>
+                    <List.Icon name='computer' />
+                    <List.Content>
+                        <List.Header as={Link} to={Routes.INDI_PAGE} content='INDI' />
+                        <List.Description>
+                            Preview your field of view, refine focus, exposure, and get histogram information.
+                        </List.Description>
+                    </List.Content>
+                </List.Item>
                 <List.Item>
                     <List.Icon name='settings' />
                     <List.Content>
