@@ -12,11 +12,12 @@ class AstroPhotoPlusWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AstroPhotoPlusWidget(const QUrl &serverAddress, Notifications *notifications, QWidget *parent = nullptr);
+    explicit AstroPhotoPlusWidget(const QUrl &_serverAddress, Notifications *notifications, QWidget *parent = nullptr);
     ~AstroPhotoPlusWidget();
+    inline QUrl serverAddress() const { return _serverAddress; }
 
 signals:
-    void serverLoaded(const QString &serverName, const QUrl &serverAddress);
+    void serverLoaded(const QString &serverName, const QUrl &_serverAddress);
 
 public slots:
     void openServer();
@@ -25,7 +26,7 @@ private slots:
     void eventReceived(const QMap<QString, QString> &event);
 
 private:
-    const QUrl serverAddress;
+    const QUrl _serverAddress;
     const std::unique_ptr<API> api;
     const QString sessionId;
     Notifications *notifications;

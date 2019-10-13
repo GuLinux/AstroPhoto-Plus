@@ -7,6 +7,7 @@
 #include <QIcon>
 #include <QUrl>
 #include <QTabBar>
+#include <QMessageBox>
 
 #include "customwebpage.h"
 #include "astrophotopluswidget.h"
@@ -78,6 +79,14 @@ void MainWindow::on_actionRemote_server_triggered()
 }
 
 void MainWindow::loadWebPage(const QString &address) {
+
+    for(int index=1; index<ui->tabWidget->count(); index++) {
+        auto widget = dynamic_cast<AstroPhotoPlusWidget*>(ui->tabWidget->widget(index));
+        if(widget->serverAddress() == address) {
+            QMessageBox::warning(this, tr("Duplicate server"), tr("The AstroPhoto Plus instance with address %1 is already open at tab %2").arg(address).arg(index));
+            return;
+        }
+    }
     auto astroPhotoPlusWidget = new AstroPhotoPlusWidget(address, notifications);
     connect(astroPhotoPlusWidget, &AstroPhotoPlusWidget::serverLoaded, this, [this, astroPhotoPlusWidget](const QString &name, const QUrl &address) {
         ui->tabWidget->addTab(astroPhotoPlusWidget, name.isEmpty() ? address.toString() : name);
