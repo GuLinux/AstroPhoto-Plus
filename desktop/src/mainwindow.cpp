@@ -134,15 +134,22 @@ void MainWindow::discoveredServersGroup()
 
 void MainWindow::eventReceived(const QMap<QString, QString> &event)
 {
+    static QHash<QString, QSystemTrayIcon::MessageIcon> iconMap {
+        {"error", QSystemTrayIcon::Critical},
+        {"warning", QSystemTrayIcon::Warning},
+        {"info", QSystemTrayIcon::Information},
+        {"success", QSystemTrayIcon::Information},
+    };
     if(event["event"] == "desktop") {
         auto jsonData = QJsonDocument::fromJson(event["data"].toUtf8()).toVariant().toMap();
         if(jsonData["event"] == "notification") {
             auto payload = jsonData["payload"].toMap();
             if(payload["desktopNotificationsUuid"] == this->sessionId) {
                 systray->showMessage(
-                    tr("AstroPhoto Plus: %1").arg(payload["title"].toString()),
-                    payload["text"].toString(),
-                    *this->appicon,
+                    tr("AstroPhoto Plus"),
+                    QString("<b>%1</b><br>%2").arg(payload["title"].toString()).arg(payload["text"].toString()),
+                    iconMap.value(payload["type"].toString(), QSystemTrayIcon::NoIcon),
+                    //*this->appicon,
                     payload["timeout"].toInt()
                 );
             }

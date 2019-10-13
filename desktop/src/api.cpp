@@ -68,11 +68,14 @@ QNetworkReply *API::fetchJSON(const QString &method, const QNetworkRequest &requ
             auto json = QJsonDocument::fromJson(reply->readAll());
             onSuccess(json.toVariant(), reply);
         } else {
-            onError(reply);
+            if(reply->error() == QNetworkReply::NoError) {
+                onError(reply);
+            }
         }
         reply->deleteLater();
     });
     connect(reply, qOverload<QNetworkReply::NetworkError>(&QNetworkReply::error), this, [reply, onError](QNetworkReply::NetworkError){
+        qDebug() << "An error occured requesting "<< reply->request().url() << reply->errorString();
         onError(reply);
     });
     return reply;
