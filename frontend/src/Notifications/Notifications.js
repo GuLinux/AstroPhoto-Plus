@@ -1,6 +1,7 @@
 import React from 'react';
 import { Message, Icon} from 'semantic-ui-react';
 import HTML5Notification from 'react-web-notification';
+import queryString from 'query-string';
 
 const icons = {
     error: 'times circle',
@@ -57,11 +58,11 @@ export class Notifications extends React.PureComponent {
     }
 
     setupDesktopNotifications = () => {
-        if(!navigator.userAgent.includes('DesktopNotificationsCapable')) {
+        const { desktopClientSessionId } = queryString.parse(location.search);
+        if(!desktopClientSessionId) {
             return false;
         }
-        const uuid = navigator.userAgent.split('DesktopNotificationsCapable ')[1];
-        this.props.setDesktopNotificationsUuid(uuid);
+        this.props.setDesktopNotificationsUuid(desktopClientSessionId);
         return true;
     }
 

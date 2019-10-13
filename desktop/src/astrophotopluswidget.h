@@ -7,12 +7,12 @@
 
 class API;
 class QWebEngineView;
-class QSystemTrayIcon;
+class Notifications;
 class AstroPhotoPlusWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AstroPhotoPlusWidget(const QUrl &serverAddress, QSystemTrayIcon *systray, QWidget *parent = nullptr);
+    explicit AstroPhotoPlusWidget(const QUrl &serverAddress, Notifications *notifications, QWidget *parent = nullptr);
     ~AstroPhotoPlusWidget();
 
 signals:
@@ -28,7 +28,7 @@ private:
     const QUrl serverAddress;
     const std::unique_ptr<API> api;
     const QString sessionId;
-    QSystemTrayIcon *systray;
+    Notifications *notifications;
     QString serverName;
     QWebEngineView *webengine;
 };

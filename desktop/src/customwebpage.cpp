@@ -4,9 +4,8 @@
 #include <QHash>
 
 
-CustomWebPage::CustomWebPage(const QString &sessionId, QObject *parent) : QWebEnginePage(parent)
+CustomWebPage::CustomWebPage(QObject *parent) : QWebEnginePage(parent)
 {
-    profile()->setHttpUserAgent(profile()->httpUserAgent() + " DesktopNotificationsCapable " + sessionId);
 }
 
 void CustomWebPage::javaScriptConsoleMessage(QWebEnginePage::JavaScriptConsoleMessageLevel level, const QString &message, int lineNumber, const QString &sourceID)

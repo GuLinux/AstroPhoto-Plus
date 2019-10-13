@@ -4,7 +4,6 @@
 #include <QInputDialog>
 #include <QDebug>
 #include <QSettings>
-#include <QSystemTrayIcon>
 #include <QIcon>
 #include <QUrl>
 #include <QTabBar>
@@ -12,6 +11,10 @@
 #include "customwebpage.h"
 #include "astrophotopluswidget.h"
 #include "serverdiscovery.h"
+#include "notifications.h"
+
+// TODO notification test, remove
+#include <QTimer>
 
 #define MAX_RECENT_SERVERS 10
 
@@ -19,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(std::make_unique<Ui::MainWindow>()),
     settings(std::make_unique<QSettings>("GuLinux", "AstroPhoto-Plus")),
-    appicon(std::make_unique<QIcon>(":/astrophotoplus/appicon"))
+    appicon(std::make_unique<QIcon>(":/astrophotoplus/icon-64"))
 {
     ui->setupUi(this);
     layout()->setSpacing(0);
@@ -27,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->homeTab->layout()->setSpacing(0);
     ui->homeTab->layout()->setMargin(0);
     //ui->scrollArea->layout()->setMargin(0);
-    systray = new QSystemTrayIcon(*appicon, this);
     setWindowIcon(*appicon);
 
     ui->recentServersGroup->setLayout(new QVBoxLayout());
@@ -38,13 +40,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->manualServerButton, &QPushButton::clicked, this, &MainWindow::on_actionRemote_server_triggered);
 
+
+    // TODO notification test, remove
+    this->notifications = new Notifications(this);
+
     ui->autodiscoveredServersGroup->hide();
     ui->tabWidget->tabBar()->setTabButton(0, QTabBar::RightSide, nullptr);
     connect(ui->tabWidget, &QTabWidget::tabCloseRequested, this, [this](int index){
         delete ui->tabWidget->widget(index);
     });
     recentServersGroup();
-    systray->show();
     serverDiscovery = std::make_unique<ServerDiscovery>();
     connect(serverDiscovery.get(), &ServerDiscovery::serversUpdated, this, &MainWindow::discoveredServersGroup);
     serverDiscovery->start();
@@ -69,7 +74,7 @@ void MainWindow::on_actionRemote_server_triggered()
 }
 
 void MainWindow::loadWebPage(const QString &address) {
-    auto astroPhotoPlusWidget = new AstroPhotoPlusWidget(address, systray);
+    auto astroPhotoPlusWidget = new AstroPhotoPlusWidget(address, notifications);
     connect(astroPhotoPlusWidget, &AstroPhotoPlusWidget::serverLoaded, this, [this, astroPhotoPlusWidget](const QString &name, const QUrl &address) {
         ui->tabWidget->addTab(astroPhotoPlusWidget, name.isEmpty() ? address.toString() : name);
         addServerToHistory(name, address);

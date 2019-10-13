@@ -12,11 +12,10 @@ class MainWindow;
 
 class QWebEngineView;
 class QSettings;
-class QSystemTrayIcon;
 class QIcon;
 class QPushButton;
 class ServerDiscovery;
-class API;
+class Notifications;
 
 class MainWindow : public QMainWindow
 {
@@ -38,7 +37,7 @@ private:
     std::unique_ptr<QSettings> settings;
     std::unique_ptr<QIcon> appicon;
     std::unique_ptr<ServerDiscovery> serverDiscovery;
-    QSystemTrayIcon *systray;
+    Notifications *notifications;
 
     QList<std::shared_ptr<QPushButton>> recentServersButtons;
     QList<std::shared_ptr<QPushButton>> localServersButtons;

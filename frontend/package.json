@@ -13,6 +13,7 @@
         "native-base": "^2.12.1",
         "normalizr": "^3.4.0",
         "printj": "^1.2.1",
+        "query-string": "^6.8.3",
         "re-reselect": "^3.3.0",
         "react": "^16.8.6",
         "react-dom": "^16.8.6",

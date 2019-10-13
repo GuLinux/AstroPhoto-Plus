@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/astrophotoplus">
-        <file alias="appicon">icon-512.png</file>
-    </qresource>
-</RCC>

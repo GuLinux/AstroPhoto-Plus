@@ -18,5 +18,6 @@ Please see the [website](https://astrophotoplus.gulinux.net).
 
 ## Credits
 
-Icon: [Space Exploration Set](https://www.iconfinder.com/icons/3088382/astronomy_galaxy_space_star_universe_icon#size=256)
-Raspberry Pi image generator: [pi-gen](https://github.com/RPi-Distro/pi-gen)
+ - Icon: [Space Exploration Set](https://www.iconfinder.com/icons/3088382/astronomy_galaxy_space_star_universe_icon#size=256)
+ - Extra icons: [Material Design](https://material.io/resources/icons/?style=baseline)
+ - Raspberry Pi image generator: [pi-gen](https://github.com/RPi-Distro/pi-gen)

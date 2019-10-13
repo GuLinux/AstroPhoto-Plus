@@ -6,7 +6,7 @@
 class CustomWebPage : public QWebEnginePage
 {
 public:
-    CustomWebPage(const QString &sessionId, QObject *parent = nullptr);
+    CustomWebPage(QObject *parent = nullptr);
 protected:
     void javaScriptConsoleMessage(JavaScriptConsoleMessageLevel level, const QString &message, int lineNumber, const QString &sourceID) override;
 };

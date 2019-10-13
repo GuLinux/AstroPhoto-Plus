@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/astrophotoplus">
+        <file alias="appicon">icon-512.png</file>
+        <file alias="icon-64">icon-64.png</file>
+        <file alias="notification-icon">icon-64-white.png</file>
+        <file>error.png</file>
+        <file>success.png</file>
+        <file>warning.png</file>
+        <file>info.png</file>
+    </qresource>
+</RCC>
