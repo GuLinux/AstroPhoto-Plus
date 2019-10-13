@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 
 #include <QDebug>
+#include <QTimer>
 
 
 API::API() : QObject(), manager(std::make_unique<QNetworkAccessManager>())
@@ -46,7 +47,11 @@ void API::startSSE(const QUrl &baseUrl)
 {
     auto url = baseUrl;
     url.setPath("/api/events");
-    auto reply = fetchJSON("GET", QNetworkRequest{url}, OnNetworkReplySuccess(), OnNetworkReplyError());
+    OnNetworkReplyError onError = [this, baseUrl](QNetworkReply *reply) {
+        qWarning() << "Error on SSE on server" << baseUrl << ":" << reply->errorString() << ", retrying";
+        QTimer::singleShot(1000, this, [this, baseUrl] { startSSE(baseUrl); });
+    };
+    auto reply = fetchJSON("GET", QNetworkRequest{url}, OnNetworkReplySuccess(), onError);
     connect(reply, &QNetworkReply::readyRead, this, [this, reply, baseUrl]{
         auto event = QString(reply->readAll()).trimmed().split('\n');
         QMap<QString, QString> eventData{
@@ -64,11 +69,11 @@ QNetworkReply *API::fetchJSON(const QString &method, const QNetworkRequest &requ
 {
     auto reply = manager->sendCustomRequest(request, method.toUtf8(), data);
     connect(reply, &QNetworkReply::finished, this, [onSuccess, onError, reply]{
-        if(reply->header(QNetworkRequest::ContentTypeHeader).toString().contains("application/json")) {
+        if(onSuccess && reply->header(QNetworkRequest::ContentTypeHeader).toString().contains("application/json")) {
             auto json = QJsonDocument::fromJson(reply->readAll());
             onSuccess(json.toVariant(), reply);
         } else {
-            if(reply->error() == QNetworkReply::NoError) {
+            if(onError && reply->error() == QNetworkReply::NoError) {
                 onError(reply);
             }
         }
@@ -76,7 +81,9 @@ QNetworkReply *API::fetchJSON(const QString &method, const QNetworkRequest &requ
     });
     connect(reply, qOverload<QNetworkReply::NetworkError>(&QNetworkReply::error), this, [reply, onError](QNetworkReply::NetworkError){
         qDebug() << "An error occured requesting "<< reply->request().url() << reply->errorString();
-        onError(reply);
+        if(onError) {
+            onError(reply);
+        }
     });
     return reply;
 }
