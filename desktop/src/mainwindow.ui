@@ -54,7 +54,7 @@
              </widget>
             </item>
             <item row="3" column="0" colspan="3">
-             <widget class="QGroupBox" name="autodiscoveredServersGroup_2">
+             <widget class="QGroupBox" name="manualConnectionGroup">
               <property name="title">
                <string>Manual Connection</string>
               </property>

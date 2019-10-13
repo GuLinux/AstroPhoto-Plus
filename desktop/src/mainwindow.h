@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QList>
+#include <QMap>
 #include <memory>
 
 namespace Ui {
@@ -15,6 +16,7 @@ class QSystemTrayIcon;
 class QIcon;
 class QPushButton;
 class ServerDiscovery;
+class API;
 
 class MainWindow : public QMainWindow
 {
@@ -27,21 +29,24 @@ public:
 private slots:
     void on_actionRemote_server_triggered();
     void loadWebPage(const QString &address);
-    void on_pushButton_clicked();
-    void onPageLoaded(bool ok);
+    void addServerToHistory(const QString &serverName, const QUrl &serverUrl);
     void recentServersGroup();
     void discoveredServersGroup();
+    void eventReceived(const QMap<QString, QString> &event);
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QSettings> settings;
     std::unique_ptr<QIcon> appicon;
     std::unique_ptr<ServerDiscovery> serverDiscovery;
+    std::unique_ptr<API> api;
     QWebEngineView *webengine;
     QSystemTrayIcon *systray;
+    const QString sessionId;
 
-    void configureNotifications();
-    QList<QPushButton*> recentServersButtons;
-    QList<QPushButton*> localServersButtons;
+    QList<std::shared_ptr<QPushButton>> recentServersButtons;
+    QList<std::shared_ptr<QPushButton>> localServersButtons;
+
+    std::shared_ptr<QPushButton> serverButton(const QString &serverName, const QUrl &serverAddress, QLayout *layout);
 };
 
 #endif // MAINWINDOW_H

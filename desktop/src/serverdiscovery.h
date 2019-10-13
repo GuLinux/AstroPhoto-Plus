@@ -10,12 +10,9 @@ class QUdpSocket;
 class atomic_bool;
 
 struct ServerInfo {
-    QString address;
     QString name;
-    int webPort;
-    QString protocol;
+    QUrl url;
     QString displayName() const;
-    QUrl url() const;
     static ServerInfo parse(const QByteArray &data, const QString &host);
     bool operator==(const ServerInfo &other) const;
 };

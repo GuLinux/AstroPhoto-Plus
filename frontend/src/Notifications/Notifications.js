@@ -50,17 +50,27 @@ export class Notifications extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.requestPermission();
         this.state = {};
+        if(! this.setupDesktopNotifications()) {
+            this.requestPermission();
+        }
+    }
+
+    setupDesktopNotifications = () => {
+        if(!navigator.userAgent.includes('DesktopNotificationsCapable')) {
+            return false;
+        }
+        const uuid = navigator.userAgent.split('DesktopNotificationsCapable ')[1];
+        this.props.setDesktopNotificationsUuid(uuid);
+        return true;
     }
 
     requestPermission = async () => {
         const permission = await Notification.requestPermission();
         this.setState({ permission });
-        console.log('******* HTML5Notification permission: ', permission);
     }
 
-    onClosed = notification => () => this.props.onClosed(notification);
+    onClosed = notification => () => this.props.removeNotification(notification);
 
     renderNotification = (notification, index) => {
         setAutoclose(notification, this.onClosed(notification));
@@ -72,7 +82,7 @@ export class Notifications extends React.PureComponent {
     }
 
     render = () => {
-        if(!this.state.permission) {
+        if(this.props.desktopNotificationsUuid) {
             return null;
         }
         return (

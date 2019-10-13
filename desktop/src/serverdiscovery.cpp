@@ -49,27 +49,22 @@ void ServerDiscovery::parseNewServer(const QByteArray &data, const QString &host
 QString ServerInfo::displayName() const
 {
     if(!name.isEmpty()) {
-        return name;
+        return QObject::tr("Server %1 at %2").arg(name).arg(url.toString());
     }
-    return address;
-}
-
-QUrl ServerInfo::url() const
-{
-    QUrl url;
-    url.setHost(address);
-    url.setPort(webPort);
-    url.setScheme(protocol);
-    return url;
+    return QObject::tr("Server at %1").arg(url.toString());
 }
 
 ServerInfo ServerInfo::parse(const QByteArray &data, const QString &host)
 {
     auto tokens = data.split('\x1F');
-    return { host, tokens[2], tokens[1].toInt(), tokens[3]};
+    QUrl url;
+    url.setHost(host);
+    url.setPort(tokens[1].toInt());
+    url.setScheme(tokens[3]);
+    return { tokens[2], url};
 }
 
 bool ServerInfo::operator==(const ServerInfo &other) const
 {
-   return address == other.address && webPort == other.webPort;
+   return url == other.url;
 }

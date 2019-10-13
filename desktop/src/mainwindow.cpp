@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QJsonDocument>
 #include <QInputDialog>
 #include <QtWebEngineWidgets/QWebEngineView>
 #include <QtWebEngineWidgets/QWebEngineProfile>
@@ -9,15 +10,21 @@
 #include <QSystemTrayIcon>
 #include <QIcon>
 #include <QUrl>
+#include <QUuid>
+#include <QMessageBox>
+#include "customwebpage.h"
 #include "serverdiscovery.h"
+#include "api.h"
 
 #define MAX_RECENT_SERVERS 10
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow()),
-    settings(new QSettings("GuLinux", "AstroPhoto-Plus")),
-    appicon(new QIcon(":/astrophotoplus/appicon"))
+    ui(std::make_unique<Ui::MainWindow>()),
+    settings(std::make_unique<QSettings>("GuLinux", "AstroPhoto-Plus")),
+    appicon(std::make_unique<QIcon>(":/astrophotoplus/appicon")),
+    api(std::make_unique<API>()),
+    sessionId(QUuid::createUuid().toString(QUuid::Id128))
 {
     ui->setupUi(this);
     systray = new QSystemTrayIcon(*appicon, this);
@@ -31,15 +38,30 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->manualServerButton, &QPushButton::clicked, this, &MainWindow::on_actionRemote_server_triggered);
     webengine = new QWebEngineView(this);
+    webengine->setPage(new CustomWebPage(sessionId, webengine));
+
     ui->stackedWidget->addWidget(webengine);
-    connect(webengine, &QWebEngineView::loadFinished, this, &MainWindow::onPageLoaded);
-    this->configureNotifications();
     ui->autodiscoveredServersGroup->hide();
     recentServersGroup();
     systray->show();
     serverDiscovery = std::make_unique<ServerDiscovery>();
     connect(serverDiscovery.get(), &ServerDiscovery::serversUpdated, this, &MainWindow::discoveredServersGroup);
     serverDiscovery->start();
+    connect(api.get(), &API::serverOk, this, [this](const QString &serverName, const QUrl &serverUrl) {
+        this->webengine->load(serverUrl);
+        this->ui->stackedWidget->setCurrentIndex(1);
+        addServerToHistory(serverName, serverUrl);
+    });
+    connect(api.get(), &API::serverSentEvent, this, &MainWindow::eventReceived);
+
+    connect(api.get(), &API::serverError, this, [this](const QString &errorMessage, const QUrl &serverUrl) {
+        QMessageBox::warning(this, tr("Connection Error"), tr("An error occured while connecting to server %1.\n%2").arg(serverUrl.toString()).arg(errorMessage));
+    });
+
+    connect(api.get(), &API::serverInvalid, this, [this](const QUrl &serverUrl) {
+        QMessageBox::warning(this, tr("Invalid Server"), tr("The server at address %1 doesn't seem to be a valid AstroPhoto Plus server.").arg(serverUrl.toString()));
+    });
+
 }
 
 MainWindow::~MainWindow()
@@ -61,46 +83,40 @@ void MainWindow::on_actionRemote_server_triggered()
 }
 
 void MainWindow::loadWebPage(const QString &address) {
-    this->webengine->load(address);
-    this->ui->stackedWidget->setCurrentIndex(1);
+    this->api->scanHost({address});
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-   this->loadWebPage("https://google.com");
-}
-
-void MainWindow::onPageLoaded(bool ok) {
-    if(ok) {
-        auto recentServers = settings->value("recent_servers").toStringList();
-        auto sanitizedURL = QUrl(webengine->page()->url()).toString();
-        recentServers.removeAll(sanitizedURL);
-        recentServers.push_back(sanitizedURL);
-        while(recentServers.size() > MAX_RECENT_SERVERS) {
-            recentServers.removeFirst();
-        }
-        settings->setValue("recent_servers", recentServers);
-        recentServersGroup();
-        qDebug() << "Page loaded:"<< webengine->page()->url();
+void MainWindow::addServerToHistory(const QString &serverName, const QUrl &serverUrl) {
+    settings->beginGroup("RecentServers");
+    auto recentServers = settings->value("recent_servers").toStringList();
+    recentServers.removeAll(serverUrl.toString());
+    recentServers.push_back(serverUrl.toString());
+    while(recentServers.size() > MAX_RECENT_SERVERS) {
+        auto removedServerName = recentServers.takeFirst();
+        settings->remove(removedServerName + "_name");
     }
+    settings->setValue("recent_servers", recentServers);
+    settings->setValue(serverUrl.toString() + "_name", serverName);
+    settings->endGroup();
+    recentServersGroup();
 }
 
 void MainWindow::recentServersGroup()
 {
+    settings->beginGroup("RecentServers");
     recentServersButtons.clear();
     auto recentServers = settings->value("recent_servers").toStringList();
     if(recentServers.empty()) {
         ui->recentServersGroup->hide();
+        settings->endGroup();
         return;
     }
     ui->recentServersGroup->show();
     for(auto server = recentServers.crbegin(); server != recentServers.crend(); server++) {
-        auto button = new QPushButton(*server, ui->recentServersGroup);
-        ui->recentServersGroup->layout()->addWidget(button);
-        connect(button, &QPushButton::clicked, this, [this, server](){
-            this->loadWebPage(*server);
-        });
+        ServerInfo serverInfo{settings->value((*server) + "_name").toString(), QUrl(*server)};
+        recentServersButtons.append(serverButton(serverInfo.displayName(), serverInfo.url, ui->recentServersGroup->layout()));
     }
+    settings->endGroup();
 }
 
 void MainWindow::discoveredServersGroup()
@@ -112,24 +128,34 @@ void MainWindow::discoveredServersGroup()
     }
     ui->autodiscoveredServersGroup->show();
     for(auto server: serverDiscovery->servers()) {
-        auto button = new QPushButton(server.displayName(), ui->autodiscoveredServersGroup);
-        ui->autodiscoveredServersGroup->layout()->addWidget(button);
-        connect(button, &QPushButton::clicked, this, [this, server]() {
-            this->loadWebPage(server.url().toString());
-        });
+        localServersButtons.append(serverButton(server.displayName(), server.url, ui->autodiscoveredServersGroup->layout()));
     }
 }
 
-void MainWindow::configureNotifications() {
-     connect(webengine->page(), &QWebEnginePage::featurePermissionRequested, [&] (const QUrl &origin, QWebEnginePage::Feature feature) {
-         qDebug() << "featurePermiussionRequested: " << origin << feature;
-        if (feature != QWebEnginePage::Notifications)
-            return;
-        webengine->page()->setFeaturePermission(origin, feature, QWebEnginePage::PermissionGrantedByUser);
-     });
-     auto showNotifications = [this](const std::unique_ptr<QWebEngineNotification> &notification) {
-         qDebug() << "title: " << notification->title() << ", message: " << notification->message() << ", tag: " << notification->tag() << ", origin: " << notification->origin();
-         systray->showMessage(QString("AstroPhoto Plus\n%1").arg(notification->title()), notification->message(), *appicon);
-     };
-     webengine->page()->profile()->setNotificationPresenter(showNotifications);
+void MainWindow::eventReceived(const QMap<QString, QString> &event)
+{
+    if(event["event"] == "desktop") {
+        auto jsonData = QJsonDocument::fromJson(event["data"].toUtf8()).toVariant().toMap();
+        if(jsonData["event"] == "notification") {
+            auto payload = jsonData["payload"].toMap();
+            if(payload["desktopNotificationsUuid"] == this->sessionId) {
+                systray->showMessage(
+                    tr("AstroPhoto Plus: %1").arg(payload["title"].toString()),
+                    payload["text"].toString(),
+                    *this->appicon,
+                    payload["timeout"].toInt()
+                );
+            }
+        }
+    }
+}
+
+std::shared_ptr<QPushButton> MainWindow::serverButton(const QString &serverName, const QUrl &serverAddress, QLayout *layout)
+{
+    auto button = std::make_shared<QPushButton>(serverName);
+    layout->addWidget(button.get());
+    connect(button.get(), &QPushButton::clicked, this, [this, serverAddress]() {
+        this->loadWebPage(serverAddress.toString());
+    });
+    return button;
 }
