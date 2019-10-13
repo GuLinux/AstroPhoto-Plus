@@ -111,22 +111,6 @@
               </property>
              </spacer>
             </item>
-            <item row="1" column="1">
-             <widget class="QLabel" name="label_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;AstroPhoto Plus&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="textFormat">
-               <enum>Qt::RichText</enum>
-              </property>
-             </widget>
-            </item>
             <item row="2" column="0" colspan="3">
              <widget class="QGroupBox" name="recentServersGroup">
               <property name="title">
@@ -139,22 +123,6 @@
               <property name="title">
                <string>Autodiscovered Servers</string>
               </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QGroupBox" name="manualConnectionGroup">
-              <property name="title">
-               <string>Manual Connection</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout">
-               <item>
-                <widget class="QPushButton" name="manualServerButton">
-                 <property name="text">
-                  <string>Connect to server URL</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
              </widget>
             </item>
             <item row="5" column="0" colspan="3">
@@ -206,6 +174,38 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item row="0" column="1" rowspan="2">
+             <widget class="QLabel" name="label_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;AstroPhoto Plus&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::RichText</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0" colspan="3">
+             <widget class="QGroupBox" name="manualConnectionGroup">
+              <property name="title">
+               <string>Manual Connection</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout">
+               <item>
+                <widget class="QPushButton" name="manualServerButton">
+                 <property name="text">
+                  <string>Connect to server URL</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
             </item>
            </layout>
           </widget>

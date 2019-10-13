@@ -28,7 +28,9 @@ AstroPhotoPlusWidget::AstroPhotoPlusWidget(const QUrl &serverAddress, Notificati
     connect(api.get(), &API::serverOk, this, [this](const QString &serverName, const QUrl &serverUrl) {
         this->serverName = serverName;
         auto initialUrl = serverUrl;
-        initialUrl.setQuery(QUrlQuery{{"desktopClientSessionId", sessionId}});
+        QUrlQuery query;
+        query.addQueryItem("desktopClientSessionId", sessionId);
+        initialUrl.setQuery(query);
         this->webengine->load(initialUrl);
         emit serverLoaded(serverName, serverUrl);
     });

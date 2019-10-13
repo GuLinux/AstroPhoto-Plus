@@ -24,7 +24,13 @@ void ServerDiscovery::start()
        while(this->__run_thread->load()) {
            if(socket.hasPendingDatagrams()) {
                auto datagram = socket.receiveDatagram();
-               emit serverFound(datagram.data(), datagram.senderAddress().toString());
+               auto address = datagram.senderAddress();
+               bool isIPv4{false};
+               auto ipv4 = datagram.senderAddress().toIPv4Address(&isIPv4);
+               if(isIPv4) {
+                   address = QHostAddress(ipv4);
+               }
+               emit serverFound(datagram.data(), address.toString());
            }
        }
     });
