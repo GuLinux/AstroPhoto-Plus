@@ -1,20 +1,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QJsonDocument>
+
 #include <QInputDialog>
-#include <QtWebEngineWidgets/QWebEngineView>
-#include <QtWebEngineWidgets/QWebEngineProfile>
-#include <QtWebEngineCore/QWebEngineNotification>
 #include <QDebug>
 #include <QSettings>
 #include <QSystemTrayIcon>
 #include <QIcon>
 #include <QUrl>
-#include <QUuid>
-#include <QMessageBox>
+#include <QTabBar>
+
 #include "customwebpage.h"
+#include "astrophotopluswidget.h"
 #include "serverdiscovery.h"
-#include "api.h"
 
 #define MAX_RECENT_SERVERS 10
 
@@ -22,11 +19,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(std::make_unique<Ui::MainWindow>()),
     settings(std::make_unique<QSettings>("GuLinux", "AstroPhoto-Plus")),
-    appicon(std::make_unique<QIcon>(":/astrophotoplus/appicon")),
-    api(std::make_unique<API>()),
-    sessionId(QUuid::createUuid().toString(QUuid::Id128))
+    appicon(std::make_unique<QIcon>(":/astrophotoplus/appicon"))
 {
     ui->setupUi(this);
+    layout()->setSpacing(0);
+    layout()->setMargin(0);
+    ui->homeTab->layout()->setSpacing(0);
+    ui->homeTab->layout()->setMargin(0);
+    //ui->scrollArea->layout()->setMargin(0);
     systray = new QSystemTrayIcon(*appicon, this);
     setWindowIcon(*appicon);
 
@@ -37,31 +37,17 @@ MainWindow::MainWindow(QWidget *parent) :
     restoreState(settings->value("window_state", QByteArray()).toByteArray());
 
     connect(ui->manualServerButton, &QPushButton::clicked, this, &MainWindow::on_actionRemote_server_triggered);
-    webengine = new QWebEngineView(this);
-    webengine->setPage(new CustomWebPage(sessionId, webengine));
 
-    ui->stackedWidget->addWidget(webengine);
     ui->autodiscoveredServersGroup->hide();
+    ui->tabWidget->tabBar()->setTabButton(0, QTabBar::RightSide, nullptr);
+    connect(ui->tabWidget, &QTabWidget::tabCloseRequested, this, [this](int index){
+        delete ui->tabWidget->widget(index);
+    });
     recentServersGroup();
     systray->show();
     serverDiscovery = std::make_unique<ServerDiscovery>();
     connect(serverDiscovery.get(), &ServerDiscovery::serversUpdated, this, &MainWindow::discoveredServersGroup);
     serverDiscovery->start();
-    connect(api.get(), &API::serverOk, this, [this](const QString &serverName, const QUrl &serverUrl) {
-        this->webengine->load(serverUrl);
-        this->ui->stackedWidget->setCurrentIndex(1);
-        addServerToHistory(serverName, serverUrl);
-    });
-    connect(api.get(), &API::serverSentEvent, this, &MainWindow::eventReceived);
-
-    connect(api.get(), &API::serverError, this, [this](const QString &errorMessage, const QUrl &serverUrl) {
-        QMessageBox::warning(this, tr("Connection Error"), tr("An error occured while connecting to server %1.\n%2").arg(serverUrl.toString()).arg(errorMessage));
-    });
-
-    connect(api.get(), &API::serverInvalid, this, [this](const QUrl &serverUrl) {
-        QMessageBox::warning(this, tr("Invalid Server"), tr("The server at address %1 doesn't seem to be a valid AstroPhoto Plus server.").arg(serverUrl.toString()));
-    });
-
 }
 
 MainWindow::~MainWindow()
@@ -83,7 +69,13 @@ void MainWindow::on_actionRemote_server_triggered()
 }
 
 void MainWindow::loadWebPage(const QString &address) {
-    this->api->scanHost({address});
+    auto astroPhotoPlusWidget = new AstroPhotoPlusWidget(address, systray);
+    connect(astroPhotoPlusWidget, &AstroPhotoPlusWidget::serverLoaded, this, [this, astroPhotoPlusWidget](const QString &name, const QUrl &address) {
+        ui->tabWidget->addTab(astroPhotoPlusWidget, name.isEmpty() ? address.toString() : name);
+        addServerToHistory(name, address);
+        ui->tabWidget->setCurrentWidget(astroPhotoPlusWidget);
+    });
+    astroPhotoPlusWidget->openServer();
 }
 
 void MainWindow::addServerToHistory(const QString &serverName, const QUrl &serverUrl) {
@@ -132,30 +124,6 @@ void MainWindow::discoveredServersGroup()
     }
 }
 
-void MainWindow::eventReceived(const QMap<QString, QString> &event)
-{
-    static QHash<QString, QSystemTrayIcon::MessageIcon> iconMap {
-        {"error", QSystemTrayIcon::Critical},
-        {"warning", QSystemTrayIcon::Warning},
-        {"info", QSystemTrayIcon::Information},
-        {"success", QSystemTrayIcon::Information},
-    };
-    if(event["event"] == "desktop") {
-        auto jsonData = QJsonDocument::fromJson(event["data"].toUtf8()).toVariant().toMap();
-        if(jsonData["event"] == "notification") {
-            auto payload = jsonData["payload"].toMap();
-            if(payload["desktopNotificationsUuid"] == this->sessionId) {
-                systray->showMessage(
-                    tr("AstroPhoto Plus"),
-                    QString("<b>%1</b><br>%2").arg(payload["title"].toString()).arg(payload["text"].toString()),
-                    iconMap.value(payload["type"].toString(), QSystemTrayIcon::NoIcon),
-                    //*this->appicon,
-                    payload["timeout"].toInt()
-                );
-            }
-        }
-    }
-}
 
 std::shared_ptr<QPushButton> MainWindow::serverButton(const QString &serverName, const QUrl &serverAddress, QLayout *layout)
 {

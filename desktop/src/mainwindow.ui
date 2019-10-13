@@ -6,76 +6,64 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>984</width>
-    <height>745</height>
+    <width>898</width>
+    <height>616</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>AstroPhoto Plus</string>
   </property>
+  <property name="documentMode">
+   <bool>false</bool>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>false</bool>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_2">
+   <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QScrollArea" name="scrollArea">
-      <property name="widgetResizable">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="usesScrollButtons">
        <bool>true</bool>
       </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>964</width>
-         <height>683</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_3">
+      <property name="documentMode">
+       <bool>false</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="homeTab">
+       <attribute name="title">
+        <string>Home</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
-         <widget class="QStackedWidget" name="stackedWidget">
-          <property name="currentIndex">
-           <number>0</number>
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="widgetResizable">
+           <bool>true</bool>
           </property>
-          <widget class="QWidget" name="index">
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;AstroPhoto Plus&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="textFormat">
-               <enum>Qt::RichText</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0" colspan="3">
-             <widget class="QGroupBox" name="manualConnectionGroup">
-              <property name="title">
-               <string>Manual Connection</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout">
-               <item>
-                <widget class="QPushButton" name="manualServerButton">
-                 <property name="text">
-                  <string>Connect to server URL</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item row="1" column="0" colspan="3">
-             <widget class="QGroupBox" name="recentServersGroup">
-              <property name="title">
-               <string>Recent Servers</string>
-              </property>
-             </widget>
-            </item>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>856</width>
+             <height>574</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="0">
              <widget class="QLabel" name="label">
               <property name="sizePolicy">
@@ -107,25 +95,21 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="0" colspan="3">
-             <widget class="QGroupBox" name="autodiscoveredServersGroup">
-              <property name="title">
-               <string>Autodiscovered Servers</string>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;AstroPhoto Plus&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::RichText</enum>
               </property>
              </widget>
-            </item>
-            <item row="4" column="0">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>359</height>
-               </size>
-              </property>
-             </spacer>
             </item>
             <item row="0" column="2">
              <spacer name="horizontalSpacer">
@@ -143,6 +127,49 @@
               </property>
              </spacer>
             </item>
+            <item row="1" column="0" colspan="3">
+             <widget class="QGroupBox" name="recentServersGroup">
+              <property name="title">
+               <string>Recent Servers</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" colspan="3">
+             <widget class="QGroupBox" name="autodiscoveredServersGroup">
+              <property name="title">
+               <string>Autodiscovered Servers</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>102</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="3" column="0" colspan="3">
+             <widget class="QGroupBox" name="manualConnectionGroup">
+              <property name="title">
+               <string>Manual Connection</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout">
+               <item>
+                <widget class="QPushButton" name="manualServerButton">
+                 <property name="text">
+                  <string>Connect to server URL</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
            </layout>
           </widget>
          </widget>
@@ -153,24 +180,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>984</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuConnect">
-    <property name="title">
-     <string>Connect</string>
-    </property>
-    <addaction name="actionRemote_server"/>
-   </widget>
-   <addaction name="menuConnect"/>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionRemote_server">
    <property name="text">
     <string>Remote server...</string>

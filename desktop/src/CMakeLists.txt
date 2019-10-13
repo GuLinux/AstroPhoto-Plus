@@ -1,4 +1,4 @@
-set(ASTROPHOTOPLUS_SOURCES main.cpp mainwindow.cpp mainwindow.ui serverdiscovery.cpp customwebpage.cpp api.cpp resources.qrc)
+set(ASTROPHOTOPLUS_SOURCES main.cpp mainwindow.cpp mainwindow.ui serverdiscovery.cpp customwebpage.cpp api.cpp astrophotopluswidget.cpp resources.qrc)
 add_executable(${PROJECT_NAME} ${ASTROPHOTOPLUS_SOURCES})
 
 # Add the Qt5 Widgets for linking

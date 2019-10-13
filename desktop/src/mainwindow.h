@@ -32,16 +32,13 @@ private slots:
     void addServerToHistory(const QString &serverName, const QUrl &serverUrl);
     void recentServersGroup();
     void discoveredServersGroup();
-    void eventReceived(const QMap<QString, QString> &event);
+
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QSettings> settings;
     std::unique_ptr<QIcon> appicon;
     std::unique_ptr<ServerDiscovery> serverDiscovery;
-    std::unique_ptr<API> api;
-    QWebEngineView *webengine;
     QSystemTrayIcon *systray;
-    const QString sessionId;
 
     QList<std::shared_ptr<QPushButton>> recentServersButtons;
     QList<std::shared_ptr<QPushButton>> localServersButtons;
