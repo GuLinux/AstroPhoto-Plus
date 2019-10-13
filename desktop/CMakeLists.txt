@@ -16,6 +16,6 @@ if(WIN32)
   set(CMAKE_WIN32_EXECUTABLE ON)
 endif()
 
-find_package(Qt5 5.13 REQUIRED COMPONENTS Core Widgets WebEngineWidgets)
+find_package(Qt5 5.13 REQUIRED COMPONENTS Core Widgets WebEngineWidgets Multimedia)
 
 add_subdirectory(src)

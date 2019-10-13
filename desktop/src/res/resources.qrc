@@ -7,5 +7,9 @@
         <file>success.png</file>
         <file>warning.png</file>
         <file>info.png</file>
+        <file alias="success.wav">arpeggio.wav</file>
+        <file alias="info.wav">accomplished.wav</file>
+        <file alias="error.wav">system-fault.wav</file>
+        <file>alarm-frenzy.wav</file>
     </qresource>
 </RCC>

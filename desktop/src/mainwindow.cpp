@@ -3,7 +3,7 @@
 
 #include <QInputDialog>
 #include <QDebug>
-#include <QSettings>
+#include "settings.h"
 #include <QIcon>
 #include <QUrl>
 #include <QTabBar>
@@ -13,15 +13,11 @@
 #include "serverdiscovery.h"
 #include "notifications.h"
 
-// TODO notification test, remove
-#include <QTimer>
-
-#define MAX_RECENT_SERVERS 10
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(std::make_unique<Ui::MainWindow>()),
-    settings(std::make_unique<QSettings>("GuLinux", "AstroPhoto-Plus")),
+    settings(std::make_shared<Settings>()),
     appicon(std::make_unique<QIcon>(":/astrophotoplus/icon-64"))
 {
     ui->setupUi(this);
@@ -35,14 +31,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->recentServersGroup->setLayout(new QVBoxLayout());
     ui->autodiscoveredServersGroup->setLayout(new QVBoxLayout());
 
-    restoreGeometry(settings->value("window_geometry", QByteArray()).toByteArray());
-    restoreState(settings->value("window_state", QByteArray()).toByteArray());
+    restoreGeometry(settings->windowGeometry());
+    restoreState(settings->windowState());
 
     connect(ui->manualServerButton, &QPushButton::clicked, this, &MainWindow::on_actionRemote_server_triggered);
 
-
-    // TODO notification test, remove
-    this->notifications = new Notifications(this);
+    this->notifications = new Notifications(settings, this);
 
     ui->autodiscoveredServersGroup->hide();
     ui->tabWidget->tabBar()->setTabButton(0, QTabBar::RightSide, nullptr);
@@ -50,6 +44,16 @@ MainWindow::MainWindow(QWidget *parent) :
         delete ui->tabWidget->widget(index);
     });
     recentServersGroup();
+    ui->soundInfo->setChecked(settings->notificationSoundEnabled(Notification::Info));
+    ui->soundErrors->setChecked(settings->notificationSoundEnabled(Notification::Error));
+    ui->soundSuccess->setChecked(settings->notificationSoundEnabled(Notification::Success));
+    ui->soundWarnings->setChecked(settings->notificationSoundEnabled(Notification::Warning));
+
+    connect(ui->soundInfo, &QCheckBox::toggled, this, [this](bool checked){ settings->setNotificationSoundEnabled(Notification::Info, checked); });
+    connect(ui->soundErrors, &QCheckBox::toggled, this, [this](bool checked){ settings->setNotificationSoundEnabled(Notification::Error, checked); });
+    connect(ui->soundWarnings, &QCheckBox::toggled, this, [this](bool checked){ settings->setNotificationSoundEnabled(Notification::Warning, checked); });
+    connect(ui->soundSuccess, &QCheckBox::toggled, this, [this](bool checked){ settings->setNotificationSoundEnabled(Notification::Success, checked); });
+
     serverDiscovery = std::make_unique<ServerDiscovery>();
     connect(serverDiscovery.get(), &ServerDiscovery::serversUpdated, this, &MainWindow::discoveredServersGroup);
     serverDiscovery->start();
@@ -57,8 +61,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    settings->setValue("window_geometry", this->saveGeometry());
-    settings->setValue("window_state", this->saveState());
+    settings->setWindowGeometry(saveGeometry());
+    settings->setWindowState(saveState());
     serverDiscovery->stop();
     qDebug() << "Saved state and geometry";
 }
@@ -84,36 +88,22 @@ void MainWindow::loadWebPage(const QString &address) {
 }
 
 void MainWindow::addServerToHistory(const QString &serverName, const QUrl &serverUrl) {
-    settings->beginGroup("RecentServers");
-    auto recentServers = settings->value("recent_servers").toStringList();
-    recentServers.removeAll(serverUrl.toString());
-    recentServers.push_back(serverUrl.toString());
-    while(recentServers.size() > MAX_RECENT_SERVERS) {
-        auto removedServerName = recentServers.takeFirst();
-        settings->remove(removedServerName + "_name");
-    }
-    settings->setValue("recent_servers", recentServers);
-    settings->setValue(serverUrl.toString() + "_name", serverName);
-    settings->endGroup();
+    settings->addRecentServer({serverName, serverUrl});
     recentServersGroup();
 }
 
 void MainWindow::recentServersGroup()
 {
-    settings->beginGroup("RecentServers");
+    auto recentServers = settings->recentServers();
     recentServersButtons.clear();
-    auto recentServers = settings->value("recent_servers").toStringList();
     if(recentServers.empty()) {
         ui->recentServersGroup->hide();
-        settings->endGroup();
         return;
     }
     ui->recentServersGroup->show();
-    for(auto server = recentServers.crbegin(); server != recentServers.crend(); server++) {
-        ServerInfo serverInfo{settings->value((*server) + "_name").toString(), QUrl(*server)};
+    for(auto serverInfo: recentServers) {
         recentServersButtons.append(serverButton(serverInfo.displayName(), serverInfo.url, ui->recentServersGroup->layout()));
     }
-    settings->endGroup();
 }
 
 void MainWindow::discoveredServersGroup()

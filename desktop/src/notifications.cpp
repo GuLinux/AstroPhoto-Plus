@@ -6,10 +6,12 @@
 #include <QApplication>
 #include <QScreen>
 #include <QStyle>
+#include <QSound>
+#include "settings.h"
 
 #include <QDebug>
 
-Notifications::Notifications(QWidget *parent) : QWidget(parent)
+Notifications::Notifications(const std::shared_ptr<Settings> &settings, QWidget *parent) : QWidget(parent), settings(settings)
 {
     setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
     setLayout(new QVBoxLayout(this));
@@ -20,6 +22,15 @@ Notifications::Notifications(QWidget *parent) : QWidget(parent)
 
 void Notifications::notify(const QString &serverName, const QString &title, const QString &text, Notification::Type type, int msTimeout)
 {
+    static QHash<Notification::Type, QString> sounds {
+        {Notification::Error, ":/astrophotoplus/error.wav"},
+        {Notification::Warning, ":/astrophotoplus/warning.wav"},
+        {Notification::Info, ":/astrophotoplus/info.wav"},
+        {Notification::Success, ":/astrophotoplus/success.wav"},
+    };
+    if(settings->notificationSoundEnabled(type)) {
+        QSound::play(sounds[type]);
+    }
     auto notification = new Notification(serverName, title, text, type, msTimeout, this);
     notifications.append(notification);
     connect(notification, &Notification::destroyed, this, [this, notification](QObject *) {

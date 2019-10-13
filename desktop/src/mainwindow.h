@@ -11,11 +11,11 @@ class MainWindow;
 }
 
 class QWebEngineView;
-class QSettings;
 class QIcon;
 class QPushButton;
 class ServerDiscovery;
 class Notifications;
+class Settings;
 
 class MainWindow : public QMainWindow
 {
@@ -34,7 +34,7 @@ private slots:
 
 private:
     std::unique_ptr<Ui::MainWindow> ui;
-    std::unique_ptr<QSettings> settings;
+    std::shared_ptr<Settings> settings;
     std::unique_ptr<QIcon> appicon;
     std::unique_ptr<ServerDiscovery> serverDiscovery;
     Notifications *notifications;

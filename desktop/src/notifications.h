@@ -6,6 +6,7 @@
 #include <memory>
 #include <QList>
 
+class Settings;
 namespace Ui {
     class Notification;
 }
@@ -26,7 +27,7 @@ class Notifications : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Notifications(QWidget *parent = nullptr);
+    explicit Notifications(const std::shared_ptr<Settings> &settings, QWidget *parent = nullptr);
 
 signals:
 
@@ -35,6 +36,7 @@ public slots:
     void updateVisibility();
 private:
     QList<QWidget *> notifications;
+    std::shared_ptr<Settings> settings;
 };
 
 #endif // NOTIFICATIONS_H
