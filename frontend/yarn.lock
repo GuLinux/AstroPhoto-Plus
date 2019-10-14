@@ -11037,6 +11037,15 @@ query-string@^6.4.2:
     split-on-first "^1.0.0"
     strict-uri-encode "^2.0.0"
 
+query-string@^6.8.3:
+  version "6.8.3"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.8.3.tgz#fd9fb7ffb068b79062b43383685611ee47777d4b"
+  integrity sha512-llcxWccnyaWlODe7A9hRjkvdCKamEKTh+wH8ITdTc3OhchaqUZteiSCX/2ablWHVrkVIe04dntnaZJ7BdyW0lQ==
+  dependencies:
+    decode-uri-component "^0.2.0"
+    split-on-first "^1.0.0"
+    strict-uri-encode "^2.0.0"
+
 querystring-es3@^0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/querystring-es3/-/querystring-es3-0.2.1.tgz#9ec61f79049875707d69414596fd907a4d711e73"
@@ -11531,10 +11540,10 @@ react-tween-state@^0.1.5:
     raf "^3.1.0"
     tween-functions "^1.0.1"
 
-react-web-notification@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/react-web-notification/-/react-web-notification-0.6.0.tgz#710238c3a55a08570e44d5e9c5e4f6c4c51a8dbd"
-  integrity sha512-9YppsxoVe/Rlk3oJgLAFPjgGo6EGggAlmymRvajtI+r1qzJWo16gwStlXBOPkiJ9UCvGIrHveNzJ7eFyoyQLhQ==
+react-web-notification@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/react-web-notification/-/react-web-notification-0.7.0.tgz#d57dcda3410bb9ab8862882a34cb494d15e88c8f"
+  integrity sha512-uFe7+1tfyXYDS84/wtZJR+yUcrb49Q3eH/5AUUY/wv0cbuzwUT/6U7IbjBdr1PP7XRTL/GDtxjIBzl7/6tmqgA==
   dependencies:
     core-js "3"
 

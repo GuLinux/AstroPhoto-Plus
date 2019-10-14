@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/astrophotoplus">
+        <file alias="appicon">icon-512.png</file>
+        <file alias="icon-64">icon-64.png</file>
+        <file alias="notification-icon">icon-64-white.png</file>
+        <file>error.png</file>
+        <file>success.png</file>
+        <file>warning.png</file>
+        <file>info.png</file>
+        <file alias="success.wav">arpeggio.wav</file>
+        <file alias="info.wav">accomplished.wav</file>
+        <file alias="error.wav">system-fault.wav</file>
+        <file>alarm-frenzy.wav</file>
+    </qresource>
+</RCC>

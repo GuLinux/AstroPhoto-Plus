@@ -1,6 +1,7 @@
 import React from 'react';
 import { Message, Icon} from 'semantic-ui-react';
 import HTML5Notification from 'react-web-notification';
+import queryString from 'query-string';
 
 const icons = {
     error: 'times circle',
@@ -31,7 +32,7 @@ const AlertNotification = ({notification, onDismiss}) => (
 const html5NotificationOptions = notification => ({
     icon: '/icon-256.png',
     body: Array.isArray(notification.text) ? notification.text.join('\n') : notification.text,
-    tag: `app-notification-{notification.id}`,
+    tag: `ap+_${notification.type}_${notification.id}`,
     requireInteraction: !notification.timeout,
 });
 
@@ -48,23 +49,46 @@ const HTML5NotificationComponent = ({notification, onDismiss}) => (
 
 export class Notifications extends React.PureComponent {
 
-    onClosed = notification => () => this.props.onClosed(notification);
+    constructor(props) {
+        super(props);
+        this.state = {};
+        if(! this.setupDesktopNotifications()) {
+            this.requestPermission();
+        }
+    }
+
+    setupDesktopNotifications = () => {
+        const { desktopClientSessionId } = queryString.parse(window.location.search);
+        if(!desktopClientSessionId) {
+            return false;
+        }
+        this.props.setDesktopNotificationsUuid(desktopClientSessionId);
+        return true;
+    }
+
+    requestPermission = async () => {
+        const permission = await Notification.requestPermission();
+        this.setState({ permission });
+    }
+
+    onClosed = notification => () => this.props.removeNotification(notification);
 
     renderNotification = (notification, index) => {
         setAutoclose(notification, this.onClosed(notification));
         let NotificationComponent = AlertNotification;
-        if(this.props.html5Enabled) {
+        if(this.state.permission === 'granted') {
             NotificationComponent = HTML5NotificationComponent;
         }
         return <NotificationComponent key={index} notification={notification} onDismiss={this.onClosed(notification)} />
     }
 
     render = () => {
-        const {notifications } = this.props;
+        if(this.props.desktopNotificationsUuid) {
+            return null;
+        }
         return (
             <div className="notifications-container">
-                <HTML5Notification ignore onPermissionDenied={this.props.onHTML5Blocked} title='Request Notification Permission' />
-                {notifications.map(this.renderNotification)}
+                {this.props.notifications.map(this.renderNotification)}
             </div>
         )
     }

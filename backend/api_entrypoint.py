@@ -603,3 +603,11 @@ def phd2_dither(json):
     return phd2.dither(json['pixels'], json.get('settle_pixels', 1.5), json.get('settle_time', 5), json.get('settle_timeout', 60), ra_only=json.get('ra_only', False), wait_for_settle=True)
 
 
+# Desktop Notifications
+@app.route('/api/desktopNotifications', methods=['POST'])
+@json_input
+@json_api
+def desktop_notifications(json):
+    sse.publish_event('desktop', 'notification', json)
+    return { 'result': 'ok' }
+

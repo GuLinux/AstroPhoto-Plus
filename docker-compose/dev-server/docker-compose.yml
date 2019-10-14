@@ -31,6 +31,7 @@ services:
         - WEB_THREADS
         - REDIS_SERVER=redis
         - ENABLE_PTVSD
+        - ASTROPHOTOPLUS_WEB_PORT=${EXTERNAL_WEB_PORT}
   redis:
     image: redis:alpine
     command: redis-server --appendonly yes

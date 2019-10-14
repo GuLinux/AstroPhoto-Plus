@@ -10,7 +10,7 @@ export class API {
 }
 
 export const isJSON = response => response.headers.has('content-type') && response.headers.get('content-type') === 'application/json';
-const headersJSONRequest = {
+export const headersJSONRequest = {
     'Content-Type': 'application/json',
 };
 
