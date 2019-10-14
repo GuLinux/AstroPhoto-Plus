@@ -46,7 +46,6 @@
     },
     "name": "AstroPhotoPlus_frontend",
     "private": true,
-    "proxy": "http://localhost:5000",
     "scripts": {
         "build": "yarn run copy:assets && react-scripts build",
         "copy:assets": "yarn run copy:themes && yarn run remove_googlefonts_call",

@@ -58,7 +58,7 @@ export class Notifications extends React.PureComponent {
     }
 
     setupDesktopNotifications = () => {
-        const { desktopClientSessionId } = queryString.parse(location.search);
+        const { desktopClientSessionId } = queryString.parse(window.location.search);
         if(!desktopClientSessionId) {
             return false;
         }
