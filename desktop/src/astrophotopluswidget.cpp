@@ -14,7 +14,7 @@
 #include "customwebpage.h"
 
 AstroPhotoPlusWidget::AstroPhotoPlusWidget(const QUrl &serverAddress, Notifications *notifications, QWidget *parent)
-    : QWidget(parent), _serverAddress{serverAddress}, api{std::make_unique<API>()}, sessionId(QUuid::createUuid().toString(QUuid::Id128)), notifications(notifications)
+    : QWidget(parent), _serverAddress{serverAddress}, api{std::make_unique<API>()}, sessionId(QUuid::createUuid().toString()), notifications(notifications)
 {
     qDebug() << "New AstroPhotoPlus widget for url " << serverAddress << " with UUID=" << sessionId;
     auto layout = new QVBoxLayout(this);

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AstroPhoto Plus Desktop client
+Comment=Native desktop app wrapper for AstroPhoto Plus, with notifications and server discovery
+Exec=${PROJECT_NAME}
+Icon=${PROJECT_NAME}
