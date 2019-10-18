@@ -12,6 +12,11 @@ In the future I also plan to support telescope interfaces (GOTO/tracking),  focu
 
 Please see the [website](https://astrophotoplus.gulinux.net).
 
+## Desktop client
+
+A desktop client wrapping the web interface can be found here: [AstroPhoto Plus Desktop](https://github.com/GuLinux/AstroPhoto-Plus-Desktop)
+
+
 ## Last build status
 [![CircleCI](https://circleci.com/gh/GuLinux/AstroPhoto-Plus.svg?style=svg)](https://circleci.com/gh/GuLinux/AstroPhoto-Plus)
 
