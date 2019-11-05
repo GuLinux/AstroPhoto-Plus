@@ -2,15 +2,16 @@ import { get } from 'lodash';
 
 const defaultState = {
     connected: false,
+    guideSteps: [],
 };
 
 
 const guidingStep = (state, action) => {
-    // TODO: record steps to show PHD2 graph
     if(state.starLost && Date.now() - state.lastStarLost < 5000) {
         return state;
     }
-    return {...state, starLost: false};
+    const guideSteps = [...state.guideSteps.filter(s => s.Timestamp > action.guideStep.Timestamp - get(state, 'graphMaxSeconds', 10)), action.guideStep];
+    return {...state, starLost: false, guideSteps};
 }
 
 export const phd2 = (state = defaultState, action) => {

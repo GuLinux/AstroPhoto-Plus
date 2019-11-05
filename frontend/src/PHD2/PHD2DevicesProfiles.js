@@ -14,7 +14,7 @@ class PHD2DevicesProfilesComponent extends React.Component {
             <Form>
                 <Form.Group inline>
                     <Form.Dropdown options={profiles} value={selectedProfile} onChange={this.onProfileSelected} />
-                    { phd2State === 'Stopped' && <Form.Button positive onClick={this.props.startPHD2Framing} >Start capturing</Form.Button> }
+                    { phd2State === 'Stopped' && <Form.Button color='teal' onClick={this.props.startPHD2Framing} >Start capturing</Form.Button> }
                     { ['Looping', 'Selected'].includes(phd2State)  && <Form.Button positive onClick={this.props.startPHD2Guiding} >Start autoguiding</Form.Button> }
                     { phd2State !== 'Stopped' && <Form.Button negative onClick={this.props.stopPHD2Capture} >Stop guiding/capturing</Form.Button> }
                 </Form.Group>
