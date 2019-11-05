@@ -36,3 +36,26 @@ export const phd2ProfilesSelector = createSelector(
         phd2State,
     })
 );
+
+const buildGuideStep= ({dx, dy, Timestamp: timestamp}, {Timestamp: lastTimestamp}) => {
+    const dt = lastTimestamp - timestamp;
+    return {
+        dx,
+        dy,
+        timestamp,
+        dt,
+    };
+}
+
+export const phd2GraphSelector = createSelector(
+    [state => state.phd2.guideSteps],
+    (guideSteps) => {
+        if(guideSteps.length === 0) {
+            return { guideSteps };
+        }
+        const lastGuideStep = guideSteps.slice(-1)[0];
+        return {
+            guideSteps: guideSteps.map(g => buildGuideStep(g, lastGuideStep)),
+        } 
+    }
+);

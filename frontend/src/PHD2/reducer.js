@@ -1,5 +1,7 @@
 import { get } from 'lodash';
 
+const DEFAULT_GRAPH_SECONDS=120;
+
 const defaultState = {
     connected: false,
     guideSteps: [],
@@ -10,7 +12,7 @@ const guidingStep = (state, action) => {
     if(state.starLost && Date.now() - state.lastStarLost < 5000) {
         return state;
     }
-    const guideSteps = [...state.guideSteps.filter(s => s.Timestamp > action.guideStep.Timestamp - get(state, 'graphMaxSeconds', 10)), action.guideStep];
+    const guideSteps = [...state.guideSteps.filter(s => s.Timestamp > action.guideStep.Timestamp - get(state, 'graphMaxSeconds', DEFAULT_GRAPH_SECONDS)), action.guideStep];
     return {...state, starLost: false, guideSteps};
 }
 

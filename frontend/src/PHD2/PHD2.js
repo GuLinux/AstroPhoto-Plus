@@ -5,6 +5,7 @@ import { phd2PageSelector } from './selectors';
 import { DitheringOptions } from '../Autoguider/DitheringOptions';
 import { PHD2StartProcess } from './PHD2StartProcess';
 import { PHD2DevicesProfiles } from './PHD2DevicesProfiles';
+import { PHD2Graph } from './PHD2Graph';
 
 const connectionMessage = (connected, connectionError) => {
     if(connected) {
@@ -97,6 +98,7 @@ const PHD2Component = ({connected, connectionError, showProcessRow, version, phd
     <Container>
         <Grid columns={12}>
             { showProcessRow && <PHD2ProcessRow process={process} connected={connected} /> }
+            <Grid.Row><PHD2Graph /></Grid.Row>
             <Grid.Row>
                 <Grid.Column width={3} verticalAlign='middle'>
                     <Header size='small'>Connection</Header>
