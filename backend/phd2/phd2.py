@@ -34,6 +34,25 @@ class PHD2:
         status = self.status()
         return status['running'] and status['connected'] and status['phd2_state'] == 'Guiding'
 
+    def start_framing(self):
+        self.__execute('start_framing')
+        return { 'result': 'ok' }
+
+    def start_guiding(self, settle, recalibrate):
+        if not settle:
+            settle = {
+                'pixels': settings.autoguider_settle_pixels,
+                'time': settings.autoguider_settle_time,
+                'timeout': settings.autoguider_settle_timeout,
+            }
+
+        self.__execute('start_guiding', settle, recalibrate)
+        return { 'result': 'ok' }
+
+    def stop_capture(self):
+        self.__execute('stop_capture')
+        return { 'result': 'ok' }
+
     def dither(self, pixels, settle_pixels, settle_time, settle_timeout, ra_only=False, wait_for_settle=False):
         settle_object = {
             'pixels': settle_pixels,

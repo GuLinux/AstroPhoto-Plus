@@ -51,6 +51,17 @@ class PHD2Service:
     def set_profile(self, profile_id):
         self.phd2_method('set_profile', profile_id)
 
+    def start_framing(self):
+        self.phd2_method('set_connected', True)
+        self.phd2_method('loop')
+
+    def start_guiding(self, settle, recalibrate):
+        self.phd2_method('guide', settle, recalibrate)
+
+    def stop_capture(self):
+        self.phd2_method('stop_capture')
+
+
     def get_phd2_state(self, publish=True):
         state_reply = self.phd2_method('get_app_state')
         #logger.debug('get_phd2_: state reply: {}'.format(state_reply))

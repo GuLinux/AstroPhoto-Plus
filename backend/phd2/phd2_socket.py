@@ -16,6 +16,7 @@ class PHD2Socket:
         self.__thread = None
         self.recv_queue, self.methods_queue, self.events_queue = thread_queue(), thread_queue(), thread_queue()
         self.__id = 0
+        self.__methods_lock = threading.Lock()
 
     def connect(self, hostname='localhost', port=4400):
         self.__connect = True
@@ -31,18 +32,19 @@ class PHD2Socket:
     def send_method(self, method_name, *parameters, timeout=10):
         if not self.__connected:
             raise PHD2ConnectionError('Error running method {}: PHD2 socket not connected'.format(method_name))
-        id = self.__id
-        self.__id += 1
-        method_object = {
-            'method': method_name,
-            'params': list(parameters),
-            'id': id,
-        }
-        self.methods_queue.put(method_object)
-        result = self.__get_result(timeout=timeout)
-        if 'error' in result:
-            raise PHD2MethodError(method_name, result['error']['message'], result['error']['code'])
-        return result
+        with self.__methods_lock:
+            id = self.__id
+            self.__id += 1
+            method_object = {
+                'method': method_name,
+                'params': list(parameters),
+                'id': id,
+            }
+            self.methods_queue.put(method_object)
+            result = self.__get_result(timeout=timeout)
+            if 'error' in result:
+                raise PHD2MethodError(method_name, result['error']['message'], result['error']['code'])
+            return result
 
     def __socket_loop(self, address, port):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as connection:

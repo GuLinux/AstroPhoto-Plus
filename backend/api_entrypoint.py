@@ -625,6 +625,23 @@ def set_phd2_profile(json):
     except KeyError as e:
         raise BadRequestError(str(e))
 
+@app.route('/api/phd2/start-framing', methods=['PUT'])
+@json_api
+def phd2_start_framing():
+    return phd2.start_framing()
+
+
+@app.route('/api/phd2/start-guiding', methods=['PUT'])
+@json_input
+@json_api
+def phd2_start_guiding(json):
+    return phd2.start_guiding(json.get('settle'), json.get('recalibrate', False))
+
+@app.route('/api/phd2/stop-capture', methods=['PUT'])
+@json_api
+def phd2_stop_capture():
+    return phd2.stop_capture()
+
 
 # Misc
 
