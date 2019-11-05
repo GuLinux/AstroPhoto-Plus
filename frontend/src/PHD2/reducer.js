@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 const defaultState = {
     connected: false,
 };
@@ -14,7 +16,7 @@ const guidingStep = (state, action) => {
 export const phd2 = (state = defaultState, action) => {
     switch(action.type) {
         case 'UPDATE_PHD2_STATUS':
-            return {...state, ...action.status, connectionError: action.status.connectionError};
+            return {...state, ...get(action, 'status', {}), connectionError: get(action, 'status.connectionError')};
         case 'PHD2_DISCONNECTED':
             return {...defaultState, ...action.payload};
         case 'PHD2_STAR_LOST':

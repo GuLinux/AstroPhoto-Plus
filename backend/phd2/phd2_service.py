@@ -5,7 +5,7 @@ from utils.worker import Worker
 import time
 from .phd2_socket import PHD2Socket 
 from .phd2_process import PHD2Process
-from .errors import PHDConnectionError
+from .errors import PHD2ConnectionError
 from system import sse
 
 PHD2_RECONNECTION_PAUSE = 5
@@ -47,6 +47,9 @@ class PHD2Service:
             if self.state['settle']['error']:
                 raise PHD2MethodError('dither', 'Dithering settling failed: {}'.format(self.state['settling']['error_message']), self.state['settling']['error_code'])
         return {'success': True}
+
+    def set_profile(self, profile_id):
+        self.phd2_method('set_profile', profile_id)
 
     def get_phd2_state(self, publish=True):
         state_reply = self.phd2_method('get_app_state')
@@ -94,7 +97,7 @@ class PHD2Service:
             logger.debug('PHD2 Connected')
             self.get_phd2_state()
             self.get_profiles()
-        except PHDConnectionError as e:
+        except PHD2ConnectionError as e:
             logger.debug('PHD2 connection failed, sleeping for %d seconds: %s', PHD2_RECONNECTION_PAUSE, e.message)
             self.__disconnected(e.message)
 
@@ -144,7 +147,7 @@ class PHD2Service:
             #logger.debug('Received event {}, querying status'.format(event))
             self.get_phd2_state(publish=False)
             #logger.debug('received status: {}'.format(self.state))
-        except PHDConnectionError:
+        except PHD2ConnectionError:
             #logger.debug('PHD2ConnectionError while waiting for state')
             self.__disconnected()
             return

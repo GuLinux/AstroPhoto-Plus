@@ -7,11 +7,12 @@ from errors import FailedMethodError, BadRequestError
 from utils.threads import start_thread, thread_queue
 from queue import Empty
 import json
-from .errors import PHDConnectionError, PHD2MethodError
+from .errors import PHD2ConnectionError, PHD2MethodError
 
 class PHD2Socket:
     def __init__(self):
         self.__connect = False
+        self.__connected = False
         self.__thread = None
         self.recv_queue, self.methods_queue, self.events_queue = thread_queue(), thread_queue(), thread_queue()
         self.__id = 0
@@ -29,7 +30,7 @@ class PHD2Socket:
 
     def send_method(self, method_name, *parameters, timeout=10):
         if not self.__connected:
-            raise PHDConnectionError('Error running method {}: PHD2 socket not connected'.format(method_name))
+            raise PHD2ConnectionError('Error running method {}: PHD2 socket not connected'.format(method_name))
         id = self.__id
         self.__id += 1
         method_object = {
@@ -49,7 +50,7 @@ class PHD2Socket:
                 connection.connect((address, port))
                 self.__put_result({'connected': True})
             except Exception as e:
-                self.__put_error(PHDConnectionError(str(e), e))
+                self.__put_error(PHD2ConnectionError(str(e), e))
                 return 
             self.__connected = True
             inout = [connection]

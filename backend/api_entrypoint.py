@@ -616,7 +616,14 @@ def start_phd2(json):
 def stop_phd2():
     return phd2.stop_phd2()
 
-
+@app.route('/api/phd2/profiles', methods=['PUT'])
+@json_input
+@json_api
+def set_phd2_profile(json):
+    try:
+        return phd2.set_profile(json['profile_id'])
+    except KeyError as e:
+        raise BadRequestError(str(e))
 
 
 # Misc
@@ -625,3 +632,4 @@ def stop_phd2():
 @json_api
 def get_x11_displays():
     return x11_displays()
+

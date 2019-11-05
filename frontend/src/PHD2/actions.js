@@ -1,4 +1,4 @@
-import { fetchPHD2Status, fetchPHD2Start, fetchPHD2Stop } from '../middleware/api';
+import { fetchPHD2Status, fetchPHD2Start, fetchPHD2Stop, fetchSetPHD2Profile } from '../middleware/api';
 import { addNotification } from '../Notifications/actions';
 import { getPHD2Connected, getPHD2StarLost } from './selectors';
 
@@ -50,6 +50,18 @@ export const phd2GuideStep = (guideStep, status) => (dispatch, getState) => {
 };
 
 
+export const phd2SetProfile = profile => dispatch => {
+    const onSuccess = () => {};
+    const onError = (response, isJSON) => {
+        if(!isJSON) {
+            return false;
+        }
+        response.json().then(json => dispatch(addNotification('PHD2', `Error setting PHD2 profile: ${json.error_message}`, 'warning', 5000)));
+        return true;
+    }
+
+    fetchSetPHD2Profile(dispatch, profile, onSuccess, onError);
+}
 
 
 export const startPHD2 = (phd2Path, display) => dispatch => {

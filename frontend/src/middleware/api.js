@@ -276,3 +276,15 @@ export const fetchPHD2Start = (options, dispatch, onSuccess, onError) => fetchJS
 
 export const fetchPHD2Stop = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/phd2/stop', { method: 'POST' }, onSuccess, onError);
 
+export const fetchSetPHD2Profile = (dispatch, profile_id, onSuccess, onError) => fetchJSON(
+    dispatch,
+    '/api/phd2/profiles',
+    {
+        method: 'PUT',
+        headers: headersJSONRequest,
+        body: JSON.stringify({ profile_id }),
+    },
+    onSuccess,
+    onError,
+);
+
