@@ -29,10 +29,10 @@ export const phd2PageSelector = createSelector(
 );
 
 export const phd2ProfilesSelector = createSelector(
-    [getPHD2Profiles, getPHD2EquipmentConnected],
-    (profiles, equipmentConnected) => ({
+    [getPHD2Profiles, getPHD2State],
+    (profiles, phd2State) => ({
         profiles: profiles && profiles.map(({id, name}) => ({ key: id, text: name, value: id })),
         selectedProfile: profiles && profiles.find(p => p.selected).id,
-        equipmentConnected,
+        phd2State,
     })
 );

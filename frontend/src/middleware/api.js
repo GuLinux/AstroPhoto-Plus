@@ -268,15 +268,15 @@ export const catalogLookupAPI = (catalog, object, dispatch, onSuccess, onError) 
 
 export const fetchPHD2Status = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/phd2', {}, onSuccess, onError);
 
-export const fetchPHD2Start = (options, dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/phd2/start', {
+export const startPHD2API = (options, dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/phd2/start', {
     method: 'POST',
     body: JSON.stringify(options),
     headers: headersJSONRequest,
 }, onSuccess, onError);
 
-export const fetchPHD2Stop = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/phd2/stop', { method: 'POST' }, onSuccess, onError);
+export const stopPHD2API = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/phd2/stop', { method: 'POST' }, onSuccess, onError);
 
-export const fetchSetPHD2Profile = (dispatch, profile_id, onSuccess, onError) => fetchJSON(
+export const setPHD2ProfileAPI = (dispatch, profile_id, onSuccess, onError) => fetchJSON(
     dispatch,
     '/api/phd2/profiles',
     {
@@ -287,4 +287,37 @@ export const fetchSetPHD2Profile = (dispatch, profile_id, onSuccess, onError) =>
     onSuccess,
     onError,
 );
+
+export const startPHD2FramingAPI = (dispatch, onSuccess, onError) => fetchJSON(
+    dispatch,
+    '/api/phd2/start-framing',
+    {
+        method: 'PUT',
+    },
+    onSuccess,
+    onError,
+);
+
+export const startPHD2AutoguidingAPI = (dispatch, payload, onSuccess, onError) => fetchJSON(
+    dispatch,
+    '/api/phd2/start-guiding',
+    {
+        method: 'PUT',
+        headers: headersJSONRequest,
+        body: JSON.stringify(payload),
+    },
+    onSuccess,
+    onError,
+);
+
+export const stopPHD2CaptureAPI = (dispatch, onSuccess, onError) => fetchJSON(
+    dispatch,
+    '/api/phd2/stop-capture',
+    {
+        method: 'PUT',
+    },
+    onSuccess,
+    onError,
+);
+
 

@@ -1,4 +1,4 @@
-import { fetchPHD2Status, fetchPHD2Start, fetchPHD2Stop, fetchSetPHD2Profile } from '../middleware/api';
+import { fetchPHD2Status, startPHD2API, stopPHD2API, setPHD2ProfileAPI, startPHD2FramingAPI, startPHD2AutoguidingAPI, stopPHD2CaptureAPI } from '../middleware/api';
 import { addNotification } from '../Notifications/actions';
 import { getPHD2Connected, getPHD2StarLost } from './selectors';
 
@@ -60,7 +60,7 @@ export const phd2SetProfile = profile => dispatch => {
         return true;
     }
 
-    fetchSetPHD2Profile(dispatch, profile, onSuccess, onError);
+    setPHD2ProfileAPI(dispatch, profile, onSuccess, onError);
 }
 
 
@@ -74,7 +74,7 @@ export const startPHD2 = (phd2Path, display) => dispatch => {
         return true;
     }
     const onPHD2Started = payload => dispatch({ type: 'PHD2_STARTED', payload });
-    fetchPHD2Start({
+    startPHD2API({
         phd2_path: phd2Path,
         display
     }, dispatch, onPHD2Started, onError);
@@ -91,5 +91,43 @@ export const stopPHD2 = () => dispatch => {
 
     const onPHD2Stopped = payload => dispatch({ type: 'PHD2_STOPPED', payload });
     dispatch({ type: 'PHD2_STOPPING' });
-    fetchPHD2Stop(dispatch, onPHD2Stopped, onError);
+    stopPHD2API(dispatch, onPHD2Stopped, onError);
 }
+
+export const startPHD2Framing = () => dispatch => {
+    const onError = (response, isJSON) => {
+        if(!isJSON) {
+            return false;
+        }
+        response.json().then(json => dispatch(addNotification('PHD2', `Error starting PHD2 capture: ${json.error_message}`, 'warning', 5000)));
+        return true;
+    }
+
+    startPHD2FramingAPI(dispatch, () => {}, onError);
+}
+
+export const startPHD2Guiding = () => dispatch => {
+    const onError = (response, isJSON) => {
+        if(!isJSON) {
+            return false;
+        }
+        response.json().then(json => dispatch(addNotification('PHD2', `Error starting PHD2 autoguiding: ${json.error_message}`, 'warning', 5000)));
+        return true;
+    }
+
+    startPHD2AutoguidingAPI(dispatch, {}, () => {}, onError);
+}
+
+export const stopPHD2Capture = () => dispatch => {
+    const onError = (response, isJSON) => {
+        if(!isJSON) {
+            return false;
+        }
+        response.json().then(json => dispatch(addNotification('PHD2', `Error stopping PHD2 capture: ${json.error_message}`, 'warning', 5000)));
+        return true;
+    }
+
+    stopPHD2CaptureAPI(dispatch, () => {}, onError);
+}
+
+
