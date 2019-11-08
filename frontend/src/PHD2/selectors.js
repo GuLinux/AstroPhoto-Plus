@@ -38,7 +38,7 @@ export const phd2ProfilesSelector = createSelector(
 );
 
 const buildGuideStep= ({dx, dy, Timestamp: timestamp}, {Timestamp: lastTimestamp}) => {
-    const dt = lastTimestamp - timestamp;
+    const dt = parseFloat(timestamp - lastTimestamp);
     return {
         dx,
         dy,
@@ -51,11 +51,23 @@ export const phd2GraphSelector = createSelector(
     [state => state.phd2.guideSteps],
     (guideSteps) => {
         if(guideSteps.length === 0) {
-            return { guideSteps };
+            return { guideSteps: [] };
         }
         const lastGuideStep = guideSteps.slice(-1)[0];
+        const allDeltas = guideSteps.map(g => g.dx).concat(guideSteps.map(g => g.dy));
+        const maxDelta = Math.max(...allDeltas.map(Math.abs));
+        const domainRadius = Math.ceil(Math.max(0.5, maxDelta * 1.5) * 10) / 10;
+        const data = guideSteps.map(g => buildGuideStep(g, lastGuideStep));
+        const xDomain = [Math.floor(data[0].dt), 0];
+        const timeTicks = [];
+        for(let i=xDomain[0]; i<=xDomain[1]; i++) {
+            timeTicks.push(i);
+        }
         return {
-            guideSteps: guideSteps.map(g => buildGuideStep(g, lastGuideStep)),
+            guideSteps: data,
+            domain: [-domainRadius, domainRadius],
+            xDomain,
+            timeTicks,
         } 
     }
 );
