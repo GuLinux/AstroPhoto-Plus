@@ -1,0 +1,15 @@
+rename-window -t :0 gunicorn
+send-keys -t :0 'cd backend' Enter
+send-keys -t :0 './start-debug-server' Enter
+new-window -n node
+send-keys -t :1 'cd frontend' Enter
+send-keys -t :1 'BROWSER=none yarn start' Enter
+new-window -n backend
+send-keys -t :2 'cd backend' Enter
+send-keys -t :2 'vim' Enter
+new-window -n frontend
+send-keys -t :3 'cd frontend' Enter
+send-keys -t :3 'vim' Enter
+select-window -t :0
+
+

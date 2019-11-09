@@ -25,7 +25,7 @@ from api_utils import *
 from indi import Server, Property, Device, INDIProfile
 from errors import NotFoundError
 from images import ImagesDatabase, camera_images_db, main_images_db
-from system import commands, controller, settings, sse
+from system import commands, controller, settings, sse, x11_displays
 from sequences import Sequence, SequenceJob
 from phd2 import phd2
 
@@ -602,6 +602,53 @@ def get_phd2_status():
 def phd2_dither(json):
     return phd2.dither(json['pixels'], json.get('settle_pixels', 1.5), json.get('settle_time', 5), json.get('settle_timeout', 60), ra_only=json.get('ra_only', False), wait_for_settle=True)
 
+@app.route('/api/phd2/start', methods=['POST'])
+@json_input
+@json_api
+def start_phd2(json):
+    try:
+        return phd2.start_phd2(json['phd2_path'], json['display'])
+    except KeyError as e:
+        raise BadRequestError(str(e))
+
+@app.route('/api/phd2/stop', methods=['POST'])
+@json_api
+def stop_phd2():
+    return phd2.stop_phd2()
+
+@app.route('/api/phd2/profiles', methods=['PUT'])
+@json_input
+@json_api
+def set_phd2_profile(json):
+    try:
+        return phd2.set_profile(json['profile_id'])
+    except KeyError as e:
+        raise BadRequestError(str(e))
+
+@app.route('/api/phd2/start-framing', methods=['PUT'])
+@json_api
+def phd2_start_framing():
+    return phd2.start_framing()
+
+
+@app.route('/api/phd2/start-guiding', methods=['PUT'])
+@json_input
+@json_api
+def phd2_start_guiding(json):
+    return phd2.start_guiding(json.get('settle'), json.get('recalibrate', False))
+
+@app.route('/api/phd2/stop-capture', methods=['PUT'])
+@json_api
+def phd2_stop_capture():
+    return phd2.stop_capture()
+
+
+# Misc
+
+@app.route('/api/x11_displays')
+@json_api
+def get_x11_displays():
+    return x11_displays()
 
 # Desktop Notifications
 @app.route('/api/desktopNotifications', methods=['POST'])

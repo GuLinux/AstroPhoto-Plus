@@ -1,5 +1,6 @@
 export const network = (state = { fetching: false }, action) => {
     switch (action.type) {
+        case 'NETWORK_OPERATION_STARTED':
         case 'REQUEST_SESSIONS':
         case 'REQUEST_ADD_SESSION':
         case 'REQUEST_ADD_SEQUENCE':
@@ -17,6 +18,7 @@ export const network = (state = { fetching: false }, action) => {
         case 'RESET_SEQUENCE_REQUESTED':
             //        case 'COMMIT_PENDING_PROPERTIES':
             return { ...state, fetching: true };
+        case 'NETWORK_OPERATION_FINISHED':
         case 'RECEIVE_SESSIONS':
         case 'SESSION_CREATED':
         case 'SEQUENCE_CREATED':

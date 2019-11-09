@@ -27,7 +27,7 @@
         "react-router-dom": "^5.0.1",
         "react-scripts": "^3.0.1",
         "react-web-notification": "^0.7.0",
-        "recharts": "^1.6.2",
+        "recharts": "^1.8.5",
         "redux": "^4.0.1",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",

@@ -1,4 +1,4 @@
-class PHDConnectionError(Exception):
+class PHD2ConnectionError(Exception):
     def __init__(self, message, parent=None):
         self.message = message
         self.parent = parent

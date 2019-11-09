@@ -9,7 +9,7 @@ class Autoguider:
 
     def dither_phd2(self):
         if phd2.is_guiding():
-            phd2.dither(settings.dithering_pixels, settings.dithering_settle_pixels, settings.dithering_settle_time, settings.dithering_settle_timeout, ra_only=settings.dithering_ra_only)
+            phd2.dither(settings.dithering_pixels, settings.autoguider_settle_pixels, settings.autoguider_settle_time, settings.autoguider_settle_timeout, ra_only=settings.dithering_ra_only)
 
 
 

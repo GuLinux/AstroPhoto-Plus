@@ -4,7 +4,8 @@ from utils.threads import start_thread
 from utils.worker import Worker
 import time
 from .phd2_socket import PHD2Socket 
-from .errors import PHDConnectionError
+from .phd2_process import PHD2Process
+from .errors import PHD2ConnectionError
 from system import sse
 
 PHD2_RECONNECTION_PAUSE = 5
@@ -14,11 +15,13 @@ PHD2_RECONNECTION_PAUSE = 5
 class PHD2Service:
     def __init__(self):
         self.__socket = PHD2Socket()
-        self.state = { 'running': False, 'connected': False }
+        self.__phd2_process = PHD2Process()
+        self.__state = { 'running': False, 'connected': False }
         self.__last_connection_attempt = 0
 
     def on_run(self):
         self.__check_connection()
+        self.__check_phd2_process_status()
         time.sleep(0.0001)
 
     def phd2_method(self, method_name, *args):
@@ -26,6 +29,12 @@ class PHD2Service:
 
     def get_state(self):
         return self.state
+
+    @property
+    def state(self):
+        state = self.__state
+        state.update({ 'process': self.__phd2_process.running})
+        return state
 
     def dither(self, pixels, ra_only, settle_object, wait_for_settle=True):
         self.__change_state(None, key='settle')
@@ -39,10 +48,38 @@ class PHD2Service:
                 raise PHD2MethodError('dither', 'Dithering settling failed: {}'.format(self.state['settling']['error_message']), self.state['settling']['error_code'])
         return {'success': True}
 
+    def set_profile(self, profile_id):
+        self.phd2_method('set_profile', profile_id)
+
+    def start_framing(self):
+        self.phd2_method('set_connected', True)
+        self.phd2_method('loop')
+
+    def start_guiding(self, settle, recalibrate):
+        self.phd2_method('guide', settle, recalibrate)
+
+    def stop_capture(self):
+        self.phd2_method('stop_capture')
+
+
     def get_phd2_state(self, publish=True):
         state_reply = self.phd2_method('get_app_state')
+        #logger.debug('get_phd2_: state reply: {}'.format(state_reply))
         self.__change_state(state_reply['result'], publish=publish)
         return state_reply
+
+    def start_phd2(self, phd2_path, display):
+        return self.__phd2_process.start(phd2_path, display)
+
+    def stop_phd2(self):
+        return self.__phd2_process.stop()
+
+    def get_profiles(self):
+        profiles = self.phd2_method('get_profiles')['result']
+        equipment_connected = self.phd2_method('get_connected')['result']
+        logger.debug('PHD2 Profiles: {}, equipment_connected: {}'.format(profiles, equipment_connected))
+        self.__change_state(equipment_connected, key='equipment_connected', publish=False)
+        self.__change_state(profiles, key='profiles', publish=True, publish_event='profiles')
 
     @property
     def connected(self):
@@ -50,12 +87,12 @@ class PHD2Service:
 
     def on_start(self):
         logger.debug('PHD2 Service started')
-        self.state['running'] = True
+        self.__change_state(True, key='running', publish=False)
         self.__events_thread = start_thread(self.__check_events)
 
     def on_stopped(self):
         logger.debug('PHD2 Service stopped')
-        self.state['running'] = False
+        self.__change_state(False, key='running', publish=False)
         self.__events_thread.join()
         self.__events_thread = None
 
@@ -65,16 +102,19 @@ class PHD2Service:
             return
         try:
             self.__last_connection_attempt = now
-            self.__change_state(self.__socket.connect(), key='connected', publish_event='connected')
+            connection_successful = self.__socket.connect()
+            self.__change_state(None, key='connection_error', publish=False)
+            self.__change_state(connection_successful, key='connected', publish_event='connected')
             logger.debug('PHD2 Connected')
             self.get_phd2_state()
-        except PHDConnectionError as e:
-            logger.debug('PHD2 connection failed, sleeping for %d seconds: %s', PHD2_RECONNECTION_PAUSE, e.message)
+            self.get_profiles()
+        except PHD2ConnectionError as e:
+            # logger.debug('PHD2 connection failed, sleeping for %d seconds: %s', PHD2_RECONNECTION_PAUSE, e.message)
             self.__disconnected(e.message)
 
     def __disconnected(self, message=None):
-        self.state = { 'running': self.state['running'], 'connected': False }
-        self.__publish_event('disconnected', message)
+        self.__state = { 'running': self.state['running'], 'connected': False, 'process': self.state['process'], 'connection_error': message }
+        self.__publish_state_event(name='disconnected')
 
 
     def __publish_event(self, name, payload=None):
@@ -84,7 +124,7 @@ class PHD2Service:
         self.__publish_event(name, payload=self.state)
 
     def __change_state(self, value, publish=True, key='phd2_state', publish_event='phd2_state'):
-        self.state[key] = value
+        self.__state[key] = value
         if publish:
             self.__publish_state_event(name=publish_event)
 
@@ -108,12 +148,17 @@ class PHD2Service:
         finally:
             logger.debug('PHD2 Service: Stopped checking events')
 
+
+    def __check_phd2_process_status(self):
+        phd2_process_running = self.__phd2_process.running
+        self.__change_state(phd2_process_running, key='process', publish=self.state['process'] != phd2_process_running, publish_event='process')
+
     def __on_phd2_socket_event(self, event):
         try:
             #logger.debug('Received event {}, querying status'.format(event))
             self.get_phd2_state(publish=False)
             #logger.debug('received status: {}'.format(self.state))
-        except PHDConnectionError:
+        except PHD2ConnectionError:
             #logger.debug('PHD2ConnectionError while waiting for state')
             self.__disconnected()
             return
@@ -126,7 +171,8 @@ class PHD2Service:
             self.__change_state(event['State'])
 
         if event_type == 'ConfigurationChange':
-            self.__publish_state_event()
+            logger.debug('ConfigurationChange event: {}, querying profiles'.format(event))
+            self.get_profiles()
 
         if event_type == 'LoopingExposures':
             self.__publish_state_event()
