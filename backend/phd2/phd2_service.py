@@ -109,7 +109,7 @@ class PHD2Service:
             self.get_phd2_state()
             self.get_profiles()
         except PHD2ConnectionError as e:
-            logger.debug('PHD2 connection failed, sleeping for %d seconds: %s', PHD2_RECONNECTION_PAUSE, e.message)
+            # logger.debug('PHD2 connection failed, sleeping for %d seconds: %s', PHD2_RECONNECTION_PAUSE, e.message)
             self.__disconnected(e.message)
 
     def __disconnected(self, message=None):

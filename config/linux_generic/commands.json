@@ -49,5 +49,26 @@
         "ui_properties": {
             "icon": "wifi"
         }
+    },
+    {
+        "id": "5",
+        "name": "Start VNC server",
+        "arguments": ["tigervncserver", "-SecurityTypes", "None", "-localhost", "no", "--I-KNOW-THIS-IS-INSECURE"],
+        "check": ["bash", "-c", "which tigervncserver && ! tigervncserver -kill --dry-run"],
+        "category": "System",
+        "ui_properties": {
+            "icon": "computer"
+        }
+    },
+    {
+        "id": "6",
+        "name": "Stop VNC server",
+        "arguments": ["tigervncserver", "-kill"],
+        "check": ["tigervncserver", "-kill", "--dry-run"],
+        "category": "System",
+        "ui_properties": {
+            "icon": "computer"
+        }
     }
+
 ]
