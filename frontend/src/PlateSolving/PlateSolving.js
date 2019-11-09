@@ -1,11 +1,9 @@
 import React from 'react';
-import { Icon, Segment, Dropdown, Popup, List, Loader, Label, Grid, Container, Header, Button, Divider, Message, Form, Input } from 'semantic-ui-react';
+import { Icon, Segment, Dropdown, Popup, List, Loader, Label, Grid, Container, Header, Button, Divider, Message } from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { PlateSolving as PlateSolvingActions } from './actions';
 import { UploadFileDialog } from '../components/UploadFileDialog';
-import { INDIMessagesPanel } from '../INDI-Server/INDIMessagesPanel';
 import { NumericInput } from '../components/NumericInput';
-import { formatDecimalNumber } from '../utils';
 import { SkyChartComponent } from '../components/SkyChartsComponent';
 import { get } from 'lodash';
 import { getFieldOfView, getSensorSizeFromResolution } from './utils';
@@ -167,7 +165,6 @@ export class PlateSolving extends React.Component {
 
     driver = (type, id) => this.props[type].entities[id];
 
-    astrometryDriverButton = id => this.optionButton(Options.astrometryDriver, id, { content: this.driver('astrometryDrivers', id).name, key: id});
     telescopeDriverButton = id => this.optionButton(Options.telescope, id, { content: this.driver('telescopes', id).name, key: id });
     cameraButton = id => this.optionButton(Options.fovSource, id, {content: this.driver('cameras', id).name, key: id});
 
@@ -177,7 +174,7 @@ export class PlateSolving extends React.Component {
         })
 
     render = () => {
-        const { astrometryDrivers, telescopes, cameras, messages, options, setOption, solution, previousSolution, loading, isManualFOV, abortSolveField } = this.props;
+        const { telescopes, cameras, messages, options, setOption, solution, previousSolution, loading, isManualFOV } = this.props;
         return (
         <Container>
             <Header content='Plate Solver options' />

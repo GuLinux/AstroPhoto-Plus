@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+//import { createSelector } from 'reselect';
 
 
 export const getPHD2Connected = state => state.phd2.connected;

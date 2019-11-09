@@ -1,7 +1,7 @@
 import React from 'react';
 import { get, range } from 'lodash';
 import { fetch } from '../middleware/polyfills.js';
-import { Segment, Dimmer, Container, Button, Loader, Form, Input } from 'semantic-ui-react';
+import { Dimmer, Container, Button, Loader, Form } from 'semantic-ui-react';
 import { NumericInput } from '../components/NumericInput';
 
 
@@ -53,9 +53,6 @@ export class SkyChartComponent extends React.Component {
 
     fetchMap = async () => {
         await this.setState({ loading: true });
-        const markers = get(this.state, 'markers', []);
-        const starsColor = get(this.state, 'starsColor', 'black');
-        const backgroundcolor = get(this.state, 'backgroundColor')
         const url = '/api/skychart';
 
         const response = await fetch(url, {

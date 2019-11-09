@@ -41,7 +41,7 @@ export const Home = ({serverName, autoguiderEngine}) => (
                 <List.Item>
                     <List.Icon name='camera' />
                     <List.Content>
-                        <List.Header as={Link} to={Routes.CAMERA} content='Camera' />
+                        <List.Header as={Link} to={Routes.CAMERA_PAGE} content='Camera' />
                         <List.Description>
                             Preview your field of view, refine focus, exposure, and get histogram information.
                         </List.Description>
@@ -57,7 +57,15 @@ export const Home = ({serverName, autoguiderEngine}) => (
                         </List.Description>
                     </List.Content>
                 </List.Item>
-
+                <List.Item>
+                    <List.Icon name='computer' />
+                    <List.Content>
+                        <List.Header as={Link} to={Routes.INDI_PAGE} content='INDI' />
+                        <List.Description>
+                            Manage your astrophotography devices.
+                            You can start and stop the INDI server, define profiles, and change properties on connected devices.                        </List.Description>
+                    </List.Content>
+                </List.Item>
                 <List.Item>
                     <List.Icon name='settings' />
                     <List.Content>

@@ -650,3 +650,11 @@ def phd2_stop_capture():
 def get_x11_displays():
     return x11_displays()
 
+# Desktop Notifications
+@app.route('/api/desktopNotifications', methods=['POST'])
+@json_input
+@json_api
+def desktop_notifications(json):
+    sse.publish_event('desktop', 'notification', json)
+    return { 'result': 'ok' }
+
