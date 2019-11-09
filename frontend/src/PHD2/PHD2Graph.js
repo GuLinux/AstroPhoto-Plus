@@ -22,7 +22,7 @@ class PHD2GraphComponent extends React.Component {
                     <RechartsLabel position='insideBottomRight' dy={5}>Time (seconds ago)</RechartsLabel>
                   </XAxis>
                   <YAxis domain={this.props.domain} type='number' scale='linear' tickFormatter={this.formatCorrections} >
-                    <RechartsLabel position='insideLeft' angle={270}>Corrections</RechartsLabel>
+                    <RechartsLabel position='insideLeft' angle={270}>Corrections (arcsecs)</RechartsLabel>
                   </YAxis>
                   <Tooltip />
                   <Legend verticalAlign='top' />
