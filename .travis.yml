@@ -11,7 +11,6 @@ matrix:
               - sudo apt-get update
               - sudo apt-get install -y cmake
               - export VERSION_NUMBER_CI=$(( $TRAVIS_BUILD_NUMBER + 801 ))
-              - echo Version number: ${VERSION_NUMBER_CI}
           install:
           before_script:
               - mkdir ${TRAVIS_BUILD_DIR}/build
