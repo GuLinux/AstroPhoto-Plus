@@ -24,22 +24,17 @@ matrix:
               - ls -alh ${TRAVIS_BUILD_DIR}/build/packages
           before_deploy:
               - source version.sh
-              - echo ${ASTROPHOTOPLUS_VERSION}
-#              - export VERSION=${PROJECT_VERSION}
-#              - ${TRAVIS_BUILD_DIR}/build/linuxdeployqt*.AppImage appdir/usr/share/applications/*.desktop -bundle-non-qt-libs
-#              - cp -av /usr/lib/x86_64-linux-gnu/nss/* appdir/usr/lib/
-#              - ${TRAVIS_BUILD_DIR}/build/appimagetool*.AppImage appdir
-#              - sudo apt-get install python3 python3-venv
-#              - wget --quiet "https://raw.githubusercontent.com/GuLinux/GuLinux-Commons/a68a8df028a02ce2730720b9aec8c77f5ada7496/python/travis_release.py"
-#              - ls -alh ${TRAVIS_BUILD_DIR}/build
-#              - md5sum travis_release.py
-#              - python3 -m venv ${TRAVIS_BUILD_DIR}/build/venv
-#              - source ${TRAVIS_BUILD_DIR}/build/venv/bin/activate
-#              - pip3 install PyGithub
+              - export PROJECT_VERSION=${ASTROPHOTOPLUS_VERSION}
+              - sudo apt-get install python3 python3-venv
+              - wget --quiet "https://raw.githubusercontent.com/GuLinux/GuLinux-Commons/a68a8df028a02ce2730720b9aec8c77f5ada7496/python/travis_release.py"
+              - md5sum travis_release.py
+              - python3 -m venv ${TRAVIS_BUILD_DIR}/build/venv
+              - source ${TRAVIS_BUILD_DIR}/build/venv/bin/activate
+              - pip3 install PyGithub
           deploy:
             skip_cleanup: true
             provider: script
-            script: python3 "${TRAVIS_BUILD_DIR}/build/travis_release.py" "${TRAVIS_BUILD_DIR}/build"/AstroPhoto*AppImage*
+            script: python3 "${TRAVIS_BUILD_DIR}/build/travis_release.py" "${TRAVIS_BUILD_DIR}/build/packages"/*
             on:
               branch:
                 - master
