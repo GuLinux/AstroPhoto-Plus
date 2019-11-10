@@ -1,7 +1,6 @@
 if: '(branch = master OR type = pull_request OR commit_message =~ /.*#trigger_ci.*/) AND (NOT commit_message =~ /.*#skip_ci.*/) AND ( tag IS blank )'
 env:
     - CI=false 
-    - VERSION_NUMBER_CI=$(( $TRAVIS_BUILD_NUMBER + 801 ))
 matrix:
     include:
         - language: javascript
@@ -11,6 +10,8 @@ matrix:
           before_install:
               - sudo apt-get update
               - sudo apt-get install -y cmake
+              - export VERSION_NUMBER_CI=$(( $TRAVIS_BUILD_NUMBER + 801 ))
+              - echo "Version number: ${VERSION_NUMBER_CI}"
           install:
           before_script:
               - mkdir ${TRAVIS_BUILD_DIR}/build
