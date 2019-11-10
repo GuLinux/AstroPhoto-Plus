@@ -1,6 +1,4 @@
 if: '(branch = master OR type = pull_request OR commit_message =~ /.*#trigger_ci.*/) AND (NOT commit_message =~ /.*#skip_ci.*/) AND ( tag IS blank )'
-env:
-    - CI=false 
 matrix:
     include:
         - language: node_js
@@ -12,6 +10,7 @@ matrix:
               - sudo apt-get update
               - sudo apt-get install -y cmake
               - export VERSION_NUMBER_CI=$(( $TRAVIS_BUILD_NUMBER + 801 ))
+              - export CI=false
           install:
           before_script:
               - mkdir ${TRAVIS_BUILD_DIR}/build
@@ -19,6 +18,7 @@ matrix:
           script:
               - cmake ${TRAVIS_BUILD_DIR} -DCMAKE_INSTALL_PREFIX=/usr -DCONFDIR=/etc -DVERSION_SUFFIX=-b${VERSION_NUMBER_CI}
               - make -j$(nproc) package
+              - cmake ${TRAVIS_BUILD_DIR} -DPACKAGE_TARGET=raspbian -DCMAKE_INSTALL_PREFIX=/usr -DCONFDIR=/etc -DVERSION_SUFFIX=-b${VERSION_NUMBER_CI}
               - rm -rf packages/_CPack_Packages
               - ls -alh ${TRAVIS_BUILD_DIR}/build/packages
 #          before_deploy:
