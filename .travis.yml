@@ -19,6 +19,7 @@ matrix:
               - cmake ${TRAVIS_BUILD_DIR} -DCMAKE_INSTALL_PREFIX=/usr -DCONFDIR=/etc -DVERSION_SUFFIX=-b${VERSION_NUMBER_CI}
               - make -j$(nproc) package
               - cmake ${TRAVIS_BUILD_DIR} -DPACKAGE_TARGET=raspbian -DCMAKE_INSTALL_PREFIX=/usr -DCONFDIR=/etc -DVERSION_SUFFIX=-b${VERSION_NUMBER_CI}
+              - make -j$(nproc) package
               - rm -rf packages/_CPack_Packages
               - ls -alh ${TRAVIS_BUILD_DIR}/build/packages
 #          before_deploy:
