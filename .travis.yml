@@ -3,7 +3,7 @@ env:
     - CI=false 
 matrix:
     include:
-        - language: javascript
+        - language: node_js
           name: Astrophoto Plus
           dist: bionic
           os: linux
