@@ -4,6 +4,7 @@ env:
 matrix:
     include:
         - language: node_js
+          node_js: 11
           name: Astrophoto Plus
           dist: bionic
           os: linux
