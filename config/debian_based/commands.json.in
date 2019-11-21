@@ -8,7 +8,7 @@
         "name": "Update AstroPhoto Plus",
         "arguments": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/astrophotoplus-deb-updater", "update"],
         "category": "Updates",
-        "check": ["${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/astrophotoplus-deb-updater", "get-latest-info"],
+        "check": ["sudo", "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/astrophotoplus-deb-updater", "check-update-available"],
         "confirmation_message": "This will restart AstroPhotoPlus, and any job in progress. Are you sure?",
         "ui_properties": {
             "icon": "sync"

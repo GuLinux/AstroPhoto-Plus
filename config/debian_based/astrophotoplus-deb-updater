@@ -2,7 +2,7 @@
 
 set -e
 
-RELEASES_URL="https://api.github.com/repos/GuLinux/AstroPhoto-Plus/releases"
+RELEASES_URL="https://astrophotoplus.gulinux.net/releases"
 
 get-installed-version() {
     dpkg-query --showformat='${Version}' --show astrophotoplus
@@ -45,7 +45,6 @@ if latest.startswith('AstroPhotoPlus-{}'.format(current_version)):
     print('is_latest')
 else:
     print('needs_update')
-
 EOF
 }
 
@@ -71,6 +70,17 @@ update() {
     fi
 }
 
+check-update-available() {
+    latest_deb="$( get-latest-deb )"
+    echo "Latest version: $(basename "$latest_deb" )" >&2
+    echo "Current version: $( get-installed-version )" >&2
+    if [ "$(needs-update "$latest_deb")" == "is_latest" ]; then
+        exit 1
+    else
+        exit 0
+    fi
+}
+
 case "$1" in
     update)
         update
@@ -78,8 +88,11 @@ case "$1" in
     get-latest-info)
         get-latest-info
         ;;
+    check-update-available)
+        check-update-available
+        ;;
     *)
-        echo "Usage: $0 update|get-latest-info" >&1
+        echo "Usage: $0 update|get-latest-info|check-update-available" >&1
         exit 1
         ;;
 esac
