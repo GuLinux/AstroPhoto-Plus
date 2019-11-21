@@ -9,7 +9,7 @@ get-installed-version() {
 }
 
 get-latest-info() {
-    curl -f -s "$RELEASES_URL"
+    curl -L -f -s "$RELEASES_URL"
 }
 
 get-latest-deb() {
@@ -53,7 +53,7 @@ run-updater() {
     echo "Updating to package $@"
     temp_deb_file="/tmp/$( basename "$1")"
     cd /tmp
-    curl "$1" -o "$temp_deb_file"
+    curl -L "$1" -o "$temp_deb_file"
     apt install -y "$temp_deb_file"
     rm -f "$temp_deb_file"
     echo "Your system will now reboot."
