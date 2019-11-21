@@ -10,6 +10,7 @@
         "event-source-polyfill": "1.0.7",
         "forest-themes": "semantic-ui-forest/forest-themes#7f472cfbcc2093bb8c90cc56fba18ca8e3818028",
         "isomorphic-fetch": "^2.2.1",
+        "lodash": "^4.17.15",
         "native-base": "^2.12.1",
         "normalizr": "^3.4.0",
         "printj": "^1.2.1",
@@ -33,8 +34,7 @@
         "redux-thunk": "^2.3.0",
         "reselect": "^4.0.0",
         "semantic-ui-css": "^2.4.1",
-        "semantic-ui-react": "^0.87.2",
-        "lodash": "^4.17.15"
+        "semantic-ui-react": "^0.87.2"
     },
     "devDependencies": {
         "babel-jest": "24.8.0",

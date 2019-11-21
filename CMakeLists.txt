@@ -6,7 +6,9 @@ set(ASTRO_PHOTO_PLUS_HOME lib/${CMAKE_PROJECT_NAME})
 set(ASTRO_PHOTO_PLUS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${ASTRO_PHOTO_PLUS_HOME})
 set(CONFDIR ${CMAKE_INSTALL_PREFIX}/etc CACHE STRING "Directory for system wide configuration files")
 set(VERSION_SUFFIX "" CACHE STRING "Suffix to append to version number")
+
 configure_file(${CMAKE_SOURCE_DIR}/scripts/AstroPhotoPlus-ctl ${CMAKE_BINARY_DIR}/scripts/AstroPhotoPlus-ctl @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/scripts/version.sh.in ${CMAKE_BINARY_DIR}/version.sh)
 
 set(PACKAGE_TARGET "generic" CACHE STRING "package target [generic|raspbian]")
 

@@ -1,6 +1,0 @@
-#!/bin/bash
-set -e
-cd "$( dirname "$0")"
-docker build . -t gulinux/astrophotoplus-circleci
-docker push gulinux/astrophotoplus-circleci
-
