@@ -2,14 +2,14 @@
 
 set -e
 
-LATEST_INFO_URL="https://api.github.com/repos/GuLinux/AstroPhoto-Plus/releases/latest"
+RELEASES_URL="https://api.github.com/repos/GuLinux/AstroPhoto-Plus/releases"
 
 get-installed-version() {
     dpkg-query --showformat='${Version}' --show astrophotoplus
 }
 
 get-latest-info() {
-    curl -f -s "$LATEST_INFO_URL"
+    curl -f -s "$RELEASES_URL"
 }
 
 get-latest-deb() {
@@ -25,8 +25,8 @@ def is_compatible_asset(asset):
         return 'Raspbian' in asset['name']
     return 'Raspbian' not in asset['name']
 
-latest_version = requests.get('$LATEST_INFO_URL')
-latest_version_info = latest_version.json()
+latest_version = requests.get('$RELEASES_URL')
+latest_version_info = sorted(latest_version.json(), key=lambda r: r['created_at'], reverse=True)[0]
 deb_asset = [asset for asset in latest_version_info['assets'] if is_compatible_asset(asset)]
 print(deb_asset[0]['browser_download_url'])
 EOF
