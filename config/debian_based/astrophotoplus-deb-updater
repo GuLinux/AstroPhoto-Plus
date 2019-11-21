@@ -51,7 +51,7 @@ EOF
 
 run-updater() {
     echo "Updating to package $@"
-    temp_deb_file="/tmp/$1"
+    temp_deb_file="/tmp/$( basename "$1")"
     cd /tmp
     curl "$1" -o "$temp_deb_file"
     apt install -y "$temp_deb_file"
