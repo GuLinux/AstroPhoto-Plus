@@ -1,6 +1,7 @@
 import os
 from xml.etree import ElementTree
-from system import Service
+from service import Service
+from static_settings import StaticSettings
 
 class INDIService:
     def __init__(self, settings, on_started=None, on_exit=None):
@@ -10,7 +11,7 @@ class INDIService:
         self.indi_drivers_path = os.path.join(self.indi_prefix, 'share', 'indi')
         self.on_started = on_started
         self.on_exit = on_exit
-        self.service = Service('indiserver', settings.indi_service_logs)
+        self.service = Service('indiserver', StaticSettings.INDI_SERVICE_LOGS)
         self.groups = {}
         self.drivers = {}
         self.drivers_running = []
