@@ -4,6 +4,8 @@ from utils.threads import start_thread
 from app import logger
 from utils.cleanup_venv import clean_environment
 
+import socket
+from contextlib import closing
 
 class Service:
     def __init__(self, name, logs_directory):
@@ -13,6 +15,13 @@ class Service:
         self.stdout_path = os.path.join(logs_directory, name + '-stdout.log')
         self.stderr_path = os.path.join(logs_directory, name + '-stderr.log')
 
+
+    @staticmethod
+    def find_free_port():
+        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+            s.bind(('', 0))
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            return s.getsockname()[1]
 
 
     def status(self):

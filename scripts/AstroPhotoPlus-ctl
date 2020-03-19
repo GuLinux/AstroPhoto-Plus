@@ -13,7 +13,6 @@ Commands:
 
  - autosetup [username]        Prepares everything automatically, asking confirmation about choices where necessary.
  - setup-backend username      Setup the backend to run as the specified user.
- - start-redis                 Starts the required Redis server, and enables autostart at boot
  - setup-apache2               Prepares apache2 to serve ${APP_DISPLAY_NAME}.
  - setup-nginx                 Prepares nginx to serve ${APP_DISPLAY_NAME}.
  - start                       Starts ${APP_DISPLAY_NAME} daemon.
@@ -50,18 +49,12 @@ autosetup() {
     else
         read -p "Please enter the username for your ${APP_DISPLAY_NAME} backend server: " -i "${SUDO_USER:-$USER}" -e ASTRO_PHOTO_PLUS_USER
     fi
-    start-redis
     setup-backend "$ASTRO_PHOTO_PLUS_USER"
     autostart
     is-chroot || wait-backend
     echo "Automatic setup complete. You can open your browser at http://localhost to start using your ${APP_DISPLAY_NAME} installation."
     echo "If this is the first time installing ${APP_DISPLAY_NAME}, the server might not be ready yet and display an error page."
     echo "If this is the case, run $0 logs to see if it's still installing packages, or if there is a problem with your setup."
-}
-
-start-redis() {
-    systemctl enable redis
-    is-chroot || systemctl start redis
 }
 
 setup-apache2() {
@@ -155,7 +148,7 @@ check_root() {
 command="$1"; shift
 
 case "$command" in
-    autosetup|setup-apache2|setup-nginx|start|autostart|setup-backend|restart|start-redis)
+    autosetup|setup-apache2|setup-nginx|start|autostart|setup-backend|restart)
         check_root
         "$command" "$@"
         ;;
