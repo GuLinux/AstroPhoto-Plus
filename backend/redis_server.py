@@ -1,6 +1,7 @@
 from static_settings import StaticSettings, syslog
 from service import Service
 import sys
+import os
 
 class RedisServer:
     def __init__(self):
@@ -8,6 +9,7 @@ class RedisServer:
         self.service = Service('redis', StaticSettings.REDIS_SERVICE_LOGS)
 
     def start(self):
+        os.makedirs(StaticSettings.CONFIG_DIR, exist_ok=True)
         syslog('**** Initialising Redis server on port {}'.format(self.port))
         if self.service.is_running():
             raise RuntimeError('Service is already running')
