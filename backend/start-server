@@ -23,7 +23,7 @@ fi
 export VENV_HOME="$HOME/.local/share/AstroPhotoPlus/python-venv"
 if ! [ -d "$VENV_HOME" ] && ! [ -r "$VENV_HOME/bin/activate" ]; then
     mkdir -p "$( dirname "$VENV_HOME" )"
-    python3 -m venv "$VENV_HOME"
+    python3 -m venv --system-site-packages "$VENV_HOME"
 fi
 
 . "$VENV_HOME/bin/activate"
@@ -55,5 +55,9 @@ export PYTHONPATH="$PWD/indi-lite-tools/:$PWD:$HOME/.local/share/AstroPhotoPlus/
 thread_timeout=30
 
 set -x
-gunicorn --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t ${thread_timeout} -k gthread -b 0.0.0.0:5000 api_entrypoint:app "$@"
+GUNICORN_BINARY=gunicorn3
+if ! which "$GUNICORN_BINARY" >/dev/null 2>&1; then
+    GUNICORN_BINARY=gunicorn
+fi
+"$GUNICORN_BINARY" --threads ${WEB_THREADS:-4} ${RELOAD_PARAM} -t ${thread_timeout} -k gthread -b 0.0.0.0:5000 api_entrypoint:app "$@"
 set +x
