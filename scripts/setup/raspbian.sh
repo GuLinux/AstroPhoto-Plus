@@ -46,13 +46,12 @@ install-prerequisites() {
 }
 
 install-indi() {
-    notify "Downloading INDI packages"
-    wget -q -nc  https://www.indilib.org/download/raspberry-pi/send/6-raspberry-pi/9-indi-library-for-raspberry-pi.html -O libindi.tar.gz
-    tar xzf libindi.tar.gz && rm libindi.tar.gz
-    cd libindi*
+    notify "Adding INDI repository"
+    wget -O - https://www.astroberry.io/repo/key | apt-key add -
+    echo 'deb https://www.astroberry.io/repo/ buster main' > /etc/apt/sources.list.d/astroberry.list
+    apt-get update
     notify "Installing INDI packages"
-    sudo apt-get install -y -q ./*.deb
-    cd .. && rm -rf libindi*
+    apt-get install -y indi-full gsc
 }
 
 get-astrophotoplus-edge() {
