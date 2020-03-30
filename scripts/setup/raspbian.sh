@@ -43,6 +43,11 @@ install-prerequisites() {
         notify "Installing wget" $LIGHT_GREEN $YELLOW 2
         sudo apt-get install -y -q wget
     fi
+    if ! which python3 >/dev/null 2>&1; then
+        notify "Installing python3" $LIGHT_GREEN $YELLOW 2
+        sudo apt-get install -y -q python3
+    fi
+
 }
 
 install-indi() {
@@ -57,7 +62,7 @@ install-indi() {
 get-astrophotoplus-edge() {
     notify "Downloading latest AstroPhoto-Plus release"
     wget -nc "https://astrophotoplus.gulinux.net/releases" -O info.json
-    python <<EOF
+    python3 <<EOF
 import json
 import os
 
