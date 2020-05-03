@@ -74,5 +74,11 @@ Vagrant.configure("2") do |config|
     rm -vf /etc/nginx/sites-enabled/default
     ln -sf /etc/nginx/sites-available/astrophotoplus.conf /etc/nginx/sites-enabled/
     systemctl restart nginx
+    apt-get install -y network-manager
+    cat >>/etc/NetworkManager/NetworkManager.conf <<EOF
+[keyfile]
+unmanaged-devices=mac:$(ifconfig enp0s3| grep ether| awk '{ print $2 }')
+EOF
+    systemctl restart network-manager
   SHELL
 end
