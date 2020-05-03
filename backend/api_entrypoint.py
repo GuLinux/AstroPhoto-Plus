@@ -461,6 +461,28 @@ def retrieve_image_histogram(type, image):
 def get_telescopes():
     return [x.to_map() for x in controller.indi_server.telescopes()]
 
+@app.route('/api/guiders', methods=['GET'])
+@json_api
+@indi_connected
+def get_guiders():
+    return [x.to_map() for x in controller.indi_server.guiders()]
+
+
+@app.route('/api/guiders/<name>/guide', methods=['POST'])
+@json_input
+@json_api
+@indi_connected
+def guide(name, json):
+    guider = [g for g in controller.indi_server.guiders() if g.id == name]
+    if not guider:
+        raise NotFoundError('Guider {} not found'.format(name))
+    guider = guider[0]
+    try:
+        return guider.guide(json['direction'], json['duration'])
+    except KeyError:
+        raise BadRequestError('Error in JSON input')
+
+
 # astrometry module
 @app.route('/api/platesolving', methods=['GET'])
 @json_api
