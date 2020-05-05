@@ -11,6 +11,7 @@ const filterConnectedDevices = (devices, predicate) => devices.ids.filter(
 );
 
 export const getConnectedCameras = createSelector([getDevices], (devices) => filterConnectedDevices(devices, d => d.interfaces.includes('ccd')));
+export const getConnectedGuiders = createSelector([getDevices], (devices) => filterConnectedDevices(devices, d => d.interfaces.includes('guider')));
 export const getConnectedTelescopes = createSelector([getDevices], (devices) => filterConnectedDevices(devices, d => d.interfaces.includes('telescope')));
 export const getConnectedFilterWheels = createSelector([getDevices], (devices) => filterConnectedDevices(devices, d => d.interfaces.includes('filter')));
 

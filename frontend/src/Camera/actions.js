@@ -3,6 +3,17 @@ import Actions from '../actions';
 import { getCurrentFilterWheelId } from './selectors';
 import { getPropertyId } from '../INDI-Server/utils';
 
+export const shoot = (parameters) => (dispatch) => {
+    dispatch({ type: 'CAMERA_SHOOT', parameters });
+    return cameraShootAPI(dispatch, parameters.camera.id, parameters, (data) => dispatch(Camera.shotFinished(data, parameters.continuous)), (err) => {
+        if(err.headers.get('Content-Type') === 'application/json') {
+            err.json().then( (errorData) => dispatch(Camera.shotError(errorData)) );
+            return true;
+        }
+        return false;
+    });
+}
+
 
 const Camera = {
     setCamera: (camera) => ({ type: 'SET_CURRENT_CAMERA', camera }),
@@ -14,16 +25,7 @@ const Camera = {
     resetCrop: () => ({ type: 'CAMERA_RESET_CROP' }),
     setCrop: (crop) => ({ type: 'CAMERA_SET_CROP', crop }),
 
-    shoot: (parameters) => (dispatch) => {
-        dispatch({ type: 'CAMERA_SHOOT', parameters });
-        return cameraShootAPI(dispatch, parameters.camera.id, parameters, (data) => dispatch(Camera.shotFinished(data, parameters.continuous)), (err) => {
-            if(err.headers.get('Content-Type') === 'application/json') {
-                err.json().then( (errorData) => dispatch(Camera.shotError(errorData)) );
-                return true;
-            }
-            return false;
-        });
-    },
+    shoot,
 
     shotFinished: (payload, continuous) => dispatch => {
         dispatch({ type: 'CAMERA_SHOT_FINISHED', payload });

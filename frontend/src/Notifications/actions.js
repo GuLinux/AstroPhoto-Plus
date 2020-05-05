@@ -10,7 +10,7 @@ export const addNotification = (title, text, type, timeout, isModal=false) => (d
             headers: headersJSONRequest,
         });
     } else {
-        return { type: 'NOTIFICATION_ADDED', notification: {title, text, type, timeout, isModal} };
+        return dispatch({ type: 'NOTIFICATION_ADDED', notification: {title, text, type, timeout, isModal} });
     }
 };
 

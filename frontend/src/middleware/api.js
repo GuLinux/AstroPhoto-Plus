@@ -321,3 +321,14 @@ export const stopPHD2CaptureAPI = (dispatch, onSuccess, onError) => fetchJSON(
 );
 
 
+export const startDARVGuiding = (dispatch, guider, payload, onSuccess, onError) => fetchJSON(
+    dispatch,
+    `/api/polar-alignment/darv/${guider}`,
+    {
+        method: 'POST',
+        headers: headersJSONRequest,
+        body: JSON.stringify(payload),
+    },
+    onSuccess,
+    onError,
+)
