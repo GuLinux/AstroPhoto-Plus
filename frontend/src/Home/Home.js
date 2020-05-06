@@ -58,6 +58,16 @@ export const Home = ({serverName, autoguiderEngine}) => (
                     </List.Content>
                 </List.Item>
                 <List.Item>
+                    <List.Icon name='compass outline' />
+                    <List.Content>
+                        <List.Header as={Link} to={Routes.POLAR_ALIGNMENT_PAGE} content='Polar Alignment' />
+                        <List.Description>
+                            Tools for assisted polar alignment
+                        </List.Description>
+                    </List.Content>
+                </List.Item>
+
+                <List.Item>
                     <List.Icon name='computer' />
                     <List.Content>
                         <List.Header as={Link} to={Routes.INDI_PAGE} content='INDI' />

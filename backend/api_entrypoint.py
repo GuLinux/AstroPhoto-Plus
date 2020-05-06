@@ -1,6 +1,7 @@
 from flask import jsonify, Response, send_from_directory, send_file, request
 from app import app
 from catalogs import catalog_importer, catalogs
+from polar_alignment import darv
 import logging
 from skychart import skychart
 import os
@@ -132,12 +133,9 @@ def delete_indi_profile(id):
 @json_input
 @json_api
 def new_indi_profile(json):
-    try:
-        new_indi_profile = INDIProfile(name=json['name'], drivers=json['drivers'])
-        controller.indi_profiles.append(new_indi_profile)
-        return new_indi_profile.to_map()
-    except KeyError:
-        raise BadRequestError('Invalid json')
+    new_indi_profile = INDIProfile(name=json['name'], drivers=json['drivers'])
+    controller.indi_profiles.append(new_indi_profile)
+    return new_indi_profile.to_map()
 
 @app.route('/api/indi_profiles/<id>', methods=['PUT'])
 @json_input
@@ -249,24 +247,18 @@ def delete_sequence(id):
 @json_input
 @json_api
 def new_sequence(json):
-    try:
-        new_sequence = Sequence(json['name'], json['directory'], json['camera'], json.get('filterWheel'))
-        controller.sequences.append(new_sequence)
-        return new_sequence.to_map()
-    except KeyError:
-        raise BadRequestError('Invalid json')
+    new_sequence = Sequence(json['name'], json['directory'], json['camera'], json.get('filterWheel'))
+    controller.sequences.append(new_sequence)
+    return new_sequence.to_map()
 
 
 @app.route('/api/sequences/<id>', methods=['PUT'])
 @json_input
 @json_api
 def edit_sequence(id, json):
-    try:
-        with controller.sequences.lookup_edit(id) as sequence:
-            sequence.update(json)
-            return sequence.to_map()
-    except KeyError:
-        raise BadRequestError('Invalid json')
+    with controller.sequences.lookup_edit(id) as sequence:
+        sequence.update(json)
+        return sequence.to_map()
 
 
 
@@ -461,6 +453,35 @@ def retrieve_image_histogram(type, image):
 def get_telescopes():
     return [x.to_map() for x in controller.indi_server.telescopes()]
 
+@app.route('/api/guiders', methods=['GET'])
+@json_api
+@indi_connected
+def get_guiders():
+    return [x.to_map() for x in controller.indi_server.guiders()]
+
+
+@app.route('/api/guiders/<name>/guide', methods=['POST'])
+@json_input
+@json_api
+@indi_connected
+def guide(name, json):
+    guider = [g for g in controller.indi_server.guiders() if g.id == name]
+    if not guider:
+        raise NotFoundError('Guider {} not found'.format(name))
+    guider = guider[0]
+    return guider.guide(json['direction'], json['duration'])
+
+
+# polar alignment
+@app.route('/api/polar-alignment/darv/<guider>', methods=['POST'])
+@json_input
+@json_api
+@indi_connected
+def pa_darv(guider, json):
+    return darv.shoot(guider, json['exposure'], json.get('initial_pause', 5))
+
+
+
 # astrometry module
 @app.route('/api/platesolving', methods=['GET'])
 @json_api
@@ -501,8 +522,6 @@ def browser_mkdir(json):
             'path': path,
             'created': True,
         }
-    except KeyError:
-        raise BadRequestError('Invalid json')
     except Exception as e:
         raise BadRequestError(str(e))
 
@@ -606,10 +625,7 @@ def phd2_dither(json):
 @json_input
 @json_api
 def start_phd2(json):
-    try:
-        return phd2.start_phd2(json['phd2_path'], json['display'])
-    except KeyError as e:
-        raise BadRequestError(str(e))
+    return phd2.start_phd2(json['phd2_path'], json['display'])
 
 @app.route('/api/phd2/stop', methods=['POST'])
 @json_api
@@ -620,10 +636,7 @@ def stop_phd2():
 @json_input
 @json_api
 def set_phd2_profile(json):
-    try:
-        return phd2.set_profile(json['profile_id'])
-    except KeyError as e:
-        raise BadRequestError(str(e))
+    return phd2.set_profile(json['profile_id'])
 
 @app.route('/api/phd2/start-framing', methods=['PUT'])
 @json_api

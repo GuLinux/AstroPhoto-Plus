@@ -7,7 +7,7 @@ const onExposureChanged = exposure => Actions.Camera.setOption({exposure});
 
 const mapDispatchToProps = {
     onExposureChanged,
-    onShoot: Actions.Camera.shoot,
+    shoot: Actions.Camera.shoot,
 };
 
 

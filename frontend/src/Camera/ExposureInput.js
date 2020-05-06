@@ -20,7 +20,12 @@ const getValue = (isShooting, shotParameters, cameraExposureValue) => {
 }
 
 export class ExposureInput extends React.Component {
-    shoot = () => this.props.onShoot(this.props.shotParameters);
+    shoot = () => {
+        if(this.props.onShoot && ! this.props.onShoot(this.props.shotParameters)) {
+            return;
+        }
+        this.props.shoot(this.props.shotParameters);
+    }
 
     render = () => {
         const {shotParameters, cameraExposureValue, onExposureChanged, disabled, isShooting, size='mini'} = this.props;

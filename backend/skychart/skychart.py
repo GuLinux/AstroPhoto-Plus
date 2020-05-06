@@ -24,12 +24,9 @@ class SkyChart:
         pass
 
     def chart(self, options):
-        try:
-            ra = float(options['ra']) * u.hourangle
-            dec = float(options['dec']) * u.deg
-            fov = float(options['fov']) * u.deg
-        except KeyError as e:
-            raise BadRequestError('Missing parameter: {}'.format(e.args[0]))
+        ra = float(options['ra']) * u.hourangle
+        dec = float(options['dec']) * u.deg
+        fov = float(options['fov']) * u.deg
 
         magnitude = float(options.get('mag', '6'))
         max_labels_magnitude = float(options.get('max_labels_mag', 6))

@@ -1,6 +1,7 @@
 from pyindi_sequence import INDIClient
 from .camera import Camera
 from .telescope import Telescope
+from .guider import Guider
 from .filter_wheel import FilterWheel
 from .device import Device
 from .indi_property import Property
@@ -102,6 +103,9 @@ class Server:
 
     def telescopes(self):
         return [Telescope(self.settings, self.client, device=d) for d in self.client.telescopes()]
+
+    def guiders(self):
+        return [Guider(self.settings, self.client, device=d) for d in self.client.guiders()]
 
     def filter_wheels(self):
         return [FilterWheel(self.client, self.logger, filter_wheel=f) for f in self.client.filter_wheels()]

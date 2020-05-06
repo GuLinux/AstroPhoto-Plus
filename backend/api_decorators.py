@@ -43,6 +43,8 @@ def json_input(f):
             return f(*args, **kwargs)
         except BadRequestError as e:
             return api_bad_json_error(e.message, e.payload)
+        except KeyError as e:
+            return api_bad_json_error('Key(s) not found in json input: {}'.format(', '.join(e.args)))
     return f_wrapper
 
 def indi_connected(f):
