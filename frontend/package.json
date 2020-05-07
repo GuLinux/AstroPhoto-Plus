@@ -8,7 +8,7 @@
     "dependencies": {
         "@welldone-software/why-did-you-render": "^3.2.1",
         "event-source-polyfill": "1.0.7",
-        "forest-themes": "semantic-ui-forest/forest-themes#7f472cfbcc2093bb8c90cc56fba18ca8e3818028",
+        "forest-themes": "semantic-ui-forest/forest-themes#353af4ae45f2afe62383329632feca85db211719",
         "isomorphic-fetch": "^2.2.1",
         "lodash": "^4.17.15",
         "native-base": "^2.12.1",
@@ -34,7 +34,7 @@
         "redux-thunk": "^2.3.0",
         "reselect": "^4.0.0",
         "semantic-ui-css": "^2.4.1",
-        "semantic-ui-react": "^0.87.2"
+        "semantic-ui-react": "^0.88.2"
     },
     "devDependencies": {
 		"http-proxy-middleware": "^1.0.3",
@@ -49,7 +49,7 @@
     "scripts": {
         "build": "yarn run copy:assets && react-scripts build",
         "copy:assets": "yarn run copy:themes && yarn run remove_googlefonts_call",
-        "copy:themes": "yarn run forest:clean && cp -a node_modules/forest-themes/dist/* public/themes/ && cp -a node_modules/semantic-ui-css/themes public/themes/bootswatch-v3/ && cp -a node_modules/semantic-ui-css/themes public/themes/bootswatch-v4/",
+        "copy:themes": "yarn run forest:clean && cp -a node_modules/forest-themes/dist/* public/themes/",
         "eject": "react-scripts eject",
         "forest:clean": "rm -rf public/themes; mkdir -p public/themes",
         "remove_googlefonts_call": "python3 scripts/remove_googlefonts_call.py",

@@ -4,7 +4,7 @@ import re
 
 
 project_dir = (os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-css_file_path = os.path.join(project_dir, 'public', 'themes', 'bootswatch-v3', 'semantic.slate.min.css')
+css_file_path = os.path.join(project_dir, 'public', 'themes', 'bootswatch', 'v3', 'semantic.slate.css')
 
 gfont_re = re.compile('@import url\(https:\/\/fonts\.googleapis\.com.*\);$')
 with open(css_file_path, 'r') as f:

@@ -52,7 +52,7 @@ class EventListener:
         sse.publish_event('platesolving', 'platesolving_message', {'message': message})
 
     def on_platesolving_finished(self, payload):
-        sse.publish('platesolving', 'platesolving_finished', payload, is_error=(payload['status'] == 'error'))
+        sse.publish_event('platesolving', 'platesolving_finished', payload, is_error=(payload['status'] == 'error'))
 
     def on_indi_service_exit(self, service):
         service_stdout, service_stderr = None, None
