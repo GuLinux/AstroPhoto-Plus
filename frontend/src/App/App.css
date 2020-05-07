@@ -4,7 +4,6 @@
     top: 0;
     left: 0;
     z-index: 99;
-    background-color: #333;
     height: 100%;
     overflow: auto;
 }
@@ -205,7 +204,7 @@ a, .ui.list .item a.header, a:hover {
     color: #aaa;
 }
 
-.ui.stackable.menu {
+.ui.stackable.menu, .desktop-sidebar {
     background-color: #444;
     color: #aaa;
 }
