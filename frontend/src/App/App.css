@@ -4,7 +4,7 @@
     top: 0;
     left: 0;
     z-index: 99;
-    background-color: rgb(113, 121, 126);
+    background-color: #333;
     height: 100%;
     overflow: auto;
 }
@@ -58,7 +58,7 @@ body {
 .loadingOverlay {
     width: 100%;
     height: 100%;
-    background-color: #ffffffa0;
+/*    background-color: #ffffffa0;*/
     position: absolute;
     top: 0px;
     left: 0px;
@@ -106,6 +106,7 @@ body {
 
 /* Bootswatch fixes */
 
+/*
 .ui.info.message {
     background-color: #374950;
 }
@@ -121,7 +122,7 @@ body {
 .ui.basic.label {
     color: #555555;
 }
-
+*/
 .astrophotoplus-sidebar {
     min-height: 100%;
 }
@@ -132,7 +133,7 @@ body {
     padding-top: 0px!important;
     padding-bottom: 0px!important;
 }
-
+/*
 .sectionMenu .item {
     color: #ffffff!important;
 }
@@ -143,7 +144,7 @@ body {
 .sectionMenu .item.disabled {
     color: #ffffff66!important;
 }
-
+*/
 
 .fade-enter {
   opacity: 0;
@@ -160,7 +161,7 @@ body {
   transition: opacity 250ms ease-in;
 }
 
-
+/*
 .dropdownRotationFix {
     transform: rotate(270deg)!important;
 }
@@ -168,9 +169,128 @@ body {
 .active .dropdownRotationFix {
     transform: rotate(0deg)!important;
 }
+*/
 
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+}
+
+
+
+/* Theme colors */
+body {
+    background-color: #222;
+}
+
+body, .ui.header, .item .description, .ui.menu .item, .item, label, .ui.table {
+    color: #aaa!important;
+}
+
+a, .ui.list .item a.header, a:hover {
+    color: white;
+}
+.ui.list .list > .item a.header, .ui.list > .item a.header {
+    color: white!important;
+}
+
+.ui.segment, .ui.vertical.menu {
+    background-color: #333;
+    border-color: #444!important;
+}
+
+.ui.label, .ui.message {
+    background-color: #444;
+    color: #aaa;
+}
+
+.ui.stackable.menu {
+    background-color: #444;
+    color: #aaa;
+}
+
+.ui.secondary.stackable.menu {
+    background-color: rgba(0,0,0,0);
+}
+
+
+.ui.info.message {
+    background-color: #3f4d4d;
+    color: #bbdfea;
+}
+
+.ui.menu .active.item, .ui.secondary.menu .active.item {
+    background-color: #777;
+}
+
+.ui.menu a:hover {
+    background-color: #999!important;
+    color: #111!important;
+}
+
+input {
+    background-color: #eee!important;
+    color: #333!important;
+}
+
+.ui.input > input::placeholder {
+    color: #343964!important;
+}
+
+.ui.accordion .title:not(.ui) {
+    color: #aaa;
+}
+
+.ui.styled.accordion, .ui.styled.accordion .accordion {
+    background: #515050;
+}
+
+.ui.dropdown .menu > .item {
+    color: #111!important; 
+}
+
+.ui.selectable.table tbody tr:hover, .ui.table tbody tr td.selectable:hover {
+    background: rgba(255, 255, 255, 0.23) !important;
+    color: rgb(255, 255, 255) !important;
+}
+
+.ui.card, .ui.cards > .card {
+    background-color: #555;
+    color: #ababab!important;
+}
+
+.ui.definition.table tr td.definition, .ui.definition.table tr td:first-child:not(.ignored) {
+    color: white;
+}
+
+.ui.card > .content > .header, .ui.cards > .card > .content > .header {
+	color: #9999AA;
+}
+
+.ui.card .meta, .ui.cards > .card .meta {
+	color: #aaaaaa;
+}
+
+.ui.table thead th {
+	color: #bbbbbb;
+}
+
+.ui.toggle.checkbox input:checked ~ .box, .ui.toggle.checkbox input:checked ~ label {
+	color: #aaaaaa!important;
+}
+
+.ui.list .list > .item .header, .ui.list > .item .header {
+	color: #bbbbbb;
+}
+
+.ui.action.input > .button, .ui.action.input > .buttons {
+	border: #84929d;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.ui.action.input > .buttons > .button > i.icon, .action.input > .button {
+	color: white!important;
+	background-color: #444!important;
 }

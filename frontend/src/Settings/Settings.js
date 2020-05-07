@@ -93,14 +93,16 @@ export class Settings extends React.Component {
                             )}
                             {availableCatalogs && availableCatalogs.length > 0 && (
                                 <React.Fragment>
-                                    <Header size='small' content='Download catalogs' />
-                                    <Menu vertical fluid>
-                                        <Dropdown direction='left' floating item text='Select a catalog to download' disabled={this.props.catalogsImporting} >
-                                            <Dropdown.Menu>
-                                                {availableCatalogs.map(catalog => <Dropdown.Item onClick={() => importCatalog(catalog.catalogDownloadName, catalog.display_name)} key={catalog.catalogDownloadName} text={catalog.display_name} />)}
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </Menu>
+                                    <Grid>
+                                        <Grid.Column width={5}><Header size='small' content='Download catalogs' /></Grid.Column>
+                                        <Grid.Column width={11}>
+                                            <Dropdown fluid text={this.props.catalogsImporting ? 'Downloading...' : 'Select a catalog to download'} disabled={this.props.catalogsImporting} >
+                                                <Dropdown.Menu>
+                                                    {availableCatalogs.map(catalog => <Dropdown.Item onClick={() => importCatalog(catalog.catalogDownloadName, catalog.display_name)} key={catalog.catalogDownloadName} text={catalog.display_name} />)}
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        </Grid.Column>
+                                    </Grid>
                                 </React.Fragment>
                             )}
                         </Segment>

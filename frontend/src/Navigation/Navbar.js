@@ -66,7 +66,7 @@ class ResponsiveNavbar extends React.Component {
                     <NavbarMenuItems onClick={this.hide} key={this.props.location.pathname} autoguiderEngine={this.props.autoguiderEngine} />
                 </Sidebar>
                 <Sidebar.Pusher style={{overflow: 'initial'}}>
-                    <Menu inverted size='small' attached>
+                    <Menu size='small' attached>
                         <SiteMenuHeader as='a' icon='sidebar' onClick={this.show} serverName={this.props.serverName} />
                     </Menu>
                     <div className='responsive-content'>
