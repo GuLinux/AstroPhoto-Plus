@@ -10,6 +10,7 @@ import { ImageSectionMenuContainer } from '../Image/ImageContainer';
 import { NavItem } from './NavbarMenu';
 import { PlateSolvingSectionMenuContainer } from '../PlateSolving/PlateSolvingPageContainer';
 import { CameraSectionMenu } from '../Camera/Camera';
+import { DARVPolarAlignmentMenu } from '../PolarAlignment/DARV';
 
 export class NavbarMenuItems extends React.PureComponent {
 
@@ -25,6 +26,7 @@ export class NavbarMenuItems extends React.PureComponent {
             { this.props.autoguiderEngine === 'phd2' && <NavItem icon='dot circle outline' content='PHD2' to={Routes.PHD2} onClick={this.onClick} /> }
             <NavItem icon='camera' content='Camera' to={Routes.CAMERA_PAGE} onClick={this.onClick}/>
             <NavItem icon='map outline' content='Plate Solving' to={Routes.PLATE_SOLVING_PAGE} onClick={this.onClick}/>
+            <NavItem icon='compass outline' content='Polar Alignment' to={Routes.POLAR_ALIGNMENT_PAGE} onClick={this.onClick}/>
             <NavItem icon='computer' content='INDI' to={Routes.INDI_PAGE} onClick={this.onClick} />
             <NavItem icon='settings' content='System & Settings' to={Routes.SETTINGS_PAGE} onClick={this.onClick} />
             <Route exact path={Routes.SEQUENCES_LIST} component={SequencesListSectionMenu} />
@@ -32,6 +34,7 @@ export class NavbarMenuItems extends React.PureComponent {
             <Route path={Routes.SEQUENCE_JOB_IMAGES} exact={true} render={this.renderSequenceJobImages} />
             <Route exact path={Routes.CAMERA_PAGE} component={CameraSectionMenu} />
             <Route exact path={Routes.PLATE_SOLVING_PAGE} component={PlateSolvingSectionMenuContainer} />
+            <Route exact path={Routes.POLAR_ALIGNMENT_DARV} component={DARVPolarAlignmentMenu} />
             <Route path={Routes.IMAGE_PAGE} render={({match}) => <ImageSectionMenuContainer id={match.params.id} type={match.params.type} />} />
         </React.Fragment>
     );

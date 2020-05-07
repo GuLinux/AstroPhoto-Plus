@@ -8,6 +8,8 @@ export const Routes = {
     PLATE_SOLVING_PAGE: '/plate-solving',
     SETTINGS_PAGE: '/settings',
     IMAGE_PAGE: '/image/:type/:id',
+    POLAR_ALIGNMENT_PAGE: '/polar-alignment',
+    POLAR_ALIGNMENT_DARV: '/polar-alignment/darv',
     SEQUENCE_PAGE: {
         route: '/sequences/:id',
         format: id => `/sequences/${id}`,

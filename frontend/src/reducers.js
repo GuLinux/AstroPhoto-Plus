@@ -17,6 +17,7 @@ import { network } from './Network/reducer';
 import { backendSelection } from './BackendSelection/reducer';
 import { catalogs } from './Catalogs/reducer';
 import { phd2 } from './PHD2/reducer';
+import { polarAlignment } from './PolarAlignment/reducer';
 
 export const astroPhotoPlusReducer = combineReducers({
     app,
@@ -37,5 +38,6 @@ export const astroPhotoPlusReducer = combineReducers({
     backendSelection,
     catalogs,
     phd2,
+    polarAlignment,
 });
 
