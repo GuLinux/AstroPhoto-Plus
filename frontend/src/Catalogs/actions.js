@@ -55,6 +55,7 @@ export const lookupCatalogObject = (catalog, object, sectionKey ) => dispatch =>
     const onError = (response, isJSON) => {
         if(isJSON) {
             response.json().then(error => dispatch({type: 'CATALOG_LOOKUP_FAILED', error, sectionKey }));
+            return true;
         }
         return false;
     }
