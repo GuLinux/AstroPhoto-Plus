@@ -18,7 +18,7 @@ import { Routes } from '../routes';
 // import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import 'react-image-crop/dist/ReactCrop.css';
-import 'forest-themes/dist/semantic-ui/v2/semantic.flat.min.css';
+import '../semantic/dist/semantic.min.css';
 import './App.css';
 import { HomeContainer } from '../Home/HomeContainer';
 

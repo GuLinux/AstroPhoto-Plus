@@ -37,7 +37,8 @@
         "semantic-ui-react": "^0.88.2"
     },
     "devDependencies": {
-		"http-proxy-middleware": "^1.0.3",
+        "gulp": "^3",
+        "http-proxy-middleware": "^1.0.3",
         "metro-react-native-babel-preset": "0.55.0",
         "react-test-renderer": "16.8.6"
     },
@@ -48,7 +49,10 @@
     "private": true,
     "scripts": {
         "build": "yarn run static_assets && react-scripts build",
-        "static_assets": "yarn run remove_googlefonts_call",
+        "semantic:build": "cd node_modules/semantic-ui && gulp build-css build-assets",
+        "semantic:install": "cd node_modules/semantic-ui && gulp install",
+        "semantic:watch": "cd node_modules/semantic-ui && gulp watch",
+        "static_assets": "yarn run semantic:build",
         "eject": "react-scripts eject",
         "forest:clean": "rm -rf public/themes; mkdir -p public/themes",
         "remove_googlefonts_call": "python3 scripts/remove_googlefonts_call.py",

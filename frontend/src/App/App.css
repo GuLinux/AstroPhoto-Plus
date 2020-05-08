@@ -6,6 +6,7 @@
     z-index: 99;
     height: 100%;
     overflow: auto;
+    background-color: #444;
 }
 
 body {
@@ -179,6 +180,7 @@ body {
 
 
 /* Theme colors */
+/*
 body {
     background-color: #222;
 }
@@ -293,3 +295,4 @@ input {
 	color: white!important;
 	background-color: #444!important;
 }
+*/

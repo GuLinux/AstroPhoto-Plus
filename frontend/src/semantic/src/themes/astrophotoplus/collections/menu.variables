@@ -1,0 +1,10 @@
+@background: #444;
+@verticalBackground: #444;
+@borderWidth: 0px;
+@itemTextColor: #e0e0e0;
+@hoverItemTextColor: #ffffee;
+@activeHoverItemColor: #ffffff;
+@activeItemTextColor: #ffffff;
+
+@subMenuTextColor: @itemTextColor;
+@darkTextColor: @hoverItemTextColor;
