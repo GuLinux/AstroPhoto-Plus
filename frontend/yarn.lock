@@ -5775,12 +5775,6 @@ for-own@^1.0.0:
   dependencies:
     for-in "^1.0.1"
 
-forest-themes@semantic-ui-forest/forest-themes#353af4ae45f2afe62383329632feca85db211719:
-  version "0.1.0"
-  resolved "https://codeload.github.com/semantic-ui-forest/forest-themes/tar.gz/353af4ae45f2afe62383329632feca85db211719"
-  dependencies:
-    semantic-ui "^2.3.2"
-
 forever-agent@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/forever-agent/-/forever-agent-0.6.1.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
@@ -8136,7 +8130,7 @@ jetifier@^1.6.2:
   resolved "https://registry.yarnpkg.com/jetifier/-/jetifier-1.6.5.tgz#ea87324a4230bef20a9651178ecab978ee54a8cb"
   integrity sha512-T7yzBSu9PR+DqjYt+I0KVO1XTb1QhAfHnXV5Nd3xpbXM6Xg4e3vP60Q4qkNU8Fh6PHC2PivPUNN3rY7G2MxcDQ==
 
-jquery@^3.3.1, jquery@x.*:
+jquery@^3.3.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.1.tgz#d7b4d08e1bfdb86ad2f1a3d039ea17304717abb5"
   integrity sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg==
@@ -12934,13 +12928,6 @@ selfsigned@^1.10.7:
   dependencies:
     node-forge "0.9.0"
 
-semantic-ui-css@^2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/semantic-ui-css/-/semantic-ui-css-2.4.1.tgz#f5aea39fafb787cbd905ec724272a3f9cba9004a"
-  integrity sha512-Pkp0p9oWOxlH0kODx7qFpIRYpK1T4WJOO4lNnpNPOoWKCrYsfHqYSKgk5fHfQtnWnsAKy7nLJMW02bgDWWFZFg==
-  dependencies:
-    jquery x.*
-
 semantic-ui-react@^0.88.2:
   version "0.88.2"
   resolved "https://registry.yarnpkg.com/semantic-ui-react/-/semantic-ui-react-0.88.2.tgz#3d4b54f8b799769b412435c8531475fd34aa4149"
@@ -12958,7 +12945,7 @@ semantic-ui-react@^0.88.2:
     react-popper "^1.3.4"
     shallowequal "^1.1.0"
 
-semantic-ui@^2.3.2:
+semantic-ui@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/semantic-ui/-/semantic-ui-2.4.2.tgz#9187dc0918cf0149a6356466a520142bb1217248"
   integrity sha512-Nr7LDK/MbIM1Imxiktqhz9KOUCUz00rgxEkHb0xZvQUscK0z73SByrF9LYZaat0DQQA1u2dxj0EtEU7xWRu+zg==
