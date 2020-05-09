@@ -1,0 +1,20 @@
+@background: #444;
+@verticalBackground: #444;
+@borderWidth: 0px;
+@itemTextColor: #e0e0e0;
+@hoverItemTextColor: #ffffee;
+@activeHoverItemColor: #ffffff;
+@activeItemTextColor: #ffffff;
+@activeItemBackground: #555555;
+@hoverItemBackground: @activeItemBackground;
+
+@subMenuTextColor: @itemTextColor;
+@darkTextColor: @hoverItemTextColor;
+@secondaryActiveItemColor: @activeItemTextColor;
+@secondaryActiveItemBackground: #555555;
+@secondaryHoverItemColor: #fafaff;
+@secondaryHoverItemBackground: @secondaryActiveItemBackground;
+@secondaryActiveHoverItemColor: @secondaryHoverItemColor;
+
+@dropdownBackground            : #555;
+@dropdownItemColor             : #efefef;

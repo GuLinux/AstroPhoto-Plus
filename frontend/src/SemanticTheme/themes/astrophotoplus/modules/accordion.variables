@@ -1,0 +1,4 @@
+@styledBackground: #666666;
+@styledTitleColor: #eaeaea;
+@styledTitleHoverColor: #FFFFFF;
+@styledActiveTitleColor: @styledTitleHoverColor;

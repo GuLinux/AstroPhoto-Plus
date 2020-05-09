@@ -1,0 +1,3 @@
+@menuBackground                    : #555;
+@selectionTextColor                : @globalInputColor;
+@itemColor                         : #efefef;

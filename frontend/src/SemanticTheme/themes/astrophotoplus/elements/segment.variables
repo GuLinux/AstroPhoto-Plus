@@ -1,0 +1,4 @@
+@borderColor         : #9999AA;
+@background          : #222224;
+@borderWidth         : 0.01em;
+

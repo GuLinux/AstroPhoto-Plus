@@ -1,0 +1,23 @@
+/* Common */
+@labelColor                       : #f0f0f0
+@labelFocusColor                  : #fafafa;
+
+
+/* Toggle */
+@handleBackground                 : #e2e2e2;
+
+@toggleFocusColor                 : #555;
+@toggleOnLaneColor                : #449944;
+@toggleOnFocusLaneColor           : #66aa66;
+@toggleLaneBackground             : #444;
+@toggleOnLabelColor               : @labelColor;
+@toggleOffLabelColor              : @labelColor;
+
+/* Checkbox */
+
+@checkboxColor                    : #222222;
+@checkboxBackground               : #fefefe;
+@checkboxPressedBackground        : @checkboxBackground; 
+@checkboxFocusBackground          : @checkboxBackground; 
+@checkboxActiveBackground         : @checkboxBackground; 
+@checkboxActiveFocusBackground    : @checkboxBackground; 
