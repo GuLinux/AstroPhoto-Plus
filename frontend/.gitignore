@@ -81,5 +81,5 @@ buck-out/
 public/celestial
 public/themes
 
-src/semantic
+src/semantic/
 gulpfile.js

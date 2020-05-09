@@ -5,6 +5,13 @@
 @hoverItemTextColor: #ffffee;
 @activeHoverItemColor: #ffffff;
 @activeItemTextColor: #ffffff;
+@activeItemBackground: #555555;
+@hoverItemBackground: @activeItemBackground;
 
 @subMenuTextColor: @itemTextColor;
 @darkTextColor: @hoverItemTextColor;
+@secondaryActiveItemColor: @activeItemTextColor;
+@secondaryActiveItemBackground: #555555;
+@secondaryHoverItemColor: #fafaff;
+@secondaryHoverItemBackground: @secondaryActiveItemBackground;
+@secondaryActiveHoverItemColor: @secondaryHoverItemColor;

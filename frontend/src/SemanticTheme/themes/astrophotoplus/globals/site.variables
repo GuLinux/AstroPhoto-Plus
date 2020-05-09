@@ -34,7 +34,7 @@
 
 @black            : #eee;
 @grey             : #aaa;
-@white            : #444;
+@white            : #222224;
 
 /*---  Light Colors  ---*/
 @lightBlue        : #54C8FF;
@@ -46,8 +46,8 @@
 @lightTeal        : #6DFFFF;
 @lightYellow      : #FFE21F;
 
-@primaryColor     : @blue;
-@secondaryColor   : @black;
+@primaryColor     : #e0e0e0;
+@secondaryColor   : #dddddd;
 
 
 /*-------------------
@@ -55,9 +55,10 @@
 --------------------*/
 
 @bodyBackground      : #212121;
-@pageBackground      : #21212a;
+@pageBackground      : #212129;
 @fontSize            : 14px;
 @textColor           : #aaa;
+@mutedTextColor      : #efefef;
 
 @headerMargin        : 1em 0em 1rem;
 @paragraphMargin     : 0em 0em 1em;
@@ -105,3 +106,15 @@
 @largeMonitorBreakpoint      : 1400px;
 @widescreenMonitorBreakpoint : 1900px;
 
+
+/* Custom - MGU */
+@inputPlaceholderColor       : #212121;
+@inputPlaceholderFocusColor  : #222222;
+@inputBackground             : #ededed;
+
+@positiveColor               : #67b971;
+
+
+
+@infoBackgroundColor         : #475662;
+@infoTextColor               : #dae6ea;
