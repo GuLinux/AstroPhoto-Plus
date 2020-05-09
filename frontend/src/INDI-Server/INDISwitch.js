@@ -35,7 +35,7 @@ export class INDISwitch extends React.PureComponent{
                 return (
                     <Checkbox
                         className='indi-one-of-many-switch'
-                        slider
+                        toggle
                         checked={this.getDisplayValue()}
                         label={value.label}
                         readOnly={!editMode}

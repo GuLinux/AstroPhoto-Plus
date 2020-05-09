@@ -25,7 +25,7 @@ export const ExposuresCard = ({exposureJobsCount, totalShots, totalTime, complet
                 <Card.Header size='medium'>Exposures</Card.Header>
                 <Card.Meta>{exposureJobsCount} sequences</Card.Meta>
                 <Card.Description>
-                    <Table definition basic compact='very' size='small'>
+                    <Table definition basic compact='very' size='small' inverted color='grey'>
                         <Table.Body>
                             <Table.Row>
                                 <Table.Cell content='Total' />

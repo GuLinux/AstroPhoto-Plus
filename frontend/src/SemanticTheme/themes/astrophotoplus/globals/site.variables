@@ -34,7 +34,7 @@
 
 @black            : #eee;
 @grey             : #aaa;
-@white            : #222224;
+@white            : #fefefe;
 
 /*---  Light Colors  ---*/
 @lightBlue        : #54C8FF;
@@ -46,8 +46,8 @@
 @lightTeal        : #6DFFFF;
 @lightYellow      : #FFE21F;
 
-@primaryColor     : #e0e0e0;
-@secondaryColor   : #dddddd;
+@primaryColor     : #666;
+@secondaryColor   : #555;
 
 
 /*-------------------
@@ -118,3 +118,6 @@
 
 @infoBackgroundColor         : #475662;
 @infoTextColor               : #dae6ea;
+@globalInputColor            : #010101;
+@inputColor                  : @globalInputColor;
+

@@ -1,5 +1,5 @@
 /* Common */
-@labelColor                       : #f0f0f0;
+@labelColor                       : #f0f0f0
 @labelFocusColor                  : #fafafa;
 
 
@@ -16,7 +16,7 @@
 /* Checkbox */
 
 @checkboxColor                    : #222222;
-@checkboxBackground               : #fdfdfd;
+@checkboxBackground               : #fefefe;
 @checkboxPressedBackground        : @checkboxBackground; 
 @checkboxFocusBackground          : @checkboxBackground; 
 @checkboxActiveBackground         : @checkboxBackground; 

@@ -127,12 +127,27 @@ body {
     min-height: 100%;
 }
 
+.number-steps {
+	border-top-style: solid!important;
+	border-top-width: 1px!important;
+	border-right-color: white!important;
+	border-top-color: white!important;
+	border-right-width: 1px!important;
+	border-right-style: solid!important;
+	border-bottom-color: white!important;
+	border-bottom-width: 1px!important;
+	border-bottom-style: solid!important;
+	border-top-right-radius: 5px!important;
+	border-bottom-right-radius: 5px!important;
+}
+
 .number-steps button {
     padding-left: 2px!important;
     padding-right: 2px!important;
     padding-top: 0px!important;
     padding-bottom: 0px!important;
 }
+
 /*
 .sectionMenu .item {
     color: #ffffff!important;

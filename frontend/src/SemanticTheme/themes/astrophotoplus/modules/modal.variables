@@ -1,0 +1,5 @@
+@background                  : rgba(255,255,255, 0.3);
+@headerColor                 : #fafafa;
+@headerBackground            : @background;
+@contentBackground           : @background;
+@actionBackground            : @background;

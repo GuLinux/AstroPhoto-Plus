@@ -15,3 +15,6 @@
 @secondaryHoverItemColor: #fafaff;
 @secondaryHoverItemBackground: @secondaryActiveItemBackground;
 @secondaryActiveHoverItemColor: @secondaryHoverItemColor;
+
+@dropdownBackground            : #555;
+@dropdownItemColor             : #efefef;
