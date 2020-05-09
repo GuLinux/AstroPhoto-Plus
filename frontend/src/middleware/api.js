@@ -226,7 +226,7 @@ export const updateSettingsApi = (dispatch, settings, onSuccess) => fetchJSON(di
 
 export const downloadAstrometryIndexesApi = (dispatch, arcminutes, onSuccess, onError) => fetchJSON(
     dispatch,
-    '/api/astrometry/download_indexes',
+    '/api/platesolving/download_indexes',
     {
         method: 'POST',
         body: JSON.stringify({ arcminutes }),
