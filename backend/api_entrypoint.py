@@ -4,6 +4,7 @@ from catalogs import catalog_importer, catalogs
 from polar_alignment import darv
 import logging
 from skychart import skychart
+from network import network_service
 import os
 
 # Init logger, before we import anything else
@@ -654,6 +655,46 @@ def phd2_start_guiding(json):
 @json_api
 def phd2_stop_capture():
     return phd2.stop_capture()
+
+# NetworkManager
+@app.route('/api/network')
+def get_network():
+    return network_service.to_map()
+
+@app.route('/api/network/access_points')
+def get_network_access_points():
+    return network_service.access_points()
+
+
+@app.route('/api/network/add_wifi', methods=['POST'])
+@json_input
+@json_api
+def network_add_wifi(json):
+    return network_service.add_wifi(
+        json['ssid'],
+        json['psk'],
+        json.get('autoconnect', False),
+        json.get('priority', 0),
+        json.get('ap_mode', False),
+        json.get('network_name', None)
+    )
+
+@app.route('/api/network/<network_name>/activate', methods=['POST'])
+@json_api
+def network_activate_network(network_name):
+    return network_service.activate_connection(network_name)
+
+@app.route('/api/network/<network_name>/deactivate', methods=['POST'])
+@json_api
+def network_deactivate_network(network_name):
+    return network_service.deactivate_connection(network_name)
+
+
+@app.route('/api/network/<network_name>', methods=['DELETE'])
+@json_api
+def network_remove_network(network_name):
+    return network_service.remove_connection(network_name)
+
 
 
 # Misc

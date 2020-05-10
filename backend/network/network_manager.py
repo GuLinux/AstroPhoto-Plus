@@ -37,6 +37,13 @@ class NetworkConnection:
     def remove(self):
         self.nm_connection.Delete()
 
+    def to_map(self):
+        return {
+            'id': self.id,
+            'nm_settings': self.nm_connection.GetSettings(),
+        }
+
+
     @property
     def type(self):
         connection_type = self.nm_connection.GetSettings()['connection']['type']
@@ -71,6 +78,14 @@ class AccessPoint:
     @property
     def hwaddr(self):
         return self.nm_ap.HwAddress
+
+    def to_map(self):
+        return {
+            'ssid': self.ssid,
+            'frequency': self.frequency,
+            'strength': self.strength,
+            'hwaddr': self.hwaddr,
+        }
 
     def __str__(self):
         return '{}: freq {}, strength {}'.format(self.ssid, self.frequency, self.strength)
@@ -188,11 +203,14 @@ if __name__ == '__main__':
         nm.activate_connection(args.name, args.device)
 
     def add_wifi(args):
-        nm.add_wifi(args.ESSID, args.PSK, args.autoconnect, args.autoconnect_priority, args.access_point, arg.name)
+        nm.add_wifi(args.ESSID, args.PSK, args.autoconnect, args.autoconnect_priority, args.access_point, args.name)
 
-    def access_points(_):
-        for ap in nm.access_points():
-            print('ESSID: {}, frequency: {}, strength: {}'.format(ap.ssid, ap.frequency, ap.strength))
+    def access_points(args):
+        if args.json:
+            print(json.dumps([ap.to_map() for ap in nm.access_points()]))
+        else:
+            for ap in nm.access_points():
+                print('ESSID: {}, frequency: {}, strength: {}'.format(ap.ssid, ap.frequency, ap.strength))
 
     def deactivate_connection(args):
         nm.deactivate_connection(args.name)
@@ -217,12 +235,13 @@ if __name__ == '__main__':
     parser_add_wifi.add_argument('ESSID', help='Connection ESSID (name)')
     parser_add_wifi.add_argument('PSK', help='Connection passkey')
     parser_add_wifi.add_argument('--name', default=None, help='NetworkManager connection name (default: ESSID)')
-    parser_add_wifi.add_argument('--autoconnect', default=False, help='Autoconnect enabled (default: False)')
-    parser_add_wifi.add_argument('--autoconnect-priority', default=0, help='Autoconnect priority (default: 0)')
-    parser_add_wifi.add_argument('--access-point', default=False, help='Shared/Access Point Mode (default: False)')
+    parser_add_wifi.add_argument('--autoconnect', action='store_true', default=False, help='Autoconnect enabled (default: False)')
+    parser_add_wifi.add_argument('--autoconnect-priority', type=int, default=0, help='Autoconnect priority (default: 0)')
+    parser_add_wifi.add_argument('--access-point', action='store_true', default=False, help='Shared/Access Point Mode (default: False)')
     parser_add_wifi.set_defaults(func=add_wifi)
 
     parser_access_points = subparsers.add_parser('access-points', help='List access points')
+    parser_access_points.add_argument('--json', default=False, action='store_true', help='Print in json format')
     parser_access_points.set_defaults(func=access_points)
 
     parser_remove_connection = subparsers.add_parser('remove', help='Remove connection from NetworkManager')

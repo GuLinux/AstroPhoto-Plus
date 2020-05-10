@@ -30,3 +30,5 @@ app.config['REDIS_URL'] = 'redis://{}:{}/'.format(REDIS_HOST, REDIS_PORT)
 
 from broadcast_service import broadcast_service
 broadcast_service()
+from network import network_service
+network_service.start()
