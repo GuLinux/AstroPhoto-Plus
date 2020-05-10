@@ -1,4 +1,5 @@
 import NetworkManager
+import uuid
 import json
 
 ### MonkeyPatching NetworkManager module: https://github.com/seveas/python-networkmanager/issues/76
@@ -24,6 +25,15 @@ class NetworkConnection:
 
     def activate(self, device):
         NetworkManager.NetworkManager.ActivateConnection(self.nm_connection, device, '/')
+
+    def deactivate(self):
+        connection = [c for c in NetworkManager.NetworkManager.ActiveConnections if c.Connection.GetSettings()['connection']['id'] == self.id]
+        if not connection:
+           raise NetworkManagementError('Connection not active: "{}", unable to deactivate.'.format(self.id))
+        NetworkManager.NetworkManager.DeactivateConnection(connection[0])
+
+    def remove(self):
+        self.nm_connection.Delete()
 
     @property
     def type(self):
@@ -68,15 +78,13 @@ class AccessPoint:
 
 
 class NetworkManagement:
+
     def list_connections(self):
         return [NetworkConnection(c) for c in NetworkManager.Settings.Connections]
 
     def activate_connection(self, connection_id, device=None):
-        connection = [c for c in self.list_connections() if c.id == connection_id]
-        if not connection:
-            raise NetworkManagementError('Unknown connection')
-        connection = connection[0]
-        connection.activate(self.__find_device_for_connection(connection))
+        connection = self.__find_connection_by_id(connection_id)
+        connection.activate(self.__find_device_for_connection(connection, device))
 
     def access_points(self):
         wifi_devs = self.__wifi_devices()
@@ -84,6 +92,46 @@ class NetworkManagement:
         for dev in wifi_devs:
             access_points.extend([AccessPoint(nm_ap) for nm_ap in dev.GetAccessPoints() if not nm_ap.HwAddress in [ap.hwaddr for ap in access_points] ])
         return access_points
+
+    def add_wifi(self, ssid, psk, autoconnect=False, priority=0, ap_mode=False):
+        wireless_mode = 'ap' if ap_mode else 'infrastructure'
+        ipv4_method = 'shared' if ap_mode else 'auto'
+
+        connection_object = {
+            '802-11-wireless': {
+                'mode': wireless_mode,
+                'security': '802-11-wireless-security',
+                'ssid': ssid,
+            },
+            '802-11-wireless-security': {
+                'auth-alg': 'open',
+                'key-mgmt': 'wpa-psk',
+                'psk': psk,
+            },
+            'connection': {
+                'id': ssid,
+                'type': '802-11-wireless',
+                'uuid': str(uuid.uuid4()),
+                'autoconnect': autoconnect,
+            },
+            'ipv4': { 'method': ipv4_method },
+            'ipv6': { 'method': 'ignore' },
+
+        }
+        if autoconnect:
+            connection_object['connection']['autoconnect-priority'] = priority
+        NetworkManager.Settings.AddConnection(connection_object)
+ 
+    def remove_connection(self, connection_id):
+        connection = self.__find_connection_by_id(connection_id)
+        connection.remove()
+
+    def deactivate_connection(self, connection_id):
+        connection = self.__find_connection_by_id(connection_id)
+        connection.deactivate()
+
+    def active_connections(self):
+        return [NetworkConnection(c.Connection) for c in NetworkManager.NetworkManager.ActiveConnections]
 
     def __find_device_for_connection(self, connection, device=None):
         if device:
@@ -96,6 +144,12 @@ class NetworkManagement:
         if not devices:
             raise NetworkManagementError('Connection type unsupported')
         return devices[0]
+
+    def __find_connection_by_id(self, connection_id):
+        connection = [c for c in self.list_connections() if c.id == connection_id]
+        if not connection:
+            raise NetworkManagementError('Unknown connection')
+        return connection[0]
 
 
     def __wifi_devices(self):
