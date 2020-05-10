@@ -23,7 +23,9 @@ class NetworkManagerError(Exception):
 class NetworkConnection:
     def __init__(self, nm_connection):
         self.nm_connection = nm_connection
-        self.id = nm_connection.GetSettings()['connection']['id']
+        settings = nm_connection.GetSettings()
+        self.id = settings['connection']['id']
+        self.uuid = settings['connection']['uuid']
 
     def activate(self, device):
         NM.NetworkManager.ActivateConnection(self.nm_connection, device, '/')
@@ -37,11 +39,16 @@ class NetworkConnection:
     def remove(self):
         self.nm_connection.Delete()
 
-    def to_map(self):
-        return {
+    def to_map(self, nm_settings=False):
+        map_object = {
             'id': self.id,
-            'nm_settings': self.nm_connection.GetSettings(),
+            'type': self.type,
+            'isAccessPoint': self.is_access_point,
+            'uuid': self.uuid,
         }
+        if nm_settings:
+            map_object['nm_settings'] = self.nm_connection.GetSettings()
+        return map_object
 
 
     @property
@@ -52,6 +59,10 @@ class NetworkConnection:
         if connection_type == '802-11-wireless':
             return 'wifi'
         return 'unknown'
+
+    @property
+    def is_access_point(self):
+        return self.type == 'wifi' and self.nm_connection.GetSettings()['802-11-wireless']['mode'] == 'ap'
 
     def __str__(self):
         return json.dumps(self.nm_connection.GetSettings(), indent=4)
@@ -192,12 +203,18 @@ class NetworkManager:
 if __name__ == '__main__':
     nm = NetworkManager()
     def list_connections(_):
-        for c in nm.list_connections():
-            print('{} (type: {})'.format(c.id, c.type))
+        if args.json:
+            print(json.dumps([c.to_map() for c in nm.list_connections()]))
+        else:
+            for c in nm.list_connections():
+                print('{} (type: {})'.format(c.id, c.type))
 
     def active_connections(_):
-        for c in nm.active_connections():
-            print('{} (type: {})'.format(c.id, c.type))
+        if args.json:
+            print(json.dumps([c.to_map() for c in nm.active_connections()]))
+        else:
+            for c in nm.active_connections():
+                print('{} (type: {})'.format(c.id, c.type))
 
     def activate_connection(args):
         nm.activate_connection(args.name, args.device)
@@ -220,11 +237,14 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='AstroPhoto Plus Network Manager')
     subparsers = parser.add_subparsers(title='Commands', description='Available Commands', dest='subcommand')
+
     parser_connections = subparsers.add_parser('connections', help='Show all connections')
     parser_connections.set_defaults(func=list_connections)
+    parser_connections.add_argument('--json', default=False, action='store_true', help='Print in json format')
 
     parser_active_connections = subparsers.add_parser('active-connections', help='Show active connections')
     parser_active_connections.set_defaults(func=active_connections)
+    parser_active_connections.add_argument('--json', default=False, action='store_true', help='Print in json format')
 
     parser_activate_connection = subparsers.add_parser('activate', help='Activate connection')
     parser_activate_connection.add_argument('name', help='Connection name')
@@ -260,3 +280,4 @@ if __name__ == '__main__':
         parser.print_help()
     else:
         args.func(args)
+

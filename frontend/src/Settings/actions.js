@@ -1,10 +1,68 @@
-import { getSettingsApi, updateSettingsApi, downloadAstrometryIndexesApi } from '../middleware/api'
+import {
+    getSettingsApi,
+    updateSettingsApi,
+    downloadAstrometryIndexesApi,
+    getNetworkManagerStatusAPI,
+    getNetworkManagerAccessPointsAPI,
+    networkManagerAddWifiAPI,
+    networkManagerActivateConnectionAPI,
+    networkManagerDeactivateConnectionAPI,
+    networkManagerRemoveConnectionAPI,
+} from '../middleware/api'
 import Actions from '../actions';
 
 export const update = (settings) => dispatch => {
     dispatch({ type: 'UPDATE_SETTINGS', settings });
     return updateSettingsApi(dispatch, settings, data => dispatch(Settings.updated(data)) );
 };
+
+export const receivedNetworkManagerStatus = status => ({ type: 'NETWORK_MANAGER_STATUS', status });
+
+export const getNetworkManagerStatus = () => dispatch => {
+    dispatch({ type: 'NETWORK_MANAGER_FETCHING_STATUS' });
+    return getNetworkManagerStatusAPI(dispatch,
+        status => dispatch(receivedNetworkManagerStatus(status)),
+    );
+};
+
+export const getNetworkManagerAccessPoints = () => dispatch => getNetworkManagerAccessPointsAPI(
+    dispatch,
+    accessPoints => dispatch({ type: 'NETWORK_MANAGER_RECEIVED_ACCESS_POINTS', accessPoints }),
+);
+
+export const networkManagerAddWifi = (ssid, psk, autoconnect, priority, accessPoint, networkName) => dispatch => networkManagerAddWifiAPI(
+    dispatch,
+    {
+        ssid,
+        psk,
+        autoconnect,
+        priority,
+        ap_mode: accessPoint,
+        network_name: networkName,
+    },
+    result => dispatch({ type: 'NETWORK_MANAGER_WIFI_ADDED', result }),
+);
+
+export const networkManagerActivateConnection = connection => dispatch => networkManagerActivateConnectionAPI(
+    dispatch,
+    connection,
+    result => dispatch({ type: 'NETWORK_MANAGER_CONNECTION_ACTIVATING', result }),
+);
+
+export const networkManagerDeactivateConnection = connection => dispatch => networkManagerDeactivateConnectionAPI(
+    dispatch,
+    connection,
+    result => dispatch({ type: 'NETWORK_MANAGER_CONNECTION_DEACTIVATING', result }),
+);
+
+export const networkManagerRemoveConnection = connection => dispatch => networkManagerRemoveConnectionAPI(
+    dispatch,
+    connection,
+    result => dispatch({ type: 'NETWORK_MANAGER_CONNECTION_REMOVING', result }),
+);
+
+
+
 
 
 const Settings = {

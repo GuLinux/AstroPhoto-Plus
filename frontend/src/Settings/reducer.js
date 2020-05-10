@@ -1,11 +1,23 @@
-import { get } from 'lodash';
+import { set, get, getOr } from 'lodash/fp';
 
 const defaultState = {
     current: {},
     astrometry: {
         isDownloading: false,
     },
+    networkManager: {
+        loading: false,
+        connections: [],
+        activeConnections: [],
+    },
 };
+
+const networkLoading = (state, loading) => set('networkManager.loading', loading, state);
+
+const networkUpdated = (state, {connections, activeConnections}) => {
+    let newState = set('networkManager.connections', connections, networkLoading(state, false));
+    return set('networkManager.activeConnections', activeConnections, newState);
+}
 
 
 const settingsUpdated = (state, settings) => {
@@ -32,7 +44,7 @@ const appendAstrometryIndexDownloadError = (state, {file, errorMessage }) => ({
     astrometry: {
         ...state.astrometry,
         errors: [
-            ...get(state.astrometry, 'errors', []),
+            ...getOr([], 'errors', state.astrometry),
             { file, errorMessage },
         ]
     }
@@ -40,6 +52,10 @@ const appendAstrometryIndexDownloadError = (state, {file, errorMessage }) => ({
 
 const settings = (state = defaultState, action) => {
     switch(action.type) {
+        case 'NETWORK_MANAGER_FETCHING_STATUS':
+            return networkLoading(state, true);
+        case 'NETWORK_MANAGER_STATUS':
+            return networkUpdated(state, action.status);
         case 'SETTINGS_RECEIVED':
             return action.settings ? {...state, current: action.settings } : state;
         case 'SETTINGS_UPDATED':

@@ -332,3 +332,25 @@ export const startDARVGuiding = (dispatch, guider, payload, onSuccess, onError) 
     onSuccess,
     onError,
 )
+
+
+export const getNetworkManagerStatusAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/network', {}, onSuccess, onError);
+export const getNetworkManagerAccessPointsAPI = (dispatch, onSuccess, onError) => fetchJSON(dispatch, '/api/network/access-points', {}, onSuccess, onError);
+
+export const networkManagerAddWifiAPI = (dispatch, settings, onSuccess, onError) => fetchJSON(
+    dispatch,
+    '/api/network/add-wifi',
+    {
+        method: 'POST',
+        headers: headersJSONRequest,
+        body: JSON.stringify(settings),
+    },
+    onSuccess,
+    onError,
+);
+
+
+export const networkManagerActivateConnectionAPI = (dispatch, network, onSuccess, onError) => fetchJSON(dispatch, `/api/network/${network}/activate`, { method: 'POST' }, onSuccess, onError);
+export const networkManagerDeactivateConnectionAPI = (dispatch, network, onSuccess, onError) => fetchJSON(dispatch, `/api/network/${network}/deactivate`, { method: 'POST' }, onSuccess, onError);
+export const networkManagerRemoveConnectionAPI = (dispatch, network, onSuccess, onError) => fetchJSON(dispatch, `/api/network/${network}`, { method: 'DELETE' }, onSuccess, onError);
+

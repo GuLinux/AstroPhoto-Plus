@@ -661,12 +661,12 @@ def phd2_stop_capture():
 def get_network():
     return network_service.to_map()
 
-@app.route('/api/network/access_points')
+@app.route('/api/network/access-points')
 def get_network_access_points():
     return network_service.access_points()
 
 
-@app.route('/api/network/add_wifi', methods=['POST'])
+@app.route('/api/network/add-wifi', methods=['POST'])
 @json_input
 @json_api
 def network_add_wifi(json):

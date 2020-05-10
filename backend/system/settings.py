@@ -4,6 +4,7 @@ import six
 from redis_client import redis_client
 from app import logger
 import logging
+import socket
 from static_settings import StaticSettings, syslog
 
 log_levels = {
@@ -131,7 +132,7 @@ class Settings:
 
     @property
     def server_name(self):
-        return self.json_map.get('server_name', '')
+        return self.json_map.get('server_name', socket.gethostname())
 
     @property
     def astrometry_cpu_limit(self):
