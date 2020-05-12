@@ -34,7 +34,7 @@ class DARVComponent extends React.Component {
 
     setGuider = guider => () => this.props.setDARVGuider(guider);
 
-    renderGuiderButton = guider => <CheckButton key={guider} active={this.props.selectedGuider === guider} onClick={this.setGuider(guider)}>{guider}</CheckButton>;
+    renderGuiderButton = guider => <CheckButton key={guider} active={this.props.selectedGuider === guider} onClick={this.setGuider(guider)} content={guider} />;
 
     guidingMessage = direction => {
         if(this.props.selectedGuider === 'Manual') {

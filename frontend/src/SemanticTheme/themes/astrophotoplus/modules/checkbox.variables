@@ -12,6 +12,7 @@
 @toggleLaneBackground             : #444;
 @toggleOnLabelColor               : @labelColor;
 @toggleOffLabelColor              : @labelColor;
+@toggleOnFocusLabelColor          : #ffffff;
 
 /* Checkbox */
 

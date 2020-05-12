@@ -30,14 +30,14 @@ export const getNetworkManagerAccessPoints = () => dispatch => getNetworkManager
     accessPoints => dispatch({ type: 'NETWORK_MANAGER_RECEIVED_ACCESS_POINTS', accessPoints }),
 );
 
-export const networkManagerAddWifi = (ssid, psk, autoconnect, priority, accessPoint, networkName) => dispatch => networkManagerAddWifiAPI(
+export const networkManagerAddWifi = ({ssid, psk, autoconnect, priority, apMode, networkName}) => dispatch => networkManagerAddWifiAPI(
     dispatch,
     {
         ssid,
         psk,
         autoconnect,
         priority,
-        ap_mode: accessPoint,
+        ap_mode: apMode,
         network_name: networkName,
     },
     result => dispatch({ type: 'NETWORK_MANAGER_WIFI_ADDED', result }),

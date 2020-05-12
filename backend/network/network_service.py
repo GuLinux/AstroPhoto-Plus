@@ -57,8 +57,11 @@ class NetworkService:
 
     def __loop(self):
         while True:
-            connections = self.__nm_command(['connections', '--json'], json=True)
-            active_connections = self.__nm_command(['active-connections', '--json'], json=True)
+            try:
+                connections = self.__nm_command(['connections', '--json'], json=True)
+                active_connections = self.__nm_command(['active-connections', '--json'], json=True)
+            except:
+                logger.warning('Error fetching NetworkManager connections')
 
             if connections != self.connections or active_connections != self.active_connections:
                 self.connections = connections
