@@ -348,6 +348,18 @@ export const networkManagerAddWifiAPI = (dispatch, settings, onSuccess, onError)
     onSuccess,
     onError,
 );
+export const networkManagerUpdateWifiAPI = (dispatch, settings, onSuccess, onError) => fetchJSON(
+    dispatch,
+    '/api/network/update-wifi',
+    {
+        method: 'POST',
+        headers: headersJSONRequest,
+        body: JSON.stringify(settings),
+    },
+    onSuccess,
+    onError,
+);
+
 
 
 export const networkManagerActivateConnectionAPI = (dispatch, network, onSuccess, onError) => fetchJSON(dispatch, `/api/network/${network}/activate`, { method: 'POST' }, onSuccess, onError);

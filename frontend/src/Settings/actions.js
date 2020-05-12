@@ -8,6 +8,7 @@ import {
     networkManagerActivateConnectionAPI,
     networkManagerDeactivateConnectionAPI,
     networkManagerRemoveConnectionAPI,
+    networkManagerUpdateWifiAPI,
 } from '../middleware/api'
 import Actions from '../actions';
 
@@ -30,18 +31,34 @@ export const getNetworkManagerAccessPoints = () => dispatch => getNetworkManager
     accessPoints => dispatch({ type: 'NETWORK_MANAGER_RECEIVED_ACCESS_POINTS', accessPoints }),
 );
 
-export const networkManagerAddWifi = ({ssid, psk, autoconnect, priority, apMode, networkName}) => dispatch => networkManagerAddWifiAPI(
+export const networkManagerAddWifi = ({ssid, psk, autoconnect, priority, isAccessPoint, id}) => dispatch => networkManagerAddWifiAPI(
     dispatch,
     {
         ssid,
         psk,
         autoconnect,
         priority,
-        ap_mode: apMode,
-        network_name: networkName,
+        isAccessPoint,
+        id,
     },
     result => dispatch({ type: 'NETWORK_MANAGER_WIFI_ADDED', result }),
 );
+
+export const networkManagerUpdateWifi = ({id, ssid, psk, autoconnect, priority, isAccessPoint, rename}) => dispatch => networkManagerUpdateWifiAPI(
+    dispatch,
+    {
+        rename,
+        ssid,
+        psk,
+        autoconnect,
+        priority,
+        isAccessPoint,
+        id,
+    },
+    result => dispatch({ type: 'NETWORK_MANAGER_WIFI_UPDATED', result }),
+);
+
+
 
 export const networkManagerActivateConnection = connection => dispatch => networkManagerActivateConnectionAPI(
     dispatch,

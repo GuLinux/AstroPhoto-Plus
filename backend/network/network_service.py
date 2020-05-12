@@ -38,6 +38,18 @@ class NetworkService:
         self.__nm_command(command)
         return { 'status': 'adding_wifi', 'ssid': ssid }
 
+    def update_wifi(self, nm_id, ssid, psk, autoconnect=False, priority=0, ap_mode=False, rename=None):
+        command = ['update-wifi', nm_id, ssid, psk, '--autoconnect-priority', str(priority)]
+        if autoconnect:
+            command.append('--autoconnect')
+        if ap_mode:
+            command.append('--access-point')
+        if nm_id:
+            command.extend(['--rename', rename])
+        self.__nm_command(command)
+        return { 'status': 'saving_wifi', 'ssid': ssid }
+
+
     def activate_connection(self, connection, device=None):
         command = ['activate', connection]
         if device:

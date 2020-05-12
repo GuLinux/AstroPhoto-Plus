@@ -14,6 +14,7 @@ import {
     networkManagerActivateConnection,
     networkManagerDeactivateConnection,
     getNetworkManagerAccessPoints,
+    networkManagerUpdateWifi,
 } from './actions';
 
 
@@ -23,11 +24,14 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
         let connection = {
             ssid: '',
             psk: '',
-            networkName: '',
+            id: '',
             autoconnect: false,
             priority: 0,
-            apMode: false,
+            isAccessPoint: false,
         };
+        if(props.connection) {
+            Object.assign(connection, props.connection);
+        }
         this.state = { otherSettings: false, connection, showPassword: false };
     }
 
@@ -45,22 +49,28 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
     setSSID = (_, {value}) => this.setField('ssid', value);
 
     componentDidUpdate = (_, prevState) => {
-        if(this.state.connection.ssid !== prevState.connection.ssid && (this.state.connection.networkName === '' || this.state.connection.networkName === prevState.connection.ssid)) {
-            this.setField('networkName', this.state.connection.ssid);
+        if(this.state.connection.ssid !== prevState.connection.ssid && (this.state.connection.id === '' || this.state.connection.id === prevState.connection.ssid)) {
+            this.setField('id', this.state.connection.ssid);
         }
     }
 
-    setName = (_, {value}) => this.setField('networkName', value);
+    setName = (_, {value}) => this.setField('id', value);
     setPSK = (_, {value}) => this.setField('psk', value);
     setAutoconnect = (_, {checked}) => this.setField('autoconnect', checked);
-    setWifiClient = () => this.setField('apMode', false);
-    setWifiAP = () => this.setField('apMode', true);
+    setWifiClient = () => this.setField('isAccessPoint', false);
+    setWifiAP = () => this.setField('isAccessPoint', true);
     setPriority = value => this.setField('priority', value);
 
     preventFormSubmit = e => e.preventDefault();
 
     saveWifi = () => {
         if(this.props.connection) {
+            let connection = {
+                ...this.state.connection,
+                id: this.props.connection.id,
+                rename: this.state.connection.id,
+            }
+            this.props.networkManagerUpdateWifi(connection);
         } else {
             this.props.networkManagerAddWifi(this.state.connection);
         }
@@ -75,7 +85,7 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
         >
             <Modal.Header>{this.modalTitle()}</Modal.Header>
             <Modal.Content>
-                <Form onSubmit={this.preventFormSubmit}>
+                <Form autoComplete='off' onSubmit={this.preventFormSubmit}>
                     <Form.Field>
                         <label>ESSID (network name)</label>
                         <Input fluid label={this.scanButton()} labelPosition='right' placeholder='ESSID' value={this.state.connection.ssid} onChange={this.setSSID} />
@@ -87,8 +97,8 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
                     <Form.Field inline>
                         <label>WiFi Mode</label>
                         <Button.Group size='mini'>
-                            <CheckButton onClick={this.setWifiClient} active={!this.state.connection.apMode} content='Client' />
-                            <CheckButton onClick={this.setWifiAP} active={this.state.connection.apMode} content='Access Point (shared)' />
+                            <CheckButton onClick={this.setWifiClient} active={!this.state.connection.isAccessPoint} content='Client' />
+                            <CheckButton onClick={this.setWifiAP} active={this.state.connection.isAccessPoint} content='Access Point (shared)' />
                         </Button.Group>
                     </Form.Field>
                     <Form.Checkbox label='Autoconnect' toggle checked={this.state.connection.autoconnect} onClick={this.setAutoconnect} />
@@ -101,7 +111,7 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
                     <Accordion as={Form.Field} >
                         <Accordion.Title icon='dropdown' content='Other settings' active={this.state.otherSettings} onClick={this.toggleOtherSettings} />
                         <Accordion.Content active={this.state.otherSettings}>
-                            <Form.Input placeholder='Display Name' label='Display name' value={this.state.connection.networkName} onChange={this.setName} />
+                            <Form.Input placeholder='Display Name' label='Display name' value={this.state.connection.id} onChange={this.setName} />
                         </Accordion.Content>
                     </Accordion>
                 </Form>
@@ -118,7 +128,7 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
     );
 }
 
-const NetworkManagerWifiConnectionDialog = connect(null, { networkManagerAddWifi })(NetworkManagerWifiConnectionDialogComponent);
+const NetworkManagerWifiConnectionDialog = connect(null, { networkManagerAddWifi, networkManagerUpdateWifi })(NetworkManagerWifiConnectionDialogComponent);
 
 const networkTypeIcons = {
     wifi: 'wifi',
@@ -133,7 +143,7 @@ class NetworkManagerConnectionComponent extends React.Component {
     remove = () => this.props.networkManagerRemoveConnection(this.props.id);
 
     render = () => {
-        const {id, type, active, isAccessPoint} = this.props;
+        const {id, type, active, isAccessPoint} = this.props.connection;
         return (
             <Grid.Row>
                 <Grid.Column width={2} />
@@ -157,6 +167,7 @@ class NetworkManagerConnectionComponent extends React.Component {
                             confirmButton='Remove'
                             size='tiny'
                         />}
+                        {!active && <NetworkManagerWifiConnectionDialog trigger={<Button disabled={type !== 'wifi'}>Edit</Button>} connection={this.props.connection} /> }
                     </Button.Group>
                 </Grid.Column>
                 <Grid.Column width={2} />
@@ -170,7 +181,7 @@ const NetworkManagerConnection = connect(null, {networkManagerRemoveConnection, 
 
 const NetworkManagerComponent = ({networks}) => (
     <Grid stackable>
-        {networks.map(network => <NetworkManagerConnection {...network} key={network.id} />)}
+        {networks.map(network => <NetworkManagerConnection connection={network} key={network.id} />)}
         <Grid.Row>
             <Grid.Column width={11} />
             <Grid.Column width={3}>

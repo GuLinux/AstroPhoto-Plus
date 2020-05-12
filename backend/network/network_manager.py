@@ -1,8 +1,13 @@
 #!/bin/env python3
 import NetworkManager as NM
-import uuid
+import uuid as UUID
 import json
 import argparse
+import sys
+
+def syslog(s):
+    sys.stderr.write('{}\n'.format(s))
+    sys.stderr.flush()
 
 ### MonkeyPatching NetworkManager module: https://github.com/seveas/python-networkmanager/issues/76
 NM.device_class_orig = NM.device_class
@@ -26,6 +31,20 @@ class NetworkConnection:
         settings = nm_connection.GetSettings()
         self.id = settings['connection']['id']
         self.uuid = settings['connection']['uuid']
+        self.autoconnect = nm_connection.GetSettings()['connection'].get('autoconnect', True)
+        self.priority = nm_connection.GetSettings()['connection'].get('autoconnect-priority', 0)
+        self.psk = nm_connection.GetSecrets().get('802-11-wireless-security', {}).get('psk', '')
+        self.ssid = nm_connection.GetSettings().get('802-11-wireless', {}).get('ssid', '')
+        connection_type = self.nm_connection.GetSettings()['connection']['type']
+        if connection_type == '802-3-ethernet':
+            self.type = 'ethernet'
+        elif connection_type == '802-11-wireless':
+            self.type = 'wifi'
+        else:
+            self.type = 'unknown'
+
+        self.is_access_point = self.type == 'wifi' and nm_connection.GetSettings()['802-11-wireless']['mode'] == 'ap'
+
 
     def activate(self, device):
         NM.NetworkManager.ActivateConnection(self.nm_connection, device, '/')
@@ -39,36 +58,64 @@ class NetworkConnection:
     def remove(self):
         self.nm_connection.Delete()
 
+    def update_wifi(self, ssid, psk, autoconnect, priority, access_point, rename):
+        connection_object = NetworkConnection.wifi_connection_object(ssid, psk, autoconnect, priority, access_point, rename, self.uuid)
+        self.nm_connection.Update(connection_object)
+
     def to_map(self, nm_settings=False):
         map_object = {
             'id': self.id,
             'type': self.type,
             'isAccessPoint': self.is_access_point,
             'uuid': self.uuid,
+            'autoconnect': self.autoconnect,
+            'priority': self.priority,
+            'psk': self.psk,
+            'ssid': self.ssid
         }
         if nm_settings:
             map_object['nm_settings'] = self.nm_connection.GetSettings()
         return map_object
 
 
-    @property
-    def type(self):
-        connection_type = self.nm_connection.GetSettings()['connection']['type']
-        if connection_type == '802-3-ethernet':
-            return 'ethernet'
-        if connection_type == '802-11-wireless':
-            return 'wifi'
-        return 'unknown'
-
-    @property
-    def is_access_point(self):
-        return self.type == 'wifi' and self.nm_connection.GetSettings()['802-11-wireless']['mode'] == 'ap'
-
     def __str__(self):
         return json.dumps(self.nm_connection.GetSettings(), indent=4)
 
     def __repr__(self):
         return self.__str__()
+
+    def wifi_connection_object(ssid, psk, autoconnect, priority, ap_mode, nm_id, uuid=None):
+        wireless_mode = 'ap' if ap_mode else 'infrastructure'
+        ipv4_method = 'shared' if ap_mode else 'auto'
+        if not nm_id:
+            nm_id = ssid
+
+        connection_object = {
+            '802-11-wireless': {
+                'mode': wireless_mode,
+                'security': '802-11-wireless-security',
+                'ssid': ssid,
+            },
+            '802-11-wireless-security': {
+                'auth-alg': 'open',
+                'key-mgmt': 'wpa-psk',
+                'psk': psk,
+            },
+            'connection': {
+                'id': nm_id,
+                'type': '802-11-wireless',
+                'uuid': uuid if uuid else str(UUID.uuid4()),
+                'autoconnect': autoconnect,
+            },
+            'ipv4': { 'method': ipv4_method },
+            'ipv6': { 'method': 'ignore' },
+
+        }
+        if autoconnect:
+            connection_object['connection']['autoconnect-priority'] = priority
+        return connection_object
+
+
 
 class AccessPoint:
     def __init__(self, nm_ap):
@@ -123,35 +170,11 @@ class NetworkManager:
         return access_points
 
     def add_wifi(self, ssid, psk, autoconnect=False, priority=0, ap_mode=False, nm_id=None):
-        wireless_mode = 'ap' if ap_mode else 'infrastructure'
-        ipv4_method = 'shared' if ap_mode else 'auto'
-        if not nm_id:
-            nm_id = ssid
+        NM.Settings.AddConnection(NetworkConnection.wifi_connection_object(ssid, psk, autoconnect, priority, ap_mode, nm_id))
 
-        connection_object = {
-            '802-11-wireless': {
-                'mode': wireless_mode,
-                'security': '802-11-wireless-security',
-                'ssid': ssid,
-            },
-            '802-11-wireless-security': {
-                'auth-alg': 'open',
-                'key-mgmt': 'wpa-psk',
-                'psk': psk,
-            },
-            'connection': {
-                'id': nm_id,
-                'type': '802-11-wireless',
-                'uuid': str(uuid.uuid4()),
-                'autoconnect': autoconnect,
-            },
-            'ipv4': { 'method': ipv4_method },
-            'ipv6': { 'method': 'ignore' },
-
-        }
-        if autoconnect:
-            connection_object['connection']['autoconnect-priority'] = priority
-        NM.Settings.AddConnection(connection_object)
+    def update_wifi(self, nm_id, ssid, psk, autoconnect=False, priority=0, ap_mode=False, rename=None):
+        connection = self.__find_connection_by_id(nm_id)
+        connection.update_wifi(ssid, psk, autoconnect, priority, ap_mode, rename)
  
     def remove_connection(self, connection_id):
         connection = self.__find_connection_by_id(connection_id)
@@ -163,6 +186,7 @@ class NetworkManager:
 
     def active_connections(self):
         return [NetworkConnection(c.Connection) for c in NM.NetworkManager.ActiveConnections]
+
 
     def __find_device_for_connection(self, connection, device=None):
         if device:
@@ -222,6 +246,9 @@ if __name__ == '__main__':
     def add_wifi(args):
         nm.add_wifi(args.ESSID, args.PSK, args.autoconnect, args.autoconnect_priority, args.access_point, args.name)
 
+    def update_wifi(args):
+        nm.update_wifi(args.name, args.ESSID, args.PSK, args.autoconnect, args.autoconnect_priority, args.access_point, args.rename)
+
     def access_points(args):
         if args.json:
             print(json.dumps([ap.to_map() for ap in nm.access_points()]))
@@ -252,13 +279,23 @@ if __name__ == '__main__':
     parser_activate_connection.set_defaults(func=activate_connection)
 
     parser_add_wifi = subparsers.add_parser('add-wifi', help='Add new WiFi connection')
-    parser_add_wifi.add_argument('ESSID', help='Connection ESSID (name)')
-    parser_add_wifi.add_argument('PSK', help='Connection passkey')
+    
+    parser_update_wifi = subparsers.add_parser('update-wifi', help='Update existing WiFi connection')
+    parser_update_wifi.add_argument('name', help='NetworkManager connection name')
+
+    for subparser in [parser_add_wifi, parser_update_wifi]:
+        subparser.add_argument('ESSID', help='Connection ESSID (name)')
+        subparser.add_argument('PSK', help='Connection passkey')
+        subparser.add_argument('--autoconnect', action='store_true', default=False, help='Autoconnect enabled (default: False)')
+        subparser.add_argument('--autoconnect-priority', type=int, default=0, help='Autoconnect priority (default: 0)')
+        subparser.add_argument('--access-point', action='store_true', default=False, help='Shared/Access Point Mode (default: False)')
+
+
     parser_add_wifi.add_argument('--name', default=None, help='NetworkManager connection name (default: ESSID)')
-    parser_add_wifi.add_argument('--autoconnect', action='store_true', default=False, help='Autoconnect enabled (default: False)')
-    parser_add_wifi.add_argument('--autoconnect-priority', type=int, default=0, help='Autoconnect priority (default: 0)')
-    parser_add_wifi.add_argument('--access-point', action='store_true', default=False, help='Shared/Access Point Mode (default: False)')
     parser_add_wifi.set_defaults(func=add_wifi)
+
+    parser_update_wifi.add_argument('--rename', help='change NetworkManager connection name')
+    parser_update_wifi.set_defaults(func=update_wifi)
 
     parser_access_points = subparsers.add_parser('access-points', help='List access points')
     parser_access_points.add_argument('--json', default=False, action='store_true', help='Print in json format')

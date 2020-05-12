@@ -666,6 +666,20 @@ def get_network_access_points():
     return network_service.access_points()
 
 
+@app.route('/api/network/update-wifi', methods=['POST'])
+@json_input
+@json_api
+def network_update_wifi(json):
+    return network_service.update_wifi(
+        json['id'],
+        json['ssid'],
+        json['psk'],
+        json.get('autoconnect', False),
+        json.get('priority', 0),
+        json.get('isAccessPoint', False),
+        json.get('rename', None)
+    )
+
 @app.route('/api/network/add-wifi', methods=['POST'])
 @json_input
 @json_api
@@ -675,8 +689,8 @@ def network_add_wifi(json):
         json['psk'],
         json.get('autoconnect', False),
         json.get('priority', 0),
-        json.get('ap_mode', False),
-        json.get('network_name', None)
+        json.get('isAccessPoint', False),
+        json.get('id', None)
     )
 
 @app.route('/api/network/<network_name>/activate', methods=['POST'])
