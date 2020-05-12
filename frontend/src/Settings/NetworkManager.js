@@ -182,7 +182,7 @@ const NetworkManagerConnection = connect(null, {networkManagerRemoveConnection, 
 const formatAccessPointTimeout = n => n ? n : 'Disabled';
 
 
-const NetworkManagerComponent = ({networks}) => (
+const NetworkManagerComponent = ({networks, autoAccessPointSSID}) => (
     <Grid stackable>
         {networks.map(network => <NetworkManagerConnection connection={network} key={network.id} />)}
         <Grid.Row>
@@ -200,7 +200,7 @@ const NetworkManagerComponent = ({networks}) => (
                         <p>When no other network is detected after the specified time, AstroPhoto-Plus will automatically start broadcasting its own network in Access Point mode. You can disable this feature by setting the value to "0"</p>
                         <p>The first network with the "Access Point" flag active will be used. If none is found, a new Network will be created with the following settings:</p>
                         <ul>
-                            <li>SSID (network name): AstroPhoto-Plus-{'<computer name>'}</li>
+                            <li>SSID (network name): {autoAccessPointSSID}</li>
                             <li>Password: AstroPhotoPlus</li>
                         </ul>
                     </Message>

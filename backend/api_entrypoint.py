@@ -658,6 +658,7 @@ def phd2_stop_capture():
 
 # NetworkManager
 @app.route('/api/network')
+@json_api
 def get_network():
     return network_service.to_map()
 

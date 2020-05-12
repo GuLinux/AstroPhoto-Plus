@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 import NetworkManager as NM
 import uuid as UUID
 import json
@@ -62,8 +62,8 @@ class NetworkConnection:
         connection_object = NetworkConnection.wifi_connection_object(ssid, psk, autoconnect, priority, access_point, rename, self.uuid)
         self.nm_connection.Update(connection_object)
 
-    def to_map(self, nm_settings=False):
-        map_object = {
+    def to_map(self):
+        return {
             'id': self.id,
             'type': self.type,
             'isAccessPoint': self.is_access_point,
@@ -73,9 +73,6 @@ class NetworkConnection:
             'psk': self.psk,
             'ssid': self.ssid
         }
-        if nm_settings:
-            map_object['nm_settings'] = self.nm_connection.GetSettings()
-        return map_object
 
 
     def __str__(self):

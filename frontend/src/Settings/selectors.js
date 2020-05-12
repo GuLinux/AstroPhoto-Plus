@@ -79,10 +79,14 @@ export const cameraDropdownItemSelector = createSelector([
 export const telescopeDropdownItemSelector = createSelector([getTelescopeFocalLength], ({value: focalLength}) => ({focalLength}));
 
 
-export const networkManagerSelector = createSelector([networkManagerConnections, networkManagerActiveConnections],
-    (connections, activeConnections) => {
+export const networkManagerSelector = createSelector([
+    networkManagerConnections,
+    networkManagerActiveConnections,
+    state => state.settings.networkManager.autoAccessPointSSID,
+],
+    (connections, activeConnections, autoAccessPointSSID) => {
         let activeConnectionIds = activeConnections.map(c => c.id);
         let networks = connections.map(c => set('active', activeConnectionIds.includes(c.id), c));
-        return { networks };
+        return { networks, autoAccessPointSSID };
     }
 );

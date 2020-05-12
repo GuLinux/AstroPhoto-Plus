@@ -7,6 +7,7 @@ install(
     PATTERN "start-server" EXCLUDE
     PATTERN "access.log" EXCLUDE
     PATTERN "*.json.gz" EXCLUDE
+    PATTERN "network_manager.py" EXCLUDE
 )
 
 INSTALL(
@@ -15,3 +16,4 @@ INSTALL(
 )
 install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/start-server DESTINATION ${ASTRO_PHOTO_PLUS_HOME}/backend)
 install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/start-debug-server DESTINATION ${ASTRO_PHOTO_PLUS_HOME}/backend)
+install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/network/network_manager.py DESTINATION ${ASTRO_PHOTO_PLUS_HOME}/backend/network)
