@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { networkManagerSelector } from './selectors';
-import { Input, Accordion, Label, Form, Modal, Grid, Icon, Button } from 'semantic-ui-react';
+import { Message, Input, Accordion, Label, Form, Modal, Grid, Icon, Button } from 'semantic-ui-react';
 import { NumericInput } from '../components/NumericInput';
+import { InputSetting } from './InputSetting';
 import { set } from 'lodash/fp';
 
 import { CheckButton } from '../components/CheckButton';
@@ -138,9 +139,9 @@ const networkTypeIcons = {
 
 class NetworkManagerConnectionComponent extends React.Component {
 
-    activate = () => this.props.networkManagerActivateConnection(this.props.id);
-    deactivate = () => this.props.networkManagerDeactivateConnection(this.props.id);
-    remove = () => this.props.networkManagerRemoveConnection(this.props.id);
+    activate = () => this.props.networkManagerActivateConnection(this.props.connection.id);
+    deactivate = () => this.props.networkManagerDeactivateConnection(this.props.connection.id);
+    remove = () => this.props.networkManagerRemoveConnection(this.props.connection.id);
 
     render = () => {
         const {id, type, active, isAccessPoint} = this.props.connection;
@@ -178,6 +179,8 @@ class NetworkManagerConnectionComponent extends React.Component {
 
 const NetworkManagerConnection = connect(null, {networkManagerRemoveConnection, networkManagerActivateConnection, networkManagerDeactivateConnection})(NetworkManagerConnectionComponent);
 
+const formatAccessPointTimeout = n => n ? n : 'Disabled';
+
 
 const NetworkManagerComponent = ({networks}) => (
     <Grid stackable>
@@ -188,6 +191,21 @@ const NetworkManagerComponent = ({networks}) => (
                 <NetworkManagerWifiConnectionDialog trigger={<Button size='mini' color='blue' fluid><Icon name='wifi' />Add WiFi connection</Button>} />
             </Grid.Column>
             <Grid.Column width={2} />
+        </Grid.Row>
+        <Grid.Row>
+            <Grid.Column width={16}>
+                <Form>
+                    <InputSetting number setting='autoconnect_access_point_timeout' format={formatAccessPointTimeout} min={0} max={300} step={1} label='Automatically switch to AccessPoint mode' labelPrefix='seconds' />
+                    <Message attached='top' info>
+                        <p>When no other network is detected after the specified time, AstroPhoto-Plus will automatically start broadcasting its own network in Access Point mode. You can disable this feature by setting the value to "0"</p>
+                        <p>The first network with the "Access Point" flag active will be used. If none is found, a new Network will be created with the following settings:</p>
+                        <ul>
+                            <li>SSID (network name): AstroPhoto-Plus-{'<computer name>'}</li>
+                            <li>Password: AstroPhotoPlus</li>
+                        </ul>
+                    </Message>
+                </Form>
+            </Grid.Column>
         </Grid.Row>
     </Grid>
 );

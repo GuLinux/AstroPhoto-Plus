@@ -48,6 +48,7 @@ class Settings:
             'autoguider_settle_time',
             'autoguider_settle_timeout',
             'autoguider_settle_pixels',
+            'autoconnect_access_point_timeout',
         ]
 
         self.on_update = []
@@ -73,6 +74,10 @@ class Settings:
             if type(map_object[prop]) == bool:
                 map_object[prop] = int(map_object[prop])
         return map_object
+
+    @property
+    def autoconnect_access_point_timeout(self):
+        return int(self.json_map.get('autoconnect_access_point_timeout', 30))
 
     @property
     def indi_server_autoconnect(self):
