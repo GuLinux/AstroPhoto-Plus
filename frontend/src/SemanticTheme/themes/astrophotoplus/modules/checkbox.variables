@@ -22,3 +22,5 @@
 @checkboxFocusBackground          : @checkboxBackground; 
 @checkboxActiveBackground         : @checkboxBackground; 
 @checkboxActiveFocusBackground    : @checkboxBackground; 
+@checkboxActiveCheckColor         : #010101;
+@checkboxActiveFocusCheckColor         : #010101;

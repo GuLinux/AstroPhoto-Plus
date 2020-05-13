@@ -201,7 +201,7 @@ const NetworkManagerComponent = ({networks, autoAccessPointSSID}) => (
                         <p>The first network with the "Access Point" flag active will be used. If none is found, a new Network will be created with the following settings:</p>
                         <ul>
                             <li>SSID (network name): {autoAccessPointSSID}</li>
-                            <li>Password: AstroPhotoPlus</li>
+                            <li>Password: AstroPhoto-Plus</li>
                         </ul>
                     </Message>
                 </Form>
