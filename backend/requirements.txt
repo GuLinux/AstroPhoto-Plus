@@ -14,3 +14,4 @@ pkgconfig
 astroquery
 healpy
 svgwrite
+python-networkmanager

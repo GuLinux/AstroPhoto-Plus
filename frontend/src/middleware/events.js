@@ -5,6 +5,7 @@ import { EventSource } from './polyfills';
 import { API } from './api';
 import { serverError } from '../App/actions';
 import { phd2Disconnected, phd2Connected, updatePHD2Status, phd2GuidingStarted, phd2GuidingStopped, phd2StarLost, phd2GuideStep } from '../PHD2/actions';
+import { receivedNetworkManagerStatus } from '../Settings/actions';
 
 
 const logEvent = event => {
@@ -146,9 +147,24 @@ const phd2Events = (event, dispatch) => {
             dispatch(updatePHD2Status(eventObject.payload));
             break;
         default:
-            logEvent(event)
+            logEvent(event);
     }
 };
+
+const networkEvents = (event, dispatch) => {
+    const eventObject = JSON.parse(event.data);
+    switch(eventObject.event) {
+        case 'networks_changed':
+            console.log(eventObject);
+            console.log(receivedNetworkManagerStatus);
+            console.log(dispatch);
+            dispatch(receivedNetworkManagerStatus(eventObject.payload));
+            break;
+        default:
+            logEvent(event);
+    }
+}
+
 
 const listenToEvents = (dispatch) => {
     var es = new EventSource(API.getFullURL('/api/events'));
@@ -173,6 +189,9 @@ const listenToEvents = (dispatch) => {
             case 'phd2':
                 phd2Events(event, dispatch);
                 break;
+            case 'network':
+                networkEvents(event, dispatch);
+                break;
             default:
                 logEvent(event);
         }
@@ -183,6 +202,7 @@ const listenToEvents = (dispatch) => {
     es.addEventListener('platesolving', serverListener);
     es.addEventListener('astrometry_index_downloader', serverListener);
     es.addEventListener('phd2', serverListener);
+    es.addEventListener('network', serverListener);
     es.onerror = e => {
         dispatch(serverError('event_source', 'event', e));
         es.close();

@@ -120,4 +120,4 @@
 @infoTextColor               : #dae6ea;
 @globalInputColor            : #010101;
 @inputColor                  : @globalInputColor;
-
+@selectedTextColor           : #ffffff;

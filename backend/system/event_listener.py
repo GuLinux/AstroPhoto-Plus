@@ -54,6 +54,9 @@ class EventListener:
     def on_platesolving_finished(self, payload):
         sse.publish_event('platesolving', 'platesolving_finished', payload, is_error=(payload['status'] == 'error'))
 
+    def on_network_changed(self, payload, is_error=False):
+        sse.publish_event('network', 'networks_changed', payload, is_error=is_error)
+
     def on_indi_service_exit(self, service):
         service_stdout, service_stderr = None, None
         with open(service.stdout_path, 'r') as f:

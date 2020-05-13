@@ -55,6 +55,7 @@ autosetup() {
     echo "Automatic setup complete. You can open your browser at http://localhost to start using your ${APP_DISPLAY_NAME} installation."
     echo "If this is the first time installing ${APP_DISPLAY_NAME}, the server might not be ready yet and display an error page."
     echo "If this is the case, run $0 logs to see if it's still installing packages, or if there is a problem with your setup."
+    echo "For Raspbian and other distributions that do not originally come with NetworkManager preinstalled, you might want to reboot your box to get proper network management in AstroPhoto Plus."
 }
 
 setup-apache2() {

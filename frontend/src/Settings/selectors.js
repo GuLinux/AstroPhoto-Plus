@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
-import { get } from 'lodash';
+import { get, getOr, set } from 'lodash/fp';
 import { getConnectedCameras, getConnectedTelescopes, getCCDWidthPix, getCCDPixelPitch, getTelescopeFocalLength } from '../Gear/selectors';
 import { getBackendVersion, getFrontendVersion } from '../App/selectors';
 import { getDownloadableCatalogs, getCurrentCatalogs, getCatalogImportingStatus } from '../Catalogs/selectors';
@@ -8,14 +8,17 @@ import { getDownloadableCatalogs, getCurrentCatalogs, getCatalogImportingStatus 
 export const getSettings = state => state.settings;
 export const getCurrentSettings = state => getSettings(state).current;
 
-export const getCurrentSetting = (state, {setting}) => get(getCurrentSettings(state), setting);
+export const getCurrentSetting = (state, {setting}) => get(setting, getCurrentSettings(state));
 
 const getCommands = state => state.commands;
 
 const getAstrometryIsDownloading = state => state.settings.astrometry.isDownloading;
 
-export const getServerName = state => get(state, 'settings.current.server_name', '');
-export const getAutoguiderEngine = state => get(state, 'settings.current.autoguider_engine', 'off');
+export const getServerName = state => getOr('', 'settings.current.server_name', state);
+export const getAutoguiderEngine = state => getOr('off', 'settings.current.autoguider_engine', state);
+
+const networkManagerConnections = state => state.settings.networkManager.connections;
+const networkManagerActiveConnections = state => state.settings.networkManager.activeConnections;
 
 
 const settingSelectorKey = (state, {setting}) => setting;
@@ -75,3 +78,24 @@ export const cameraDropdownItemSelector = createSelector([
 
 export const telescopeDropdownItemSelector = createSelector([getTelescopeFocalLength], ({value: focalLength}) => ({focalLength}));
 
+export const networkManagerWifiConnectionDialogSelector = createSelector([state => state.settings.networkManager.accessPoints], accessPoints => {
+    const accessPointsList = Object.keys(accessPoints).map(name => accessPoints[name]);
+    accessPointsList.sort((a, b) => b.strength - a.strength);
+    return { 
+        accessPoints: accessPointsList
+    };
+});
+
+
+
+export const networkManagerSelector = createSelector([
+    networkManagerConnections,
+    networkManagerActiveConnections,
+    state => state.settings.networkManager.autoAccessPointSSID,
+],
+    (connections, activeConnections, autoAccessPointSSID) => {
+        let activeConnectionIds = activeConnections.map(c => c.id);
+        let networks = connections.map(c => set('active', activeConnectionIds.includes(c.id), c));
+        return { networks, autoAccessPointSSID };
+    }
+);

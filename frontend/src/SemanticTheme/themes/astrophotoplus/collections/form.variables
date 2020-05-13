@@ -1,1 +1,3 @@
 @inputColor                  : @globalInputColor;
+@labelColor                  : #dadada;
+@inputFocusColor             : #010101;

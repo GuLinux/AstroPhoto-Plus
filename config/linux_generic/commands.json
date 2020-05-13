@@ -25,32 +25,6 @@
     },
 
     {
-        "id": "3",
-        "name": "Activate connection (NetworkManager)",
-        "arguments": ["sudo", "nmcli", "connection", "up"],
-        "check": ["sudo", "nmcli", "general", "status"],
-        "category": "Network",
-        "request_parameters": {
-            "message": "Connection name",
-            "variables": [
-                { "label": "Name", "name": "CONNECTION_NAME", "type": "text", "required": true }
-            ]
-        },
-        "ui_properties": {
-            "icon": "wifi"
-        }
-    },
-    {
-        "id": "4",
-        "name": "List connections (NetworkManager)",
-        "arguments": ["nmcli", "connection", "show"],
-        "check": ["nmcli", "general", "status"],
-        "category": "Network",
-        "ui_properties": {
-            "icon": "wifi"
-        }
-    },
-    {
         "id": "5",
         "name": "Start VNC server",
         "arguments": ["tigervncserver", "-SecurityTypes", "None", "-localhost", "no", "--I-KNOW-THIS-IS-INSECURE"],

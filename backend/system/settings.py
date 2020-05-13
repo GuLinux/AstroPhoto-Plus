@@ -4,6 +4,7 @@ import six
 from redis_client import redis_client
 from app import logger
 import logging
+import socket
 from static_settings import StaticSettings, syslog
 
 log_levels = {
@@ -47,6 +48,7 @@ class Settings:
             'autoguider_settle_time',
             'autoguider_settle_timeout',
             'autoguider_settle_pixels',
+            'autoconnect_access_point_timeout',
         ]
 
         self.on_update = []
@@ -72,6 +74,10 @@ class Settings:
             if type(map_object[prop]) == bool:
                 map_object[prop] = int(map_object[prop])
         return map_object
+
+    @property
+    def autoconnect_access_point_timeout(self):
+        return int(self.json_map.get('autoconnect_access_point_timeout', 30))
 
     @property
     def indi_server_autoconnect(self):
@@ -131,7 +137,7 @@ class Settings:
 
     @property
     def server_name(self):
-        return self.json_map.get('server_name', '')
+        return self.json_map.get('server_name', socket.gethostname())
 
     @property
     def astrometry_cpu_limit(self):

@@ -14,7 +14,11 @@ def __broadcast_loop():
     server.bind(("", BROADCAST_PORT - 1))
     message = '\x1f'.join(['astrophoto+', str(settings.web_application_port), settings.server_name, settings.web_protocol]).encode()
     while True:
-        written = server.sendto(message, ('<broadcast>', BROADCAST_PORT))
+        try:
+            written = server.sendto(message, ('<broadcast>', BROADCAST_PORT))
+        except OSError:
+            # Ignore errors when disconnected from network
+            pass
         time.sleep(2)
 
 def broadcast_service():

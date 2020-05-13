@@ -6,6 +6,7 @@ import { DownloadIndexesModalContainer } from './DownloadIndexesModalContainer';
 import { InputSetting } from './InputSetting';
 import { CheckboxSetting } from './CheckboxSetting';
 import { SettingButtonChoice } from './SettingButtonChoice';
+import { NetworkManager } from './NetworkManager';
  
 export class Settings extends React.Component {
     render = () => {
@@ -35,6 +36,10 @@ export class Settings extends React.Component {
                         <CommandsContainer />
                     </Segment>
                 )}
+                <Segment>
+                    <Header content='Network' />
+                    <NetworkManager />
+                </Segment>
                 <Form>
                     <Segment>
                         <Header content='Settings' />

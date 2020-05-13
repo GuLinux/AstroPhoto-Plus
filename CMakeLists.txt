@@ -38,18 +38,18 @@ SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Marco Gulino <marco.gulino@gmail.com>")
 
 ## Debian package dependencies
 # System dependencies
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "nginx | apache2, python3, swig, build-essential, redis-server, astrometry.net")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, python3-pip, python3-venv, python3-astropy, python3-numpy, python3-pkgconfig, python3-pil, python3-astroquery, python3-redis, python3-healpy, python3-flask, python3-requests, python3-six, python3-svgwrite")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "nginx | apache2, python3, swig, build-essential, redis-server, astrometry.net, network-manager")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, python3-pip, python3-venv, python3-astropy, python3-numpy, python3-pkgconfig, python3-pil, python3-astroquery, python3-redis, python3-healpy, python3-flask, python3-requests, python3-six, python3-svgwrite, python3-networkmanager")
 
 # Other libraries
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libatlas-base-dev, libpython3-dev, libindi-dev, zlib1g-dev, libnova-dev, libcfitsio-dev, libopenjp2-7, libopencv-dev, libccfits-dev, libffi-dev")
+set(CPACK_DEBIAN_PACKAGE_CONFLICTS "openresolv, dhcpcd5, dnsmasq")
 
 
 set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE all)
 
 if("${PACKAGE_TARGET}" STREQUAL "raspbian")
     SET(CPACK_GENERATOR "DEB")
-    set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, hostapd, dnsmasq")
     set(CPACK_SYSTEM_NAME Raspbian)
 else()
     SET(CPACK_GENERATOR "TGZ;DEB")

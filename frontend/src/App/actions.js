@@ -5,12 +5,14 @@ import Actions from '../actions';
 import { getFrontendVersion } from './selectors';
 import { addNotification } from '../Notifications/actions';
 import { get } from 'lodash';
-import { getAvailableCatalogs, getCatalogs } from '../Catalogs/actions.js';
+import { getAvailableCatalogs, getCatalogs } from '../Catalogs/actions';
 import { getPHD2Status } from '../PHD2/actions';
+import { getNetworkManagerStatus } from '../Settings/actions';
 
 let retryTimer = null;
 
 export const serverError = (source, payloadType, payload, responseBody) => dispatch => {
+    console.error(source, payloadType, payload, responseBody);
     dispatch({ type: 'SERVER_ERROR', source, payloadType, payload, responseBody });
     retryTimer = setTimeout(() => dispatch(init()), 1000);
 };
@@ -55,5 +57,6 @@ export const init = () => async (dispatch, getState) => {
     dispatch(getAvailableCatalogs());
     dispatch(getCatalogs());
     dispatch(getPHD2Status());
+    dispatch(getNetworkManagerStatus());
     listenToEvents(dispatch);
 }
