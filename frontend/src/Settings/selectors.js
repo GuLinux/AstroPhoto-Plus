@@ -78,6 +78,15 @@ export const cameraDropdownItemSelector = createSelector([
 
 export const telescopeDropdownItemSelector = createSelector([getTelescopeFocalLength], ({value: focalLength}) => ({focalLength}));
 
+export const networkManagerWifiConnectionDialogSelector = createSelector([state => state.settings.networkManager.accessPoints], accessPoints => {
+    const accessPointsList = Object.keys(accessPoints).map(name => accessPoints[name]);
+    accessPointsList.sort((a, b) => b.strength - a.strength);
+    return { 
+        accessPoints: accessPointsList
+    };
+});
+
+
 
 export const networkManagerSelector = createSelector([
     networkManagerConnections,

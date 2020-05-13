@@ -10,6 +10,7 @@ const defaultState = {
         loading: false,
         connections: [],
         activeConnections: [],
+        accessPoints: {},
     },
 };
 
@@ -19,6 +20,12 @@ const networkUpdated = (state, {connections, activeConnections, autoAccessPointS
     let newState = set('networkManager.connections', connections, networkLoading(state, false));
     newState = set('networkManager.autoAccessPointSSID', autoAccessPointSSID, newState);
     return set('networkManager.activeConnections', activeConnections, newState);
+}
+
+const mergeNetworkManagerAccessPoints = (state, action) => {
+    let newState = state;
+    action.accessPoints.forEach(ap => newState = set(['networkManager', 'accessPoints', ap.ssid], ap, newState));
+    return newState;
 }
 
 
@@ -54,6 +61,10 @@ const appendAstrometryIndexDownloadError = (state, {file, errorMessage }) => ({
 
 const settings = (state = defaultState, action) => {
     switch(action.type) {
+        case 'NETWORK_MANAGER_CLEAR_ACCESS_POINTS':
+            return set('networkManager.accessPoints', {}, state);
+        case 'NETWORK_MANAGER_RECEIVED_ACCESS_POINTS':
+            return mergeNetworkManagerAccessPoints(state, action);
         case 'NETWORK_MANAGER_FETCHING_STATUS':
             return networkLoading(state, true);
         case 'NETWORK_MANAGER_STATUS':

@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { networkManagerSelector } from './selectors';
-import { Message, Input, Accordion, Label, Form, Modal, Grid, Icon, Button } from 'semantic-ui-react';
+import { networkManagerWifiConnectionDialogSelector, networkManagerSelector } from './selectors';
+import { Menu, Header, Message, Input, Accordion, Label, Form, Modal, Grid, Icon, Button } from 'semantic-ui-react';
 import { NumericInput } from '../components/NumericInput';
 import { InputSetting } from './InputSetting';
 import { set } from 'lodash/fp';
@@ -15,6 +15,7 @@ import {
     networkManagerActivateConnection,
     networkManagerDeactivateConnection,
     getNetworkManagerAccessPoints,
+    networkManagerClearAccessPoints,
     networkManagerUpdateWifi,
 } from './actions';
 
@@ -33,7 +34,8 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
         if(props.connection) {
             Object.assign(connection, props.connection);
         }
-        this.state = { otherSettings: false, connection, showPassword: false };
+        this.state = { otherSettings: false, connection, showPassword: false, showScanPage: false };
+        this.scanTimer = 0;
     }
 
 
@@ -42,12 +44,23 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
 
     toggleOtherSettings = () => this.setState({otherSettings: !this.state.otherSettings});
     toggleShowPassword = e => this.setState({showPassword: !this.state.showPassword});
-
-    scanButton = () => false && <Button content='Scan' />;
     showPasswordButton= () => <Button icon={this.state.showPassword ? 'eye slash' : 'eye'} onClick={this.toggleShowPassword} />;
 
-    setField= (field, value) => this.setState(set(`connection.${field}`, value, this.state));
-    setSSID = (_, {value}) => this.setField('ssid', value);
+    showScanPage = () => {
+        this.props.networkManagerClearAccessPoints();
+        this.scanTimer = setInterval(this.props.getNetworkManagerAccessPoints, 2000);
+        this.props.getNetworkManagerAccessPoints();
+        this.setState({ showScanPage: true });
+    }
+
+    hideScanPage = ssid => {
+        clearInterval(this.scanTimer);
+        let newState = set('showScanPage', false, this.state);
+        if(ssid) {
+            newState = set('connection.ssid', ssid, newState);
+        }
+        this.setState(newState);
+    }
 
     componentDidUpdate = (_, prevState) => {
         if(this.state.connection.ssid !== prevState.connection.ssid && (this.state.connection.id === '' || this.state.connection.id === prevState.connection.ssid)) {
@@ -55,6 +68,8 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
         }
     }
 
+    setField= (field, value) => this.setState(set(`connection.${field}`, value, this.state));
+    setSSID = (_, {value}) => this.setField('ssid', value);
     setName = (_, {value}) => this.setField('id', value);
     setPSK = (_, {value}) => this.setField('psk', value);
     setAutoconnect = (_, {checked}) => this.setField('autoconnect', checked);
@@ -77,6 +92,59 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
         }
     }
 
+    selectSSID = ssid => () => {
+        this.hideScanPage(ssid);
+    }
+
+    renderScanAccessPoint = ({ssid, strength, frequency}) => (
+        <Menu.Item key={ssid} onClick={this.selectSSID(ssid)}>
+            <Label>strength: {strength}</Label>
+            {ssid}
+        </Menu.Item>
+    );
+
+    renderWifiList = () => (
+        <React.Fragment>
+            <Header size='small'>Available WiFi networks</Header>
+            <Menu vertical fluid secondary>
+                {this.props.accessPoints.map(this.renderScanAccessPoint)}
+            </Menu>
+        </React.Fragment>
+    );
+
+    renderWifiForm = () => (
+        <Form autoComplete='off' onSubmit={this.preventFormSubmit}>
+            <Form.Field>
+                <label>ESSID (network name)</label>
+                <Input fluid label={<Button content='Scan' onClick={this.showScanPage} />} labelPosition='right' placeholder='ESSID' value={this.state.connection.ssid} onChange={this.setSSID} />
+            </Form.Field>
+            <Form.Field>
+                <label>Password</label>
+                <Input placeholder='Password' value={this.state.connection.psk} onChange={this.setPSK} type={this.state.showPassword ? 'text' : 'password'} label={this.showPasswordButton()} labelPosition='right' />
+            </Form.Field>
+            <Form.Field inline>
+                <label>WiFi Mode</label>
+                <Button.Group size='mini'>
+                    <CheckButton onClick={this.setWifiClient} active={!this.state.connection.isAccessPoint} content='Client' />
+                    <CheckButton onClick={this.setWifiAP} active={this.state.connection.isAccessPoint} content='Access Point (shared)' />
+                </Button.Group>
+            </Form.Field>
+            <Form.Checkbox label='Autoconnect' toggle checked={this.state.connection.autoconnect} onClick={this.setAutoconnect} />
+            { this.state.connection.autoconnect && (
+            <Form.Field>
+                <label>Priority</label>
+                <NumericInput min={0} max={99} step={1} placeholder='Autoconnect priority' value={this.state.connection.priority} onChange={this.setPriority} />
+            </Form.Field>
+            )}
+            <Accordion as={Form.Field} >
+                <Accordion.Title icon='dropdown' content='Other settings' active={this.state.otherSettings} onClick={this.toggleOtherSettings} />
+                <Accordion.Content active={this.state.otherSettings}>
+                    <Form.Input placeholder='Display Name' label='Display name' value={this.state.connection.id} onChange={this.setName} />
+                </Accordion.Content>
+            </Accordion>
+        </Form>
+    );
+
     render = () => (
         <ModalDialog 
             basic
@@ -86,50 +154,32 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
         >
             <Modal.Header>{this.modalTitle()}</Modal.Header>
             <Modal.Content>
-                <Form autoComplete='off' onSubmit={this.preventFormSubmit}>
-                    <Form.Field>
-                        <label>ESSID (network name)</label>
-                        <Input fluid label={this.scanButton()} labelPosition='right' placeholder='ESSID' value={this.state.connection.ssid} onChange={this.setSSID} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Password</label>
-                        <Input placeholder='Password' value={this.state.connection.psk} onChange={this.setPSK} type={this.state.showPassword ? 'text' : 'password'} label={this.showPasswordButton()} labelPosition='right' />
-                    </Form.Field>
-                    <Form.Field inline>
-                        <label>WiFi Mode</label>
-                        <Button.Group size='mini'>
-                            <CheckButton onClick={this.setWifiClient} active={!this.state.connection.isAccessPoint} content='Client' />
-                            <CheckButton onClick={this.setWifiAP} active={this.state.connection.isAccessPoint} content='Access Point (shared)' />
-                        </Button.Group>
-                    </Form.Field>
-                    <Form.Checkbox label='Autoconnect' toggle checked={this.state.connection.autoconnect} onClick={this.setAutoconnect} />
-                    { this.state.connection.autoconnect && (
-                    <Form.Field>
-                        <label>Priority</label>
-                        <NumericInput min={0} max={99} step={1} placeholder='Autoconnect priority' value={this.state.connection.priority} onChange={this.setPriority} />
-                    </Form.Field>
-                    )}
-                    <Accordion as={Form.Field} >
-                        <Accordion.Title icon='dropdown' content='Other settings' active={this.state.otherSettings} onClick={this.toggleOtherSettings} />
-                        <Accordion.Content active={this.state.otherSettings}>
-                            <Form.Input placeholder='Display Name' label='Display name' value={this.state.connection.id} onChange={this.setName} />
-                        </Accordion.Content>
-                    </Accordion>
-                </Form>
+                { !this.state.showScanPage && this.renderWifiForm() }
+                { this.state.showScanPage && this.renderWifiList() }
             </Modal.Content>
             <Modal.Actions>
-                <ModalDialog.CloseButton content='Cancel' />
-                <ModalDialog.CloseButton
-                    content={this.submitButtonText()}
-                    primary
-                    onClose={this.saveWifi}
-                />
+                { this.state.showScanPage && <Button content='Back' onClick={this.hideScanPage} /> }
+                { !this.state.showScanPage && (
+                    <React.Fragment>
+                        <ModalDialog.CloseButton content='Cancel' />
+                        <ModalDialog.CloseButton
+                            content={this.submitButtonText()}
+                            primary
+                            onClose={this.saveWifi}
+                        />
+                    </React.Fragment>
+                )}
             </Modal.Actions>
         </ModalDialog>
     );
 }
 
-const NetworkManagerWifiConnectionDialog = connect(null, { networkManagerAddWifi, networkManagerUpdateWifi })(NetworkManagerWifiConnectionDialogComponent);
+const NetworkManagerWifiConnectionDialog = connect(networkManagerWifiConnectionDialogSelector, {
+    networkManagerClearAccessPoints,
+    getNetworkManagerAccessPoints,
+    networkManagerAddWifi,
+    networkManagerUpdateWifi,
+})(NetworkManagerWifiConnectionDialogComponent);
 
 const networkTypeIcons = {
     wifi: 'wifi',

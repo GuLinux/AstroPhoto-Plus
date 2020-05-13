@@ -663,6 +663,7 @@ def get_network():
     return network_service.to_map()
 
 @app.route('/api/network/access-points')
+@json_api
 def get_network_access_points():
     return network_service.access_points()
 

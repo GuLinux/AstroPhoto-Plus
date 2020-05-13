@@ -37,7 +37,7 @@ class NetworkService:
         }
 
     def access_points(self):
-        return self.__nm_command('access-points', '--json', json=True)
+        return self.__nm_command(['access-points', '--json'], json=True)
 
     def add_wifi(self, ssid, psk, autoconnect=False, priority=0, ap_mode=False, nm_id=None):
         command = ['add-wifi', ssid, psk, '--autoconnect-priority', str(priority)]

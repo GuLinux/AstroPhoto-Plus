@@ -26,6 +26,8 @@ export const getNetworkManagerStatus = () => dispatch => {
     );
 };
 
+export const networkManagerClearAccessPoints = () => ({ type: 'NETWORK_MANAGER_CLEAR_ACCESS_POINTS' });
+
 export const getNetworkManagerAccessPoints = () => dispatch => getNetworkManagerAccessPointsAPI(
     dispatch,
     accessPoints => dispatch({ type: 'NETWORK_MANAGER_RECEIVED_ACCESS_POINTS', accessPoints }),
