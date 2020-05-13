@@ -6,7 +6,6 @@ const defaultState = {
         isDownloading: false,
     },
     networkManager: {
-        autoAccessPointSSID: '',
         loading: false,
         connections: [],
         activeConnections: [],
@@ -16,9 +15,8 @@ const defaultState = {
 
 const networkLoading = (state, loading) => set('networkManager.loading', loading, state);
 
-const networkUpdated = (state, {connections, activeConnections, autoAccessPointSSID}) => {
+const networkUpdated = (state, {connections, activeConnections}) => {
     let newState = set('networkManager.connections', connections, networkLoading(state, false));
-    newState = set('networkManager.autoAccessPointSSID', autoAccessPointSSID, newState);
     return set('networkManager.activeConnections', activeConnections, newState);
 }
 

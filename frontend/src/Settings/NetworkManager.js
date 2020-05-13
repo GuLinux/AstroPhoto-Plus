@@ -53,7 +53,7 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
         this.setState({ showScanPage: true });
     }
 
-    hideScanPage = ssid => {
+    hideScanPage = ({ssid=''}) => {
         clearInterval(this.scanTimer);
         let newState = set('showScanPage', false, this.state);
         if(ssid) {
@@ -93,7 +93,7 @@ class NetworkManagerWifiConnectionDialogComponent extends React.Component {
     }
 
     selectSSID = ssid => () => {
-        this.hideScanPage(ssid);
+        this.hideScanPage({ssid});
     }
 
     renderScanAccessPoint = ({ssid, strength, frequency}) => (
