@@ -1,9 +1,11 @@
 import astropy.units as u
 import astropy.wcs
 from astropy.coordinates import SkyCoord
+from .astropy_monkeypatch import astropy_monkeypatch
 import healpy
 import math
 from app import logger
+
 
 class SkyFrame:
     def __init__(self, ra, dec, fov, nside=128):
