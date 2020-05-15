@@ -114,7 +114,7 @@ ask-yn() {
 
 setup-sudo() {
     notify "Do you want to allow the user $target_user to run sudo without password?" $LIGHT_GREEN $YELLOW 0
-    notify "Warning! Although this is perfectly safe in isolated environments, it might be a security concern. It might be a good idea to allow this if you want to trigger privileged commands (reboot, wifi management, automatic updates) from AstroPhoto Plus." $RED $YELLOW 0
+    notify "Warning! Although this is perfectly safe in isolated environments, it might be a security risk in some environments. It might be a good idea to allow this if you want to trigger privileged commands (reboot, wifi management, automatic updates) from AstroPhoto Plus. So unless you have strong security concerns, this is highly recommended." $RED $YELLOW 0
     if ask-yn echo -n "Setup sudo? [y/n] "; then
         echo "$target_user    ALL = NOPASSWD: ALL" >/etc/sudoers.d/${target_user}_nopasswd
         chmod 644 /etc/sudoers.d/${target_user}_nopasswd
@@ -126,11 +126,12 @@ cleanup() {
     rm -rf "$workdir"
 }
 
+setup-sudo
 install-prerequisites
 setup-indi-ppa
 get-astrophotoplus-edge
 install-astrophotoplus
-setup-sudo
+
 cleanup
 
 notify "Automatic setup of AstroPhoto Plus finished. You should now be able to run the app at the address http://localhost (or in your local network, at http://$(hostname).local)"
