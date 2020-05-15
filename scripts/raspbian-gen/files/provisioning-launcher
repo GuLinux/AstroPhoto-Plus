@@ -4,8 +4,8 @@ export ASTROPHOTOPLUS_AP=AstroPhoto-Plus
 export ASTROPHOTOPLUS_AP_PSK=AstroPhoto-Plus
 
 echo " *** Launching raspbian provisioning script" >&2
-bash /tmp/raspbian.sh
-rm -f /tmp/raspbian.sh
+bash /tmp/ubuntu-raspbian.sh
+rm -f /tmp/ubuntu-raspbian.sh
 
 # Extra step: install python dependencies
 sudo -H -u "$TARGET_USER" /usr/lib/AstroPhotoPlus/backend/start-server --only-deps

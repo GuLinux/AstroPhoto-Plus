@@ -5,7 +5,7 @@ raspbian_gen_root="$( cd "$( dirname "$0")"; pwd )"
 rpigen_path="$raspbian_gen_root/pi-gen"
 
 launcher_script="$raspbian_gen_root/files/provisioning-launcher"
-provisioning_script="$project_dir/scripts/setup/raspbian.sh"
+provisioning_script="$project_dir/scripts/setup/ubuntu-raspbian.sh"
 copy_script="$raspbian_gen_root/files/copy-provisioning"
 
 USE_QEMU=0
