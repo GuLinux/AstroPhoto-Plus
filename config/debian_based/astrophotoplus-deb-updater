@@ -19,7 +19,7 @@ import requests
 import json
 
 def is_compatible_asset(asset):
-    return asset['name'].endswith('.deb'):
+    return asset['name'].endswith('.deb')
 
 latest_version = requests.get('$RELEASES_URL')
 latest_version_info = sorted(latest_version.json(), key=lambda r: r['created_at'], reverse=True)[0]
