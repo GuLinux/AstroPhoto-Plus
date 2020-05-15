@@ -1,6 +1,0 @@
-[
-    {
-        "type": "include",
-        "filename": "${CMAKE_INSTALL_PREFIX}/share/AstroPhotoPlus/config/debian_based/commands.json"
-    }
-]

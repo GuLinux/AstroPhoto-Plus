@@ -15,7 +15,7 @@ EOF
     exit 1
 fi
 
-target_user="$SUDO_USER"
+target_user="${TARGET_USER:-$SUDO_USER}"
 workdir="/tmp/setup-astrophotoplus-$$"
 
 rm -rf "$workdir"
@@ -39,6 +39,7 @@ notify() {
 }
 
 install-prerequisites() {
+    sudo apt-get update -q -y
     if ! which wget >/dev/null 2>&1; then
         notify "Installing wget" $LIGHT_GREEN $YELLOW 2
         sudo apt-get install -y -q wget
@@ -47,29 +48,54 @@ install-prerequisites() {
         notify "Installing python3" $LIGHT_GREEN $YELLOW 2
         sudo apt-get install -y -q python3
     fi
+    if ! which lsb_release >/dev/null 2>&1; then
+        sudo apt-get install -y -q lsb-release
+    fi
 }
 
 setup-indi-ppa() {
-    notify "Adding INDI stable PPA"
-    add-apt-repository -y ppa:mutlaqja/ppa
-    apt update
-    notify "Installing INDI full"
-    apt-get install -y -q indi-full
+    DISTRO_VARIANT=$( lsb_release -si)
+    case "$DISTRO_VARIANT" in
+        Raspbian)
+            notify "Adding INDI repository"
+            wget -O - https://www.astroberry.io/repo/key | apt-key add -
+            echo 'deb https://www.astroberry.io/repo/ buster main' > /etc/apt/sources.list.d/astroberry.list
+            apt-get update
+            notify "Installing INDI packages"
+            apt-get install -y indi-full gsc
+            ;;
+        Ubuntu)
+            notify "Adding INDI stable PPA"
+            add-apt-repository -y ppa:mutlaqja/ppa
+            apt update
+            notify "Installing INDI full"
+            apt-get install -y -q indi-full
+            ;;
+        *)
+            echo "Your distribution $DISTRO_VARIANT is not yet supported for automatic setup. You can still install AstroPhoto Plus manually"
+            exit 1
+            ;;
+    esac
+
 }
 
 get-astrophotoplus-edge() {
-    notify "Downloading latest AstroPhoto-Plus release"
-    wget -nc "https://astrophotoplus.gulinux.net/releases" -O info.json
-    python3 <<EOF
+    if [ -n "$ASTROPHOTOPLUS_RELEASE_DOWNLOAD_OPTS" ]; then
+        wget -nc $ASTROPHOTOPLUS_RELEASE_DOWNLOAD_OPTS
+    else
+        notify "Downloading latest AstroPhoto-Plus release"
+        wget -nc "https://astrophotoplus.gulinux.net/releases" -O info.json
+        python3 <<EOF
 import json
 import os
 
 with open('info.json') as j:
     release_info = json.load(j)
 last_release = sorted(release_info, key=lambda r: r['created_at'], reverse=True)[0]
-asset = [x for x in  last_release['assets'] if x['name'].endswith('.deb') and not x['name'].endswith('Raspbian.deb')][0]
+asset = [x for x in  last_release['assets'] if x['name'].endswith('.deb')][0]
 os.system(' '.join(['wget', '-nc', asset['browser_download_url'], '-O', asset['name']]))
 EOF
+    fi
 }
 
 install-astrophotoplus() {
@@ -86,23 +112,9 @@ ask-yn() {
     [ "$prompt" == y ]
 }
 
-setup-nm-ap() {
-    if ask-yn notify "Setup wifi access point connection? [y/n] " $LIGHT_GREEN $YELLOW 0 noendl; then
-        read -e -i "AstroPhoto-Plus" -p "Wifi name? " essid
-        read -e -i "AstroPhoto-Plus" -p "Wifi WPA2 key? " psk
-        read -N 1 -p "Autoconnect on startup? [y/n]" autoconnect
-        if [ "$autoconnect" == "y" ]; then
-            autoconnect=yes
-        else
-            autoconnect=no
-        fi
-        sudo nmcli connection add type wifi ifname "*" autoconnect "$autoconnect" save yes con-name "$essid"  mode ap ssid "$essid" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$psk" ipv4.method shared
-    fi
-}
-
 setup-sudo() {
     notify "Do you want to allow the user $target_user to run sudo without password?" $LIGHT_GREEN $YELLOW 0
-    notify "Warning! Although this is perfectly safe in isolated environments, it might be a security concern. It might be a good idea to allow this if you want to trigger privileged commands from AstroPhoto Plus." $RED $YELLOW 0
+    notify "Warning! Although this is perfectly safe in isolated environments, it might be a security concern. It might be a good idea to allow this if you want to trigger privileged commands (reboot, wifi management, automatic updates) from AstroPhoto Plus." $RED $YELLOW 0
     if ask-yn echo -n "Setup sudo? [y/n] "; then
         echo "$target_user    ALL = NOPASSWD: ALL" >/etc/sudoers.d/${target_user}_nopasswd
         chmod 644 /etc/sudoers.d/${target_user}_nopasswd
@@ -119,7 +131,6 @@ setup-indi-ppa
 get-astrophotoplus-edge
 install-astrophotoplus
 setup-sudo
-setup-nm-ap
 cleanup
 
 notify "Automatic setup of AstroPhoto Plus finished. You should now be able to run the app at the address http://localhost (or in your local network, at http://$(hostname).local)"

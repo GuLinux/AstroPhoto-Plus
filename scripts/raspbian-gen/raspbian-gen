@@ -59,6 +59,7 @@ cd "$rpigen_path"
 git checkout -f master
 git clean -f -d -x
 git pull
+sudo modprobe loop
 
 cat > config <<EOF
 IMG_NAME="AstroPhoto-Plus"

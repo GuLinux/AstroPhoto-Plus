@@ -1,4 +1,0 @@
-#!/bin/bash
-echo "Removing @ETC_COMMANDS_FILE@"
-rm -f "@ETC_COMMANDS_FILE@"
-

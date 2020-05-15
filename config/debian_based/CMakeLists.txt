@@ -13,6 +13,4 @@ set(
 install(FILES ${DEBIAN_SOURCES} DESTINATION share/AstroPhotoPlus/config/debian_based)
 install(PROGRAMS astrophotoplus-deb-updater DESTINATION share/AstroPhotoPlus/config/debian_based)
 
-if(NOT "${PACKAGE_TARGET}" STREQUAL "raspbian")
-    set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/postinst;${CMAKE_CURRENT_BINARY_DIR}/postrm" CACHE INTERNAL "debian scripts")
-endif()
+

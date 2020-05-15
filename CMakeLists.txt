@@ -10,8 +10,6 @@ set(VERSION_SUFFIX "" CACHE STRING "Suffix to append to version number")
 configure_file(${CMAKE_SOURCE_DIR}/scripts/AstroPhotoPlus-ctl ${CMAKE_BINARY_DIR}/scripts/AstroPhotoPlus-ctl @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/scripts/version.sh.in ${CMAKE_BINARY_DIR}/version.sh)
 
-set(PACKAGE_TARGET "generic" CACHE STRING "package target [generic|raspbian]")
-
 set(ENV{SKIP_CMAKE} 1) 
 message("Setting build version: ${PROJECT_VERSION_MAJOR} ${PROJECT_VERSION_MINOR} ${PROJECT_VERSION_PATCH}${VERSION_SUFFIX}")
 execute_process(
@@ -48,11 +46,6 @@ set(CPACK_DEBIAN_PACKAGE_CONFLICTS "openresolv, dhcpcd5, dnsmasq")
 
 set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE all)
 
-if("${PACKAGE_TARGET}" STREQUAL "raspbian")
-    SET(CPACK_GENERATOR "DEB")
-    set(CPACK_SYSTEM_NAME Raspbian)
-else()
-    SET(CPACK_GENERATOR "TGZ;DEB")
-endif()
+SET(CPACK_GENERATOR "TGZ;DEB")
 
 include(CPack)
