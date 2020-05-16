@@ -17,14 +17,18 @@ get-latest-deb() {
     python3 - <<EOF
 import requests
 import json
+import sys
 
 def is_compatible_asset(asset):
     return asset['name'].endswith('.deb')
 
-latest_version = requests.get('$RELEASES_URL')
-latest_version_info = sorted(latest_version.json(), key=lambda r: r['created_at'], reverse=True)[0]
-deb_asset = [asset for asset in latest_version_info['assets'] if is_compatible_asset(asset)]
-print(deb_asset[0]['browser_download_url'])
+try:
+    latest_version = requests.get('$RELEASES_URL')
+    latest_version_info = sorted(latest_version.json(), key=lambda r: r['created_at'], reverse=True)[0]
+    deb_asset = [asset for asset in latest_version_info['assets'] if is_compatible_asset(asset)]
+    print(deb_asset[0]['browser_download_url'])
+except Error as e:
+    sys.exit('Error retrieving latest AstroPhoto Plus version: {}\n'.format(e))
 EOF
 }
 

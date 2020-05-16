@@ -1,2 +1,2 @@
 #!/bin/bash
-cp -av files/ubuntu-raspbian.sh "${ROOTFS_DIR}/tmp/"
+cp -av files/provisioning.sh "${ROOTFS_DIR}/tmp/"

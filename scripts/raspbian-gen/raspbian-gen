@@ -23,6 +23,7 @@ Available options:
  -c|--continue  continue a stopped build
  -z|--zip       zip the destination file
  -d|--docker    use docker to build image
+ --remove-pigen remove pi-gen repository
 EOF
     exit "${1:-1}"
 }
@@ -37,6 +38,9 @@ while [ -n "$1" ]; do
             ;;
         -c|--continue)
             CONTINUE=1
+            ;;
+        --remove-pigen)
+            rm -rf $rpigen_path
             ;;
         -z|--zip)
             DEPLOY_ZIP=1
@@ -59,6 +63,7 @@ cd "$rpigen_path"
 git checkout -f master
 git clean -f -d -x
 git pull
+
 sudo modprobe loop
 
 cat > config <<EOF
@@ -68,11 +73,13 @@ FIRST_USER_PASS="astrophotoplus"
 ENABLE_SSH=1
 DEPLOY_ZIP=$DEPLOY_ZIP
 USE_QEMU=${USE_QEMU}
+#STAGE_LIST="stage2"
 STAGE_LIST="stage0 stage1 stage2"
 EOF
 
 mkdir -p stage2/99-install-astrophotoplus/files
-cp -v "$provisioning_script" stage2/99-install-astrophotoplus/files
+
+cp -v "$provisioning_script" stage2/99-install-astrophotoplus/files/provisioning.sh
 cp -v "$copy_script" stage2/99-install-astrophotoplus/00-run.sh
 cp -v "$launcher_script" stage2/99-install-astrophotoplus/01-run-chroot.sh
 sed -i 's/-lite//g' "stage2/EXPORT_IMAGE"

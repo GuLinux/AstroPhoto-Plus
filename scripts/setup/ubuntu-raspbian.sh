@@ -1,5 +1,5 @@
 #!/bin/bash
-# Colour codes
+#stage1  Colour codes
 
 RED=31
 GREEN=32
@@ -29,13 +29,14 @@ notify() {
     colour="${2:-$LIGHT_GREEN}"
     stars_colour="${3:-$YELLOW}"
     sleep_time="${4:-3}"
+
     endline="\n"
     if [ "$5" == "noendl" ]; then
         endline=""
     fi
 
     echo -en "\e[${stars_colour}m*****\e[m  \e[${colour}m${text}\e[m$endline"
-    sleep "$sleep_time"
+    [ "$UNATTENDED_SETUP" == y ] && sleep "$sleep_time"
 }
 
 install-prerequisites() {
@@ -104,6 +105,9 @@ install-astrophotoplus() {
 }
 
 ask-yn() {
+    if [ "$UNATTENDED_SETUP" == "y" ]; then
+        return 0
+    fi
     prompt=""
     while [ "$prompt" != y ] && [ "$prompt" != n ]; do
         "$@"

@@ -1,11 +1,10 @@
 #!/bin/bash
 export TARGET_USER=stargazer
-export ASTROPHOTOPLUS_AP=AstroPhoto-Plus
-export ASTROPHOTOPLUS_AP_PSK=AstroPhoto-Plus
+export UNATTENDED_SETUP=y
 
 echo " *** Launching raspbian provisioning script" >&2
-bash /tmp/ubuntu-raspbian.sh
-rm -f /tmp/ubuntu-raspbian.sh
+bash /tmp/provisioning.sh
+rm -vf /tmp/provisioning.sh
 
 # Extra step: install python dependencies
 sudo -H -u "$TARGET_USER" /usr/lib/AstroPhotoPlus/backend/start-server --only-deps
