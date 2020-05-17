@@ -1,28 +1,25 @@
 #!/bin/bash
 scriptdir="$( dirname "$0")"
+cd "$scriptsdir"
+echo "Working directory: $PWD"
+
 if ! [ -r "$HOME/github_access_token" ]; then
     echo "The file $HOME/github_access_token must be present to read credentials" >&2
     exit 1
 fi
 
-if ! [ -d "$scriptdir/venv" ]; then
-	python3 -m venv "$scriptdir/venv"
+if ! [ -d "venv" ]; then
+	python3 -m venv "venv"
 fi
-. "$scriptdir/venv/bin/activate"
+. "venv/bin/activate"
 
 . "$HOME/github_access_token"
 
-pip3 install -r "$scriptdir/requirements.txt"
+pip3 install -r "requirements.txt"
 
-if "$scriptdir/check-release.py"; then
+if ./check-release.py; then
 	exit 0
 fi
-
-cd "$scriptsdir"
-
-git checkout -f
-git clean -f -d .
-git pull
 
 ./raspbian-gen -d -r && python3 ./deploy-image-release.py
 
