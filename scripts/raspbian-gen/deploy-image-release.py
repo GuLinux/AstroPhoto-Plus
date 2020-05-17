@@ -8,7 +8,7 @@ print(workdir)
 with open(os.path.join(workdir, 'pi-gen/deploy/astrophotoplus.version'), 'r') as f:
     astrophotoplus_version = f.readline().strip()
 
-release_file = [f for f in os.listdir(os.path.join(workdir, 'pi-gen/deploy')) if f.endswith('AstroPhoto-Plus-{}.zip'.format(astrophotoplus_version))]
+release_file = [f for f in os.listdir(os.path.join(workdir, 'pi-gen/deploy')) if f.endswith('AstroPhoto-Plus-{}-RaspberryPi.zip'.format(astrophotoplus_version))]
 if not release_file:
     raise RuntimeError('Zip file for AstroPhoto Plus version {} not found'.format(astrophotoplus_version))
 release_file = release_file[0]

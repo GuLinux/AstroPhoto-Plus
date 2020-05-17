@@ -29,7 +29,6 @@ Available options:
  -q|--qemu             create a Qemu image for testing
  -r|--rm               remove and rebuild the docker image
  -c|--continue         continue a stopped build
- -z|--zip              zip the destination file
  -d|--docker           use docker to build image
  --remove-pigen        remove pi-gen repository
  --preserve-container  Keep docker container after build
@@ -52,10 +51,7 @@ while [ -n "$1" ]; do
         --remove-pigen)
             rm -rf "$rpigen_path"
             ;;
-        -z|--zip)
-            DEPLOY_ZIP=1
-            ;;
-        -d|--docker)
+         -d|--docker)
             USE_DOCKER=1
             ;;
 		--preserve-container)
@@ -153,7 +149,7 @@ if [ -r "$rpigen_path"/deploy/*-AstroPhoto-Plus.img ]; then
     ASTROPHOTOPLUS_IMAGE_DEPLOY="$( ls "$rpigen_path"/deploy/*-AstroPhoto-Plus.img | head -n 1 )"
 
     ASTROPHOTOPLUS_IMAGE="${ASTROPHOTOPLUS_IMAGE_DEPLOY%%.img}-$ASTROPHOTOPLUS_VERSION.img"
-    ASTROPHOTOPLUS_ZIPFILE="${ASTROPHOTOPLUS_IMAGE%%.img}.zip"
+    ASTROPHOTOPLUS_ZIPFILE="${ASTROPHOTOPLUS_IMAGE%%.img}-RaspberryPi.zip"
     mv -v "$ASTROPHOTOPLUS_IMAGE_DEPLOY" "$ASTROPHOTOPLUS_IMAGE"
     cat > "$rpigen_path"/deploy/ReadMe.md <<EOF
 Follow the instruction on the [Raspberry Pi website](https://www.raspberrypi.org/documentation/installation/installing-images/README.md?target=_blank) to write the image to the micro sd card.

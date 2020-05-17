@@ -1,0 +1,28 @@
+#!/bin/bash
+scriptdir="$( dirname "$0")"
+if ! [ -r "$HOME/github_access_token" ]; then
+    echo "The file $HOME/github_access_token must be present to read credentials" >&2
+    exit 1
+fi
+
+if ! [ -d "$scriptdir/venv" ]; then
+	python3 -m venv "$scriptdir/venv"
+fi
+. "$scriptdir/venv/bin/activate"
+
+. "$HOME/github_access_token"
+
+pip3 install -r "$scriptdir/requirements.txt"
+
+if "$scriptdir/check-release.py"; then
+	exit 0
+fi
+
+cd "$scriptsdir"
+
+git checkout -f
+git clean -f -d .
+git pull
+
+./raspbian-gen -d -r && python3 ./deploy-image-release.py
+
