@@ -1,4 +1,4 @@
-import { fetchBackendVersion } from '../middleware/api';
+import { fetchBackendVersion, fetchBackendTimestampAPI, setBackendTimestampAPI } from '../middleware/api';
 import listenToEvents from '../middleware/events';
 import { isError } from '../Errors/selectors.js';
 import Actions from '../actions';
@@ -32,6 +32,17 @@ export const getBackendVersion = () => (dispatch, getState) => {
     });
 }
 
+export const dismissTimeSyncModal = () => ({ type: 'TIME_SYNC_MODAL_DISMISS' });
+
+const receivedBackendTimestamp = payload => ({ type: 'BACKEND_TIMESTAMP_FETCHED', payload });
+
+export const backendTimeSync = () => dispatch => {
+    dispatch(dismissTimeSyncModal());
+    setBackendTimestampAPI(dispatch, { utc_timestamp: new Date().getTime() / 1000.0 }, receivedBackendTimestamp, () => dispatch(addNotification('Time Synchronisation failed', 'Failed to set time on backend server', 'warning', 5000)) );
+};
+
+export const getBackendTimestamp = () => dispatch => fetchBackendTimestampAPI(dispatch, payload => dispatch(receivedBackendTimestamp(payload)));
+
 export const init = () => async (dispatch, getState) => {
     if(retryTimer) {
         clearTimeout(retryTimer);
@@ -58,5 +69,6 @@ export const init = () => async (dispatch, getState) => {
     dispatch(getCatalogs());
     dispatch(getPHD2Status());
     dispatch(getNetworkManagerStatus());
+    dispatch(getBackendTimestamp());
     listenToEvents(dispatch);
 }

@@ -740,3 +740,4 @@ def get_timestamp_api():
 @json_api
 def set_timestamp_api(json):
     return set_timestamp(json['utc_timestamp'])
+

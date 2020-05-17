@@ -59,6 +59,12 @@ const fetchJSON = async (dispatch, url, options, onSuccess, onError) => {
 }
 
 export const fetchBackendVersion = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/version', {}, json => onSuccess(json));
+export const fetchBackendTimestampAPI = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/timestamp', {}, json => onSuccess(json));
+export const setBackendTimestampAPI = (dispatch, payload, onSuccess, onError) => fetchJSON(dispatch, '/api/timestamp', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: headersJSONRequest,
+}, onSuccess, onError);
 
 export const startSequenceAPI = (dispatch, sequence, onSuccess, onError) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/start`, {
         method: 'POST',
