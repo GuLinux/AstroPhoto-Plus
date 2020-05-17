@@ -1,6 +1,7 @@
 from flask import Flask
 import json
 import os
+from utils.system_time import set_ntp
 
 
 
@@ -26,6 +27,9 @@ redis_server.start()
 REDIS_HOST = os.environ.get('REDIS_SERVER', '127.0.0.1')
 REDIS_PORT = redis_server.port
 app.config['REDIS_URL'] = 'redis://{}:{}/'.format(REDIS_HOST, REDIS_PORT)
+
+set_ntp(True)
+
 
 
 from broadcast_service import broadcast_service
