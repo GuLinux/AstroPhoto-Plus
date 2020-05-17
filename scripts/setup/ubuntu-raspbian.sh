@@ -7,6 +7,8 @@ YELLOW=33
 LIGHT_GREEN=92
 LIGHT_YELLOW=93
 
+DISTRO_VARIANT=$( lsb_release -si)
+
 if [ "$EUID" != 0 ]; then
     cat >&2 <<EOF
 This program must be run as root. Please retry using sudo:
@@ -55,7 +57,6 @@ install-prerequisites() {
 }
 
 setup-indi-ppa() {
-    DISTRO_VARIANT=$( lsb_release -si)
     case "$DISTRO_VARIANT" in
         Raspbian)
             notify "Adding INDI repository"
@@ -78,6 +79,17 @@ setup-indi-ppa() {
             ;;
     esac
 
+}
+
+setup-phd2() {
+    if ask-yn echo -n "Do you want to setup VNC server and PHD2 Autoguider? [y/n] "; then
+        if [ "$DISTRO_VARIANT" == 'Ubuntu' ]; then
+            notify "Adding PHD2 PPA"
+            add-apt-repository -y ppa:pch/phd2
+            apt update
+        fi
+        apt-get install -y -q phd2 tigervnc-standalone-server
+    fi
 }
 
 get-astrophotoplus-edge() {
@@ -133,6 +145,7 @@ cleanup() {
 setup-sudo
 install-prerequisites
 setup-indi-ppa
+setup-phd2
 get-astrophotoplus-edge
 install-astrophotoplus
 

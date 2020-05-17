@@ -27,7 +27,7 @@
     {
         "id": "5",
         "name": "Start VNC server",
-        "arguments": ["tigervncserver", "-SecurityTypes", "None", "-localhost", "no", "--I-KNOW-THIS-IS-INSECURE"],
+        "arguments": ["tigervncserver", "-SecurityTypes", "None", "-localhost", "no", "--I-KNOW-THIS-IS-INSECURE", "-noxstartup"],
         "check": ["bash", "-c", "which tigervncserver && ! tigervncserver -kill --dry-run"],
         "category": "System",
         "ui_properties": {

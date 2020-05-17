@@ -69,7 +69,7 @@ sudo modprobe loop
 cat > config <<EOF
 IMG_NAME="AstroPhoto-Plus"
 FIRST_USER_NAME="stargazer"
-FIRST_USER_PASS="astrophotoplus"
+FIRST_USER_PASS="AstroPhoto-Plus"
 ENABLE_SSH=1
 DEPLOY_ZIP=$DEPLOY_ZIP
 USE_QEMU=${USE_QEMU}

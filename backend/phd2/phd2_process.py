@@ -1,5 +1,6 @@
 import subprocess
 from errors import FailedMethodError, BadRequestError 
+import os
 
 class PHD2Process:
     def __init__(self):
@@ -12,7 +13,9 @@ class PHD2Process:
             if not binary_path or not display:
                 raise BadRequestError('Both PHD2 binary path and display must be specified')
 
-            self.__process = subprocess.Popen(['phd2'], env={'DISPLAY': display}, stderr=subprocess.PIPE)
+            phd2_env = os.environ.copy()
+            phd2_env['DISPLAY'] = display
+            self.__process = subprocess.Popen(['phd2'], env=phd2_env)
             return { 'started': self.running }
         except Exception as e:
             raise FailedMethodError(str(e))
