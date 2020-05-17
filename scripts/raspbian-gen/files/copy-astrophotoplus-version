@@ -1,0 +1,2 @@
+#!/bin/bash
+mv -v "${ROOTFS_DIR}/tmp/astrophotoplus.version" ../../deploy/

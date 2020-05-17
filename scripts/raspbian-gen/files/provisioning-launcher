@@ -5,6 +5,8 @@ export UNATTENDED_SETUP=y
 echo " *** Launching raspbian provisioning script" >&2
 bash /tmp/provisioning.sh
 rm -vf /tmp/provisioning.sh
+ASTROPHOTOPLUS_VERSION="$( dpkg -s astrophotoplus | grep '^Version' | cut -d' ' -f2 )"
+echo "$ASTROPHOTOPLUS_VERSION" > /tmp/astrophotoplus.version
 
 # Extra step: install python dependencies
 sudo -H -u "$TARGET_USER" /usr/lib/AstroPhotoPlus/backend/start-server --only-deps

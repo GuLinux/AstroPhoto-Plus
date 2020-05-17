@@ -7,23 +7,33 @@ rpigen_path="$raspbian_gen_root/pi-gen"
 launcher_script="$raspbian_gen_root/files/provisioning-launcher"
 provisioning_script="$project_dir/scripts/setup/ubuntu-raspbian.sh"
 copy_script="$raspbian_gen_root/files/copy-provisioning"
+get_version_script="$raspbian_gen_root/files/copy-astrophotoplus-version"
 
 USE_QEMU=0
 DEPLOY_ZIP=0
 USE_DOCKER=0
+PRESERVE_CONTAINER=0
+STAGE_LIST="$( eval echo stage{0..2} )"
 CONTINUE=""
+
+FIRST_USER_NAME="stargazer"
+FIRST_USER_PASS="AstroPhoto-Plus"
+TARGET_HOSTNAME="AstroPhoto-Plus"
+
 
 show_help() {
     cat >&2 <<EOF
 Usage: $0 [options].
 Available options:
 
- -q|--qemu      create a Qemu image for testing
- -r|--rm        remove and rebuild the docker image
- -c|--continue  continue a stopped build
- -z|--zip       zip the destination file
- -d|--docker    use docker to build image
- --remove-pigen remove pi-gen repository
+ -q|--qemu             create a Qemu image for testing
+ -r|--rm               remove and rebuild the docker image
+ -c|--continue         continue a stopped build
+ -z|--zip              zip the destination file
+ -d|--docker           use docker to build image
+ --remove-pigen        remove pi-gen repository
+ --preserve-container  Keep docker container after build
+ --stages <stages>	   List of stages to build (default: 0..2)
 EOF
     exit "${1:-1}"
 }
@@ -40,7 +50,7 @@ while [ -n "$1" ]; do
             CONTINUE=1
             ;;
         --remove-pigen)
-            rm -rf $rpigen_path
+            rm -rf "$rpigen_path"
             ;;
         -z|--zip)
             DEPLOY_ZIP=1
@@ -48,6 +58,13 @@ while [ -n "$1" ]; do
         -d|--docker)
             USE_DOCKER=1
             ;;
+		--preserve-container)
+			PRESERVE_CONTAINER=1
+			;;
+		--stages)
+			STAGE_LIST="$( eval echo stage{$2})"
+			shift
+			;;
         *)
             show_help
             ;;
@@ -68,25 +85,100 @@ sudo modprobe loop
 
 cat > config <<EOF
 IMG_NAME="AstroPhoto-Plus"
-FIRST_USER_NAME="stargazer"
-FIRST_USER_PASS="AstroPhoto-Plus"
+FIRST_USER_NAME="$FIRST_USER_NAME"
+FIRST_USER_PASS="$FIRST_USER_PASS"
+TARGET_HOSTNAME="$TARGET_HOSTNAME"
 ENABLE_SSH=1
 DEPLOY_ZIP=$DEPLOY_ZIP
 USE_QEMU=${USE_QEMU}
-#STAGE_LIST="stage2"
-STAGE_LIST="stage0 stage1 stage2"
+STAGE_LIST="$STAGE_LIST"
+PRESERVE_CONTAINER=${PRESERVE_CONTAINER}
 EOF
 
-mkdir -p stage2/99-install-astrophotoplus/files
+mkdir -p stage2/98-install-astrophotoplus/files
+mkdir -p stage2/99-get-astrophotoplus-version
 
-cp -v "$provisioning_script" stage2/99-install-astrophotoplus/files/provisioning.sh
-cp -v "$copy_script" stage2/99-install-astrophotoplus/00-run.sh
-cp -v "$launcher_script" stage2/99-install-astrophotoplus/01-run-chroot.sh
-sed -i 's/-lite//g' "stage2/EXPORT_IMAGE"
+cp -v "$provisioning_script" stage2/98-install-astrophotoplus/files/provisioning.sh
+cp -v "$copy_script" stage2/98-install-astrophotoplus/00-run.sh
+cp -v "$launcher_script" stage2/98-install-astrophotoplus/01-run-chroot.sh
+cp -v "$get_version_script" stage2/99-get-astrophotoplus-version/01-run.sh
+
+(
+    cd "$rpigen_path"
+	git checkout -f export-image/prerun.sh
+	patch -p1 <<'EOF'
+diff --git a/export-image/prerun.sh b/export-image/prerun.sh
+index 8bbc566..2fc1abd 100755
+--- a/export-image/prerun.sh
++++ b/export-image/prerun.sh
+@@ -39,8 +39,14 @@ BOOT_LENGTH=$(echo "$PARTED_OUT" | grep -e '^1:' | cut -d':' -f 4 | tr -d B)
+ ROOT_OFFSET=$(echo "$PARTED_OUT" | grep -e '^2:' | cut -d':' -f 2 | tr -d B)
+ ROOT_LENGTH=$(echo "$PARTED_OUT" | grep -e '^2:' | cut -d':' -f 4 | tr -d B)
+ 
+-BOOT_DEV=$(losetup --show -f -o "${BOOT_OFFSET}" --sizelimit "${BOOT_LENGTH}" "${IMG_FILE}")
+-ROOT_DEV=$(losetup --show -f -o "${ROOT_OFFSET}" --sizelimit "${ROOT_LENGTH}" "${IMG_FILE}")
++echo -n "Waiting for losetup..."
++while [ -z "$BOOT_DEV" ]; do
++    BOOT_DEV=$(losetup --show -f -o "${BOOT_OFFSET}" --sizelimit "${BOOT_LENGTH}" "${IMG_FILE}")
++    ROOT_DEV=$(losetup --show -f -o "${ROOT_OFFSET}" --sizelimit "${ROOT_LENGTH}" "${IMG_FILE}")
++    [ -z "$BOOT_DEV" ] && sleep 1
++    echo -n .
++done
++echo
+ echo "/boot: offset $BOOT_OFFSET, length $BOOT_LENGTH"
+ echo "/:     offset $ROOT_OFFSET, length $ROOT_LENGTH"
+ 
+diff --git a/stage2/EXPORT_IMAGE b/stage2/EXPORT_IMAGE
+index aa8f936..79ec11a 100644
+--- a/stage2/EXPORT_IMAGE
++++ b/stage2/EXPORT_IMAGE
+@@ -1,4 +1,4 @@
+-IMG_SUFFIX="-lite"
++IMG_SUFFIX=""
+ if [ "${USE_QEMU}" = "1" ]; then
+        export IMG_SUFFIX="${IMG_SUFFIX}-qemu"
+ fi
+EOF
+)
 
 if [ "$USE_DOCKER" == 1 ]; then
     CONTINUE="$CONTINUE" ./build-docker.sh
 else
     CONTINUE="$CONTINUE" ./build.sh
+fi
+
+set -x
+if [ -r "$rpigen_path"/deploy/*-AstroPhoto-Plus.img ]; then
+    ASTROPHOTOPLUS_VERSION=$( cat "$rpigen_path"/deploy/astrophotoplus.version )
+    ASTROPHOTOPLUS_IMAGE_DEPLOY="$( ls "$rpigen_path"/deploy/*-AstroPhoto-Plus.img | head -n 1 )"
+
+    ASTROPHOTOPLUS_IMAGE="${ASTROPHOTOPLUS_IMAGE_DEPLOY%%.img}-$ASTROPHOTOPLUS_VERSION.img"
+    ASTROPHOTOPLUS_ZIPFILE="${ASTROPHOTOPLUS_IMAGE%%.img}.zip"
+    mv -v "$ASTROPHOTOPLUS_IMAGE_DEPLOY" "$ASTROPHOTOPLUS_IMAGE"
+    cat > "$rpigen_path"/deploy/ReadMe.md <<EOF
+Follow the instruction on the [Raspberry Pi website](https://www.raspberrypi.org/documentation/installation/installing-images/README.md?target=_blank) to write the image to the micro sd card.
+
+When the sd card is ready, insert it into the Raspberry Pi, and connect the power supply.
+
+As soon as it finishes booting, you should notice a new wifi network named \`$TARGET_HOSTNAME-<NNNN>\`. Connect to it using the password \`AstroPhoto-Plus\`.
+
+You can then point your browser to [http://AstroPhoto-Plus.local](http://AstroPhoto-Plus.local). If that doesn't work, the IP address is usually the first on your network, for instance [http://10.42.0.1](http://10.42.0.1)
+
+To use SSH to connect to your *AstroPhoto Plus* box, use the above address (astrophoto-plus.local), using the following credentials:
+
+ - Username: $FIRST_USER_NAME
+ - Password: $FIRST_USER_PASS
+
+That's it! You're now running *AstroPhoto Plus*.
+
+If you need to change wifi settings, there is a network management utility in the *Settings* module.
+EOF
+    (
+        cd "$rpigen_path/deploy"
+        zip --move -9 "$ASTROPHOTOPLUS_ZIPFILE" "$( basename "$ASTROPHOTOPLUS_IMAGE")" "ReadMe.md"
+    )
+else
+    echo "*** Error creating Raspberry Pi image: file not found" >&2
+    exit 1
 fi
 
