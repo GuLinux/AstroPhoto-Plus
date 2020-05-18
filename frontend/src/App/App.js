@@ -21,11 +21,13 @@ import 'react-image-crop/dist/ReactCrop.css';
 import '../semantic/dist/semantic.min.css';
 import './App.css';
 import { HomeContainer } from '../Home/HomeContainer';
+import { TimeSyncModal } from './TimeSyncModal';
 
 const AppRouter = ({location}) => (
   <div className="App">
     <NavbarContainer location={location}>
         <NotificationsContainer />
+        <TimeSyncModal />
         <ErrorPageContainer>
               <Switch location={location}>
                 <Route exact path={Routes.ROOT} component={HomeContainer}/>

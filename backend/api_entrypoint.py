@@ -6,6 +6,7 @@ import logging
 from skychart import skychart
 from network import network_service
 import os
+from utils.system_time import get_timestamp, set_timestamp
 
 # Init logger, before we import anything else
 gunicorn_logger = logging.getLogger('gunicorn.error')
@@ -727,4 +728,16 @@ def get_x11_displays():
 def desktop_notifications(json):
     sse.publish_event('desktop', 'notification', json)
     return { 'result': 'ok' }
+
+
+@app.route('/api/timestamp')
+@json_api
+def get_timestamp_api():
+    return get_timestamp()
+
+@app.route('/api/timestamp', methods=['POST'])
+@json_input
+@json_api
+def set_timestamp_api(json):
+    return set_timestamp(json['utc_timestamp'])
 

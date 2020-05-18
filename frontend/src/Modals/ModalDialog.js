@@ -45,7 +45,7 @@ export class ModalDialog extends React.Component {
         const {open, trigger, onModalOpened, onModalClosed, triggerAction = 'onClick', children, closeOnEscape, ...rest} = this.props;
         return (
             <React.Fragment>
-                { React.cloneElement(trigger, { [triggerAction]: this.open }) }
+                { trigger && React.cloneElement(trigger, { [triggerAction]: this.open }) }
                     <Modal onClose={this.onClose} open={this.state.open} {...rest}>
                         <ModalDialogContext.Provider value={{close: this.close}}>
                             {children}
