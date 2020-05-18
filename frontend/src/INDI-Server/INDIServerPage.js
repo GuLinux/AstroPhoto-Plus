@@ -55,8 +55,8 @@ class INDIServerPage extends React.PureComponent {
 
 
     render = () => (
-        <Container>
-            <Menu stackable>
+        <Container fluid>
+            <Menu stackable fluid>
                 <Menu.Item as={NavLink} exact={true} to="/indi/server">INDI Server</Menu.Item>
                 { this.props.devices.map(this.renderDeviceMenuItem)}
             </Menu>
