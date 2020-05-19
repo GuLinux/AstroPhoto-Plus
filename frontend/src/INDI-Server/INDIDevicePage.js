@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Grid} from 'semantic-ui-react';
+import { Container, Menu, Grid} from 'semantic-ui-react';
 import { INDIDeviceGroupContainer } from './INDIDeviceGroupContainer';
 import { INDIMessagesPanel } from './INDIMessagesPanel';
 import { Route, Redirect } from 'react-router';
@@ -36,7 +36,9 @@ export class INDIDevicePage extends React.PureComponent {
                     <Route path="/indi/:deviceId/:groupName" render={this.renderGroupContainer} />
                     <Route path="/indi/:deviceId" exact={true} render={this.renderRedirect} />
                 </Grid.Column>
-                <INDIMessagesPanel messages={get(messages, device.id, [])} />
+                <Container>
+                    <INDIMessagesPanel messages={get(messages, device.id, [])} />
+                </Container>
             </Grid>
         );
     }
