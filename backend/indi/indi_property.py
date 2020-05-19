@@ -49,7 +49,7 @@ class Property:
         elif name and device:
             self.__init_by_values(device, group, name, label, property_type)
         else:
-            raise RuntimeError('Property initialization error')
+            raise RuntimeError('Property initialization error: {}/{}/{}, label={}, type: {}'.format(device, group, name, label, property_type))
         self.id = '{}/{}'.format(self.device, self.name)
 
     @with_indi_property
