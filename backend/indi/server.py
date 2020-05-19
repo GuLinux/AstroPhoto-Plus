@@ -124,7 +124,10 @@ class Server:
         self.event_listener.on_indi_property_updated(self.property(indi_vector_property=vector_property))
 
     def __on_property_added(self, device, group, property_name):
-        self.event_listener.on_indi_property_added(self.property(device=device, group=group, name=property_name))
+        try:
+            self.event_listener.on_indi_property_added(self.property(device=device, group=group, name=property_name))
+        except RuntimeError as e:
+            self.logger.warning('Error on property added: {}'.format(e))
         
     def __on_property_removed(self, indi_property):
         self.event_listener.on_indi_property_removed(self.property(indi_device_property=indi_property))
