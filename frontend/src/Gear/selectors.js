@@ -21,6 +21,8 @@ export const filterDevices = (devices, ids) => ({
     length: ids.length,
 });
 
+export const getGuiderWEProperty = (state, {guiderId}) => getPropertyInputSelector(state, {propertyId: getPropertyId(guiderId, 'TELESCOPE_TIMED_GUIDE_WE')});
+
 export const getCameraExposureValue = (state, {cameraId}) => getValueInputSelector(cameraId, 'CCD_EXPOSURE', 'CCD_EXPOSURE_VALUE')(state);
 export const getCameraExposureProperty = (state, {cameraId}) => getPropertyInputSelector(state, {propertyId: getPropertyId(cameraId, 'CCD_EXPOSURE')});
 

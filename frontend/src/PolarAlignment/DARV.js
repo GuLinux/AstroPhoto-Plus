@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getDARVSelector } from './selectors';
+import { getDARVSelector, darvGuiderWarningsSelector } from './selectors';
 import { Icon, Message, Divider, Container, Grid, Button, Accordion } from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { CameraShootingSectionMenuEntriesContaner, CameraImageOptionsSectionMenuEntriesContainer } from '../Camera/CameraSectionMenuEntriesContainer.js';
@@ -24,6 +24,14 @@ class DARVMenuComponent extends React.Component {
     );
 }
 
+const DARVGuiderWarningsComponent = ({ state }) => state === 'ALERT' && (
+    <Message error>
+        <b>Warning</b>: it looks like your autoguider device is having problems slewing your mount. Please check INDI server logs.
+    </Message>
+);
+
+const DARVGuiderWarnings = connect(darvGuiderWarningsSelector, {})(DARVGuiderWarningsComponent);
+
 
 class DARVComponent extends React.Component {
     state = {
@@ -34,10 +42,10 @@ class DARVComponent extends React.Component {
 
     setGuider = guider => () => this.props.setDARVGuider(guider);
 
-    renderGuiderButton = guider => <CheckButton key={guider} active={this.props.selectedGuider === guider} onClick={this.setGuider(guider)} content={guider} />;
+    renderGuiderButton = guider => <CheckButton key={guider} active={this.props.guiderId === guider} onClick={this.setGuider(guider)} content={guider} />;
 
     guidingMessage = direction => {
-        if(this.props.selectedGuider === 'Manual') {
+        if(this.props.guiderId === 'Manual') {
             return (<span>Please start manually guiding in the <b>{direction}</ b> direction.</span>)
         }
         return (<span>Guiding in the <b>{direction}</b> direction.</span>);
@@ -94,6 +102,7 @@ class DARVComponent extends React.Component {
                         </Grid.Row>
                         )}
                     </Grid>
+                    <DARVGuiderWarnings guiderId={this.props.guiderId} />
                 </Container>
                 <AutoExposureContainer />
                 <Divider hidden />
