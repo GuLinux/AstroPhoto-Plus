@@ -32,7 +32,7 @@ class PlateSolving:
         }
 
     def abort(self):
-        if self.status is not 'solving':
+        if self.status != 'solving':
             raise BadRequestError('Solver is not running')
         if self.solver_process:
             self.solver_process.terminate()
