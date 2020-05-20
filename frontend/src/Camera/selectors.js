@@ -12,14 +12,18 @@ import {
 import { getDevices } from '../INDI-Server/selectors';
 import { get } from 'lodash';
 
-const getCurrentCameraId = state => state.camera.currentCamera;
-export const getCurrentFilterWheelId = state => state.camera.currentFilterWheel;
-const getOptions = state => state.camera.options;
-const getROI = state => state.camera.crop;
-const getIsShooting = state => state.camera.isShooting;
-const getCrop = state => state.camera.crop;
-const getCurrentImage = state => state.camera.currentImage;
-const getImageLoading = state => state.camera.imageLoading;
+
+const getCameraState = state => state.camera;
+
+const getCurrentCameraId = state => getCameraState(state).currentCamera;
+export const getCurrentFilterWheelId = state => getCameraState(state).currentFilterWheel;
+const getOptions = state => getCameraState(state).options;
+const getROI = state => getCameraState(state).crop;
+const getIsShooting = state => getCameraState(state).isShooting;
+const getCrop = state => getCameraState(state).crop;
+const getCurrentImage = state => getCameraState(state).currentImage;
+const getImageLoading = state => getCameraState(state).imageLoading;
+const getHasPendingFilter = state => !!getCameraState(state).pendingFilter;
 
 
 export const getCurrentCamera = createSelector([getCurrentCameraId, getConnectedCameras, getDevices], (currentCameraId, connectedCameras, devices) => {
@@ -107,7 +111,7 @@ const getSelectedCameraExposureValue = (state, {cameraId}) => cameraId && getCam
 export const exposureInputSelector = createSelector([
     getShotParameters,
     getSelectedCameraExposureValue,
-    state => state.camera.isShooting,
+    getIsShooting,
 ], (shotParameters, cameraExposureValue, isShooting) => {
     return {
         shotParameters,
@@ -118,7 +122,7 @@ export const exposureInputSelector = createSelector([
 
 
 export const selectFilterSelector = createSelector([
-    state => !!state.camera.pendingFilter,
+    getHasPendingFilter,
     getFilterWheelCurrentFilter,
     getFilterWheelCurrentFilterName,
     getFilterWheelAvailableFiltersProperty,
@@ -138,8 +142,8 @@ export const currentImageSelector = createSelector(
     [
         getCurrentCamera,
         getCurrentImage,
-        state => state.camera.options,
-        state => state.camera.crop,
+        getOptions,
+        getCrop,
     ],
     (currentCamera, currentImage, options, crop) => {
         if(! currentCamera || ! currentImage) {
