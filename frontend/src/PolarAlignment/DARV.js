@@ -4,7 +4,7 @@ import { getDARVSelector, darvGuiderWarningsSelector } from './selectors';
 import { Icon, Message, Divider, Container, Grid, Button, Accordion } from 'semantic-ui-react';
 import { CheckButton } from '../components/CheckButton';
 import { CameraShootingSectionMenuEntriesContaner, CameraImageOptionsSectionMenuEntriesContainer } from '../Camera/CameraSectionMenuEntriesContainer.js';
-import { startDARV, setDARVGuider } from './actions';
+import { startDARV, setDARVGuider, notifyGuiderError } from './actions';
 import CurrentImageViewerContainer from '../Camera/CurrentImageViewerContainer';
 import AutoExposureContainer from '../Camera/AutoExposureContainer';
 import { NotFoundPage } from '../components/NotFoundPage';
@@ -24,13 +24,19 @@ class DARVMenuComponent extends React.Component {
     );
 }
 
-const DARVGuiderWarningsComponent = ({ state }) => state === 'ALERT' && (
-    <Message error>
-        <b>Warning</b>: it looks like your autoguider device is having problems slewing your mount. Please check INDI server logs.
-    </Message>
-);
+class DARVGuiderWarningsComponent extends React.Component {
 
-const DARVGuiderWarnings = connect(darvGuiderWarningsSelector, {})(DARVGuiderWarningsComponent);
+    hasError = () => this.props.state === 'ALERT';
+
+    componentDidUpdate = ({ state: prevState }) => prevState !== this.props.state && this.hasError() && this.notifyError();
+
+    notifyError = () => this.props.notifyGuiderError(<p><b>Warning</b>: it looks like your autoguider device is having problems slewing your mount. Please check INDI server logs.</p>);
+
+    render = () => null;
+}
+
+
+const DARVGuiderWarnings = connect(darvGuiderWarningsSelector, { notifyGuiderError })(DARVGuiderWarningsComponent);
 
 
 class DARVComponent extends React.Component {

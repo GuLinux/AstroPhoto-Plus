@@ -7,6 +7,8 @@ import { startDARVGuiding } from '../middleware/api';
 export const setDARVStatus = status => ({ type: 'POLAR_ALIGNMENT_DARV_SET_STATUS', status });
 export const setDARVGuider = guider => ({ type: 'POLAR_ALIGNMENT_SET_DARV_GUIDER', guider });
 
+export const notifyGuiderError = message => addNotification('Autoguider Error', message, 'warning');
+
 export const startDARV = (shotParameters) => (dispatch, getState) => {
     const { exposure } = shotParameters;
     const guidingTimeForDirection = (exposure - 5.0)/2.0
