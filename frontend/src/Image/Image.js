@@ -56,7 +56,7 @@ export class ImageLoader extends React.Component {
             }
             this.exiting || this.toggleReady(true);
         } catch(response) {
-            console.warning('Unable to load image: ', response);
+            console.warn('Unable to load image: ', response);
             this.exiting || this.setState({...this.state, error: true});
         }
     }
