@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
-import Actions from '../actions';
+import { setOption, shoot } from './actions';
 import { ExposureInput } from './ExposureInput';
 import { exposureInputSelector } from './selectors';
 
-const onExposureChanged = exposure => Actions.Camera.setOption({exposure});
+const onExposureChanged = exposure => setOption({exposure});
 
 const mapDispatchToProps = {
     onExposureChanged,
-    shoot: Actions.Camera.shoot,
+    shoot,
 };
 
 

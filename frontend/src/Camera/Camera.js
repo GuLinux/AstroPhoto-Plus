@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Form } from 'semantic-ui-react';
 import CurrentImageViewerContainer from './CurrentImageViewerContainer';
-import AutoExposureContainer from './AutoExposureContainer';
+import { AutoExposureContainer } from './AutoExposureContainer';
 import { NotFoundPage } from '../components/NotFoundPage';
 import { CameraShootingSectionMenuEntriesContaner, CameraImageOptionsSectionMenuEntriesContainer } from './CameraSectionMenuEntriesContainer';
 

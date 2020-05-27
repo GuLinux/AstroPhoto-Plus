@@ -13,17 +13,19 @@ import { getDevices } from '../INDI-Server/selectors';
 import { get } from 'lodash';
 
 
-const getCameraState = state => state.camera;
+const getCameraState = (state, {section='default'}) => state.camera[section];
 
-const getCurrentCameraId = state => getCameraState(state).currentCamera;
-export const getCurrentFilterWheelId = state => getCameraState(state).currentFilterWheel;
-const getOptions = state => getCameraState(state).options;
-const getROI = state => getCameraState(state).crop;
-const getIsShooting = state => getCameraState(state).isShooting;
-const getCrop = state => getCameraState(state).crop;
-const getCurrentImage = state => getCameraState(state).currentImage;
-const getImageLoading = state => getCameraState(state).imageLoading;
-const getHasPendingFilter = state => !!getCameraState(state).pendingFilter;
+const getCurrentCameraId = (state, props) => getCameraState(state, props).currentCamera;
+export const getCurrentFilterWheelId = (state, props) => getCameraState(state, props).currentFilterWheel;
+const getOptions = (state, props) => getCameraState(state, props).options;
+const getROI = (state, props) => getCameraState(state, props).crop;
+const getIsShooting = (state, props) => getCameraState(state, props).isShooting;
+const getCrop = (state, props) => getCameraState(state, props).crop;
+const getCurrentImage = (state, props) => getCameraState(state, props).currentImage;
+const getImageLoading = (state, props) => getCameraState(state, props).imageLoading;
+const getHasPendingFilter = (state, props) => !!state.camera.pendingFilter;
+const getShouldAutostart = (state, props) => getCameraState(state, props).shouldAutostart;
+
 
 
 export const getCurrentCamera = createSelector([getCurrentCameraId, getConnectedCameras, getDevices], (currentCameraId, connectedCameras, devices) => {
@@ -51,6 +53,10 @@ export const getShotParameters = createSelector([getCurrentCamera, getOptions, g
         roi: roi && roi.pixel && roi.pixel,
     }
 });
+
+
+// TODO: remove this component by using getState in actions
+export const autoExposureSelector = createSelector([getShotParameters, getShouldAutostart], (shotParameters, shouldAutostart) => ({ shotParameters, shouldAutostart }));
 
 export const cameraContainerSelector = createSelector([getOptions, getConnectedCameras], (options, cameras) => ({
     options,

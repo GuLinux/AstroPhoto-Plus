@@ -3,7 +3,6 @@ import SequenceJobs from './SequenceJobs/actions';
 import INDIServer from './INDI-Server/actions';
 import { Notifications } from './Notifications/actions';
 import INDIService from './INDI-Service/actions';
-import Camera from './Camera/actions';
 import Settings from './Settings/actions';
 import Image from './Image/actions';
 import Commands from './Commands/actions';
@@ -18,7 +17,6 @@ export const Actions = {
     INDIServer,
     Notifications,
     INDIService,
-    Camera,
     Settings,
     Image,
     Commands,

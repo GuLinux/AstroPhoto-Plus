@@ -1,15 +1,10 @@
 import { connect } from 'react-redux';
 import { SelectFilter } from './SelectFilter';
-import Actions from '../actions';
+import { changeFilter } from './actions';
 import { selectFilterSelector } from './selectors';
-
-
-const mapDispatchToProps = {
-  onFilterSelected: Actions.Camera.changeFilter,
-};
 
 export const SelectFilterContainer = connect(
   selectFilterSelector,
-  mapDispatchToProps
+    { onFilterSelected: changeFilter }
 )(SelectFilter)
 

@@ -1,18 +1,8 @@
 import { connect } from 'react-redux';
 import React from 'react';
-import Actions from '../actions';
-import { getShotParameters } from './selectors';
+import { shoot } from './actions';
+import { autoExposureSelector } from './selectors';
 
-// TODO: remove this component by using getState in actions
-const mapStateToProps = (state) => ({
-    shotParameters: getShotParameters(state),
-    shouldAutostart: state.camera.shouldAutostart,
-});
-
-
-const mapDispatchToProps = {
-    shoot: Actions.Camera.shoot,
-};
 
 class AutoExposure extends React.Component {
     render = () => null;
@@ -26,9 +16,4 @@ class AutoExposure extends React.Component {
     }
 }
 
-const AutoExposureContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(AutoExposure);
-
-export default AutoExposureContainer;
+export const AutoExposureContainer = connect(autoExposureSelector, { shoot })(AutoExposure);

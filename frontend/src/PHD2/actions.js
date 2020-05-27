@@ -15,8 +15,9 @@ export const getPHD2Status = () => dispatch => {
 export const phd2Disconnected= payload => (dispatch, getState) => {
     if(getPHD2Connected(getState())) {
         dispatch(addNotification('PHD2 Disconnected', 'AstroPhoto Plus was disconnected from PHD2', 'warning', 5000));
+        dispatch({ type: 'PHD2_DISCONNECTED', payload });
     }
-    dispatch({ type: 'PHD2_DISCONNECTED', payload });
+
 };
 
 export const phd2Connected = status => (dispatch, getState) => {
