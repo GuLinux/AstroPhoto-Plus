@@ -6,7 +6,6 @@ import { CheckButton } from '../components/CheckButton';
 import { CameraShootingSectionMenuEntriesContaner, CameraImageOptionsSectionMenuEntriesContainer } from '../Camera/CameraSectionMenuEntriesContainer.js';
 import { startDARV, setDARVGuider, notifyGuiderError } from './actions';
 import CurrentImageViewerContainer from '../Camera/CurrentImageViewerContainer';
-import AutoExposureContainer from '../Camera/AutoExposureContainer';
 import { NotFoundPage } from '../components/NotFoundPage';
 
 
@@ -110,7 +109,6 @@ class DARVComponent extends React.Component {
                     </Grid>
                     <DARVGuiderWarnings guiderId={this.props.guiderId} />
                 </Container>
-                <AutoExposureContainer />
                 <Divider hidden />
                 <CurrentImageViewerContainer fitScreen={options.fitToScreen} />
             </Container>

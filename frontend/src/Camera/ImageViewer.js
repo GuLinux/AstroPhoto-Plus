@@ -46,12 +46,12 @@ export class ImageViewer extends React.Component {
 
     onImageLoading = (uri) => {
         this.setState({ uri: undefined });
-        this.props.onImageLoading(uri);
+        this.props.onImageLoading({uri});
     }
 
     onImageLoaded = (uri) => {
         this.setState({ uri });
-        this.props.onImageLoaded(uri);
+        this.props.onImageLoaded({uri});
     }
 
     imageContainerProps = () => ({

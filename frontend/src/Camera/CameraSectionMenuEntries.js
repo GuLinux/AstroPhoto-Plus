@@ -6,12 +6,12 @@ import { ImageViewOptionsContainer } from '../Image/ImageViewOptionsContainer';
 import { CameraBinningContainer } from './CameraBinningContainer';
 
 class FilterWheelSection extends React.Component {
-    autosetFilterWheel = () => this.props.filterWheels.length === 1 && !this.props.currentFilterWheel && this.props.setCurrentFilterWheel(this.props.filterWheels[0].id);
+    autosetFilterWheel = () => this.props.filterWheels.length === 1 && !this.props.currentFilterWheel && this.props.setFilterWheel(this.props.filterWheels[0].id);
     componentDidMount = () => this.autosetFilterWheel();
     componentDidUpdate = () => this.autosetFilterWheel();
 
     render = () => {
-        const {filterWheels, currentFilterWheel, setCurrentFilterWheel} = this.props;
+        const {filterWheels, currentFilterWheel, setFilterWheel} = this.props;
         return (
             <React.Fragment>
                 <Header size='tiny' content='FilterWheel' textAlign='center' />
@@ -20,7 +20,7 @@ class FilterWheelSection extends React.Component {
                     toggle
                     active={currentFilterWheel && currentFilterWheel.id === c.id}
                     key={c.id} content={c.name}
-                    onClick={() => setCurrentFilterWheel(c.id)}
+                    onClick={() => setFilterWheel(c.id)}
                 />) }
                 </Button.Group>
                 { currentFilterWheel &&
@@ -32,7 +32,7 @@ class FilterWheelSection extends React.Component {
 }
 
 export class CameraShootingSectionMenuEntries extends React.Component {
-    autosetCamera = () => this.props.cameras.length === 1 && !this.props.currentCamera && this.props.setCurrentCamera(this.props.cameras[0].id);
+    autosetCamera = () => this.props.cameras.length === 1 && !this.props.currentCamera && this.props.setCamera(this.props.cameras[0].id);
     componentDidMount = () => this.autosetCamera();
     componentDidUpdate = () => this.autosetCamera();
     render = () => {
@@ -41,8 +41,8 @@ export class CameraShootingSectionMenuEntries extends React.Component {
             filterWheels,
             currentCamera,
             currentFilterWheel,
-            setCurrentCamera,
-            setCurrentFilterWheel,
+            setCamera,
+            setFilterWheel,
             options,
             setOption,
             isShooting,
@@ -56,11 +56,11 @@ export class CameraShootingSectionMenuEntries extends React.Component {
                     toggle
                     active={currentCamera && currentCamera.id === c.id}
                     key={c.id} content={c.name}
-                    onClick={() => setCurrentCamera(c.id)}
+                    onClick={() => setCamera(c.id)}
                 />) }
                 </Button.Group>
                 { filterWheels.length > 0 &&
-                    <FilterWheelSection {...{filterWheels, currentFilterWheel, setCurrentFilterWheel}} />
+                    <FilterWheelSection {...{filterWheels, currentFilterWheel, setFilterWheel}} />
                 }
                 <Header size='tiny' content='Exposure' textAlign='center' />
                 <Form.Field>

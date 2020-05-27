@@ -1,55 +1,60 @@
-const defaultState = {
-    options: {
-        format: 'png',
-        clipLow: 0,
-        clipHigh: 100,
-        stretch: true,
-        fitToScreen: true,
-    }
+import { set, merge } from 'lodash/fp';
+
+const defaultOptions = {
+    format: 'png',
+    clipLow: 0,
+    clipHigh: 100,
+    stretch: true,
+    fitToScreen: true,
 };
 
-const setOption = (state, option) => ({
-    ...state,
-    options: {
-        ...state.options,
-        ...option,
 
-    },
-})
+const defaultState = {
+    default: { options: {...defaultOptions} },
+};
 
-const onCameraShotFinished = (state, action) => ({
-    ...state, isShooting: false,
-    currentImage: action.payload,
-//    shouldAutostart: !state.imageLoading && state.options.continuous,
-});
 
-const onImageLoadingFinished = (state) => ({
-    ...state,
-    imageLoading: false,
-    shouldAutostart: state.options.continuous,
-})
 
-const onCameraShotError = (state, action) => ({
-    ...state,
-    isShooting: false,
-    shouldAutostart: false,
-});
+const setOption = (state, {option, section}) => merge({
+    [section]: {
+        options: {...option },
+    }
+}, state);
 
-const onCameraShoot = (state, action) => ({
-    ...state,
-    isShooting: true,
-    shouldAutostart: false,
-    crop: state.crop && state.crop.pixel ? { pixel: state.crop.pixel, applied: true } : false,
-})
-
-const cameraStartCrop = (state) => ({...state, crop: { initial: true } });
-
-const cameraSetCrop = (state, action) => ({...state, crop: {...action.crop, applied: false}});
-const cameraResetCrop = (state, action) => { 
-    const crop = state.crop && state.crop.applied ? { canceled: true} : false
-    return {...state, crop };
+const onCameraShotFinished = (state, {section, payload}) => {
+    let newState = set([section, 'isShooting'], false, state);
+    return set([section, 'currentImage'], payload, newState);
 }
 
+const setImageLoading = (state, {section}) => set([section, 'imageLoading'], true, state);
+
+const onImageLoadingFinished = (state, {section}) => {
+    let newState = set([section, 'imageLoading'], false, state);
+    return set([section, 'shouldAutostart'], newState[section].options.continuous, newState);
+};
+
+const onCameraShotError = (state, {section}) => {
+    let newState = set([section, 'isShooting'], false, state);
+    return set([section, 'shouldAutostart'], false, newState);
+};
+
+const onCameraShoot = (state, {section}) => {
+    let newState = set([section, 'isShooting'], true, state);
+    newState = set([section, 'shouldAutostart'], false, newState);
+    const crop = newState[section].crop && newState[section].crop.pixel ? { pixel: newState[section].crop.pixel, applied: true } : false;
+    return set([section, 'crop'], crop, newState);
+};
+
+const cameraStartCrop = (state, {section}) => set([section, 'crop'], { initial: true }, state);
+
+const cameraSetCrop = (state, {crop, section}) => set([section, 'crop'], {...crop, applied: false }, state);
+
+const cameraResetCrop = (state, {section}) => { 
+    const crop = state.crop && state.crop.applied ? { canceled: true} : false
+    return set([section, 'crop'], crop, state);
+};
+
+// TODO: this might need to be moved to sections too
 const onINDIPropertyUpdated = (state, action) => {
     if(state.pendingFilter && action.property.id === state.pendingFilter.property && action.property.device === state.pendingFilter.device) {
         return {...state, pendingFilter: null }
@@ -60,11 +65,11 @@ const onINDIPropertyUpdated = (state, action) => {
 export const camera = (state = defaultState, action) => {
     switch(action.type) {
         case 'SET_CURRENT_CAMERA':
-            return {...state, currentCamera: action.camera };
+            return set([action.section, 'currentCamera'], action.camera, state);
         case 'SET_CURRENT_FILTER_WHEEL':
-            return {...state, currentFilterWheel: action.filterWheel, pendingFilter: null };
+            return set([action.section, 'currentFilterWheel'], action.filterWheel, state);
         case 'CAMERA_SET_OPTION':
-            return setOption(state, action.option);
+            return setOption(state, action);
         case 'CAMERA_SHOOT':
             return onCameraShoot(state, action);
         case 'CAMERA_SHOT_FINISHED':
@@ -72,15 +77,15 @@ export const camera = (state = defaultState, action) => {
         case 'CAMERA_SHOT_ERROR':
             return onCameraShotError(state, action);
         case 'CAMERA_IMAGE_LOADING':
-            return {...state, imageLoading: true};
+            return setImageLoading(state, action)
         case 'CAMERA_IMAGE_LOADED':
-            return onImageLoadingFinished(state);
+            return onImageLoadingFinished(state, action);
         case 'CAMERA_CHANGE_FILTER':
             return {...state, pendingFilter: { device: action.device, property: action.property }};
         case 'INDI_PROPERTY_UPDATED':
             return onINDIPropertyUpdated(state, action);
         case 'CAMERA_START_CROP':
-            return cameraStartCrop(state);
+            return cameraStartCrop(state, action);
         case 'CAMERA_SET_CROP':
             return cameraSetCrop(state, action);
         case 'CAMERA_RESET_CROP':
