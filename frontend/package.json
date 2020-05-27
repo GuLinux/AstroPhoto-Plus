@@ -8,6 +8,7 @@
     "dependencies": {
         "@welldone-software/why-did-you-render": "^3.2.1",
         "event-source-polyfill": "1.0.7",
+        "fullscreen": "^1.1.1",
         "isomorphic-fetch": "^2.2.1",
         "lodash": "^4.17.15",
         "native-base": "^2.12.1",

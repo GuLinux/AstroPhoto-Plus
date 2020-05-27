@@ -1,7 +1,8 @@
 import React from 'react';
 import { Routes } from '../routes';
 import { Route } from "react-router-dom";
-
+import fullscreen from 'fullscreen';
+import { Menu } from 'semantic-ui-react';
 
 import { SequencesListSectionMenu } from '../Sequences/SequencesList';
 import { SequenceSectionMenuContainer } from '../Sequences/SequenceContainer';
@@ -13,6 +14,19 @@ import { CameraSectionMenu } from '../Camera/Camera';
 import { DARVPolarAlignmentMenu } from '../PolarAlignment/DARV';
 
 export class NavbarMenuItems extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.fullscreenAPI = fullscreen(document.documentElement);
+        this.fullscreenAvailable = fullscreen.available();
+    }
+    
+    toggleFullscreen = async () => {
+        if(document.fullscreenElement) {
+            this.fullscreenAPI.release();
+        } else {
+            this.fullscreenAPI.request();
+        }
+    }
 
     onClick = () => this.props.onClick && this.props.onClick();
 
@@ -29,6 +43,7 @@ export class NavbarMenuItems extends React.PureComponent {
             <NavItem icon='compass outline' content='Polar Alignment' to={Routes.POLAR_ALIGNMENT_PAGE} onClick={this.onClick}/>
             <NavItem icon='computer' content='INDI' to={Routes.INDI_PAGE} onClick={this.onClick} />
             <NavItem icon='settings' content='System & Settings' to={Routes.SETTINGS_PAGE} onClick={this.onClick} />
+            {this.fullscreenAvailable && <Menu.Item as='a' icon='expand' content='Toggle Fullscreen' onClick={this.toggleFullscreen} /> }
             <Route exact path={Routes.SEQUENCES_LIST} component={SequencesListSectionMenu} />
             <Route path={Routes.SEQUENCE_PAGE.route} exact={true} render={this.renderSequenceSectionMenu} />
             <Route path={Routes.SEQUENCE_JOB_IMAGES} exact={true} render={this.renderSequenceJobImages} />
