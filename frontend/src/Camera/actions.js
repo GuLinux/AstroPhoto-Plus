@@ -3,7 +3,7 @@ import Actions from '../actions';
 import { getCurrentFilterWheelId } from './selectors';
 import { getPropertyId } from '../INDI-Server/utils';
 
-export const shoot = (parameters, section='default') => (dispatch) => {
+export const shoot = (parameters, section='cameraPage') => (dispatch) => {
     dispatch({ type: 'CAMERA_SHOOT', parameters, section });
     return cameraShootAPI(dispatch, parameters.camera.id, parameters, (data) => dispatch(shotFinished(data, parameters.continuous)), (err) => {
         if(err.headers.get('Content-Type') === 'application/json') {
@@ -14,22 +14,22 @@ export const shoot = (parameters, section='default') => (dispatch) => {
     });
 }
 
-export const setCamera = (camera, section='default') => ({ type: 'SET_CURRENT_CAMERA', camera, section });
-export const setFilterWheel = (filterWheel, section='default') => ({ type: 'SET_CURRENT_FILTER_WHEEL', filterWheel, section });
-export const setOption = (option, section='default') => ({ type: 'CAMERA_SET_OPTION', option, section});
-export const startCrop = ({section='default'}) => ({ type: 'CAMERA_START_CROP', section });
-export const resetCrop = (section='default') => ({ type: 'CAMERA_RESET_CROP', section });
+export const setCamera = (camera, section='cameraPage') => ({ type: 'SET_CURRENT_CAMERA', camera, section });
+export const setFilterWheel = (filterWheel, section='cameraPage') => ({ type: 'SET_CURRENT_FILTER_WHEEL', filterWheel, section });
+export const setOption = (option, section='cameraPage') => ({ type: 'CAMERA_SET_OPTION', option, section});
+export const startCrop = ({section='cameraPage'}) => ({ type: 'CAMERA_START_CROP', section });
+export const resetCrop = (section='cameraPage') => ({ type: 'CAMERA_RESET_CROP', section });
 
-export const imageLoading = ({section='default'}) => ({ type: 'CAMERA_IMAGE_LOADING', section });
-export const imageLoaded = ({section='default'}) => ({ type: 'CAMERA_IMAGE_LOADED', section });
-export const setCrop = (crop, section='default') => ({ type: 'CAMERA_SET_CROP', crop, section});
-export const shotFinished = (payload, continuous, section='default') => dispatch => {
+export const imageLoading = ({section='cameraPage'}) => ({ type: 'CAMERA_IMAGE_LOADING', section });
+export const imageLoaded = ({section='cameraPage'}) => ({ type: 'CAMERA_IMAGE_LOADED', section });
+export const setCrop = (crop, section='cameraPage') => ({ type: 'CAMERA_SET_CROP', crop, section});
+export const shotFinished = (payload, continuous, section='cameraPage') => dispatch => {
     dispatch({ type: 'CAMERA_SHOT_FINISHED', payload, section });
     if(!continuous)
         dispatch(Actions.Notifications.add('Image acquired', 'Image was successfully acquired.', 'success', 5000));
 };
 
-export const shotError = (error, section='default') => dispatch => {
+export const shotError = (error, section='cameraPage') => dispatch => {
     dispatch({ type: 'CAMERA_SHOT_ERROR', error, section});
     let errorMessage = [
         'There was an error acquiring your image.',
@@ -41,7 +41,7 @@ export const shotError = (error, section='default') => dispatch => {
     dispatch(Actions.Notifications.add('Image error', errorMessage , 'error'));
 };
 
-export const changeFilter = (value, section='default') => (dispatch, getState) => {
+export const changeFilter = (value, section='cameraPage') => (dispatch, getState) => {
     const state = getState();
     const filterWheelId = getCurrentFilterWheelId(state, {section});
 

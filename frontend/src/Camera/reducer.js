@@ -10,16 +10,15 @@ const defaultOptions = {
 
 
 const defaultState = {
-    default: { options: {...defaultOptions} },
+    cameraPage: { options: {...defaultOptions} },
 };
 
 
 
-const setOption = (state, {option, section}) => merge({
-    [section]: {
-        options: {...option },
-    }
-}, state);
+const setOption = (state, {option, section}) => {
+    const { options } = state[section];
+    return set([section, 'options'], {...options, ...option}, state);
+}
 
 const onCameraShotFinished = (state, {section, payload}) => {
     let newState = set([section, 'isShooting'], false, state);

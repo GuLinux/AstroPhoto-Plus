@@ -10,22 +10,27 @@ class FilterWheelSection extends React.Component {
     componentDidMount = () => this.autosetFilterWheel();
     componentDidUpdate = () => this.autosetFilterWheel();
 
+    setFilterWheel = (id) => () => this.props.setFilterWheel(id);
+
+    filterWheelButton = ({name, id}) => <Button
+        toggle
+        active={this.props.currentFilterWheel && this.props.currentFilterWheel.id === id}
+        key={id} content={name}
+        onClick={this.setFilterWheel(id, this.props.section)}
+    />;
+
     render = () => {
-        const {filterWheels, currentFilterWheel, setFilterWheel} = this.props;
+        const {filterWheels, currentFilterWheel} = this.props;
+        if(filterWheels.length === 0) {
+            return null;
+        }
         return (
             <React.Fragment>
                 <Header size='tiny' content='FilterWheel' textAlign='center' />
                 <Button.Group vertical size='mini' fluid basic>
-                { filterWheels.map(c => <Button
-                    toggle
-                    active={currentFilterWheel && currentFilterWheel.id === c.id}
-                    key={c.id} content={c.name}
-                    onClick={() => setFilterWheel(c.id)}
-                />) }
+                { filterWheels.map(this.filterWheelButton)}
                 </Button.Group>
-                { currentFilterWheel &&
-                    <SelectFilterContainer filterWheelId={currentFilterWheel.id} />
-                }
+                { currentFilterWheel && <SelectFilterContainer filterWheelId={currentFilterWheel.id} /> }
             </React.Fragment>
         )
     }
@@ -35,6 +40,15 @@ export class CameraShootingSectionMenuEntries extends React.Component {
     autosetCamera = () => this.props.cameras.length === 1 && !this.props.currentCamera && this.props.setCamera(this.props.cameras[0].id);
     componentDidMount = () => this.autosetCamera();
     componentDidUpdate = () => this.autosetCamera();
+    setCamera = id => () => this.props.setCamera(id, this.props.section);
+
+    cameraButton = ({id, name}) => <Button
+        toggle
+        active={this.props.currentCamera && this.props.currentCamera.id === id}
+        key={id} content={name}
+        onClick={this.setCamera(id)}
+    />
+
     render = () => {
         const {
             cameras,
@@ -44,34 +58,32 @@ export class CameraShootingSectionMenuEntries extends React.Component {
             setCamera,
             setFilterWheel,
             options,
-            setOption,
             isShooting,
             onShoot,
+            section,
         } = this.props;
-        return cameras.length > 0 ? (
+        if(cameras.length === 0) {
+            return null;
+        }
+        return (
             <React.Fragment>
                 <Header size='tiny' content='Camera' textAlign='center' />
                 <Button.Group vertical size='mini' fluid basic>
-                { cameras.map(c => <Button
-                    toggle
-                    active={currentCamera && currentCamera.id === c.id}
-                    key={c.id} content={c.name}
-                    onClick={() => setCamera(c.id)}
-                />) }
+                { cameras.map(this.cameraButton) }
                 </Button.Group>
-                { filterWheels.length > 0 &&
-                    <FilterWheelSection {...{filterWheels, currentFilterWheel, setFilterWheel}} />
-                }
+                <FilterWheelSection {...{filterWheels, currentFilterWheel, setFilterWheel}} section={section} />
                 <Header size='tiny' content='Exposure' textAlign='center' />
                 <Form.Field>
-                    <ExposureInputContainer cameraId={currentCamera && currentCamera.id} disabled={!currentCamera || isShooting} size='mini' onShoot={onShoot} />
+                    <ExposureInputContainer cameraId={currentCamera && currentCamera.id} disabled={!currentCamera || isShooting} size='mini' onShoot={onShoot} section={section} />
                     { !currentCamera && <Message content='Please select a camera first' size='tiny'/> }
                 </Form.Field>
-                <Form.Checkbox label='Continuous' disabled={!currentCamera} toggle size='mini' checked={options.continuous} onChange={(e, data) => setOption({continuous: data.checked})} />
-                <CameraBinningContainer cameraId={currentCamera && currentCamera.id} />
+                <Form.Checkbox label='Continuous' disabled={!currentCamera} toggle size='mini' checked={options.continuous} onChange={this.setContinuous} />
+                <CameraBinningContainer cameraId={currentCamera && currentCamera.id} section={section} />
             </React.Fragment>
-        ) : null;
+        );
     }
+
+    setContinuous = (e, {checked: continuous}) => this.props.setOption({continuous}, this.props.section);
 }
 
 export const CameraImageOptionsSectionMenuEntries = ({

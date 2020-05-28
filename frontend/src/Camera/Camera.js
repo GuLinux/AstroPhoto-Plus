@@ -8,8 +8,8 @@ import { CameraShootingSectionMenuEntriesContaner, CameraImageOptionsSectionMenu
 
 export const CameraSectionMenu = () => (
     <Form size='tiny'>
-        <CameraShootingSectionMenuEntriesContaner />
-        <CameraImageOptionsSectionMenuEntriesContainer />
+        <CameraShootingSectionMenuEntriesContaner section='cameraPage'/>
+        <CameraImageOptionsSectionMenuEntriesContainer section='cameraPage' />
     </Form>
 )
 

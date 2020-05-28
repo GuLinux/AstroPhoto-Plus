@@ -11,10 +11,6 @@ export class ImageViewOptions extends React.Component{
     onHistogramLogaritmicChanged = (e, data) => this.props.setOption({histogramLogarithmic: data.checked});
     onHistogramBinsChanged = value => this.props.setOption({histogramBins: value});
 
-    downloadFITS = () => {
-
-    }
-
     render = () => (
         <React.Fragment>
             <Header size='tiny' content='View Options' textAlign='center' />
@@ -41,7 +37,7 @@ export class ImageViewOptions extends React.Component{
                 this.props.options.showHistogram && (<React.Fragment>
                     <Form.Checkbox key='log' label='logarithmic' toggle size='tiny' checked={this.props.options.histogramLogarithmic} onChange={this.onHistogramLogaritmicChanged} />
                     <Form.Field key='bins'>
-                        <NumericInput label='bins' size='tiny' min={0} max={255} step={1} value={this.props.options.histogramBins} onChange={this.onHistogramBinsChanged} />
+                        <NumericInput label='bins' size='mini' min={0} max={255} step={1} value={this.props.options.histogramBins} onChange={this.onHistogramBinsChanged} />
                     </Form.Field>
                 </React.Fragment>
             )}

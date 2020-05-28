@@ -13,7 +13,7 @@ import { getDevices } from '../INDI-Server/selectors';
 import { get } from 'lodash';
 
 
-const getCameraState = (state, {section='default'}) => state.camera[section];
+const getCameraState = (state, {section='cameraPage'}) => state.camera[section];
 
 const getCurrentCameraId = (state, props) => getCameraState(state, props).currentCamera;
 export const getCurrentFilterWheelId = (state, props) => getCameraState(state, props).currentFilterWheel;
