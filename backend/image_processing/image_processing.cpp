@@ -151,9 +151,24 @@ cv::Mat ImageProcessing::to8Bit(const cv::Mat &source) {
 
 void ImageProcessing::autostretch() {
     LOG() << "autostretch";
-    cv::Mat normedImage;
-    cv::normalize(this->image, normedImage, 0, (1 << this->bpp()), cv::NORM_MINMAX);
-    cv::equalizeHist(to8Bit(normedImage), this->image);
+
+    if(this->image.channels() == 3) {
+        std::vector<cv::Mat> channels;
+        cv::split(this->image, channels);
+        for(auto &channel: channels) {
+            cv::normalize(channel, channel, 0, (1 << this->bpp()), cv::NORM_MINMAX);
+            cv::equalizeHist(to8Bit(channel), channel);
+        }
+        cv::Mat mat;
+        cv::merge(channels, mat);
+        this->image = mat;
+    }
+    else {
+        cv::Mat normedImage;
+        cv::normalize(this->image, normedImage, 0, (1 << this->bpp()), cv::NORM_MINMAX);
+        cv::equalizeHist(to8Bit(normedImage), this->image);
+    }
+
 }
 
 #include <iostream>
