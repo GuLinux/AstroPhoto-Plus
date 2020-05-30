@@ -82,7 +82,7 @@ const SolutionPanel = ({solution, previousSolution, targets}) => {
         }))
     ];
     if(previousSolution) {
-        markers.push(field2Marker(previousSolution, 'Previous Solution', orange));
+        markers.push(field2Marker(previousSolution, 'Previous Solution', 'orange'));
     }
     return (
         <Container>
