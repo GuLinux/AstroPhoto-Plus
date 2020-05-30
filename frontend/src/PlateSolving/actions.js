@@ -37,8 +37,8 @@ export const PlateSolving = {
         abortSolveFieldAPI(dispatch, onSuccess);
     },
 
-    solveField: options => (dispatch, getState) => {
-        dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD' });
+    solveField: (options, targetName) => (dispatch, getState) => {
+        dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD', targetName});
         dispatch(Actions.PlateSolving.resetMessages());
         const onSuccess = response => {
             dispatch({ type: 'RESPONSE_PLATESOLVING_STATUS', response });

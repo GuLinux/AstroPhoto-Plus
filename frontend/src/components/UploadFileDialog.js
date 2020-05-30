@@ -56,7 +56,7 @@ export class UploadFileDialog extends React.Component {
         const reader = new FileReader();
         reader.onload = () => {
             const fileBuffer = reader.result;
-            this.props.onFileUploaded(fileBuffer);
+            this.props.onFileUploaded(fileBuffer, this.state.file);
         }
         this.props.readAsDataURL ? reader.readAsDataURL(file) : reader.readAsArrayBuffer(file);
     }
