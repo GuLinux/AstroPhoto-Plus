@@ -160,6 +160,7 @@ export class PlateSolving extends React.Component {
     onTargetFileUploaded = (fileBuffer, file) => {
             this.props.solveField({
             ...this.props.options,
+            syncTelescope: false,
             fileBuffer,
         }, file.name);
         this.toggleSearchTarget();

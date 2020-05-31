@@ -76,7 +76,7 @@ const transformSolution = solution => ({
     dej2000: solution.ASTROMETRY_RESULTS_DE.value,
     raLabel: formatRA(solution.ASTROMETRY_RESULTS_RA.value),
     decLabel: formatDegrees(solution.ASTROMETRY_RESULTS_DE.value),
-    widthDegrees: solution.ASTROMETRY_RESULTS_WIDTH.value,
+    widthDegrees: solution.ASTROMETRY_RESULTS_WIDTH.value / 24.0 * 360.0,
     heightDegrees: solution.ASTROMETRY_RESULTS_HEIGHT.value,
     width: formatDegrees(solution.ASTROMETRY_RESULTS_WIDTH.value),
     height: formatDegrees(solution.ASTROMETRY_RESULTS_HEIGHT.value),
