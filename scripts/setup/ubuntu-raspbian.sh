@@ -54,6 +54,9 @@ install-prerequisites() {
     if ! which lsb_release >/dev/null 2>&1; then
         sudo apt-get install -y -q lsb-release
     fi
+    if [ "$DISTRO_VARIANT" = "Ubuntu" ] && ! which apt-add-repository >/dev/null 2>&1; then
+        sudo apt-get install -y -q software-properties-common
+    fi
 }
 
 setup-indi-ppa() {
