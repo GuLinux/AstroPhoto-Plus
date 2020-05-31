@@ -12,6 +12,7 @@ export const PlateSolving = {
         syncTelescope: 'syncTelescope',
         downsample: 'downsample',
         searchRadius: 'searchRadius',
+        telescopeType: 'telescopeType',
     },
     setOption: (option, value) => ({ type: 'PLATESOLVING_SET_OPTION', option, value }),
     resetMessages: () => ({ type: 'PLATESOLVING_RESET_MESSAGES' }),

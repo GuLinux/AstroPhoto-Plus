@@ -68,6 +68,7 @@ const testSolution = {
 const defaultState = {
     options: {
         [Actions.Options.camera]: false,
+        [Actions.Options.telescopeType]: 'main',
         [Actions.Options.fov]: {},
         [Actions.Options.syncTelescope]: true,
         [Actions.Options.downsample]: 2,

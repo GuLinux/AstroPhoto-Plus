@@ -105,9 +105,10 @@ export const plateSolvingContainerSelector = createSelector([
     state => getCCDWidthPix(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
     state => getCCDPixelPitch(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
     state => getTelescopeFocalLength(state, {telescopeId: getDeviceId(PlateSolving.Options.telescope, state)}),
+    state => getTelescopeFocalLength(state, {type: 'guider', telescopeId: getDeviceId(PlateSolving.Options.telescope, state)}),
     getPlateSolvingTargets,
     getPlateSolvingMainTarget,
-], (plateSolvingDevices, options, solution, previousSolution, loading, messages, ccdMaxX, ccdPixelSizeX, telescopeFocalLength, targets, mainTarget) => ({
+], (plateSolvingDevices, options, solution, previousSolution, loading, messages, ccdMaxX, ccdPixelSizeX, telescopeFocalLength, guiderFocalLength, targets, mainTarget) => ({
     ...plateSolvingDevices,
     messages,
     options,
@@ -119,7 +120,7 @@ export const plateSolvingContainerSelector = createSelector([
         ccdMaxX: get(ccdMaxX, 'value'),
         ccdPixelSizeX: get(ccdPixelSizeX, 'value'),
     },
-    telescopeFocalLength: get(telescopeFocalLength, 'value'),
+    telescopeFocalLength: options[PlateSolving.Options.telescopeType] === 'main' ? get(telescopeFocalLength, 'value') : get(guiderFocalLength, 'value'),
     targets,
     mainTarget,
 }));

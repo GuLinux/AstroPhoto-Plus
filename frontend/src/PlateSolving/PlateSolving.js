@@ -5,7 +5,7 @@ import { PlateSolving as PlateSolvingActions } from './actions';
 import { UploadFileDialog } from '../components/UploadFileDialog';
 import { NumericInput } from '../components/NumericInput';
 import { SkyChartComponent } from '../components/SkyChartsComponent';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { getFieldOfView, getSensorSizeFromResolution } from './utils';
 import { CatalogSearch } from '../Catalogs/CatalogSearch.js';
 
@@ -26,7 +26,12 @@ const PlateSolvingMessagesPanel = ({messages}) => (
 
 class SetCameraFOV extends React.PureComponent {
     componentDidMount = () => this.setFOV();
-    componentDidUpdate = (prevProps) => this.props.camera !== prevProps.camera && this.setFOV();
+    componentDidUpdate = ({ccdInfo, telescopeFocalLength}) => {
+        if(! isEqual(this.props.ccdInfo, ccdInfo) || this.props.telescopeFocalLength !== telescopeFocalLength) {
+            this.setFOV();
+        }
+    }
+
     setFOV = () => {
         const { setOption, telescopeFocalLength, ccdInfo } = this.props;
         const sensorWidth = getSensorSizeFromResolution(ccdInfo.ccdMaxX, ccdInfo.ccdPixelSizeX);
@@ -184,7 +189,11 @@ export class PlateSolving extends React.Component {
             {this.props.telescopeFocalLength && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Telescope focal length' /></Grid.Column>
-                    <Grid.Column width={13}>
+                    <Grid.Column width={3}>
+                        {this.optionButton(Options.telescopeType, 'main', {content: 'Main', key: 'main'})}
+                        {this.optionButton(Options.telescopeType, 'guider', {content: 'Guider', key: 'guider'})}
+                    </Grid.Column>
+                    <Grid.Column width={10}>
                         {this.props.telescopeFocalLength}mm
                     </Grid.Column>
                 </Grid.Row>)}
