@@ -2,6 +2,7 @@ import React from 'react';
 import { NotFoundPage } from '../components/NotFoundPage';
 import { Form } from 'semantic-ui-react';
 import { CameraShootingSectionMenuEntriesContaner } from '../Camera/CameraSectionMenuEntriesContainer';
+import { PLATESOLVING_PAGE } from '../Camera/sections';
 
 
 import { PlateSolvingContainer } from './PlateSolvingContainer';
@@ -10,7 +11,7 @@ import { PlateSolvingContainer } from './PlateSolvingContainer';
 // TODO: possibly move some driver selection in the menu
 export const PlateSolvingSectionMenu = ({listenToCamera}) => listenToCamera && (
     <Form size='tiny'>
-        <CameraShootingSectionMenuEntriesContaner section='plateSolving' />
+        <CameraShootingSectionMenuEntriesContaner section={PLATESOLVING_PAGE} />
     </Form>
 );
 
