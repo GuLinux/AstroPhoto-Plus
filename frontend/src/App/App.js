@@ -33,7 +33,7 @@ const AppRouter = ({location}) => (
                 <Route exact path={Routes.ROOT} component={HomeContainer}/>
                 <Route path={Routes.SEQUENCES_PAGE} component={SequencesPage} />
                 <Route path={Routes.INDI_PAGE} component={INDIServerContainer} />
-                <Route path={Routes.CAMERA_PAGE} component={CameraContainer} />
+                <Route path={Routes.CAMERA_PAGE} render={props => <CameraContainer {...props} section='cameraPage' />} />
                 <Route path={Routes.PLATE_SOLVING_PAGE} component={PlateSolvingPageContainer} />
                 <Route path={Routes.SETTINGS_PAGE} component={SettingsContainer} />
                 <Route path={Routes.POLAR_ALIGNMENT_PAGE} component={PolarAlignmentPage} />
