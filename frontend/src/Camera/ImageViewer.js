@@ -44,12 +44,12 @@ class ImageCrop extends React.Component {
 export class ImageViewer extends React.Component {
     state = {}
 
-    onImageLoading = (uri) => {
+    onImageLoading = ({uri}) => {
         this.setState({ uri: undefined });
         this.props.onImageLoading({uri});
     }
 
-    onImageLoaded = (uri) => {
+    onImageLoaded = ({uri}) => {
         this.setState({ uri });
         this.props.onImageLoaded({uri});
     }
@@ -57,6 +57,7 @@ export class ImageViewer extends React.Component {
     imageContainerProps = () => ({
         onImageLoading: this.onImageLoading,
         onImageLoaded: this.onImageLoaded,
+        section: this.props.section,
     });
 
     render = () => {

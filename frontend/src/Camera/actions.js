@@ -3,7 +3,7 @@ import Actions from '../actions';
 import { getCurrentFilterWheelId } from './selectors';
 import { getPropertyId } from '../INDI-Server/utils';
 
-export const shoot = (parameters, section='cameraPage') => (dispatch) => {
+export const shoot = (parameters, section) => (dispatch) => {
     dispatch({ type: 'CAMERA_SHOOT', parameters, section });
     return cameraShootAPI(dispatch, parameters.camera.id, parameters, (data) => dispatch(shotFinished(data, parameters.continuous)), (err) => {
         if(err.headers.get('Content-Type') === 'application/json') {
