@@ -4,7 +4,7 @@ import { Form } from 'semantic-ui-react';
 
 
 export class CameraBinning extends React.Component {
-    setBinning = binning => this.props.setOption({binning});
+    setBinning = binning => this.props.setOption({binning}, this.props.section);
     render = () => {
         const  { selectedBinning, binning } = this.props;
         if(!binning) {

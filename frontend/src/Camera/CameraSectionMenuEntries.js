@@ -6,7 +6,7 @@ import { ImageViewOptionsContainer } from '../Image/ImageViewOptionsContainer';
 import { CameraBinningContainer } from './CameraBinningContainer';
 
 class FilterWheelSection extends React.Component {
-    autosetFilterWheel = () => this.props.filterWheels.length === 1 && !this.props.currentFilterWheel && this.props.setFilterWheel(this.props.filterWheels[0].id);
+    autosetFilterWheel = () => this.props.filterWheels.length === 1 && !this.props.currentFilterWheel && this.props.setFilterWheel(this.props.filterWheels[0].id, this.props.section);
     componentDidMount = () => this.autosetFilterWheel();
     componentDidUpdate = () => this.autosetFilterWheel();
 
@@ -20,7 +20,7 @@ class FilterWheelSection extends React.Component {
     />;
 
     render = () => {
-        const {filterWheels, currentFilterWheel} = this.props;
+        const {filterWheels, currentFilterWheel, section} = this.props;
         if(filterWheels.length === 0) {
             return null;
         }
@@ -30,14 +30,14 @@ class FilterWheelSection extends React.Component {
                 <Button.Group vertical size='mini' fluid basic>
                 { filterWheels.map(this.filterWheelButton)}
                 </Button.Group>
-                { currentFilterWheel && <SelectFilterContainer filterWheelId={currentFilterWheel.id} /> }
+                { currentFilterWheel && <SelectFilterContainer filterWheelId={currentFilterWheel.id} section={section} /> }
             </React.Fragment>
         )
     }
 }
 
 export class CameraShootingSectionMenuEntries extends React.Component {
-    autosetCamera = () => this.props.cameras.length === 1 && !this.props.currentCamera && this.props.setCamera(this.props.cameras[0].id);
+    autosetCamera = () => this.props.cameras.length === 1 && !this.props.currentCamera && this.props.setCamera(this.props.cameras[0].id, this.props.section);
     componentDidMount = () => this.autosetCamera();
     componentDidUpdate = () => this.autosetCamera();
     setCamera = id => () => this.props.setCamera(id, this.props.section);

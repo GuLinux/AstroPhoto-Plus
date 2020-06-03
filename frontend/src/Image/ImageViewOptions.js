@@ -2,14 +2,14 @@ import React from 'react';
 import { Form, Header, Button } from 'semantic-ui-react';
 import { NumericInput } from '../components/NumericInput';
 export class ImageViewOptions extends React.Component{
-    onStretchChanged = (e, data) => this.props.setOption({stretch: data.checked});
-    onFormatChanged = (e, data) => this.props.setOption({format: data.value});
-    onFitToScreenChanged = (e, data) => this.props.setOption({fitToScreen: data.checked});
-    onClipLowChanged = (value) => this.props.setOption({clipLow: value});
-    onClipHighChanged = (value) => this.props.setOption({clipHigh: value});
-    onShowHistogramChanged = (e, data) => this.props.setOption({showHistogram: data.checked});
-    onHistogramLogaritmicChanged = (e, data) => this.props.setOption({histogramLogarithmic: data.checked});
-    onHistogramBinsChanged = value => this.props.setOption({histogramBins: value});
+    onStretchChanged = (e, data) => this.props.setOption({stretch: data.checked}, this.props.section);
+    onFormatChanged = (e, data) => this.props.setOption({format: data.value}, this.props.section);
+    onFitToScreenChanged = (e, data) => this.props.setOption({fitToScreen: data.checked}, this.props.section);
+    onClipLowChanged = (value) => this.props.setOption({clipLow: value}, this.props.section);
+    onClipHighChanged = (value) => this.props.setOption({clipHigh: value}, this.props.section);
+    onShowHistogramChanged = (e, data) => this.props.setOption({showHistogram: data.checked}, this.props.section);
+    onHistogramLogaritmicChanged = (e, data) => this.props.setOption({histogramLogarithmic: data.checked}, this.props.section);
+    onHistogramBinsChanged = value => this.props.setOption({histogramBins: value}, this.props.section);
 
     render = () => (
         <React.Fragment>

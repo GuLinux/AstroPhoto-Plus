@@ -1,16 +1,21 @@
 import { set, merge } from 'lodash/fp';
 
-const defaultOptions = {
-    format: 'png',
-    clipLow: 0,
-    clipHigh: 100,
-    stretch: true,
-    fitToScreen: true,
-};
+const getSectionState = (options={}) => ({
+    options: {
+        format: 'png',
+        clipLow: 0,
+        clipHigh: 100,
+        stretch: true,
+        fitToScreen: true,
+        ...options,
+    },
+});
 
 
 const defaultState = {
-    cameraPage: { options: {...defaultOptions} },
+    cameraPage: getSectionState(),
+    platesolvingPage: getSectionState(),
+    darvPage: getSectionState(),
 };
 
 

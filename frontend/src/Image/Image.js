@@ -33,12 +33,14 @@ export class ImageLoader extends React.Component {
 
     onImageLoading = () => {
         this.toggleLoading(true);
-        this.props.onImageLoading && this.props.onImageLoading(this.props.uri);
+        const { uri, section } = this.props;
+        this.props.onImageLoading && this.props.onImageLoading({uri, section});
     }
 
     onImageLoaded = () => {
         this.toggleLoading(false);
-        this.props.onImageLoaded && this.props.onImageLoaded(this.props.uri);
+        const { uri, section } = this.props;
+        this.props.onImageLoaded && this.props.onImageLoaded({uri, section});
     }
 
     shouldShowLoader = () => (this.state.loading || ! this.state.ready) && ! this.state.error 

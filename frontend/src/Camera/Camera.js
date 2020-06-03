@@ -24,8 +24,8 @@ export const Camera = ({options, cameras}) => {
         />
     return (
         <Container fluid>
-            <AutoExposureContainer />
-            <CurrentImageViewerContainer fitScreen={options.fitToScreen} />
+            <AutoExposureContainer section='cameraPage' />
+            <CurrentImageViewerContainer fitScreen={options.fitToScreen} section='cameraPage' />
         </Container>
     );
 }
