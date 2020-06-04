@@ -6,7 +6,7 @@ import { FilterSelectionContainer } from './FilterSelectionContainer';
 export class SelectFilter extends React.Component {
     renderFilter = (id, index) => <FilterSelectionContainer onClick={this.onChange} filterWheelId={this.props.filterWheelId} key={id} filterNumber={index+1} />;
 
-    onChange = (e,{value}) => this.props.onFilterSelected(value);
+    onChange = (e,{value}) => this.props.onFilterSelected(value, this.props.section);
 
     render = () => {
         const {currentFilter, currentFilterName, availableFilters, isPending} = this.props;

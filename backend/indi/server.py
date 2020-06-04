@@ -101,6 +101,13 @@ class Server:
     def cameras(self):
         return [Camera(self.settings, self.client, self.logger, camera=c) for c in self.client.cameras()]
 
+    def get_camera(self, id):
+        camera = [c for c in self.cameras() if c.id == id]
+        if not camera:
+            raise NotFoundError('Camera {} not found'.format(id))
+        return camera[0]
+
+
     def telescopes(self):
         return [Telescope(self.settings, self.client, device=d) for d in self.client.telescopes()]
 

@@ -5,6 +5,7 @@ import { Divider, Container, Menu} from 'semantic-ui-react';
 import { Route } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { HistoryLandingContainer } from '../Navigation/HistoryLandingContainer';
+import { DARV_PAGE } from '../Camera/sections';
 
 export const PolarAlignmentPage = () => (
     <Container fluid>
@@ -16,7 +17,7 @@ export const PolarAlignmentPage = () => (
         <Divider hidden />
         <Container fluid>
             <HistoryLandingContainer route={Routes.POLAR_ALIGNMENT_PAGE} defaultLandingPath={Routes.POLAR_ALIGNMENT_DARV}>
-                <Route path={Routes.POLAR_ALIGNMENT_DARV} exact={true} component={DARV} />
+                <Route path={Routes.POLAR_ALIGNMENT_DARV} exact={true} render={props => <DARV section={DARV_PAGE} {...props} />} />
             </HistoryLandingContainer>
         </Container>
     </Container>

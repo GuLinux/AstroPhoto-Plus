@@ -18,7 +18,10 @@ const loggerMiddleware = createLogger()
 const createMiddleware = () => {
     const disableLogger = true;
     //const composeEnhancers = (isDevelopmentMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({maxAge: 200})) || compose;
-    const composeEnhancers = (isDevelopmentMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+    const composeEnhancers = (isDevelopmentMode && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        maxAge: 200,
+        actionsBlacklist: 'INDI_PROPERTY_UPDATED',
+    })) || compose;
     const middlewares = [thunkMiddleware];
     isDevelopmentMode && ! disableLogger && middlewares.push(loggerMiddleware);
     return composeEnhancers(applyMiddleware(...middlewares));

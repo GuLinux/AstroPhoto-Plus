@@ -127,6 +127,7 @@ export const plateSolvingContainerSelector = createSelector([
 
 export const plateSolvingSectionMenuSelector = createSelector([getPlateSolvingOptions], options => ({
     listenToCamera: options[PlateSolving.Options.camera],
+    platesolvingOptions: options,
 }))
 
 export const solveFromCameraSelector = createSelector([getPlateSolvingOptions], options => ({options}));

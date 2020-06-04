@@ -10,6 +10,7 @@ import { SettingsContainer } from '../Settings/SettingsContainer';
 import { ImagePage } from '../Image/ImagePage';
 import { PlateSolvingPageContainer } from '../PlateSolving/PlateSolvingPageContainer';
 import { PolarAlignmentPage } from '../PolarAlignment/PolarAlignmentPage';
+import { CAMERA_PAGE } from '../Camera/sections';
 
 import { PHD2 } from '../PHD2/PHD2';
 import { Route, Switch} from "react-router";
@@ -33,7 +34,7 @@ const AppRouter = ({location}) => (
                 <Route exact path={Routes.ROOT} component={HomeContainer}/>
                 <Route path={Routes.SEQUENCES_PAGE} component={SequencesPage} />
                 <Route path={Routes.INDI_PAGE} component={INDIServerContainer} />
-                <Route path={Routes.CAMERA_PAGE} component={CameraContainer} />
+                <Route path={Routes.CAMERA_PAGE} render={props => <CameraContainer {...props} section={CAMERA_PAGE} />} />
                 <Route path={Routes.PLATE_SOLVING_PAGE} component={PlateSolvingPageContainer} />
                 <Route path={Routes.SETTINGS_PAGE} component={SettingsContainer} />
                 <Route path={Routes.POLAR_ALIGNMENT_PAGE} component={PolarAlignmentPage} />

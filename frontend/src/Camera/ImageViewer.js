@@ -44,20 +44,23 @@ class ImageCrop extends React.Component {
 export class ImageViewer extends React.Component {
     state = {}
 
-    onImageLoading = (uri) => {
+    onImageLoading = ({uri, section}) => {
         this.setState({ uri: undefined });
-        this.props.onImageLoading(uri);
+        this.props.onImageLoading({uri, section});
     }
 
-    onImageLoaded = (uri) => {
+    onImageLoaded = ({uri, section }) => {
         this.setState({ uri });
-        this.props.onImageLoaded(uri);
+        this.props.onImageLoaded({uri, section});
     }
 
     imageContainerProps = () => ({
         onImageLoading: this.onImageLoading,
         onImageLoaded: this.onImageLoaded,
+        section: this.props.section,
     });
+
+    setCrop = crop => this.props.setCrop(crop, this.props.section);
 
     render = () => {
         const {id, type, crop, setCrop, imageInfo} = this.props;
@@ -65,7 +68,7 @@ export class ImageViewer extends React.Component {
             <div className='image-viewer'>
                 <HistogramContainer imageId={id} type={type} />
                 { this.state.uri && crop && (crop.initial || crop.relative) ?
-                    <ImageCrop src={this.state.uri} width={imageInfo.width} height={imageInfo.height} crop={crop} setCrop={setCrop} /> :
+                    <ImageCrop src={this.state.uri} width={imageInfo.width} height={imageInfo.height} crop={crop} setCrop={this.setCrop} /> :
                     <ImageContainer key={id} id={id} type={type} {...this.imageContainerProps()} />
                 }
             </div>

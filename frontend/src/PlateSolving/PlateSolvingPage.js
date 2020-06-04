@@ -2,17 +2,28 @@ import React from 'react';
 import { NotFoundPage } from '../components/NotFoundPage';
 import { Form } from 'semantic-ui-react';
 import { CameraShootingSectionMenuEntriesContaner } from '../Camera/CameraSectionMenuEntriesContainer';
+import { PLATESOLVING_PAGE } from '../Camera/sections';
 
 
 import { PlateSolvingContainer } from './PlateSolvingContainer';
 
 
 // TODO: possibly move some driver selection in the menu
-export const PlateSolvingSectionMenu = ({listenToCamera}) => listenToCamera && (
-    <Form size='tiny'>
-        <CameraShootingSectionMenuEntriesContaner />
-    </Form>
-);
+export class PlateSolvingSectionMenu extends React.Component {
+    shoot = cameraOptions => this.props.solveField({
+        ...this.props.platesolvingOptions,
+        cameraOptions,
+    });
+
+    render = () => {
+        const { listenToCamera } = this.props;
+        return listenToCamera && (
+            <Form size='tiny'>
+                <CameraShootingSectionMenuEntriesContaner section={PLATESOLVING_PAGE} onShoot={this.shoot}/>
+            </Form>
+        );
+    }
+}
 
 
 export const PlateSolvingPage = ({hasAstrometry, hasTelescopes}) => {

@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
 import { ImageViewer } from './ImageViewer';
 import { currentImageSelector } from './selectors';
-import Actions from '../actions';
+import { imageLoading, imageLoaded, setCrop } from './actions';
 
 
 
 const mapDispatchToProps = {
-    onImageLoading: Actions.Camera.imageLoading,
-    onImageLoaded: Actions.Camera.imageLoaded,
-    setCrop: Actions.Camera.setCrop,
+    onImageLoading: imageLoading,
+    onImageLoaded: imageLoaded,
+    setCrop,
 };
 
 const CurrentImageViewerContainer = connect(

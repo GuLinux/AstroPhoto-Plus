@@ -371,19 +371,12 @@ def get_cameras():
     return [x.to_map() for x in controller.indi_server.cameras()]
 
 
-def lookup_camera(id):
-    camera = [c for c in controller.indi_server.cameras() if c.id == id]
-    if not camera:
-        raise NotFoundError('Camera {} not found'.format(id))
-    return camera[0]
-
-
 @app.route('/api/cameras/<camera>/image', methods=['POST'])
 @json_input
 @json_api
 @indi_connected
 def shoot_image(camera, json):
-    return lookup_camera(camera).shoot_image(json)
+    return controller.indi_server.get_camera(camera).shoot_image(json)
 
 
 def get_image_database(type):
