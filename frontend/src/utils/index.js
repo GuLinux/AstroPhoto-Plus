@@ -4,10 +4,12 @@ export const isDevelopmentMode = process.env.NODE_ENV === 'development';
 
 export const sanitizePath = (name) => name.replace('/', '-');
 
-export const secs2time = seconds => {
-    var date = new Date(null);
-    date.setSeconds(seconds); // specify value for SECONDS here
-    return date.toISOString().substr(11, 8);
+export const secs2time = (seconds, format='%02d:%02d:%06.3f') => {
+    let secs = seconds % 60;
+    let remainder = seconds  / 60;
+    let minutes = remainder % 60;
+    remainder/= 60;
+    return sprintf(format, remainder, minutes, secs);
 }
 
 
