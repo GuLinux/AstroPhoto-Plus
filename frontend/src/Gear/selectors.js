@@ -44,4 +44,4 @@ export const getFilterWheelCurrentFilterName = (state, {filterWheelId}) => {
 
 export const getCCDWidthPix = (state, {cameraId}) => getValueInputSelector(cameraId, 'CCD_INFO', 'CCD_MAX_X')(state);
 export const getCCDPixelPitch = (state, {cameraId}) => getValueInputSelector(cameraId, 'CCD_INFO', 'CCD_PIXEL_SIZE_X')(state);
-export const getTelescopeFocalLength = (state, {telescopeId}) => getValueInputSelector(telescopeId, 'TELESCOPE_INFO', 'TELESCOPE_FOCAL_LENGTH')(state);
+export const getTelescopeFocalLength = (state, {telescopeId, type='main'}) => getValueInputSelector(telescopeId, 'TELESCOPE_INFO', `${type === 'guider' ? 'GUIDER' : 'TELESCOPE'}_FOCAL_LENGTH`)(state);

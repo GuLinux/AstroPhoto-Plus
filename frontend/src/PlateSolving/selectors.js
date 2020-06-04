@@ -71,7 +71,9 @@ const formatAladinParams = (solution) => {
 
 const transformSolution = solution => ({
     ra: deg2hours(solution.ASTROMETRY_RESULTS_RA.value),
+    raj2000: solution.ASTROMETRY_RESULTS_RA.value,
     dec: solution.ASTROMETRY_RESULTS_DE.value,
+    dej2000: solution.ASTROMETRY_RESULTS_DE.value,
     raLabel: formatRA(solution.ASTROMETRY_RESULTS_RA.value),
     decLabel: formatDegrees(solution.ASTROMETRY_RESULTS_DE.value),
     widthDegrees: solution.ASTROMETRY_RESULTS_WIDTH.value,
@@ -83,7 +85,14 @@ const transformSolution = solution => ({
     aladinURL: `http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`,
 });
 
-export const getPlateSolvingTargets = state => state.plateSolving.targets;
+const solution2Target = target => ({
+    ...transformSolution(target),
+    id: target.id,
+    displayName: `File: ${target.id}`,
+    type: 'solution',
+});
+
+export const getPlateSolvingTargets = createSelector([state => state.plateSolving.targets], targets => targets.map(target => 'ASTROMETRY_RESULTS_RA' in target ? solution2Target(target) : target));
 export const getPlateSolvingMainTarget = state => state.plateSolving.mainTarget;
 
 export const plateSolvingContainerSelector = createSelector([
@@ -96,9 +105,10 @@ export const plateSolvingContainerSelector = createSelector([
     state => getCCDWidthPix(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
     state => getCCDPixelPitch(state, {cameraId: getDeviceId(PlateSolving.Options.fovSource, state)}),
     state => getTelescopeFocalLength(state, {telescopeId: getDeviceId(PlateSolving.Options.telescope, state)}),
+    state => getTelescopeFocalLength(state, {type: 'guider', telescopeId: getDeviceId(PlateSolving.Options.telescope, state)}),
     getPlateSolvingTargets,
     getPlateSolvingMainTarget,
-], (plateSolvingDevices, options, solution, previousSolution, loading, messages, ccdMaxX, ccdPixelSizeX, telescopeFocalLength, targets, mainTarget) => ({
+], (plateSolvingDevices, options, solution, previousSolution, loading, messages, ccdMaxX, ccdPixelSizeX, telescopeFocalLength, guiderFocalLength, targets, mainTarget) => ({
     ...plateSolvingDevices,
     messages,
     options,
@@ -110,7 +120,7 @@ export const plateSolvingContainerSelector = createSelector([
         ccdMaxX: get(ccdMaxX, 'value'),
         ccdPixelSizeX: get(ccdPixelSizeX, 'value'),
     },
-    telescopeFocalLength: get(telescopeFocalLength, 'value'),
+    telescopeFocalLength: options[PlateSolving.Options.telescopeType] === 'main' ? get(telescopeFocalLength, 'value') : get(guiderFocalLength, 'value'),
     targets,
     mainTarget,
 }));

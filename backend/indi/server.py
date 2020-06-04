@@ -152,5 +152,5 @@ class Server:
         threading.Thread(target=wait_for_interfaces).start()
 
     def __on_device_removed(self, device):
-        self.event_listener.on_device_removed(self.device(name=device.name))
+        self.event_listener.on_device_removed(self.device(name=device))
 

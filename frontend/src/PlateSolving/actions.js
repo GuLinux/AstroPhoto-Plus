@@ -13,8 +13,9 @@ export const addTargetObject = object => (dispatch, getState) => {
     }
 };
 
-export const solveField = options => (dispatch, getState) => {
-    dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD' });
+
+export const solveField = (options, targetName) => (dispatch, getState) => {
+    dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD', targetName });
     dispatch(resetMessages());
     const onSuccess = response => {
         dispatch({ type: 'RESPONSE_PLATESOLVING_STATUS', response });
@@ -53,6 +54,7 @@ export const PlateSolving = {
         syncTelescope: 'syncTelescope',
         downsample: 'downsample',
         searchRadius: 'searchRadius',
+        telescopeType: 'telescopeType',
     },
     setOption: (option, value) => ({ type: 'PLATESOLVING_SET_OPTION', option, value }),
     resetMessages,

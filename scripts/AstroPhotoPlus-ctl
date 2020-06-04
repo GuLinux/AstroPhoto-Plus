@@ -115,7 +115,7 @@ status() {
 }
 
 logs() {
-    journalctl -xefu "${SYSTEMCTL_UNIT}"
+    journalctl -xefu "${SYSTEMCTL_UNIT}" | grep -v sudo
 }
 
 check-url() {

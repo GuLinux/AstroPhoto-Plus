@@ -5,7 +5,7 @@ import { PlateSolving as PlateSolvingActions } from './actions';
 import { UploadFileDialog } from '../components/UploadFileDialog';
 import { NumericInput } from '../components/NumericInput';
 import { SkyChartComponent } from '../components/SkyChartsComponent';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { getFieldOfView, getSensorSizeFromResolution } from './utils';
 import { CatalogSearch } from '../Catalogs/CatalogSearch.js';
 
@@ -26,7 +26,12 @@ const PlateSolvingMessagesPanel = ({messages}) => (
 
 class SetCameraFOV extends React.PureComponent {
     componentDidMount = () => this.setFOV();
-    componentDidUpdate = (prevProps) => this.props.camera !== prevProps.camera && this.setFOV();
+    componentDidUpdate = ({ccdInfo, telescopeFocalLength}) => {
+        if(! isEqual(this.props.ccdInfo, ccdInfo) || this.props.telescopeFocalLength !== telescopeFocalLength) {
+            this.setFOV();
+        }
+    }
+
     setFOV = () => {
         const { setOption, telescopeFocalLength, ccdInfo } = this.props;
         const sensorWidth = getSensorSizeFromResolution(ccdInfo.ccdMaxX, ccdInfo.ccdPixelSizeX);
@@ -44,27 +49,29 @@ const SolutionField = ({label, value, width=11}) => (
     </React.Fragment>
 );
 
+const field2Marker = (field, label, color) => ({
+    ra: field.ra,
+    dec: field.dec,
+    width: field.widthDegrees,
+    height: field.heightDegrees,
+    rotate: -1.0 *field.orientation,
+    unit: 'deg',
+    shape: 'rect',
+    label: label,
+    marker_opts: {
+        stroke: color,
+        'fill-opacity': 0,
+    },
+    label_offset: 10,
+    label_opts: {
+        stroke: color,
+    },
+})
+
 const SolutionPanel = ({solution, previousSolution, targets}) => {
     const markers = [
-        {
-            ra: solution.ra,
-            dec: solution.dec,
-            width: solution.widthDegrees,
-            height: solution.heightDegrees,
-            rotate: -1.0 *solution.orientation,
-            unit: 'deg',
-            shape: 'rect',
-            label: 'Plate Solving solution',
-            marker_opts: {
-                stroke: 'red',
-                'fill-opacity': 0,
-            },
-            label_offset: 10,
-            label_opts: {
-                stroke: 'red',
-            },
-        },
-        ...targets.map(target => ({
+        field2Marker(solution, 'Plate Solving solution', 'red'),
+        ...targets.map(target => (target.type === 'solution' ? field2Marker(target, target.id, 'green') : {
             ra: target.raj2000/15.0,
             dec: target.dej2000,
             radius: 10,
@@ -80,25 +87,7 @@ const SolutionPanel = ({solution, previousSolution, targets}) => {
         }))
     ];
     if(previousSolution) {
-        markers.push({
-            ra: previousSolution.ra,
-            dec: previousSolution.dec,
-            width: previousSolution.widthDegrees,
-            height: previousSolution.heightDegrees,
-            rotate: -1.0 * previousSolution.orientation,
-            unit: 'deg',
-            shape: 'rect',
-            label: 'Previous solution',
-            label_offset: 10,
-            marker_opts: {
-                stroke: 'orange',
-                'fill-opacity': 0,
-            },
-            label_opts: {
-                stroke: 'orange',
-            },
-
-        });
+        markers.push(field2Marker(previousSolution, 'Previous Solution', 'orange'));
     }
     return (
         <Container>
@@ -171,7 +160,17 @@ export class PlateSolving extends React.Component {
     onFileUploaded = fileBuffer => this.props.solveField({
         ...this.props.options,
         fileBuffer,
-        })
+    })
+
+    onTargetFileUploaded = (fileBuffer, file) => {
+            this.props.solveField({
+            ...this.props.options,
+            syncTelescope: false,
+            fileBuffer,
+        }, file.name);
+        this.toggleSearchTarget();
+    }
+
 
     render = () => {
         const { telescopes, cameras, messages, options, setOption, solution, previousSolution, loading, isManualFOV } = this.props;
@@ -190,7 +189,11 @@ export class PlateSolving extends React.Component {
             {this.props.telescopeFocalLength && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Telescope focal length' /></Grid.Column>
-                    <Grid.Column width={13}>
+                    <Grid.Column width={3}>
+                        {this.optionButton(Options.telescopeType, 'main', {content: 'Main', key: 'main'})}
+                        {this.optionButton(Options.telescopeType, 'guider', {content: 'Guider', key: 'guider'})}
+                    </Grid.Column>
+                    <Grid.Column width={10}>
                         {this.props.telescopeFocalLength}mm
                     </Grid.Column>
                 </Grid.Row>)}
@@ -295,13 +298,23 @@ export class PlateSolving extends React.Component {
         );
     }
 
-    renderCatalogSearch = () => (
-        <Segment>
-            <CatalogSearch sectionKey='platesolving' onObjectSelected={this.addTargetObject} clearOnSelected={true} />
-        </Segment>
+    renderTargetSearch = () => (
+        <React.Fragment>
+            <Segment>
+                <CatalogSearch sectionKey='platesolving' onObjectSelected={this.addTargetObject} clearOnSelected={true} />
+            </Segment>
+            <Segment>
+                <UploadFileDialog
+                    title='Upload FITS'
+                    trigger={<Button icon='upload' content='Upload existing FITS as target' primary size='mini'/>}
+                    readAsDataURL={true}
+                    onFileUploaded={this.onTargetFileUploaded}
+                />
+            </Segment>
+        </React.Fragment>
     );
 
-    renderTargets = () => (this.state.showTargetSearch && ! this.props.loading) ? this.renderCatalogSearch() : this.renderTargetsList();
+    renderTargets = () => (this.state.showTargetSearch && ! this.props.loading) ? this.renderTargetSearch() : this.renderTargetsList();
 
     renderTargetsList = () => (
         <React.Fragment>

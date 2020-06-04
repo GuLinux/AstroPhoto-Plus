@@ -141,6 +141,10 @@ class Image:
     def __convert(self, args, filepath, format):
         logger.debug('creating ImageProcessing object with path={}, format={}, args={}'.format(self.path, format, args))
         imp = ImageProcessing(self.path, logger.isEnabledFor(logging.DEBUG))
+
+        logger.debug('debayering')
+        imp.debayer('auto')
+
         if args.get('stretch', '0') == '1':
             logger.debug('applying autostretch')
             imp.autostretch()
@@ -151,8 +155,6 @@ class Image:
                 logger.debug('manual clipping: {}, {}'.format(clip_low, clip_high))
                 imp.clip(clip_low, clip_high)
 
-        logger.debug('debayering')
-        imp.debayer('auto')
         maxwidth = int(args.get('maxwidth', '0'))
         if maxwidth > 0:
             maxheight = int(imp.height() / (imp.width() / maxwidth))
