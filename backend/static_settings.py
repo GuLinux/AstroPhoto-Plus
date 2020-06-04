@@ -20,5 +20,6 @@ class StaticSettings:
 StaticSettings.REDIS_DB_FILENAME = 'redis.rdb'
 StaticSettings.REDIS_SERVICE_LOGS = StaticSettings.build_path(['.cache', 'AstroPhotoPlus', 'logs', 'redis_service'], isdir=True)
 StaticSettings.INDI_SERVICE_LOGS = StaticSettings.build_path(['.cache', 'AstroPhotoPlus', 'logs', 'indi_service'], isdir=True)
+StaticSettings.ASTROMETRY_TEMP_PATH = StaticSettings.build_path(['.cache', 'AstroPhotoPlus', 'astrometry_cache'], isdir=True)
 
 

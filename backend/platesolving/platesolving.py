@@ -10,6 +10,7 @@ from utils.threads import start_thread
 import subprocess
 import shutil
 import re
+from static_settings import StaticSettings
 
 class PlateSolving:
 
@@ -53,7 +54,7 @@ class PlateSolving:
             raise BadRequestError('Astrometry.net solve-field not found in {}'.format(settings.astrometry_solve_field_path))
 
         self.status = 'solving'
-        temp_path = os.path.join(settings.astrometry_path(), 'solve_field_{}'.format(time.time()))
+        temp_path = os.path.join(StaticSettings.ASTROMETRY_TEMP_PATH, 'solve_field_{}'.format(time.time()))
         os.makedirs(temp_path, exist_ok=True)
  
         fits_file_path = None
@@ -81,13 +82,18 @@ class PlateSolving:
             resolution = fits_file[0].data.shape
 
         
-        self.solver_thread = start_thread(self.__wait_for_solution, options, resolution, fits_file_path, temp_path)
-        return self.to_map()
+        if options.get('sync', False):
+            return self.__wait_for_solution(options, resolution, fits_file_path, temp_path)
+        else:
+            self.solver_thread = start_thread(self.__async_wait_for_solution, options, resolution, fits_file_path, temp_path)
+            return self.to_map()
+
+    def __async_wait_for_solution(self, *args, **kwargs):
+        self.event_listener.on_platesolving_finished(self.__wait_for_solution(*args, **kwargs))
 
     def __wait_for_solution(self, options, resolution, fits_file_path, temp_path):
         try:
             solved, solution = self.__run_solve_field(options, fits_file_path, temp_path)
-            logger.debug('Waiting for solver to finish')
             if solved:
                 solution_property = { 'values': [] }
                 solution_property['values'].append({ 'label': 'Right ascension', 'name': 'ASTROMETRY_RESULTS_RA', 'value': solution['ASTROMETRY_RESULTS_RA'] })
@@ -99,24 +105,25 @@ class PlateSolving:
                     solution_property['values'].append({ 'label': 'Field rotation (degrees E of N)', 'name': 'ASTROMETRY_RESULTS_ORIENTATION', 'value': solution['ASTROMETRY_RESULTS_ORIENTATION'] })
                     
 
-                if options['syncTelescope']:
+                if options.get('syncTelescope'):
                     telescope = [t for t in self.server.telescopes() if t.id == options['telescope']]
                     if not telescope:
                         raise NotFoundError('Unable to find telescope {}'.format(telescope))
                     telescope = telescope[0]
                     telescope_coordinates = { 'ra': solution['ASTROMETRY_RESULTS_RA'] * (24./360.), 'dec': solution['ASTROMETRY_RESULTS_DE'] }
                     telescope.sync(telescope_coordinates)
-                self.event_listener.on_platesolving_finished({
+                return {
                     'status': 'solved',
                     'solution': solution_property,
-                })
+                }
             else:
                 raise FailedMethodError('Plate solving failed, check astrometry driver log')
         except Exception as e:
-            self.event_listener.on_platesolving_finished({
+            logger.warning('Error running platesolver with options {}'.format(options), exc_info=e)
+            return {
                 'status': 'error',
                 'error': str(e),
-            })
+            }
         finally:
             self.status = 'idle'
             shutil.rmtree(temp_path, True)
@@ -149,12 +156,22 @@ class PlateSolving:
                     logger.debug('[PlateSolving]: pixel scale regex detected: {}'.format(re_pixscale))
                     if re_pixscale:
                         pixscale = float(re_pixscale[0])
-                self.event_listener.on_platesolving_message(line)
+                logger.debug('solve-field: {}'.format(line))
+                if not options.get('sync', False):
+                    self.event_listener.on_platesolving_message(line)
 
-        self.solver_process.wait() # check error status
+        logger.debug('PlateSolving::__run_solve_field: Waiting for solver process to finish')
+        try:
+            self.solver_process.communicate() # check error status
+        except ValueError:
+            pass
+        logger.debug('PlateSolving::__run_solve_field: Solver finished, exit code: {}'.format(self.solver_process.returncode))
         self.solver_process = None
 
-        solved = os.path.exists(os.path.join(temp_path, 'solve-field.solved'))
+        solved_file = os.path.join(temp_path, 'solve-field.solved')
+        solved = os.path.exists(solved_file)
+        if not solved:
+            logger.debug('PlateSolving::__run_solve_field: solved file {} not found'.format(solved_file))
         solution = dict()
         if solved:
             with fits.open(os.path.join(temp_path, 'solve-field.new')) as fits_file:
@@ -177,6 +194,8 @@ class PlateSolving:
             cli_options.extend(['--downsample', options['downsample']])
         if 'target' in options and 'searchRadius' in options:
             cli_options.extend(['-3', options['target']['raj2000'], '-4', options['target']['dej2000'], '-5', options['searchRadius']])
+        if 'timeout' in options:
+            cli_options.extend(['-l', options['timeout']])
         cli_options.append(input_file)
         logger.debug(cli_options)
         return [str(x) for x in cli_options]

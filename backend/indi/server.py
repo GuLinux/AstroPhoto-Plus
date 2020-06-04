@@ -107,7 +107,6 @@ class Server:
             raise NotFoundError('Camera {} not found'.format(id))
         return camera[0]
 
-
     def telescopes(self):
         return [Telescope(self.settings, self.client, device=d) for d in self.client.telescopes()]
 

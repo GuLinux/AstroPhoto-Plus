@@ -1,7 +1,7 @@
 from flask import jsonify, Response, send_from_directory, send_file, request
 from app import app
 from catalogs import catalog_importer, catalogs
-from polar_alignment import darv
+from polar_alignment import darv, polar_alignment_platesolving_drift
 import logging
 from skychart import skychart
 from network import network_service
@@ -476,6 +476,27 @@ def pa_darv(guider, json):
     return darv.shoot(guider, json['exposure'], json.get('initial_pause', 5))
 
 
+@app.route('/api/polar-alignment/platesolving/drift/<camera>/first_capture', methods=['POST'])
+@json_input
+@json_api
+@indi_connected
+def polar_alignment_platesolving_first_capture(camera, json):
+    return polar_alignment_platesolving_drift.first_capture(camera, json['exposure'], json.get('solver_options', dict()))
+
+@app.route('/api/polar-alignment/platesolving/drift/<camera>/second_capture', methods=['POST'])
+@json_input
+@json_api
+@indi_connected
+def polar_alignment_platesolving_second_capture(camera, json):
+    return polar_alignment_platesolving_drift.second_capture(camera, json['exposure'], json.get('solver_options', dict() ))
+
+@app.route('/api/polar-alignment/platesolving/drift')
+@json_api
+@indi_connected
+def polar_alignment_platesolving_results():
+    return polar_alignment_platesolving_drift.get_drift()
+
+
 
 # astrometry module
 @app.route('/api/platesolving', methods=['GET'])
@@ -733,4 +754,5 @@ def get_timestamp_api():
 @json_api
 def set_timestamp_api(json):
     return set_timestamp(json['utc_timestamp'])
+
 
