@@ -3,7 +3,7 @@ import { setOption, shoot } from './actions';
 import { ExposureInput } from './ExposureInput';
 import { exposureInputSelector } from './selectors';
 
-const onExposureChanged = exposure => setOption({exposure});
+const onExposureChanged = (exposure, section) => setOption({exposure}, section);
 
 const mapDispatchToProps = {
     onExposureChanged,

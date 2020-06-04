@@ -5,7 +5,7 @@ import time
 import os
 from astropy.io import fits
 from io import BytesIO
-from system import settings, controller
+from system import settings
 from utils.threads import start_thread
 import subprocess
 import shutil
@@ -66,6 +66,14 @@ class PlateSolving:
 
         elif 'filePath' in options and os.path.isfile(options['filePath']):
             fits_file_path = options['filePath']
+        elif 'cameraOptions' in options:
+            from system import controller
+            cameraOptions = options['cameraOptions']
+            camera = controller.indi_server.get_camera(cameraOptions['camera']['id'])
+            logger.debug('Shooting on camera {} with options {}'.format(camera, cameraOptions))
+            result = camera.shoot_image(cameraOptions)
+            logger.debug('Shoot successfull: {}'.format(result))
+            fits_file_path = result['filename']
         else:
             raise BadRequestError('You must pass either a fileBuffer object (data-uri formatted) or a filePath argument')
         resolution = None

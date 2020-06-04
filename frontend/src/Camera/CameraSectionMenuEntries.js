@@ -10,7 +10,7 @@ class FilterWheelSection extends React.Component {
     componentDidMount = () => this.autosetFilterWheel();
     componentDidUpdate = () => this.autosetFilterWheel();
 
-    setFilterWheel = (id) => () => this.props.setFilterWheel(id);
+    setFilterWheel = (id) => () => this.props.setFilterWheel(id, this.props.section);
 
     filterWheelButton = ({name, id}) => <Button
         toggle
@@ -86,22 +86,28 @@ export class CameraShootingSectionMenuEntries extends React.Component {
     setContinuous = (e, {checked: continuous}) => this.props.setOption({continuous}, this.props.section);
 }
 
-export const CameraImageOptionsSectionMenuEntries = ({
-    cameras,
-    canCrop,
-    crop,
-    startCrop,
-    resetCrop,
-    imageId,
-    section,
-}) => cameras.length > 0 && (
-    <React.Fragment>
-        <ImageViewOptionsContainer imageId={imageId} imageType='camera' section={section} />
-        <Header size='tiny' content='ROI' textAlign='center' />
-        <Button content='select ROI' size='tiny' fluid basic disabled={!canCrop || !!crop} onClick={startCrop}/>
-        <Button content='clear ROI' size='tiny' fluid basic disabled={!canCrop || !(!!crop && crop.pixel )} onClick={resetCrop}/>
-        { crop && crop.pixel && ! crop.applied && <Message size='tiny' content='You need to shoot another image to see the new ROI applied' />}
-        { crop && ! crop.pixel && crop.canceled && <Message size='tiny' content='You need to shoot another image to reset the ROI to full size' />}
-    </React.Fragment>
-)
+export class CameraImageOptionsSectionMenuEntries extends React.Component {
+    startCrop = () => this.props.startCrop(this.props.section);
+    resetCrop = () => this.props.resetCrop(this.props.section);
+
+    render = () => {
+        const {
+            cameras,
+            canCrop,
+            crop,
+            imageId,
+            section,
+        } = this.props;
+        return cameras.length > 0 && (
+            <React.Fragment>
+                <ImageViewOptionsContainer imageId={imageId} imageType='camera' section={section} />
+                <Header size='tiny' content='ROI' textAlign='center' />
+                <Button content='select ROI' size='tiny' fluid basic disabled={!canCrop || !!crop} onClick={this.startCrop}/>
+                <Button content='clear ROI' size='tiny' fluid basic disabled={!canCrop || !(!!crop && crop.pixel )} onClick={this.resetCrop}/>
+                { crop && crop.pixel && ! crop.applied && <Message size='tiny' content='You need to shoot another image to see the new ROI applied' />}
+                { crop && ! crop.pixel && crop.canceled && <Message size='tiny' content='You need to shoot another image to reset the ROI to full size' />}
+            </React.Fragment>
+        );
+    }
+}
 

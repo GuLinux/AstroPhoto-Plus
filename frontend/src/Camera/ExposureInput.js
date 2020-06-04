@@ -28,8 +28,12 @@ export class ExposureInput extends React.Component {
         this.props.shoot(shotParameters, section);
     }
 
+    onExposureChanged = exposure => {
+        this.props.onExposureChanged(exposure, this.props.section);
+    }
+
     render = () => {
-        const {shotParameters, cameraExposureValue, onExposureChanged, disabled, isShooting, size='mini'} = this.props;
+        const {shotParameters, cameraExposureValue, disabled, isShooting, size='mini'} = this.props;
         return (
             <NumericInput
                 placeholder='seconds'
@@ -39,7 +43,7 @@ export class ExposureInput extends React.Component {
                 step={cameraExposureValue ? cameraExposureValue.step: null}
                 format={(v) => v !== '' && cameraExposureValue ? formatDecimalNumber(cameraExposureValue.format, v) : ''}
                 parse={(v) => parseFloat(v)}
-                onChange={(exposure) => onExposureChanged(exposure)}
+                onChange={this.onExposureChanged}
                 disabled={disabled}
                 value={getValue(isShooting, shotParameters, cameraExposureValue)}
                 fluid
