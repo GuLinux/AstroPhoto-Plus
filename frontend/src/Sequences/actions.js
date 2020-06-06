@@ -59,6 +59,7 @@ export const Sequences = {
             dispatch({type: 'STOP_SEQUENCE_REQUESTED'});
             return stopSequenceAPI(dispatch, sequence, data => {
                 dispatch({type: 'RECEIVED_STOP_SEQUENCE_REPLY', sequence: { id: sequence.id, status: data.status} });
+                dispatch(Sequences.updated(data));
             })
         }
     },

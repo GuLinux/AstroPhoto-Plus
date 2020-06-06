@@ -70,6 +70,16 @@ class Sequence:
 
         return new_sequence
 
+    def stop_stale(self):
+        if self.status != 'stale':
+            raise BadRequestError('Sequence not stale')
+        self.status = 'stopped'
+        for job in self.sequence_jobs:
+            if job.status == 'running':
+                job.status = 'stopped'
+
+
+
     def stop(self, on_update=None):
         if not self.is_running() or not self.running_sequence_job:
             raise BadRequestError('Sequence not running')
