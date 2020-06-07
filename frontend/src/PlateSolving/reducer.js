@@ -1,5 +1,6 @@
 import { PlateSolving as Actions } from './actions'; 
 import { list2object } from '../utils';
+import { PLATESOLVING_PAGE } from '../Camera/sections';
 
 
 
@@ -88,6 +89,26 @@ const setOption = (state, {option, value}) => {
     return newState;
 }
 
+/*
+{
+  type: 'SET_CURRENT_CAMERA',
+  camera: 'Guide Simulator',
+  section: 'plateSolving'
+}
+{
+  type: 'PLATESOLVING_SET_OPTION',
+  option: 'fovSource',
+  value: 'CCD Simulator'
+}
+*/
+const platesolvingSetCurrentCamera = (state, {camera, section}) => {
+	if(section !== PLATESOLVING_PAGE) {
+		return state;
+	}
+    return setOption(state, {option: Actions.Options.fovSource, value: camera});
+}
+
+
 const receivedPlatesolvingSolution = (state, {payload}) => {
     const solution = list2object(payload.solution.values, 'name')
     if(state.targetName) {
@@ -129,6 +150,8 @@ export const plateSolving = (state = defaultState, action) => {
             return {...state, mainTarget: action.object };
         case 'PLATESOLVING_REMOVE_TARGET':
             return platesolvingRemoveTarget(state, action);
+        case 'SET_CURRENT_CAMERA':
+            return platesolvingSetCurrentCamera(state, action)
         default:
         return state;
     }

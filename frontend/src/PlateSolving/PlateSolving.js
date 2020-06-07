@@ -8,6 +8,7 @@ import { SkyChartComponent } from '../components/SkyChartsComponent';
 import { get, isEqual } from 'lodash';
 import { getFieldOfView, getSensorSizeFromResolution } from './utils';
 import { CatalogSearch } from '../Catalogs/CatalogSearch.js';
+import { ConfirmDialog } from '../Modals/ModalDialog';
 
 const { Options } = PlateSolvingActions;
 
@@ -287,8 +288,15 @@ export class PlateSolving extends React.Component {
                     </Grid.Row>
             )}
                 { loading && (<Grid.Row>
-                    <Grid.Column width={8} textAlign='center'>
-                        <Loader active inline />
+                    <Grid.Column width={5} />
+                    <Grid.Column width={6}>
+                        <Message icon>
+                            <Icon name='circle notched' loading />
+                            <Message.Content>
+                                Platesolving in progress.
+                                <ConfirmDialog onConfirm={this.props.abortSolveField} trigger={<Button color='red' floated='right'>Abort</Button>} header='Abort PlateSolving' content='Are you sure?' />
+                            </Message.Content>
+                        </Message>
                     </Grid.Column>
                 </Grid.Row>)}
             </Grid>

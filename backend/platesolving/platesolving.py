@@ -33,17 +33,12 @@ class PlateSolving:
         }
 
     def abort(self):
-        if self.status != 'solving':
+        if self.status != 'solving' or not self.solver_process or not self.solver_process_cancel_file:
             raise BadRequestError('Solver is not running')
-        if self.solver_process:
-            self.solver_process.terminate()
-            try:
-                self.solver_process.wait(timeout=15)
-            except subprocess.TimeoutExpired:
-                self.solver_process.kill()
-                self.solver_process.wait()
-            finally:
-                self.solver_process = None
+        with open(self.solver_process_cancel_file, 'w') as f:
+            f.write('abort')
+        self.solver_process.wait()
+        self.solver_process = None
         if self.solver_thread:
             self.solver_thread.join()
         self.solver_thread = None
@@ -136,9 +131,14 @@ class PlateSolving:
             astrometry_cfg_file.write('cpulimit {}\n'.format(settings.astrometry_cpu_limit))
             astrometry_cfg_file.write('add_path {}\n'.format(settings.astrometry_path()))
             astrometry_cfg_file.write('autoindex\n')
+
+        self.solver_process_cancel_file = '/tmp/{}-{}.cancel'.format(os.path.basename(fits_file_path), int(time.time()))
+
         cli = self.__build_astrometry_options(options, fits_file_path, astrometry_cfg, temp_path)
         logger.debug('[Astrometry] running solve-field with cli: %s', str(cli))
         self.solver_process = subprocess.Popen(cli, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        logger.debug('[Astrometry] Started solve-field on file {}, pid {}, cancel file: {}'.format(fits_file_path, self.solver_process.pid, self.solver_process_cancel_file))
+
         rotation_angle = None
         pixscale = None
         with self.solver_process.stdout:
@@ -167,6 +167,9 @@ class PlateSolving:
             pass
         logger.debug('PlateSolving::__run_solve_field: Solver finished, exit code: {}'.format(self.solver_process.returncode))
         self.solver_process = None
+        if os.path.isfile(self.solver_process_cancel_file):
+            os.remove(self.solver_process_cancel_file)
+        self.solver_process_cancel_file = None
 
         solved_file = os.path.join(temp_path, 'solve-field.solved')
         solved = os.path.exists(solved_file)
@@ -183,7 +186,7 @@ class PlateSolving:
         return solved, solution
 
     def __build_astrometry_options(self, options, input_file, config_file, temp_path):
-        cli_options = ['solve-field', '-D', temp_path, '-o', 'solve-field', '--no-verify', '--resort', '--crpix-center', '-O', '--config', '{}'.format(config_file)]
+        cli_options = ['solve-field', '-C', self.solver_process_cancel_file, '-D', temp_path, '-o', 'solve-field', '--no-verify', '--resort', '--crpix-center', '-O', '--config', '{}'.format(config_file)]
         if 'plot' not in options:
             cli_options.append('--no-plots')
         if 'fov' in options:
