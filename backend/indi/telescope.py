@@ -1,6 +1,9 @@
 from .device import Device
 from app import logger
 from errors import NotFoundError, FailedMethodError
+from datetime import datetime
+from astropy.coordinates import SkyCoord, FK5
+import astropy.units as u
 
 class Telescope:
     def __init__(self, settings, client, device=None, name=None):
@@ -33,11 +36,13 @@ class Telescope:
             return indi_device.values('TELESCOPE_INFO', 'number')
         return {}
     
-    def sync(self, coordinates):
+    def sync(self, coordinates, equinox='J2000'):
         sync_property = self.device.get_property('ON_COORD_SET')
         sync_property.set_values({'SYNC': True})
+        coords = SkyCoord(ra=coordinates['ra'] * u.hour, dec=coordinates['dec'] * u.deg, equinox=equinox).transform_to(FK5(equinox=datetime.now().isoformat()))
+
         self.device.get_property('EQUATORIAL_EOD_COORD').set_values({
-            'RA': coordinates['ra'],
-            'DEC': coordinates['dec'],
+            'RA': coords.ra.hour,
+            'DEC': coords.dec.deg,
         })
 

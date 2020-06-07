@@ -141,7 +141,7 @@ export const plateSolving = (state = defaultState, action) => {
             const previousSolution = state.solution || state.previousSolution;
             return {...state, loading: true, solution: undefined, previousSolution, targetName: action.targetName};
         case 'PLATESOLVING_MESSAGE':
-            return {...state, messages: [action.message, ...state.messages]};
+            return {...state, messages: [action.message, ...state.messages.slice(0, 100)]};
         case 'PLATESOLVING_RESET_MESSAGES':
             return {...state, messages: []};
         case 'PLATESOLVING_ADD_TARGET':
