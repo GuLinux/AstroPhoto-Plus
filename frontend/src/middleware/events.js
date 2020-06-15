@@ -6,6 +6,7 @@ import { API } from './api';
 import { serverError } from '../App/actions';
 import { phd2Disconnected, phd2Connected, updatePHD2Status, phd2GuidingStarted, phd2GuidingStopped, phd2StarLost, phd2GuideStep } from '../PHD2/actions';
 import { receivedNetworkManagerStatus } from '../Settings/actions';
+import { receivedPlatesolvingStatus } from '../PlateSolving/actions';
 
 
 const logEvent = event => {
@@ -104,6 +105,10 @@ const plateslvingEvents = (event, dispatch) => {
         case 'platesolving_message':
             dispatch(Actions.PlateSolving.message(eventObject.payload.message));
             break;
+        case 'platesolving_status':
+            dispatch(receivedPlatesolvingStatus(eventObject.payload));
+            break;
+
         case 'platesolving_finished':
             if(eventObject.is_error) {
                 dispatch(Actions.Notifications.add('Platesolving failed', eventObject.payload.error, 'warning', 5000));

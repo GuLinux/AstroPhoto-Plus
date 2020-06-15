@@ -460,7 +460,7 @@ def get_telescopes():
 @indi_connected
 def telescope_goto(id, json):
     telescope = controller.indi_server.get_telescope(id)
-    return telescope.goto({ 'ra': json['ra'], 'dec': json['dec']}, equinox=json.get('equinox', 'J2000'), wait=json.get('sync', False))
+    return telescope.goto({ 'ra': json['ra'], 'dec': json['dec']}, equinox=json.get('equinox', 'J2000'), sync=json.get('sync', False))
 
 
 @app.route('/api/guiders', methods=['GET'])

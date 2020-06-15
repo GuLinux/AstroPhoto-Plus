@@ -142,13 +142,11 @@ export class PlateSolving extends React.Component {
 
 
 
-    optionButton = (option, value, {secondaryOption, ...props}) => 
+    optionButton = (option, value, {secondaryOptions=[], ...props}) => 
         <CheckButton disabled={ props.disabled || this.props.loading} size='mini' active={this.props.options[option] === value} onClick={
             () => {
                 this.props.setOption(option, value);
-                if(secondaryOption) {
-                    this.props.setOption(secondaryOption.option, secondaryOption.value);
-                }
+                secondaryOptions.forEach( secondaryOption => this.props.setOption(secondaryOption.option, secondaryOption.value));
             }
         } {...props} />
 
@@ -212,26 +210,37 @@ export class PlateSolving extends React.Component {
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Action on solved'/></Grid.Column>
                     <Grid.Column width={13}>
-                        {this.optionButton(Options.syncTelescope, false, {content: 'None', secondaryOption: { option: Options.slewTelescope, value: false }})}
+                        {this.optionButton(Options.syncTelescope, false, {content: 'None', secondaryOptions: [{ option: Options.slewTelescope, value: false }] })}
                         {this.optionButton(Options.syncTelescope, true, {content: 'Sync telescope', disabled: options[Options.slewTelescope]})}
-                        {!!this.props.targets.length && this.optionButton(Options.slewTelescope, true, {content: 'Goto target', secondaryOption: { option: Options.syncTelescope, value: true } })}
+                        {!!this.props.targets.length && this.optionButton(Options.slewTelescope, true, {content: 'Goto target', secondaryOptions: [{ option: Options.syncTelescope, value: true }, { option: Options.camera, value: true }] })}
                     </Grid.Column>
                 </Grid.Row>
-                { options[Options.telescopeAction] == 'slew' && (
+                { options[Options.slewTelescope] && (
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Goto Accuracy'/></Grid.Column>
                     <Grid.Column width={13}>
-                        <NumericInput min={1} max={120} step={1} value={options[Options.telescopeSlewAccuracy]} label='arcminutes' labelPosition='right' onChange={this.setTelescopeSlewAccuracy} />
+                        <NumericInput size='mini' min={1} max={120} step={1} value={options[Options.telescopeSlewAccuracy]} label='arcminutes' labelPosition='right' onChange={this.setTelescopeSlewAccuracy} />
                     </Grid.Column>
                 </Grid.Row>
                 )}
+                { !options[Options.slewTelescope] && 
                 <Grid.Row>
-                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Solve camera shot'/></Grid.Column>
+                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Solve from'/></Grid.Column>
                     <Grid.Column width={13}>
-                        {this.optionButton(Options.camera, false, {content: 'Off'})}
-                        {this.optionButton(Options.camera, true, {content: 'On'})}
+                        {this.optionButton(Options.camera, true, {content: 'Camera shot'})}
+                        {this.optionButton(Options.camera, false, {content: 'FITS file'})}
+                        { !options[Options.camera] &&
+                            <UploadFileDialog
+                                title='Upload FITS'
+                                trigger={<Button disabled={loading} icon='upload' content='Upload FITS' primary size='mini'/>}
+                                readAsDataURL={true}
+                                onFileUploaded={this.onFileUploaded}
+                            />
+                        }
+
                     </Grid.Column>
                 </Grid.Row>
+                }
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Downsample image'/></Grid.Column>
                     <Grid.Column width={13}>
@@ -294,19 +303,6 @@ export class PlateSolving extends React.Component {
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Targets'/></Grid.Column>
                     <Grid.Column width={13}>{this.renderTargets()}</Grid.Column>
                 </Grid.Row>
-
-                { !options[Options.camera] && (
-                    <Grid.Row>
-                        <Grid.Column width={16} textAlign='center'>
-                            <UploadFileDialog
-                                title='Upload FITS'
-                                trigger={<Button disabled={loading} icon='upload' content='Upload FITS' primary size='mini'/>}
-                                readAsDataURL={true}
-                                onFileUploaded={this.onFileUploaded}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-            )}
                 { loading && (<Grid.Row>
                     <Grid.Column width={5} />
                     <Grid.Column width={6}>

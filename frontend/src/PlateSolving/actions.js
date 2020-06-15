@@ -13,6 +13,18 @@ export const addTargetObject = object => (dispatch, getState) => {
     }
 };
 
+export const receivedPlatesolvingStatus = response => ({ type: 'RESPONSE_PLATESOLVING_STATUS', response});
+
+export const platesolvingGetStatus = () => dispatch => {
+    dispatch({ type: 'FETCH_PLATESOLVING_STATUS'});
+    fetchPlatesolvingStatus(
+        dispatch,
+        response => dispatch(receivedPlatesolvingStatus(response)),
+        error => dispatch({ type: 'ERROR_FETCHING_PLATESOLVING_STATUS', error}),
+    );
+};
+
+
 
 export const solveField = (options, targetName) => (dispatch, getState) => {
     dispatch({ type: 'FETCH_PLATESOLVING_SOLVE_FIELD', targetName });
@@ -65,14 +77,7 @@ export const PlateSolving = {
     fieldSolved: payload => ({ type: 'PLATESOLVING_SOLVED', payload }),
     solvingFailed,
 
-    getStatus: () => dispatch => {
-        dispatch({ type: 'FETCH_PLATESOLVING_STATUS'});
-        fetchPlatesolvingStatus(
-            dispatch,
-            response => dispatch({ type: 'RESPONSE_PLATESOLVING_STATUS', response}),
-            error => dispatch({ type: 'ERROR_FETCHING_PLATESOLVING_STATUS', error}),
-        );
-    },
+    getStatus: platesolvingGetStatus,
 
     abortSolveField: () => dispatch => {
         dispatch({ type: 'SOLVE_FIELD_ABORTING' });

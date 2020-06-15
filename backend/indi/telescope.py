@@ -40,9 +40,9 @@ class Telescope:
     def sync(self, coordinates, equinox='J2000'):
         return self.__set_coordinates(coordinates, equinox, 'SYNC').to_map()
 
-    def goto(self, coordinates, equinox='J2000', wait=False):
+    def goto(self, coordinates, equinox='J2000', sync=False):
         coordinates_property = self.__set_coordinates(coordinates, equinox, 'SLEW')
-        if wait:
+        if sync:
             time.sleep(2)
             coordinates_property.reload()
             while coordinates_property.state() == 'BUSY':
@@ -69,7 +69,7 @@ class Telescope:
 
         coords_property = self.device.get_property('EQUATORIAL_EOD_COORD')
         coords_property.set_values({
-            'RA': coords.ra.hour,
+            'RA': coords.ra.hourangle,
             'DEC': coords.dec.deg,
         })
         return coords_property
