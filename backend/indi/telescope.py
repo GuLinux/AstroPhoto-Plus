@@ -4,6 +4,7 @@ from errors import NotFoundError, FailedMethodError
 from datetime import datetime
 from astropy.coordinates import SkyCoord, FK5
 import astropy.units as u
+import time
 
 class Telescope:
     def __init__(self, settings, client, device=None, name=None):
@@ -37,12 +38,46 @@ class Telescope:
         return {}
     
     def sync(self, coordinates, equinox='J2000'):
-        sync_property = self.device.get_property('ON_COORD_SET')
-        sync_property.set_values({'SYNC': True})
-        coords = SkyCoord(ra=coordinates['ra'] * u.hour, dec=coordinates['dec'] * u.deg, equinox=equinox).transform_to(FK5(equinox=datetime.now().isoformat()))
+        return self.__set_coordinates(coordinates, equinox, 'SYNC').to_map()
 
-        self.device.get_property('EQUATORIAL_EOD_COORD').set_values({
+    def goto(self, coordinates, equinox='J2000', wait=False):
+        coordinates_property = self.__set_coordinates(coordinates, equinox, 'SLEW')
+        if wait:
+            time.sleep(2)
+            coordinates_property.reload()
+            while coordinates_property.state() == 'BUSY':
+                logger.debug('Waiting for telescope to slew...')
+                time.sleep(1)
+                coordinates_property.reload()
+
+        return coordinates_property.to_map()
+
+
+    def tracking(self, enabled):
+        tracking_property = self.device.get_property('TELESCOPE_TRACK_STATE')
+        tracking_property.set_values({
+            'TRACK_ON': enabled,
+            'TRACK_OFF': not enabled,
+        })
+        return tracking_property.to_map()
+
+
+    def __set_coordinates(self, coordinates, equinox, onset):
+        sync_property = self.device.get_property('ON_COORD_SET')
+        sync_property.set_values({onset: True})
+        coords = self.__tojnow(coordinates, equinox)
+
+        coords_property = self.device.get_property('EQUATORIAL_EOD_COORD')
+        coords_property.set_values({
             'RA': coords.ra.hour,
             'DEC': coords.dec.deg,
         })
+        return coords_property
+
+
+    def __tojnow(self, coordinates, equinox):
+        current_datetime = datetime.now().isoformat()
+        if equinox.upper() == 'JNOW':
+            return SkyCoord(ra=coordinates['ra'] * u.hour, dec=coordinates['dec'] * u.deg, equinox=current_datetime)
+        return SkyCoord(ra=coordinates['ra'] * u.hour, dec=coordinates['dec'] * u.deg, equinox=equinox).transform_to(FK5(equinox=current_datetime))
 

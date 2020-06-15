@@ -52,6 +52,8 @@ export const PlateSolving = {
         fov: 'fov',
         fovSource: 'fovSource',
         syncTelescope: 'syncTelescope',
+        slewTelescope: 'slewTelescope',
+        telescopeSlewAccuracy: 'telescopeSlewAccuracy',
         downsample: 'downsample',
         searchRadius: 'searchRadius',
         telescopeType: 'telescopeType',

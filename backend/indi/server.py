@@ -110,6 +110,12 @@ class Server:
     def telescopes(self):
         return [Telescope(self.settings, self.client, device=d) for d in self.client.telescopes()]
 
+    def get_telescope(self, id):
+        telescope = [t for t in self.telescopes() if t.id == id]
+        if not telescope:
+            raise NotFoundError('Telescope {} not found'.format(id))
+        return telescope[0]
+
     def guiders(self):
         return [Guider(self.settings, self.client, device=d) for d in self.client.guiders()]
 

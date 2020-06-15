@@ -72,6 +72,8 @@ const defaultState = {
         [Actions.Options.telescopeType]: 'main',
         [Actions.Options.fov]: {},
         [Actions.Options.syncTelescope]: true,
+        [Actions.Options.slewTelescope]: false,
+        [Actions.Options.telescopeSlewAccuracy]: 30,
         [Actions.Options.downsample]: 2,
         [Actions.Options.searchRadius]: 50,
     },
@@ -121,6 +123,7 @@ const platesolvingRemoveTarget = (state, {object}) => {
     let newState = {...state, targets: state.targets.filter(t => t.id !== object)};
     if(state.mainTarget === object) {
         newState.mainTarget = undefined;
+        newState.options[Actions.Options.slewTelescope] = false;
     }
     return newState;
 }

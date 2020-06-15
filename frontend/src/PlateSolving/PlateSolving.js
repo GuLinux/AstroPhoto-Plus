@@ -140,13 +140,24 @@ export class PlateSolving extends React.Component {
         }
     }
 
-    optionButton = (option, value, props={}) => 
-        <CheckButton disabled={ props.disabled || this.props.loading} size='mini' active={this.props.options[option] === value} onClick={() => this.props.setOption(option, value)} {...props} />
+
+
+    optionButton = (option, value, {secondaryOption, ...props}) => 
+        <CheckButton disabled={ props.disabled || this.props.loading} size='mini' active={this.props.options[option] === value} onClick={
+            () => {
+                this.props.setOption(option, value);
+                if(secondaryOption) {
+                    this.props.setOption(secondaryOption.option, secondaryOption.value);
+                }
+            }
+        } {...props} />
 
     setMinimumFOV = minimumWidth => {
         const maximumWidth = Math.max(minimumWidth+1, this.props.options[Options.fov].maximumWidth || 0);
         this.props.setOption(Options.fov, {...this.props.options[Options.fov], minimumWidth, maximumWidth});
     }
+
+    setTelescopeSlewAccuracy = accuracy => this.props.setOption(Options.telescopeSlewAccuracy, accuracy);
 
     setMaximumFOV = maximumWidth => {
         const minimumWidth = Math.min(maximumWidth-1, this.props.options[Options.fov].minimumWidth || 0);
@@ -199,12 +210,21 @@ export class PlateSolving extends React.Component {
                     </Grid.Column>
                 </Grid.Row>)}
                 <Grid.Row>
-                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Sync telescope on solve'/></Grid.Column>
+                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Action on solved'/></Grid.Column>
                     <Grid.Column width={13}>
-                        {this.optionButton(Options.syncTelescope, false, {content: 'Off'})}
-                        {this.optionButton(Options.syncTelescope, true, {content: 'On'})}
+                        {this.optionButton(Options.syncTelescope, false, {content: 'None', secondaryOption: { option: Options.slewTelescope, value: false }})}
+                        {this.optionButton(Options.syncTelescope, true, {content: 'Sync telescope', disabled: options[Options.slewTelescope]})}
+                        {!!this.props.targets.length && this.optionButton(Options.slewTelescope, true, {content: 'Goto target', secondaryOption: { option: Options.syncTelescope, value: true } })}
                     </Grid.Column>
                 </Grid.Row>
+                { options[Options.telescopeAction] == 'slew' && (
+                <Grid.Row>
+                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Goto Accuracy'/></Grid.Column>
+                    <Grid.Column width={13}>
+                        <NumericInput min={1} max={120} step={1} value={options[Options.telescopeSlewAccuracy]} label='arcminutes' labelPosition='right' onChange={this.setTelescopeSlewAccuracy} />
+                    </Grid.Column>
+                </Grid.Row>
+                )}
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Solve camera shot'/></Grid.Column>
                     <Grid.Column width={13}>
