@@ -88,7 +88,7 @@ export class Settings extends React.Component {
                                 <React.Fragment>
                                     <Header size='small' content='Current catalogs:' />
                                     <List>
-                                        {catalogs.map(catalog => (
+                                        {catalogs.map(catalog => catalog['type'] !== 'search_service' && (
                                             <List.Item key={catalog.catalogName}>
                                                 <List.Header content={catalog.display_name} /> {catalog.items} entries.
                                             </List.Item>

@@ -4,6 +4,10 @@ import astropy.units as u
 from astropy.coordinates import SkyCoord
 from errors import NotFoundError
 import json
+from astroquery.simbad import Simbad
+
+Simbad.add_votable_fields('ra(d)')
+Simbad.add_votable_fields('dec(d)')
 
 class Catalogs:
     CATALOGS_KEY = 'catalogs'
@@ -26,15 +30,32 @@ class Catalogs:
         all_catalogs = redis_client.dict_get('catalogs')
         for key, catalog in all_catalogs.items():
             all_catalogs[key] = json.loads(catalog)
+        all_catalogs['SIMBAD'] = { 'display_name': 'Simbad search', 'type': 'search_service' }
         return all_catalogs
 
     def lookup(self, catalog_name, entry_name):
+        if catalog_name == 'SIMBAD':
+            return self.simbad_lookup(entry_name)
         entry_key = Catalogs.entry_key(catalog=catalog_name, name=entry_name)
         logger.debug('Looking up for %s on catalog %s with Redis key %s', entry_name, catalog_name, entry_key)
         entry =  self.__decorate_entry(redis_client.dict_get(entry_key))
         if not entry:
             raise NotFoundError('Object with name {} from catalog {} not found'.format(entry_name, catalog_name))
         return entry
+
+    def simbad_lookup(self, entry_name):
+        simbad_object = Simbad.query_object(entry_name)
+        if not simbad_object:
+            raise NotFoundError('Object with name {} not found in SIMBAD'.format(entry_name))
+        coordinates = SkyCoord(ra=simbad_object['RA_d'][0] * u.deg, dec=simbad_object['DEC_d'][0] * u.deg, equinox='J2000')
+        object_id = simbad_object['MAIN_ID'][0].decode()
+        object_name = ' '.join([x for x in object_id.split(' ') if x]) 
+        return self.__decorate_entry({
+            'raj2000': coordinates.ra.deg,
+            'dej2000': coordinates.dec.deg,
+            'displayName': object_name,
+            'id': object_id,
+        })
 
     def __decorate_entry(self, entry):
         if entry:
