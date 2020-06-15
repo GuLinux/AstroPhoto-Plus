@@ -222,6 +222,13 @@ export const fetchHistogramApi = (dispatch, type, imageId, bins, onSuccess, onEr
     fetchJSON(dispatch, uri, {}, onSuccess, onError);
 }
 
+export const telescopeGOTOAPI = (dispatch, telescopeId, data, onSuccess, onError) => fetchJSON(dispatch, `/api/telescopes/${telescopeId}/goto`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: headersJSONRequest,
+}, onSuccess, onError);
+
+
 export const getSettingsApi = (dispatch, onSuccess) => fetchJSON(dispatch, '/api/settings', {}, onSuccess);
 export const updateSettingsApi = (dispatch, settings, onSuccess) => fetchJSON(dispatch, '/api/settings', {
         method: 'PUT',
