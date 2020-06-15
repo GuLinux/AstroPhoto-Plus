@@ -13,7 +13,7 @@ export const PolarAlignmentPage = () => (
         <Container>
             <Menu stackable>
                     <Menu.Item as={NavLink} exact={true} to={Routes.POLAR_ALIGNMENT_DARV} >DARV - Drift Alignment</Menu.Item>
-                    <Menu.Item as={NavLink} exact={true} to={Routes.POLAR_ALIGNMENT_PLATESOLVING_DRIFT} >Drift Alignment with Platesolving</Menu.Item>
+                    {/*<Menu.Item as={NavLink} exact={true} to={Routes.POLAR_ALIGNMENT_PLATESOLVING_DRIFT} >Drift Alignment with Platesolving</Menu.Item>*/}
             </Menu>
         </Container>
         <Divider hidden />
