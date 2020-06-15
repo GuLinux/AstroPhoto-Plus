@@ -176,7 +176,7 @@ class PlateSolving:
             shutil.rmtree(temp_path, True)
             self.solver_thread = None
             if not options.get('internalSkipIdle', False):
-                this.__set_status('idle')
+                self.__set_status('idle')
 
 
     def __run_solve_field(self, options, fits_file_path, temp_path):
@@ -248,7 +248,7 @@ class PlateSolving:
                 cli_options.extend(['-L', fov['minimumWidth'], '-H', fov['maximumWidth'], '-u', 'arcminwidth'])
         if 'downsample' in options:
             cli_options.extend(['--downsample', options['downsample']])
-        if 'target' in options and 'searchRadius' in options:
+        if 'target' in options and 'searchRadius' in options and options['searchRadius']:
             cli_options.extend(['-3', options['target']['raj2000'], '-4', options['target']['dej2000'], '-5', options['searchRadius']])
         if 'timeout' in options:
             cli_options.extend(['-l', options['timeout']])

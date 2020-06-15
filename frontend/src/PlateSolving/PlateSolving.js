@@ -375,13 +375,13 @@ export class PlateSolving extends React.Component {
     }
 
     targetSolvingOptions = () => {
-        const options = [1, 5, 10, 20, 50, 90].map(degs => ({
+        const options = [1, 5, 10, 20, 50, 90, 120, 0].map(degs => ({
             key: degs,
-            text: degs,
+            text: degs || 'Off',
             value: degs,
         }));
         const searchRadius = this.props.options[Options.searchRadius];
-        return <div>Platesolving only around <Dropdown onChange={this.setSearchRadius} inline options={options} defaultValue={searchRadius} /> degrees from the selected target.</div>
+        return <div>Search radius: <Dropdown onChange={this.setSearchRadius} inline options={options} defaultValue={searchRadius} />{!!searchRadius && ' degrees from the selected target.'}</div>
     };
 
     setSearchRadius = (e, d) => this.props.setOption(Options.searchRadius, d.value);
