@@ -193,7 +193,7 @@ export class PlateSolving extends React.Component {
                         {this.optionButton(Options.telescopeType, 'main', {content: 'Main', key: 'main'})}
                         {this.optionButton(Options.telescopeType, 'guider', {content: 'Guider', key: 'guider'})}
                     </Grid.Column>
-                    <Grid.Column width={10}>
+                    <Grid.Column width={10} verticalAlign='middle'>
                         {this.props.telescopeFocalLength}mm
                     </Grid.Column>
                 </Grid.Row>)}

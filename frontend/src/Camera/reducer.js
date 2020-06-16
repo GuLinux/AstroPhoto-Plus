@@ -1,5 +1,5 @@
 import { set, merge } from 'lodash/fp';
-import { CAMERA_PAGE, DARV_PAGE, PLATESOLVING_PAGE } from './sections';
+import { CAMERA_PAGE, DARV_PAGE, PLATESOLVING_PAGE, POLAR_DRIFT } from './sections';
 
 const getSectionState = (options={}) => ({
     options: {
@@ -17,6 +17,7 @@ const defaultState = {
     [CAMERA_PAGE]: getSectionState(),
     [DARV_PAGE]: getSectionState(),
     [PLATESOLVING_PAGE]: getSectionState(),
+    [POLAR_DRIFT]: getSectionState(),
 };
 
 

@@ -24,6 +24,12 @@ class DARVMenuComponent extends React.Component {
     );
 }
 
+export const DARVPolarAlignmentMenu = connect(null, {
+    startDARV,
+})(DARVMenuComponent);
+
+
+
 class DARVGuiderWarningsComponent extends React.Component {
 
     hasError = () => this.props.state === 'ALERT';
@@ -116,10 +122,6 @@ class DARVComponent extends React.Component {
         );
     }
 }
-
-export const DARVPolarAlignmentMenu = connect(null, {
-    startDARV,
-})(DARVMenuComponent);
 
 
 export const DARV = connect(getDARVSelector, { setDARVGuider })(DARVComponent);
