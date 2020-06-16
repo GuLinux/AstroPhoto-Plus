@@ -11,7 +11,7 @@ class AutoExposure extends React.Component {
         const {shouldAutostart, shotParameters, shoot} = this.props;
 
         if(shouldAutostart && ! prevProps.shouldAutostart) {
-            shoot(shotParameters);
+            shoot(shotParameters, this.props.section);
         }
     }
 }

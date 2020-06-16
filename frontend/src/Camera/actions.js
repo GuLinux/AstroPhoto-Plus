@@ -12,7 +12,7 @@ export const shoot = (parameters, section) => (dispatch) => {
         }
         return false;
     });
-}
+};
 
 export const setCamera = (camera, section) => ({ type: 'SET_CURRENT_CAMERA', camera, section });
 export const setFilterWheel = (filterWheel, section) => ({ type: 'SET_CURRENT_FILTER_WHEEL', filterWheel, section });
