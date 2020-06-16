@@ -8,6 +8,7 @@ from astroquery.simbad import Simbad
 
 Simbad.add_votable_fields('ra(d)')
 Simbad.add_votable_fields('dec(d)')
+Simbad.add_votable_fields('ids')
 
 class Catalogs:
     CATALOGS_KEY = 'catalogs'
@@ -49,11 +50,26 @@ class Catalogs:
             raise NotFoundError('Object with name {} not found in SIMBAD'.format(entry_name))
         coordinates = SkyCoord(ra=simbad_object['RA_d'][0] * u.deg, dec=simbad_object['DEC_d'][0] * u.deg, equinox='J2000')
         object_id = simbad_object['MAIN_ID'][0].decode()
-        object_name = ' '.join([x for x in object_id.split(' ') if x]) 
+        def sanitize_name(name):
+            name_entries = [x for x in name.split(' ') if x]
+            cat = name_entries[0] if len(name_entries) > 1 else 'N/A'
+            if name_entries[0].startswith('MCG'):
+                cat = 'MCG'
+            if cat == 'NAME':
+                name_entries = name_entries[1:]
+            return cat, ' '.join(name_entries) 
+
+
+        catalog, object_name = sanitize_name(object_id)
+        object_names = [sanitize_name(x) for x in simbad_object['IDS'][0].decode().split('|') if x != object_id]
+        object_names = [{'catalog': catalog, 'name': name} for catalog, name in object_names]
+
         return self.__decorate_entry({
             'raj2000': coordinates.ra.deg,
             'dej2000': coordinates.dec.deg,
             'displayName': object_name,
+            'objectNames': object_names,
+            'catalog': catalog,
             'id': object_id,
         })
 
