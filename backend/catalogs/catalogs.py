@@ -42,14 +42,9 @@ class Catalogs:
         entry =  self.__decorate_entry(redis_client.dict_get(entry_key))
         if not entry:
             raise NotFoundError('Object with name {} from catalog {} not found'.format(entry_name, catalog_name))
-        return entry
+        return [entry]
 
     def simbad_lookup(self, entry_name):
-        simbad_object = Simbad.query_object(entry_name)
-        if not simbad_object:
-            raise NotFoundError('Object with name {} not found in SIMBAD'.format(entry_name))
-        coordinates = SkyCoord(ra=simbad_object['RA_d'][0] * u.deg, dec=simbad_object['DEC_d'][0] * u.deg, equinox='J2000')
-        object_id = simbad_object['MAIN_ID'][0].decode()
         def sanitize_name(name):
             name_entries = [x for x in name.split(' ') if x]
             cat = name_entries[0] if len(name_entries) > 1 else 'N/A'
@@ -60,18 +55,27 @@ class Catalogs:
             return cat, ' '.join(name_entries) 
 
 
-        catalog, object_name = sanitize_name(object_id)
-        object_names = [sanitize_name(x) for x in simbad_object['IDS'][0].decode().split('|') if x != object_id]
-        object_names = [{'catalog': catalog, 'name': name} for catalog, name in object_names]
+        simbad_objects = Simbad.query_object(entry_name)
+        if not simbad_objects:
+            raise NotFoundError('Object with name {} not found in SIMBAD'.format(entry_name))
+        results = []
+        for simbad_object in simbad_objects:
+            coordinates = SkyCoord(ra=simbad_object['RA_d'] * u.deg, dec=simbad_object['DEC_d'] * u.deg, equinox='J2000')
+            object_id = simbad_object['MAIN_ID'].decode()
 
-        return self.__decorate_entry({
-            'raj2000': coordinates.ra.deg,
-            'dej2000': coordinates.dec.deg,
-            'displayName': object_name,
-            'objectNames': object_names,
-            'catalog': catalog,
-            'id': object_id,
-        })
+            catalog, object_name = sanitize_name(object_id)
+            object_names = [sanitize_name(x) for x in simbad_object['IDS'].decode().split('|') if x != object_id]
+            object_names = [{'catalog': catalog, 'name': name} for catalog, name in object_names]
+
+            results.append(self.__decorate_entry({
+                'raj2000': coordinates.ra.deg,
+                'dej2000': coordinates.dec.deg,
+                'displayName': object_name,
+                'objectNames': object_names,
+                'catalog': catalog,
+                'id': object_id,
+            }))
+        return results
 
     def __decorate_entry(self, entry):
         if entry:
