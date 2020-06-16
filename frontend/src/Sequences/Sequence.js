@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Container, Header, Card} from 'semantic-ui-react';
+import { Message, Menu, Container, Header, Card} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import LastCapturedSequenceImageContainer from './LastCapturedSequenceImageContainer';
 import { NotFoundPage } from '../components/NotFoundPage';
@@ -65,6 +65,7 @@ const AddSequenceJob = withRouter( ({history, onCreateSequenceJob, sequenceId, t
 export const Sequence = ({ sequence, canEdit, canReset }) => sequence ? (
     <Container>
         <Header size="medium">{sequence.name}</Header>
+        {sequence.status === 'stale' && <Message warning>The sequence appears to be stale. It is recommend you manually stop it and then resume after checking devices are connected and everything is correct.</Message>}
         <SequenceJobsList canEdit={canEdit} canReset={canReset} sequenceJobs={sequence.sequenceJobs} />
         <Card.Group>
             <ExposuresCardContainer sequenceId={sequence.id} />

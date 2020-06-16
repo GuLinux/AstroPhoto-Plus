@@ -34,7 +34,7 @@ const getSequenceStatus = (sequence, gear) => {
     }
     const gearConnected = gear.camera && gear.camera.connected && (!sequence.filterWheel || (gear.filterWheel && gear.filterWheel.connected));
     const canStart = gearConnected && ['idle', 'stopped', 'error'].includes(sequence.status);
-    const canStop = sequence.status === 'running';
+    const canStop = sequence.status === 'running' || sequence.status === 'stale';
     const canEdit = gearConnected && ['idle', 'error'].includes(sequence.status);
     const canReset = getCanReset(sequence);
     return { canStart, canStop, canEdit, canReset };

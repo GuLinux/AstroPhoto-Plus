@@ -276,10 +276,15 @@ def start_sequence(id):
 @json_api
 def stop_sequence(id):
     running_sequence = controller.sequences_runner.get(id)
-    if not running_sequence:
-        raise BadRequestError('Sequence with id {} not running'.format(id))
-    running_sequence.stop()
-    return running_sequence.sequence.to_map()
+    if running_sequence:
+        running_sequence.stop()
+        return running_sequence.sequence.to_map()
+    else:
+        with controller.sequences.lookup_edit(id) as sequence:
+            if not sequence.status == 'stale':
+                raise BadRequestError('Sequence with id {} not running'.format(id))
+            sequence.stop_stale()
+            return sequence.to_map()
 
 
 @app.route('/api/sequences/<id>/reset', methods=['POST'])

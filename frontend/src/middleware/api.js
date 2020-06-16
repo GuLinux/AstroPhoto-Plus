@@ -73,7 +73,7 @@ export const startSequenceAPI = (dispatch, sequence, onSuccess, onError) => fetc
 
 export const stopSequenceAPI = (dispatch, sequence, onSuccess) => fetchJSON(dispatch, `/api/sequences/${sequence.id}/stop`, {
         method: 'POST',
-    }, json => onSuccess(json));
+    }, json => onSuccess(normalize(json, sequenceSchema)));
 
 export const resetSequenceAPI = (dispatch, sequenceId, options, onSuccess) => {
     return fetchJSON(dispatch, `/api/sequences/${sequenceId}/reset`, {
