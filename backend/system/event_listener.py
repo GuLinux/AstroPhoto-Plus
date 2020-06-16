@@ -51,6 +51,9 @@ class EventListener:
     def on_platesolving_message(self, message):
         sse.publish_event('platesolving', 'platesolving_message', {'message': message})
 
+    def on_platesolving_status(self, status):
+        sse.publish_event('platesolving', 'platesolving_status', status)
+
     def on_platesolving_finished(self, payload):
         sse.publish_event('platesolving', 'platesolving_finished', payload, is_error=(payload['status'] == 'error'))
 

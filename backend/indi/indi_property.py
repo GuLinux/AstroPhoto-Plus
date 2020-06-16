@@ -83,6 +83,10 @@ class Property:
     def state(self):
         return self.indi_property['state']
 
+    def reload(self):
+        self.indi_property = None
+        self.find_indi_property()
+
     @with_type
     def set_values(self, property_values, sync=False, timeout=None):
         indi_device = device.Device(self.client, self.logger, name=self.device).find_indi_device()

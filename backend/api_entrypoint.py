@@ -453,6 +453,16 @@ def retrieve_image_histogram(type, image):
 def get_telescopes():
     return [x.to_map() for x in controller.indi_server.telescopes()]
 
+
+@app.route('/api/telescopes/<id>/goto', methods=['POST'])
+@json_input
+@json_api
+@indi_connected
+def telescope_goto(id, json):
+    telescope = controller.indi_server.get_telescope(id)
+    return telescope.goto({ 'ra': json['ra'], 'dec': json['dec']}, equinox=json.get('equinox', 'J2000'), sync=json.get('sync', False))
+
+
 @app.route('/api/guiders', methods=['GET'])
 @json_api
 @indi_connected

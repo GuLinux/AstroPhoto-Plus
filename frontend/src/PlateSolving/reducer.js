@@ -1,5 +1,6 @@
 import { PlateSolving as Actions } from './actions'; 
 import { list2object } from '../utils';
+import { PLATESOLVING_PAGE } from '../Camera/sections';
 
 
 
@@ -67,10 +68,12 @@ const testSolution = {
 
 const defaultState = {
     options: {
-        [Actions.Options.camera]: false,
+        [Actions.Options.camera]: true,
         [Actions.Options.telescopeType]: 'main',
         [Actions.Options.fov]: {},
         [Actions.Options.syncTelescope]: true,
+        [Actions.Options.slewTelescope]: false,
+        [Actions.Options.telescopeSlewAccuracy]: 30,
         [Actions.Options.downsample]: 2,
         [Actions.Options.searchRadius]: 50,
     },
@@ -88,6 +91,26 @@ const setOption = (state, {option, value}) => {
     return newState;
 }
 
+/*
+{
+  type: 'SET_CURRENT_CAMERA',
+  camera: 'Guide Simulator',
+  section: 'plateSolving'
+}
+{
+  type: 'PLATESOLVING_SET_OPTION',
+  option: 'fovSource',
+  value: 'CCD Simulator'
+}
+*/
+const platesolvingSetCurrentCamera = (state, {camera, section}) => {
+	if(section !== PLATESOLVING_PAGE) {
+		return state;
+	}
+    return setOption(state, {option: Actions.Options.fovSource, value: camera});
+}
+
+
 const receivedPlatesolvingSolution = (state, {payload}) => {
     const solution = list2object(payload.solution.values, 'name')
     if(state.targetName) {
@@ -100,6 +123,7 @@ const platesolvingRemoveTarget = (state, {object}) => {
     let newState = {...state, targets: state.targets.filter(t => t.id !== object)};
     if(state.mainTarget === object) {
         newState.mainTarget = undefined;
+        newState.options[Actions.Options.slewTelescope] = false;
     }
     return newState;
 }
@@ -120,7 +144,7 @@ export const plateSolving = (state = defaultState, action) => {
             const previousSolution = state.solution || state.previousSolution;
             return {...state, loading: true, solution: undefined, previousSolution, targetName: action.targetName};
         case 'PLATESOLVING_MESSAGE':
-            return {...state, messages: [action.message, ...state.messages]};
+            return {...state, messages: [action.message, ...state.messages.slice(0, 100)]};
         case 'PLATESOLVING_RESET_MESSAGES':
             return {...state, messages: []};
         case 'PLATESOLVING_ADD_TARGET':
@@ -129,6 +153,8 @@ export const plateSolving = (state = defaultState, action) => {
             return {...state, mainTarget: action.object };
         case 'PLATESOLVING_REMOVE_TARGET':
             return platesolvingRemoveTarget(state, action);
+        case 'SET_CURRENT_CAMERA':
+            return platesolvingSetCurrentCamera(state, action)
         default:
         return state;
     }

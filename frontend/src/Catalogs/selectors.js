@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect'
 import createCachedSelector from 're-reselect';
+import { sortBy } from 'lodash';
 
 export const getAvailableCatalogs = state => state.catalogs.availableCatalogs;
 export const getCatalogs = state => state.catalogs.catalogs;
@@ -23,7 +24,16 @@ export const getCatalogsDropdownSelector = createSelector([getCurrentCatalogs], 
 
 const getSectionKey = (state, {sectionKey}) => sectionKey;
 
-const catalogSearchSection = (state, {sectionKey}) => state.catalogs[sectionKey];
+const catalogSearchSection = (state, {sectionKey}) => state.catalogs[sectionKey] || {};
+
+const filterObjectNames = objectNames => {
+    const priorityCatalogues = ['NAME', 'M', 'NGC', 'IC', 'C']
+    const sortedNames = sortBy(objectNames, ({catalog, name}) => {
+        let priority = priorityCatalogues.indexOf(catalog);
+        return priority == -1 ? 99 : priority;
+    });
+    return sortedNames.slice(0,6);
+}
 
 export const catalogSearchSelector = createCachedSelector(
     // input
@@ -32,5 +42,20 @@ export const catalogSearchSelector = createCachedSelector(
         catalogSearchSection,
     ],
     // result
-    (catalogs, section) => ({ catalogs, search: section })
+    (catalogs, {results, ...search}) => {
+        let resultsFiltered;
+        if(results) {
+            resultsFiltered = results.map(result => ({
+                ...result,
+                objectNames: result.objectNames && filterObjectNames(result.objectNames),
+            }));
+        }
+        return {
+            catalogs,
+            search: {
+                results: resultsFiltered,
+                ...search,
+            },
+        };
+    }
 )(getSectionKey);

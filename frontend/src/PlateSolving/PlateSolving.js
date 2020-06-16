@@ -8,6 +8,7 @@ import { SkyChartComponent } from '../components/SkyChartsComponent';
 import { get, isEqual } from 'lodash';
 import { getFieldOfView, getSensorSizeFromResolution } from './utils';
 import { CatalogSearch } from '../Catalogs/CatalogSearch.js';
+import { ConfirmDialog } from '../Modals/ModalDialog';
 
 const { Options } = PlateSolvingActions;
 
@@ -139,13 +140,22 @@ export class PlateSolving extends React.Component {
         }
     }
 
-    optionButton = (option, value, props={}) => 
-        <CheckButton disabled={ props.disabled || this.props.loading} size='mini' active={this.props.options[option] === value} onClick={() => this.props.setOption(option, value)} {...props} />
+
+
+    optionButton = (option, value, {secondaryOptions=[], ...props}) => 
+        <CheckButton disabled={ props.disabled || this.props.loading} size='mini' active={this.props.options[option] === value} onClick={
+            () => {
+                this.props.setOption(option, value);
+                secondaryOptions.forEach( secondaryOption => this.props.setOption(secondaryOption.option, secondaryOption.value));
+            }
+        } {...props} />
 
     setMinimumFOV = minimumWidth => {
         const maximumWidth = Math.max(minimumWidth+1, this.props.options[Options.fov].maximumWidth || 0);
         this.props.setOption(Options.fov, {...this.props.options[Options.fov], minimumWidth, maximumWidth});
     }
+
+    setTelescopeSlewAccuracy = accuracy => this.props.setOption(Options.telescopeSlewAccuracy, accuracy);
 
     setMaximumFOV = maximumWidth => {
         const minimumWidth = Math.min(maximumWidth-1, this.props.options[Options.fov].minimumWidth || 0);
@@ -198,19 +208,39 @@ export class PlateSolving extends React.Component {
                     </Grid.Column>
                 </Grid.Row>)}
                 <Grid.Row>
-                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Sync telescope on solve'/></Grid.Column>
+                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Action on solved'/></Grid.Column>
                     <Grid.Column width={13}>
-                        {this.optionButton(Options.syncTelescope, false, {content: 'Off'})}
-                        {this.optionButton(Options.syncTelescope, true, {content: 'On'})}
+                        {this.optionButton(Options.syncTelescope, false, {content: 'None', secondaryOptions: [{ option: Options.slewTelescope, value: false }] })}
+                        {this.optionButton(Options.syncTelescope, true, {content: 'Sync telescope', disabled: options[Options.slewTelescope]})}
+                        {!!this.props.targets.length && this.optionButton(Options.slewTelescope, true, {content: 'Goto target', secondaryOptions: [{ option: Options.syncTelescope, value: true }, { option: Options.camera, value: true }] })}
                     </Grid.Column>
                 </Grid.Row>
+                { options[Options.slewTelescope] && (
                 <Grid.Row>
-                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Solve camera shot'/></Grid.Column>
+                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Goto Accuracy'/></Grid.Column>
                     <Grid.Column width={13}>
-                        {this.optionButton(Options.camera, false, {content: 'Off'})}
-                        {this.optionButton(Options.camera, true, {content: 'On'})}
+                        <NumericInput size='mini' min={1} max={120} step={1} value={options[Options.telescopeSlewAccuracy]} label='arcminutes' labelPosition='right' onChange={this.setTelescopeSlewAccuracy} />
                     </Grid.Column>
                 </Grid.Row>
+                )}
+                { !options[Options.slewTelescope] && 
+                <Grid.Row>
+                    <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Solve from'/></Grid.Column>
+                    <Grid.Column width={13}>
+                        {this.optionButton(Options.camera, true, {content: 'Camera shot'})}
+                        {this.optionButton(Options.camera, false, {content: 'FITS file'})}
+                        { !options[Options.camera] &&
+                            <UploadFileDialog
+                                title='Upload FITS'
+                                trigger={<Button disabled={loading} icon='upload' content='Upload FITS' primary size='mini'/>}
+                                readAsDataURL={true}
+                                onFileUploaded={this.onFileUploaded}
+                            />
+                        }
+
+                    </Grid.Column>
+                </Grid.Row>
+                }
                 <Grid.Row>
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Downsample image'/></Grid.Column>
                     <Grid.Column width={13}>
@@ -273,22 +303,16 @@ export class PlateSolving extends React.Component {
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Targets'/></Grid.Column>
                     <Grid.Column width={13}>{this.renderTargets()}</Grid.Column>
                 </Grid.Row>
-
-                { !options[Options.camera] && (
-                    <Grid.Row>
-                        <Grid.Column width={16} textAlign='center'>
-                            <UploadFileDialog
-                                title='Upload FITS'
-                                trigger={<Button disabled={loading} icon='upload' content='Upload FITS' primary size='mini'/>}
-                                readAsDataURL={true}
-                                onFileUploaded={this.onFileUploaded}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-            )}
                 { loading && (<Grid.Row>
-                    <Grid.Column width={8} textAlign='center'>
-                        <Loader active inline />
+                    <Grid.Column width={5} />
+                    <Grid.Column width={6}>
+                        <Message icon>
+                            <Icon name='circle notched' loading />
+                            <Message.Content>
+                                Platesolving in progress.
+                                <ConfirmDialog onConfirm={this.props.abortSolveField} trigger={<Button color='red' floated='right'>Abort</Button>} header='Abort PlateSolving' content='Are you sure?' />
+                            </Message.Content>
+                        </Message>
                     </Grid.Column>
                 </Grid.Row>)}
             </Grid>
@@ -351,13 +375,13 @@ export class PlateSolving extends React.Component {
     }
 
     targetSolvingOptions = () => {
-        const options = [1, 5, 10, 20, 50, 90].map(degs => ({
+        const options = [1, 5, 10, 20, 50, 90, 120, 0].map(degs => ({
             key: degs,
-            text: degs,
+            text: degs || 'Off',
             value: degs,
         }));
         const searchRadius = this.props.options[Options.searchRadius];
-        return <div>Platesolving only around <Dropdown onChange={this.setSearchRadius} inline options={options} defaultValue={searchRadius} /> degrees from the selected target.</div>
+        return <div>Search radius: <Dropdown onChange={this.setSearchRadius} inline options={options} defaultValue={searchRadius} />{!!searchRadius && ' degrees from the selected target.'}</div>
     };
 
     setSearchRadius = (e, d) => this.props.setOption(Options.searchRadius, d.value);

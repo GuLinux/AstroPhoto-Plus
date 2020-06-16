@@ -11,6 +11,8 @@ import subprocess
 import shutil
 import re
 from static_settings import StaticSettings
+import astropy.units as u
+from astropy.coordinates import SkyCoord, Angle
 
 class PlateSolving:
 
@@ -35,25 +37,70 @@ class PlateSolving:
     def abort(self):
         if self.status != 'solving':
             raise BadRequestError('Solver is not running')
-        if self.solver_process:
-            self.solver_process.terminate()
-            try:
-                self.solver_process.wait(timeout=15)
-            except subprocess.TimeoutExpired:
-                self.solver_process.kill()
-                self.solver_process.wait()
-            finally:
-                self.solver_process = None
-        if self.solver_thread:
-            self.solver_thread.join()
-        self.solver_thread = None
+        self.__set_status('abort')
+        if self.solver_process and self.solver_process_cancel_file:
+            with open(self.solver_process_cancel_file, 'w') as f:
+                f.write('abort')
+            self.solver_process.wait()
+            self.solver_process = None
+            if self.solver_thread:
+                self.solver_thread.join()
+            self.solver_thread = None
         return self.to_map()
 
     def solve_field(self, options):
         if not self.is_available():
             raise BadRequestError('Astrometry.net solve-field not found in {}'.format(settings.astrometry_solve_field_path))
 
-        self.status = 'solving'
+        self.__set_status('solving')
+        if not options['slewTelescope']:
+            return self.__start_solver(options)
+        else:
+            return self.__start_slew_solver(options)
+
+    def __start_slew_solver(self, options):
+        if not 'cameraOptions' in options:
+            raise BadRequestError('You need to capture from camera when using Slew mode')
+        if not 'target' in options:
+            raise BadRequestError('You need a target when using Slew mode')
+        if not 'telescope' in options:
+            raise BadRequestError('You need a telescope when using Slew mode')
+        self.solver_thread = start_thread(self.__slew_solver_thread, options)
+        return self.to_map()
+
+    def __slew_solver_thread(self, options):
+        try:
+            from system import controller
+            telescope = controller.indi_server.get_telescope(options['telescope'])
+            target_coordinates = SkyCoord(ra=options['target']['raj2000'] * u.deg, dec=options['target']['dej2000'] * u.deg, equinox='J2000')
+            accuracy = options.get('telescopeSlewAccuracy', 30)
+            solution = None
+
+            def is_close_enough():
+                if not solution:
+                    return False
+                solution_dict = dict([(x['name'], x['value']) for x in solution['solution']['values']])
+                solution_coordinates = SkyCoord(ra=solution_dict['ASTROMETRY_RESULTS_RA'] * u.deg, dec=solution_dict['ASTROMETRY_RESULTS_DE'] * u.deg, equinox='J2000')
+                separation = solution_coordinates.separation(target_coordinates)
+                logger.debug('Separation from target: {}'.format(separation.arcmin))
+                return separation <= Angle(accuracy * u.arcminute)
+
+            while not is_close_enough() and self.status not in ['aborted', 'error']:
+                self.event_listener.on_platesolving_message('Slewing telescope {} to {}'.format(telescope.id, target_coordinates.to_string('hmsdms')))
+                telescope.goto({'ra': target_coordinates.ra.hourangle, 'dec': target_coordinates.dec.deg}, equinox='J2000', sync=True)
+                solver_options = {}
+                solver_options.update(options)
+                solver_options.update({ 'sync': True, 'syncTelescope': True, 'internalSkipIdle': True })
+                self.event_listener.on_platesolving_message('Starting platesolving')
+                solution = self.__start_solver(solver_options)
+                if solution['status'] == 'error':
+                    break
+
+            self.event_listener.on_platesolving_finished(solution)
+        finally:
+            this.__set_status('idle')
+
+    def __start_solver(self, options):
         temp_path = os.path.join(StaticSettings.ASTROMETRY_TEMP_PATH, 'solve_field_{}'.format(time.time()))
         os.makedirs(temp_path, exist_ok=True)
  
@@ -120,14 +167,16 @@ class PlateSolving:
                 raise FailedMethodError('Plate solving failed, check astrometry driver log')
         except Exception as e:
             logger.warning('Error running platesolver with options {}'.format(options), exc_info=e)
+            self.__set_status('error')
             return {
                 'status': 'error',
                 'error': str(e),
             }
         finally:
-            self.status = 'idle'
             shutil.rmtree(temp_path, True)
             self.solver_thread = None
+            if not options.get('internalSkipIdle', False):
+                self.__set_status('idle')
 
 
     def __run_solve_field(self, options, fits_file_path, temp_path):
@@ -136,9 +185,14 @@ class PlateSolving:
             astrometry_cfg_file.write('cpulimit {}\n'.format(settings.astrometry_cpu_limit))
             astrometry_cfg_file.write('add_path {}\n'.format(settings.astrometry_path()))
             astrometry_cfg_file.write('autoindex\n')
+
+        self.solver_process_cancel_file = '/tmp/{}-{}.cancel'.format(os.path.basename(fits_file_path), int(time.time()))
+
         cli = self.__build_astrometry_options(options, fits_file_path, astrometry_cfg, temp_path)
         logger.debug('[Astrometry] running solve-field with cli: %s', str(cli))
         self.solver_process = subprocess.Popen(cli, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        logger.debug('[Astrometry] Started solve-field on file {}, pid {}, cancel file: {}'.format(fits_file_path, self.solver_process.pid, self.solver_process_cancel_file))
+
         rotation_angle = None
         pixscale = None
         with self.solver_process.stdout:
@@ -156,8 +210,7 @@ class PlateSolving:
                     logger.debug('[PlateSolving]: pixel scale regex detected: {}'.format(re_pixscale))
                     if re_pixscale:
                         pixscale = float(re_pixscale[0])
-                logger.debug('solve-field: {}'.format(line))
-                if not options.get('sync', False):
+                if not options.get('suppressMessages', False):
                     self.event_listener.on_platesolving_message(line)
 
         logger.debug('PlateSolving::__run_solve_field: Waiting for solver process to finish')
@@ -167,6 +220,9 @@ class PlateSolving:
             pass
         logger.debug('PlateSolving::__run_solve_field: Solver finished, exit code: {}'.format(self.solver_process.returncode))
         self.solver_process = None
+        if os.path.isfile(self.solver_process_cancel_file):
+            os.remove(self.solver_process_cancel_file)
+        self.solver_process_cancel_file = None
 
         solved_file = os.path.join(temp_path, 'solve-field.solved')
         solved = os.path.exists(solved_file)
@@ -183,7 +239,7 @@ class PlateSolving:
         return solved, solution
 
     def __build_astrometry_options(self, options, input_file, config_file, temp_path):
-        cli_options = ['solve-field', '-D', temp_path, '-o', 'solve-field', '--no-verify', '--resort', '--crpix-center', '-O', '--config', '{}'.format(config_file)]
+        cli_options = ['solve-field', '-C', self.solver_process_cancel_file, '-D', temp_path, '-o', 'solve-field', '--no-verify', '--resort', '--crpix-center', '-O', '--config', '{}'.format(config_file)]
         if 'plot' not in options:
             cli_options.append('--no-plots')
         if 'fov' in options:
@@ -192,10 +248,14 @@ class PlateSolving:
                 cli_options.extend(['-L', fov['minimumWidth'], '-H', fov['maximumWidth'], '-u', 'arcminwidth'])
         if 'downsample' in options:
             cli_options.extend(['--downsample', options['downsample']])
-        if 'target' in options and 'searchRadius' in options:
+        if 'target' in options and 'searchRadius' in options and options['searchRadius']:
             cli_options.extend(['-3', options['target']['raj2000'], '-4', options['target']['dej2000'], '-5', options['searchRadius']])
         if 'timeout' in options:
             cli_options.extend(['-l', options['timeout']])
         cli_options.append(input_file)
         logger.debug(cli_options)
         return [str(x) for x in cli_options]
+
+    def __set_status(self, status):
+        self.status = status
+        self.event_listener.on_platesolving_status(self.to_map())

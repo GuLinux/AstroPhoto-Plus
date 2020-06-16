@@ -51,7 +51,7 @@ export const importCatalog = (name, displayName) => dispatch => {
 
 export const lookupCatalogObject = (catalog, object, sectionKey ) => dispatch => {
     dispatch({ type: 'CATALOG_LOOKUP_FETCH', sectionKey });
-    const onSuccess = object => dispatch({ type: 'CATALOG_LOOKUP_SUCCESS', sectionKey, object });
+    const onSuccess = results => dispatch({ type: 'CATALOG_LOOKUP_SUCCESS', sectionKey, results});
     const onError = (response, isJSON) => {
         if(isJSON) {
             response.json().then(error => dispatch({type: 'CATALOG_LOOKUP_FAILED', error, sectionKey }));

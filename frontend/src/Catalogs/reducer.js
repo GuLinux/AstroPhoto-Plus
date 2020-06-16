@@ -5,7 +5,7 @@ const defaultState = {
 
 
 const catalogFetch = (state, {sectionKey}) => ({...state, [sectionKey]: { fetching: true }});
-const catalogFetchSuccess = (state, {sectionKey, object: lookupObject }) => ({...state, [sectionKey]: { lookupObject }});
+const catalogFetchSuccess = (state, {sectionKey, results }) => ({...state, [sectionKey]: { results}});
 const catalogLookupFailed = (state, {sectionKey, error}) => ({...state, [sectionKey]: { fetching: false, error }}); 
 
 export const catalogs = (state = defaultState, action) => {

@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { catalogSearchSelector } from './selectors';
 import {} from './actions.js';
-import { Button, Header, Message, Form, Dropdown, Input } from 'semantic-ui-react';
+import { Card, Button, Header, Message, Form, Dropdown, Input } from 'semantic-ui-react';
 import { lookupCatalogObject, clearCatalogResults } from './actions';
 
 class CatalogSearchComponent extends React.Component {
@@ -46,7 +46,7 @@ class CatalogSearchComponent extends React.Component {
                     </Form.Group>
                 </Form>
                 { this.props.search && ! this.props.search.fetching && this.props.search.error && this.renderError() }
-                { this.props.search && ! this.props.search.fetching && this.props.search.lookupObject && this.renderLookupObject() }
+                { this.props.search && ! this.props.search.fetching && this.props.search.results && this.renderResults() }
             </React.Fragment>
         );
     }
@@ -62,15 +62,29 @@ class CatalogSearchComponent extends React.Component {
         </Message>
     );
 
-    renderLookupObject = () => (
+    renderResults = () => (
         <div>
-            <Header size='small'>Object found</Header>
-            {this.renderObject(this.props.search.lookupObject)}
+            <Header size='small'>Objects found</Header>
+            {this.props.search.results.map(this.renderObject)}
         </div>
     );
 
     renderObject = (object) => (
-        <Button icon='add' onClick={() => this.onObjectSelected(object)} content={object.displayName} circular />
+        <Card key={object.id} color='teal'>
+            <Card.Content>
+                <Card.Header>{object.displayName}</Card.Header>
+                <Card.Description>
+                    <p>Right Ascension: {object.ra_hms}</p>
+                    <p>Declination: {object.dec_dms}</p>
+                    { object.objectNames && (
+                        <p>Other names: {object.objectNames.map(({name}) => name).join(', ')}</p>
+                    )}
+                </Card.Description>
+            </Card.Content>
+            <Card.Content extra>
+                <Button icon='checkmark' onClick={() => this.onObjectSelected(object)} fluid content='Add' />
+            </Card.Content>
+        </Card>
     );
 
     onObjectSelected = (object) => {
