@@ -6,7 +6,7 @@ gunicorn
 gevent
 greenlet
 numpy
-pillow
+pillow >= 7.0.0
 six
 redis
 requests
