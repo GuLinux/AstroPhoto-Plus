@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { CameraShootingSectionMenuEntriesContaner, CameraImageOptionsSectionMenuEntriesContainer } from '../Camera/CameraSectionMenuEntriesContainer.js';
 
 import { PlateSolvingContainer } from '../PlateSolving/PlateSolvingContainer';
-import { POLAR_DRIFT } from '../Camera/sections';
+import { POLAR_PLATESOLVING } from '../Camera/sections';
 
-class PlatesolvingDriftMenuComponent extends React.Component {
+class PlatesolvingPolarAlignmentMenuComponent extends React.Component {
     onShoot = shootParams => {
         //this.props.startDARV(shootParams);
         return false;
@@ -13,15 +13,15 @@ class PlatesolvingDriftMenuComponent extends React.Component {
 
     render = () => (
         <React.Fragment>
-            <CameraShootingSectionMenuEntriesContaner onShoot={this.onShoot} section={POLAR_DRIFT} />
+            <CameraShootingSectionMenuEntriesContaner onShoot={this.onShoot} section={POLAR_PLATESOLVING} />
         </React.Fragment>
     );
 }
 
-export const PlatesolvingDriftMenu = connect(null, {})(PlatesolvingDriftMenuComponent);
+export const PlatesolvingPolarAlignmentMenu = connect(null, {})(PlatesolvingPolarAlignmentMenuComponent);
 
 
 
 
 
-export const PlateSolvingDrift = () => <PlateSolvingContainer />;
+export const PlatesolvingPolarAlignment = () => <PlateSolvingContainer />;

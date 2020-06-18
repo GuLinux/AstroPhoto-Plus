@@ -13,7 +13,7 @@ import { PlateSolvingSectionMenuContainer } from '../PlateSolving/PlateSolvingPa
 import { CameraSectionMenu } from '../Camera/Camera';
 import { DARVPolarAlignmentMenu } from '../PolarAlignment/DARV';
 import { CAMERA_PAGE } from '../Camera/sections';
-import { PlatesolvingDriftMenu } from '../PolarAlignment/PlatesolvingDrift';
+import { PlatesolvingPolarAlignmentMenu } from '../PolarAlignment/PlatesolvingPolarAlignment';
 
 export class NavbarMenuItems extends React.PureComponent {
     constructor(props) {
@@ -52,7 +52,7 @@ export class NavbarMenuItems extends React.PureComponent {
             <Route exact path={Routes.CAMERA_PAGE} render={props => <CameraSectionMenu section={CAMERA_PAGE} {...props} />} />
             <Route exact path={Routes.PLATE_SOLVING_PAGE} component={PlateSolvingSectionMenuContainer} />
             <Route exact path={Routes.POLAR_ALIGNMENT_DARV} component={DARVPolarAlignmentMenu} />
-            <Route exact path={Routes.POLAR_ALIGNMENT_PLATESOLVING_DRIFT} component={PlatesolvingDriftMenu} />
+            <Route exact path={Routes.POLAR_ALIGNMENT_PLATESOLVING} component={PlatesolvingPolarAlignmentMenu} />
             <Route path={Routes.IMAGE_PAGE} render={({match}) => <ImageSectionMenuContainer id={match.params.id} type={match.params.type} />} />
         </React.Fragment>
     );

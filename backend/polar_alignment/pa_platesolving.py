@@ -1,7 +1,7 @@
 from .pa_platesolving_capture import polar_alignment_platesolving_capture
 from errors import BadRequestError
 
-class PolarAlignmentPlatesolvingDrift:
+class PolarAlignmentPlatesolving:
     def first_capture(self, *args, **kwargs):
         polar_alignment_platesolving_capture.reset()
         return polar_alignment_platesolving_capture.capture(*args, **kwargs)
@@ -17,5 +17,5 @@ class PolarAlignmentPlatesolvingDrift:
 
 
 
-polar_alignment_platesolving_drift = PolarAlignmentPlatesolvingDrift()
+polar_alignment_platesolving = PolarAlignmentPlatesolving()
 

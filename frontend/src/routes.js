@@ -10,7 +10,7 @@ export const Routes = {
     IMAGE_PAGE: '/image/:type/:id',
     POLAR_ALIGNMENT_PAGE: '/polar-alignment',
     POLAR_ALIGNMENT_DARV: '/polar-alignment/darv',
-    POLAR_ALIGNMENT_PLATESOLVING_DRIFT: '/polar-alignment/platesolving/drift',
+    POLAR_ALIGNMENT_PLATESOLVING: '/polar-alignment/platesolving',
     SEQUENCE_PAGE: {
         route: '/sequences/:id',
         format: id => `/sequences/${id}`,
