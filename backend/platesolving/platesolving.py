@@ -13,6 +13,9 @@ import re
 from static_settings import StaticSettings
 import astropy.units as u
 from astropy.coordinates import SkyCoord, Angle
+from astropy.io import fits
+from PIL import Image, UnidentifiedImageError
+import numpy as np
 
 class PlateSolving:
 
@@ -100,6 +103,42 @@ class PlateSolving:
         finally:
             this.__set_status('idle')
 
+    def __check_fits_file(self, file):
+        try:
+            with fits.open(file, mode='readonly'):
+                pass
+        except OSError:
+            return False
+        return True
+
+    def __data_to_fits(self, data, temp_path):
+        temp_upload_prefix = os.path.join(temp_path, 'solve_field_input')
+        fits_file_path = temp_upload_prefix + '.fits'
+        with open(temp_upload_prefix, 'wb') as file:
+            file.write(data)
+
+        if self.__check_fits_file(temp_upload_prefix):
+            shutil.move(temp_upload_prefix, fits_file_path)
+        else:
+            if not self.__img_to_fits(temp_upload_prefix, fits_file_path, remove=True):
+                raise BadRequestError('File is not a FITS nor a recognizable image format')
+        return fits_file_path
+
+    def __img_to_fits(self, temp_file, destination, remove=False):
+        try:
+            logger.debug('Converting image to FITS format')
+            img = Image.open(temp_file)
+            xsize, ysize = img.size
+            data = np.array(img.convert('L').getdata(), dtype=np.uint8).reshape(ysize, xsize)
+            fits_file = fits.PrimaryHDU(data=data)
+            fits_file.writeto(destination)
+            if remove:
+                os.remove(temp_file)
+            return True
+        except UnidentifiedImageError:
+            return False
+
+
     def __start_solver(self, options):
         temp_path = os.path.join(StaticSettings.ASTROMETRY_TEMP_PATH, 'solve_field_{}'.format(time.time()))
         os.makedirs(temp_path, exist_ok=True)
@@ -107,11 +146,8 @@ class PlateSolving:
         fits_file_path = None
         logger.debug('Solve field options: %s', str(['{}: {}'.format(key, '<blob>' if key == 'fileBuffer' else value)  for key, value in options.items()]))
         if 'fileBuffer' in options:
-            fits_file_path = os.path.join(temp_path, 'solve_field_input.fits')
             data = base64.b64decode(options['fileBuffer'][options['fileBuffer'].find(PlateSolving.DATAURL_SEPARATOR) + len(PlateSolving.DATAURL_SEPARATOR):])
-            with open(fits_file_path, 'wb') as file:
-                file.write(data)
-
+            fits_file_path = self.__data_to_fits(data, temp_path)
         elif 'filePath' in options and os.path.isfile(options['filePath']):
             fits_file_path = options['filePath']
         elif 'cameraOptions' in options:

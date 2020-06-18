@@ -228,11 +228,11 @@ export class PlateSolving extends React.Component {
                     <Grid.Column width={3} verticalAlign='middle'><Header size='tiny' content='Solve from'/></Grid.Column>
                     <Grid.Column width={13}>
                         {this.optionButton(Options.camera, true, {content: 'Camera shot'})}
-                        {this.optionButton(Options.camera, false, {content: 'FITS file'})}
+                        {this.optionButton(Options.camera, false, {content: 'Image file'})}
                         { !options[Options.camera] &&
                             <UploadFileDialog
-                                title='Upload FITS'
-                                trigger={<Button disabled={loading} icon='upload' content='Upload FITS' primary size='mini'/>}
+                                title='Upload Image'
+                                trigger={<Button disabled={loading} icon='upload' content='Upload Image' primary size='mini'/>}
                                 readAsDataURL={true}
                                 onFileUploaded={this.onFileUploaded}
                             />
@@ -329,8 +329,8 @@ export class PlateSolving extends React.Component {
             </Segment>
             <Segment>
                 <UploadFileDialog
-                    title='Upload FITS'
-                    trigger={<Button icon='upload' content='Upload existing FITS as target' primary size='mini'/>}
+                    title='Upload Image'
+                    trigger={<Button icon='upload' content='Upload existing image as target' primary size='mini'/>}
                     readAsDataURL={true}
                     onFileUploaded={this.onTargetFileUploaded}
                 />
