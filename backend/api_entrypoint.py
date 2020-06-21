@@ -491,25 +491,18 @@ def pa_darv(guider, json):
     return darv.shoot(guider, json['exposure'], json.get('initial_pause', 5))
 
 
-@app.route('/api/polar-alignment/platesolving/<camera>/first_capture', methods=['POST'])
+@app.route('/api/polar-alignment/platesolving', methods=['POST'])
 @json_input
 @json_api
 @indi_connected
-def polar_alignment_platesolving_first_capture(camera, json):
-    return polar_alignment_platesolving.first_capture(camera, json['exposure'], json.get('solver_options', dict()))
-
-@app.route('/api/polar-alignment/platesolving/<camera>/second_capture', methods=['POST'])
-@json_input
-@json_api
-@indi_connected
-def polar_alignment_platesolving_second_capture(camera, json):
-    return polar_alignment_platesolving.second_capture(camera, json['exposure'], json.get('solver_options', dict() ))
+def polar_alignment_platesolving_first_capture(json):
+    return polar_alignment_platesolving.start(json)
 
 @app.route('/api/polar-alignment/platesolving')
 @json_api
 @indi_connected
 def polar_alignment_platesolving_results():
-    return polar_alignment_platesolving.get_drift()
+    return polar_alignment_platesolving.to_map()
 
 
 
