@@ -138,13 +138,16 @@ class PlateSolving:
         except UnidentifiedImageError:
             return False
 
+    def __platesolving_options_log(self, options):
+        return str(['{}: {}'.format(key, '<blob>' if key == 'fileBuffer' else value)  for key, value in options.items()])
+
 
     def __start_solver(self, options):
         temp_path = os.path.join(StaticSettings.ASTROMETRY_TEMP_PATH, 'solve_field_{}'.format(time.time()))
         os.makedirs(temp_path, exist_ok=True)
  
         fits_file_path = None
-        logger.debug('Solve field options: %s', str(['{}: {}'.format(key, '<blob>' if key == 'fileBuffer' else value)  for key, value in options.items()]))
+        logger.debug('Solve field options: %s', self.__platesolving_options_log(options))
         if 'fileBuffer' in options:
             data = base64.b64decode(options['fileBuffer'][options['fileBuffer'].find(PlateSolving.DATAURL_SEPARATOR) + len(PlateSolving.DATAURL_SEPARATOR):])
             fits_file_path = self.__data_to_fits(data, temp_path)
@@ -202,7 +205,7 @@ class PlateSolving:
             else:
                 raise FailedMethodError('Plate solving failed, check astrometry driver log')
         except Exception as e:
-            logger.warning('Error running platesolver with options {}'.format(options), exc_info=e)
+            logger.warning('Error running platesolver with options {}'.format(self.__platesolving_options_log(options)), exc_info=e)
             self.__set_status('error')
             return {
                 'status': 'error',
