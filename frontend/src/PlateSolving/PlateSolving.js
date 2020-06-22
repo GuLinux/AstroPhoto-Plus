@@ -55,7 +55,7 @@ const field2Marker = (field, label, color) => ({
     dec: field.dec,
     width: field.widthDegrees,
     height: field.heightDegrees,
-    rotate: -1.0 *field.orientation,
+    rotate: -1.0 *field.orientationDegrees,
     unit: 'deg',
     shape: 'rect',
     label: label,
