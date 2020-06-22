@@ -26,6 +26,10 @@ export const getGuiderWEProperty = (state, {guiderId}) => getPropertyInputSelect
 export const getCameraExposureValue = (state, {cameraId}) => getValueInputSelector(cameraId, 'CCD_EXPOSURE', 'CCD_EXPOSURE_VALUE')(state);
 export const getCameraExposureProperty = (state, {cameraId}) => getPropertyInputSelector(state, {propertyId: getPropertyId(cameraId, 'CCD_EXPOSURE')});
 
+export const getCameraTempValue = (state, {cameraId}) => getValueInputSelector(cameraId, 'CCD_TEMPERATURE', 'CCD_TEMPERATURE_VALUE')(state);
+export const getCameraTempProperty = (state, {cameraId}) => getPropertyInputSelector(state, {propertyId: getPropertyId(cameraId, 'CCD_TEMPERATURE')});
+
+
 export const getCameraBinningValue = (state, {cameraId}) => getValueInputSelector(cameraId, 'CCD_BINNING', 'HOR_BIN')(state);
 
 export const getFilterWheelCurrentFilter = (state, {filterWheelId}) =>

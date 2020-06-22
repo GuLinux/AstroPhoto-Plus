@@ -5,7 +5,16 @@ import { getDevices } from '../INDI-Server/selectors';
 import { getJobsForSequence } from '../SequenceJobs/selectors';
 import { imageUrlBuilder, formatDecimalNumber } from '../utils';
 import { secs2time } from '../utils';
-import { getConnectedCameras, getConnectedFilterWheels, getCameraExposureValue, getCameraExposureProperty, getFilterWheelCurrentFilter, getFilterWheelCurrentFilterName } from '../Gear/selectors';
+import {
+    getConnectedCameras,
+    getConnectedFilterWheels,
+    getCameraExposureValue,
+    getCameraExposureProperty,
+    getFilterWheelCurrentFilter,
+    getFilterWheelCurrentFilterName,
+    getCameraTempProperty,
+    getCameraTempValue,
+} from '../Gear/selectors';
 import { getSequenceIds, getSequenceId, getSequence, getShowLastImage } from './inputSelectors';
 import { get } from 'lodash';
 
@@ -145,10 +154,14 @@ export const cameraDetailsCardSelector = createCachedSelector([
     getSequenceCameraExposureDevice,
     getCameraExposureProperty,
     getCameraExposureValue,
-], (camera, property, value) => ({
+    getCameraTempProperty,
+    getCameraTempValue,
+], (camera, exposureProperty, exposure, temperatureProperty, temperature) => ({
     camera,
-    property,
-    value: value ? formatDecimalNumber(value.format, value.value) : 'N/A',
+    exposureProperty,
+    exposure: exposure ? formatDecimalNumber(exposure.format, exposure.value) : 'N/A',
+    temperatureProperty,
+    temperature: temperature ? formatDecimalNumber(temperature.format, temperature.value) : 'N/A',
 }))(getSequenceId);
 
 export const addSequenceModalSelector = createSelector([

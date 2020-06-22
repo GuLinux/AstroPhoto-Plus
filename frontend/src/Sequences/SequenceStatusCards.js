@@ -49,16 +49,22 @@ export const ExposuresCard = ({exposureJobsCount, totalShots, totalTime, complet
     </Card>
 )
 
-export const CameraDetailsCard = ({camera, property, value}) => camera? (
+export const CameraDetailsCard = ({camera, exposureProperty, exposure, temperatureProperty, temperature}) => camera? (
     <Card>
         <Card.Content>
             <DeviceCardHeader name={camera.name} connected={camera.connected} />
                 <Card.Description>
                     <Label.Group>
                         <Label content='Current exposure: ' basic/>
-                        <Label content={value} />
-                        {property && <INDILight state={property.state} />}
+                        <Label content={exposure} />
+                        {exposureProperty && <INDILight state={exposureProperty.state} />}
                     </Label.Group>
+                    <Label.Group>
+                        <Label content='Temperature: ' basic/>
+                        <Label content={temperature} />
+                        {temperatureProperty && <INDILight state={temperatureProperty.state} />}
+                    </Label.Group>
+
                 </Card.Description>
         </Card.Content>
     </Card>
