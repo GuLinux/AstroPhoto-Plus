@@ -45,7 +45,7 @@ class SetCameraFOV extends React.PureComponent {
 
 const SolutionField = ({label, value, width=11}) => (
     <React.Fragment>
-        <Grid.Column width={4}><Label content={label} /></Grid.Column>
+        <Grid.Column width={3}><Label content={label} /></Grid.Column>
         <Grid.Column width={width}>{value}</Grid.Column>
     </React.Fragment>
 );
@@ -69,7 +69,7 @@ const field2Marker = (field, label, color) => ({
     },
 })
 
-const SolutionPanel = ({solution, previousSolution, targets}) => {
+const SolutionPanel = ({solution, previousSolution, targets, angleDifference}) => {
     const markers = [
         field2Marker(solution, 'Plate Solving solution', 'red'),
         ...targets.map(target => (target.type === 'solution' ? field2Marker(target, target.id, 'green') : {
@@ -92,28 +92,29 @@ const SolutionPanel = ({solution, previousSolution, targets}) => {
     }
     return (
         <Container>
-            <Container text>
+            <Container>
                 <Header content='Solution' />
                 <Grid stackable>
                     <Grid.Row>
-                        <SolutionField width={3} label='RA (J2000)' value={solution.raLabel} />
-                        <SolutionField width={3} label='DEC (J2000)' value={solution.decLabel} />
+                        <SolutionField width={2} label='RA (J2000)' value={solution.raLabel} />
+                        <SolutionField width={2} label='DEC (J2000)' value={solution.decLabel} />
                     </Grid.Row>
                     <Grid.Row>
-                        <SolutionField width={3} label='Field width' value={solution.width} />
-                        <SolutionField width={3} label='Field height' value={solution.height} />
+                        <SolutionField width={2} label='Field width' value={solution.width} />
+                        <SolutionField width={2} label='Field height' value={solution.height} />
                     </Grid.Row>
                     <Grid.Row>
-                        <SolutionField width={3} label='Scale (arcsec/pixel)' value={solution.pixScale} />
+                        <SolutionField width={2} label='Scale (arcsec/pixel)' value={solution.pixScale} />
                     </Grid.Row>
                     { solution.orientation && (
                     <Grid.Row>
-                        <SolutionField width={3} label='Orientation (East of North)' value={solution.orientation} />
+                        <SolutionField width={2} label='Orientation (East of North)' value={solution.orientation} />
+                        {angleDifference && <SolutionField width={3} label='Orientation from target' value={angleDifference} /> }
                     </Grid.Row>
                     )}
                     <Grid.Row>
-                        <Grid.Column width={4}><Label content='Link to Aladin' /></Grid.Column>
-                        <Grid.Column width={5}><a href={solution.aladinURL} rel='noopener noreferrer' target='_blank'>click here</a></Grid.Column>
+                        <Grid.Column width={3}><Label content='Link to Aladin' /></Grid.Column>
+                        <Grid.Column width={2}><a href={solution.aladinURL} rel='noopener noreferrer' target='_blank'>click here</a></Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Container>
@@ -263,7 +264,7 @@ export class PlateSolving extends React.Component {
                                 setOption={setOption}
                             /> }
                             { options[Options.fovSource] ? (
-                                <Grid.Row>
+                            <Grid.Row>
                                 <Grid.Column width={8}>
                                     <NumericInput
                                         min={0}
@@ -316,7 +317,7 @@ export class PlateSolving extends React.Component {
                     </Grid.Column>
                 </Grid.Row>)}
             </Grid>
-            { solution && <SolutionPanel solution={solution} previousSolution={previousSolution} targets={this.props.targets} /> }
+            { solution && <SolutionPanel solution={solution} previousSolution={previousSolution} targets={this.props.targets} angleDifference={this.props.angleDifference} /> }
             {messages && messages.length > 0 && <PlateSolvingMessagesPanel messages={messages} /> }
         </Container>
         );

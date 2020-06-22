@@ -44,6 +44,7 @@ const toSexagesimal = value => {
 }
 
 const formatDegrees = degrees => {
+    console.log(degrees);
     const sexagesimal = toSexagesimal(degrees);
     return `${sexagesimal.degrees}\u00B0 ${sexagesimal.minutes}' ${formatDecimalNumber('%0.2f', sexagesimal.fractionalSeconds)}"`;
 }
@@ -66,9 +67,6 @@ const formatAladinParams = (solution) => {
 }
 
 
-
-
-
 const transformSolution = solution => ({
     ra: deg2hours(solution.ASTROMETRY_RESULTS_RA.value),
     raj2000: solution.ASTROMETRY_RESULTS_RA.value,
@@ -81,7 +79,8 @@ const transformSolution = solution => ({
     width: formatDegrees(solution.ASTROMETRY_RESULTS_WIDTH.value),
     height: formatDegrees(solution.ASTROMETRY_RESULTS_HEIGHT.value),
     pixScale: formatDecimalNumber('%0.2f', solution.ASTROMETRY_RESULTS_PIXSCALE.value),
-    orientation: formatDecimalNumber('%0.2f', solution.ASTROMETRY_RESULTS_ORIENTATION.value),
+    orientation: formatDegrees(solution.ASTROMETRY_RESULTS_ORIENTATION.value),
+    orientationDegrees: solution.ASTROMETRY_RESULTS_ORIENTATION.value,
     aladinURL: `http://aladin.unistra.fr/AladinLite/?${formatAladinParams(solution)}&survey=P/DSS2/color`,
 });
 
@@ -91,6 +90,18 @@ const solution2Target = target => ({
     displayName: `File: ${target.id}`,
     type: 'solution',
 });
+
+const computeAngleDifference = (solution, mainTarget, targets) => {
+    if(!solution || !mainTarget) {
+        return null;
+    }
+    const target = targets.find(t => t.id === mainTarget);
+    if(!target.orientation) {
+        return null;
+    }
+    const angularDifference = solution.ASTROMETRY_RESULTS_ORIENTATION.value - target.orientationDegrees;
+    return formatDegrees(angularDifference);
+}
 
 export const getPlateSolvingTargets = createSelector([state => state.plateSolving.targets], targets => targets.map(target => 'ASTROMETRY_RESULTS_RA' in target ? solution2Target(target) : target));
 export const getPlateSolvingMainTarget = state => state.plateSolving.mainTarget;
@@ -123,6 +134,7 @@ export const plateSolvingContainerSelector = createSelector([
     telescopeFocalLength: options[PlateSolving.Options.telescopeType] === 'main' ? get(telescopeFocalLength, 'value') : get(guiderFocalLength, 'value'),
     targets,
     mainTarget,
+    angleDifference: computeAngleDifference(solution, mainTarget, targets),
 }));
 
 export const plateSolvingSectionMenuSelector = createSelector([getPlateSolvingOptions], options => ({
