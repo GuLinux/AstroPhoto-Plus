@@ -65,7 +65,8 @@ class PHD2Service:
     def get_phd2_state(self, publish=True):
         state_reply = self.phd2_method('get_app_state')
         #logger.debug('get_phd2_: state reply: {}'.format(state_reply))
-        self.__change_state(state_reply['result'], publish=publish)
+        if 'result' in state_reply:
+            self.__change_state(state_reply['result'], publish=publish)
         return state_reply
 
     def start_phd2(self, phd2_path, display):
