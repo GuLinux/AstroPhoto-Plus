@@ -101,7 +101,7 @@ class PlateSolving:
 
             self.event_listener.on_platesolving_finished(solution)
         finally:
-            this.__set_status('idle')
+            self.__set_status('idle')
 
     def __check_fits_file(self, file):
         try:
