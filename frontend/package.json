@@ -10,7 +10,7 @@
         "event-source-polyfill": "1.0.7",
         "fullscreen": "^1.1.1",
         "isomorphic-fetch": "^2.2.1",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.21",
         "native-base": "^2.12.1",
         "normalizr": "^3.6.0",
         "printj": "^1.2.2",
